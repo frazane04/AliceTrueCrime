@@ -1,29 +1,37 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Il mio sito web</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il mio sito web</title>
 
-  <!-- Collegamento al file CSS -->
-  <link rel="stylesheet" href="css/mainStyle.css">
+    <link rel="stylesheet" href="css/mainStyle.css">
 </head>
 <body>
-  <header>
-    <h1>Benvenuto nel mio sito!</h1>
-  </header>
+    <header>
+        <h1>Benvenuto nel mio sito!</h1>
+        <div class="header-right-container">
+            <div class="profile-icon">
+                <img src="img/profile_placeholder.png" alt="Profilo">
+            </div>
 
-  <main>
-    <p>Questa è una pagina di prova per verificare che HTML, CSS e JS siano collegati.</p>
-    <button id="myButton">Cliccami!</button>
-  </main>
+            <div class="theme-switcher">
+                <div class="magnifying-glass"></div>
+                <img id="theme-icon-luna" src="img/luna.png" alt="Tema Scuro">
+                <img id="theme-icon-sole" src="img/sole.png" alt="Tema Chiaro" class="hidden">
+            </div>
+        </div>
+    </header>
 
-  <footer>
-    <p>&copy; 2025 - Il mio sito</p>
-  </footer>
+    <main>
+        <p>Questa è una pagina di prova per verificare che HTML, CSS e JS siano collegati.</p>
+        <button id="myButton">Cliccami!</button>
+    </main>
 
-  <!-- Collegamento al file JavaScript -->
-  <script src="js/main.js"></script>
+    <footer>
+        <p>&copy; 2025 - Il mio sito</p>
+    </footer>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
-

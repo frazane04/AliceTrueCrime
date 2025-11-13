@@ -1,27 +1,129 @@
 /* CSS base per test di collegamento */
-
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
-  text-align: center;
-  padding: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
+    padding: 40px;
+    margin: 0; /* Rimuovi il margin predefinito del body */
+    transition: background-color 0.5s ease, color 0.5s ease; /* Transizione per il tema */
 }
 
 h1 {
-  color: #0078d7;
+    color: #0078d7;
+    margin: 0; /* Rimuovi il margin predefinito dell'h1 */
 }
 
 button {
-  background-color: #0078d7;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
+    background-color: #0078d7;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
 }
 
 button:hover {
-  background-color: #005a9e;
+    background-color: #005a9e;
+}
+
+/* Stili per l'header e gli elementi a destra */
+header {
+    display: flex;
+    justify-content: space-between; /* Sposta il titolo a sinistra e il container a destra */
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff; /* Sfondo dell'header */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative; /* Per posizionare gli elementi interni */
+}
+
+.header-right-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Spazio tra profilo e selettore tema */
+}
+
+.profile-icon img {
+    width: 30px; /* Dimensione icona profilo */
+    height: 30px;
+    border-radius: 50%; /* Se vuoi un'icona circolare */
+    cursor: pointer;
+    vertical-align: middle; /* Allinea l'immagine al centro */
+}
+
+.theme-switcher {
+    position: relative;
+    width: 50px; /* Larghezza del contenitore del selettore */
+    height: 50px; /* Altezza del contenitore del selettore */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.theme-switcher img {
+    position: absolute;
+    width: 100%; /* Le icone luna/sole riempiono il contenitore */
+    height: 100%;
+    transition: opacity 0.3s ease; /* Transizione per la comparsa/scomparsa delle icone */
+}
+
+.theme-switcher .hidden {
+    opacity: 0;
+    pointer-events: none; /* Impedisce interazione quando nascosto */
+}
+
+.magnifying-glass {
+    position: absolute;
+    width: 100%; /* La lente riempie il contenitore */
+    height: 100%;
+    background-image: url('../img/lente.png'); /* Assicurati di avere un'immagine della sola lente qui */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10; /* Assicura che la lente sia sopra le icone */
+    transition: transform 0.4s ease-out; /* Transizione per il movimento della lente */
+    /* Crea un'immagine di una lente trasparente senza luna/sole per questo */
+}
+
+/* Animazioni per la lente d'ingrandimento */
+.magnifying-glass.animate-left {
+    animation: moveLeft 0.8s forwards; /* Durata e fill-mode */
+}
+
+.magnifying-glass.animate-right {
+    animation: moveRight 0.8s forwards; /* Durata e fill-mode */
+}
+
+@keyframes moveLeft {
+    0% { transform: translateX(0); }
+    30% { transform: translateX(-20px); } /* Sposta un po' a sinistra */
+    60% { transform: translateX(20px); }  /* Poi a destra (passa sul centro) */
+    100% { transform: translateX(0); }    /* Torna al centro */
+}
+
+@keyframes moveRight {
+    0% { transform: translateX(0); }
+    30% { transform: translateX(20px); }  /* Sposta un po' a destra */
+    60% { transform: translateX(-20px); } /* Poi a sinistra (passa sul centro) */
+    100% { transform: translateX(0); }    /* Torna al centro */
+}
+
+
+/* Stili per il tema scuro */
+body.dark-theme {
+    background-color: #333;
+    color: #f4f4f4;
+}
+
+body.dark-theme h1 {
+    color: #a0c2e6; /* Colore più chiaro per l'h1 nel tema scuro */
+}
+
+body.dark-theme header {
+    background-color: #222; /* Sfondo header scuro */
+    box-shadow: 0 2px 4px rgba(255,255,255,0.1);
 }
