@@ -1,19 +1,19 @@
-/* CSS base per test di collegamento */
+/* --- Stili di Base e Layout --- */
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f4f4f4; 
     color: #333;
+    margin: 0;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+main {
     text-align: center;
     padding: 40px;
-    margin: 0; /* Rimuovi il margin predefinito del body */
-    transition: background-color 0.5s ease, color 0.5s ease; /* Transizione per il tema */
 }
-
 h1 {
     color: #0078d7;
-    margin: 0; /* Rimuovi il margin predefinito dell'h1 */
+    margin: 0;
 }
-
 button {
     background-color: #0078d7;
     color: white;
@@ -24,120 +24,147 @@ button {
     border-radius: 5px;
     margin-top: 20px;
 }
-
 button:hover {
     background-color: #005a9e;
 }
 
-/* Stili per l'header e gli elementi a destra */
+/* --- Header --- */
 header {
     display: flex;
-    justify-content: space-between; /* Sposta il titolo a sinistra e il container a destra */
+    justify-content: space-between; /* Spazio tra logo, nav e destra */
     align-items: center;
     padding: 10px 20px;
-    background-color: #ffffff; /* Sfondo dell'header */
+    background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: relative; /* Per posizionare gli elementi interni */
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
+/* Logo (nuovo requisito) */
+.logo-image {
+    height: 250px; /* Altezza fissa */
+    width: auto;
+}
+
+/* Navigazione centrale */
+.main-nav {
+    display: flex;
+    gap: 30px;
+}
+.nav-item {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 5px 10px;
+    transition: color 0.3s ease;
+}
+.nav-item:hover, .nav-item.active {
+    color: #0078d7;
+}
+
+/* Contenitore destra (Tema + Profilo) */
 .header-right-container {
     display: flex;
     align-items: center;
-    gap: 20px; /* Spazio tra profilo e selettore tema */
+    gap: 20px;
 }
-
 .profile-icon img {
-    width: 30px; /* Dimensione icona profilo */
+    width: 30px;
     height: 30px;
-    border-radius: 50%; /* Se vuoi un'icona circolare */
+    border-radius: 50%;
     cursor: pointer;
-    vertical-align: middle; /* Allinea l'immagine al centro */
+    vertical-align: middle;
 }
 
-/* Contenitore per il selettore del tema (lente + sole/luna) */
+/* --- Selettore Tema e Animazione Lente --- */
 .theme-switcher {
     position: relative;
-    width: 65px; /* Aumenta la larghezza per una lente più grande */
-    height: 65px; /* Aumenta l'altezza per una lente più grande */
+    width: 80px; 
+    height: 80px; 
     cursor: pointer;
-    display: flex; /* Usa flexbox per centrare facilmente i simboli */
+    display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Nasconde ciò che esce dal contenitore */
+    border-radius: 50%;
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
-
-/* Stili per le icone luna/sole (SOLO i simboli, senza lente) */
-.theme-switcher .theme-icon {
-    position: absolute; /* Posiziona i simboli luna/sole */
-    width: 80%; /* Aumenta la dimensione dei simboli per riempire meglio la lente più grande */
-    height: 80%;
-    object-fit: contain; /* Assicura che l'immagine sia contenuta senza distorsioni */
-    transition: opacity 0.3s ease; /* Transizione per la comparsa/scomparsa */
-    z-index: 5; /* Assicurati che siano sotto la lente ma sopra lo sfondo */
-    /* Centra perfettamente l'icona all'interno del theme-switcher */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.theme-switcher:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.05);
 }
-
-.theme-switcher .hidden {
+body.dark-theme .theme-switcher:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+.theme-icon-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+}
+.theme-icon-container img {
+    width: 60%; 
+    height: 60%; 
+    object-fit: contain;
+}
+.theme-icon-container.hidden {
     opacity: 0;
-    pointer-events: none; /* Impedisce interazione quando nascosto */
+    pointer-events: none;
 }
-
-/* Stili per la lente d'ingrandimento (SOLO la lente, vuota) */
 .magnifying-glass {
     position: absolute;
-    width: 100%; /* La lente riempie il contenitore */
-    height: 100%;
-    background-image: url('../img/lente.png'); /* Questa è solo la lente vuota */
+    width: 100%; 
+    height: 100%; 
+    background-image: url('../img/lente.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    z-index: 10; /* La lente DEVE essere sopra i simboli luna/sole */
-    transition: transform 0.6s ease-in-out; /* Rendi la transizione della lente più lenta e con easing */
-    /* Assicurati che il centro della lente sia il punto di trasformazione */
+    z-index: 10;
     transform-origin: center center;
+    transform: translate(5px, 5px); /* Spostamento base */
 }
 
-/* Animazioni per la lente d'ingrandimento */
-.magnifying-glass.animate-left {
-    animation: moveLeftAndUpDown 1.2s forwards; /* Durata aumentata (più lenta) */
+/* Animazione Semplice (Sinistra e Ritorno) */
+.magnifying-glass.animate-sweep {
+    animation: sweepLeft 1.0s forwards ease-in-out;
 }
 
-.magnifying-glass.animate-right {
-    animation: moveRightAndUpDown 1.2s forwards; /* Durata aumentata (più lenta) */
+@keyframes sweepLeft {
+    0% {
+        transform: translate(5px, 5px);
+    }
+    50% {
+        transform: translate(-30px, 5px); 
+    }
+    100% {
+        transform: translate(5px, 5px);
+    }
 }
 
-/* Keyframes con movimento su e giù */
-@keyframes moveLeftAndUpDown {
-    0% { transform: translate(0, 0); } /* Partenza al centro */
-    25% { transform: translate(-25px, -10px); } /* Sposta a sinistra e leggermente su */
-    50% { transform: translate(25px, 10px); }  /* Sposta a destra e leggermente giù */
-    75% { transform: translate(-10px, -5px); } /* Sposta leggermente a sinistra e su per un rimbalzo */
-    100% { transform: translate(0, 0); }    /* Torna al centro */
-}
-
-@keyframes moveRightAndUpDown {
-    0% { transform: translate(0, 0); } /* Partenza al centro */
-    25% { transform: translate(25px, 10px); }  /* Sposta a destra e leggermente giù */
-    50% { transform: translate(-25px, -10px); } /* Sposta a sinistra e leggermente su */
-    75% { transform: translate(10px, 5px); }  /* Sposta leggermente a destra e giù per un rimbalzo */
-    100% { transform: translate(0, 0); }    /* Torna al centro */
-}
-
-
-/* Stili per il tema scuro */
+/* --- Stili Tema Scuro --- */
 body.dark-theme {
     background-color: #333;
     color: #f4f4f4;
 }
-
 body.dark-theme h1 {
-    color: #a0c2e6; /* Colore più chiaro per l'h1 nel tema scuro */
+    color: #a0c2e6;
 }
-
 body.dark-theme header {
-    background-color: #222; /* Sfondo header scuro */
+    background-color: #222;
     box-shadow: 0 2px 4px rgba(255,255,255,0.1);
+}
+body.dark-theme .nav-item {
+    color: #f4f4f4;
+}
+body.dark-theme .nav-item:hover, body.dark-theme .nav-item.active {
+    color: #a0c2e6;
+}
+body.dark-theme button {
+    background-color: #a0c2e6;
+    color: #222;
+}
+body.dark-theme button:hover {
+    background-color: #8bb1d8;
 }

@@ -3,33 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il mio sito web</title>
-
+    <title>Alice True Crime - Il Lato Oscuro della Realtà</title>
     <link rel="stylesheet" href="css/mainStyle.css">
 </head>
 <body>
+
     <header>
-        <h1>Benvenuto nel mio sito!</h1>
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo Alice True Crime" class="logo-image">
+        </div>
+        
+        <nav class="main-nav">
+            <a href="#" class="nav-item active">HOME</a>
+            <a href="#" class="nav-item">ESPLORA</a>
+            <a href="#" class="nav-item">GIOCO</a>
+            <a href="#" class="nav-item">CONTATTACI</a>
+        </nav>
+
         <div class="header-right-container">
+            
+            <div class="theme-switcher" title="Cambia tema">
+                <div id="theme-icon-luna-container" class="theme-icon-container">
+                    <img src="img/luna.png" alt="Tema Scuro">
+                </div>
+                <div id="theme-icon-sole-container" class="theme-icon-container hidden">
+                    <img src="img/sole.png" alt="Tema Chiaro">
+                </div>
+                <div class="magnifying-glass"></div>
+            </div>
+
             <div class="profile-icon">
                 <img src="img/profile_placeholder.png" alt="Profilo">
             </div>
 
-            <div class="theme-switcher">
-                <div class="magnifying-glass"></div>
-                <img id="theme-icon-luna" src="img/luna.png" alt="Tema Scuro">
-                <img id="theme-icon-sole" src="img/sole.png" alt="Tema Chiaro" class="hidden">
-            </div>
         </div>
     </header>
 
     <main>
-        <p>Questa è una pagina di prova per verificare che HTML, CSS e JS siano collegati.</p>
-        <button id="myButton">Cliccami!</button>
+        <h1>Benvenuto in ALICE TRUE CRIME</h1>
+        <p>Scopri il lato oscuro della realtà e naviga tra le ultime inchieste.</p>
+
+        <section class="content-section">
+            <h2>Articoli più letti</h2>
+            <p>Qui andranno le card degli articoli.</p>
+        </section>
+        
+        <button id="myButton">Vai al Gioco</button>
     </main>
 
     <footer>
-        <p>&copy; 2025 - Il mio sito</p>
+        <p>&copy; 2025 - Alice True Crime</p>
     </footer>
 
     <script src="js/main.js"></script>

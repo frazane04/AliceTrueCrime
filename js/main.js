@@ -1,64 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("JavaScript collegato correttamente!");
-
+    
+    // --- Logica per il bottone di prova "Vai al Gioco" ---
     const button = document.getElementById("myButton");
     if (button) {
         button.addEventListener("click", () => {
-            alert("Hai cliccato il bottone! 🎉");
+            alert("Vai al Gioco!");
         });
     }
 
-    // --- LOGICA PER IL CAMBIO TEMA E L'ANIMAZIONE LENTE ---
+    // --- LOGICA PER IL CAMBIO TEMA ---
+
+    // Elementi del DOM
     const themeSwitcher = document.querySelector(".theme-switcher");
-    const themeIconLuna = document.getElementById("theme-icon-luna");
-    const themeIconSole = document.getElementById("theme-icon-sole");
+    const themeIconLunaContainer = document.getElementById("theme-icon-luna-container");
+    const themeIconSoleContainer = document.getElementById("theme-icon-sole-container");
     const magnifyingGlass = document.querySelector(".magnifying-glass");
     const body = document.body;
 
-    // Recupera il tema salvato o imposta quello predefinito
+    // Stato tema (recupera dal localStorage)
     let isDarkTheme = localStorage.getItem("isDarkTheme") === "true";
 
-    // Funzione per applicare il tema
+    // Funzione per applicare il tema e mostrare/nascondere le icone (sole/luna)
     function applyTheme() {
         if (isDarkTheme) {
             body.classList.add("dark-theme");
-            themeIconLuna.classList.remove("hidden");
-            themeIconSole.classList.add("hidden");
+            themeIconLunaContainer.classList.remove("hidden"); // Mostra luna (scuro)
+            themeIconSoleContainer.classList.add("hidden");    // Nascondi sole (chiaro)
         } else {
             body.classList.remove("dark-theme");
-            themeIconLuna.classList.add("hidden");
-            themeIconSole.classList.remove("hidden");
+            themeIconLunaContainer.classList.add("hidden");      // Nascondi luna
+            themeIconSoleContainer.classList.remove("hidden"); // Mostra sole
         }
     }
 
-    // Applica il tema all'inizio
+    // Applica il tema al caricamento della pagina
     applyTheme();
 
-    // Event listener per il click sul selettore tema
+    // Gestione click sul selettore tema
     themeSwitcher.addEventListener("click", () => {
-        // Rimuovi eventuali classi di animazione precedenti
-        magnifyingGlass.classList.remove("animate-left", "animate-right");
-
-        // Determina l'animazione in base al tema corrente
-        if (isDarkTheme) { // Se è scuro, passeremo a chiaro (sole), animazione destra
-            magnifyingGlass.classList.add("animate-right");
-        } else { // Se è chiaro, passeremo a scuro (luna), animazione sinistra
-            magnifyingGlass.classList.add("animate-left");
+        
+        // Blocca se l'animazione è già in corso
+        if (magnifyingGlass.classList.contains("animate-sweep")) {
+            return; 
         }
 
-        // Dopo l'animazione, cambia il tema e l'icona
-        // Usiamo un timeout per far finire l'animazione prima di cambiare icona
+        // Avvia l'animazione
+        magnifyingGlass.classList.add("animate-sweep");
+
+        // Cambia tema ESATTAMENTE a metà animazione (500ms)
         setTimeout(() => {
-            isDarkTheme = !isDarkTheme; // Inverti il tema
-            localStorage.setItem("isDarkTheme", isDarkTheme); // Salva la preferenza
-            applyTheme(); // Applica il nuovo tema e cambia le icone
-        }, 600); // Questo tempo dovrebbe essere leggermente inferiore alla durata dell'animazione (0.8s = 800ms)
-                 // per far sì che il cambio icona avvenga "durante" il ritorno al centro della lente.
+            isDarkTheme = !isDarkTheme; // Inverti lo stato
+            localStorage.setItem("isDarkTheme", isDarkTheme); // Salva in locale
+            applyTheme(); // Applica il nuovo tema
+        }, 500); 
     });
 
-    // Opzionale: Rimuovi la classe di animazione alla fine dell'animazione CSS
-    // Questo è utile se volessi che l'animazione potesse ripartire più volte di seguito
+    // Rimuove la classe di animazione al termine per consentire il riavvio
     magnifyingGlass.addEventListener('animationend', () => {
-        magnifyingGlass.classList.remove("animate-left", "animate-right");
+        magnifyingGlass.classList.remove("animate-sweep");
     });
 });
