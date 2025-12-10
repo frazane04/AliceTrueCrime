@@ -99,16 +99,6 @@ CREATE TABLE Partita (
     FOREIGN KEY (Gioco) REFERENCES Gioco(Nome)
 );
 
--- Tabella Visualizzazione (relazione tra Utente e Caso)
-CREATE TABLE Visualizzazione (
-    Utente INT NOT NULL,
-    Caso INT NOT NULL,
-    PRIMARY KEY (Utente, Caso),
-    FOREIGN KEY (Utente) REFERENCES Utente(ID_Utente),
-    FOREIGN KEY (Caso) REFERENCES Caso(N_Caso)
-);
-
-
 -- Tabella Colpa (relazione tra Colpevole e Caso)
 CREATE TABLE Colpa (
     Colpevole VARCHAR(16) NOT NULL,
