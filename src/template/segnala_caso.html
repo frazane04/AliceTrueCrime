@@ -1,0 +1,40 @@
+<section class="segnalazione-container">
+    <header class="page-header">
+        <h1>Apri un nuovo fascicolo</h1>
+        <p>Hai informazioni su un caso non ancora trattato? Compila il rapporto preliminare.</p>
+    </header>
+
+    <div id="feedback-area">
+        </div>
+
+    <div class="form-wrapper">
+        <form action="" method="POST" class="form-crimine">
+            
+            <div class="form-group">
+                <label for="titolo">Nome del Caso (Titolo) *</label>
+                <input type="text" id="titolo" name="titolo" placeholder="Es. Il mistero di..." required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="data_crimine">Data Accaduto *</label>
+                    <input type="date" id="data_crimine" name="data_crimine" required>
+                </div>
+                <div class="form-group half">
+                    <label for="luogo">Luogo *</label>
+                    <input type="text" id="luogo" name="luogo" placeholder="Città, Paese" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="descrizione">Ricostruzione / Dettagli *</label>
+                <textarea id="descrizione" name="descrizione" rows="6" placeholder="Descrivi i fatti principali e le fonti..." required></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Invia Segnalazione</button>
+            </div>
+
+        </form>
+    </div>
+</section>
