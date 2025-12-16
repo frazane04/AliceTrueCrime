@@ -1,46 +1,59 @@
 <?php
 // src/struct/accedi.php
 
+require_once __DIR__ . '/funzioni_db.php';
+
 $errorMessage = '';
 $successMessage = '';
 
 // Gestione POST del form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $remember = isset($_POST['remember']);
     
     // Validazione base
-    if (empty($email) || empty($password)) {
+    if (empty($username) || empty($password)) {
         $errorMessage = 'Per favore, compila tutti i campi.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errorMessage = 'Inserisci un indirizzo email valido.';
     } else {
-        // TODO: Connessione al database e verifica credenziali
-        // Esempio simulato:
+        // Connessione al database e verifica credenziali
+        $dbFunctions = new FunzioniDB();
+        $loginResult = $dbFunctions->loginUtente($username, $password);
         
-        // $user = $db->getUserByEmail($email);
-        // if ($user && password_verify($password, $user['password'])) {
-        //     $_SESSION['user'] = $user['username'];
-        //     $_SESSION['user_id'] = $user['id'];
-        //     header('Location: ' . getPrefix() . '/profilo');
-        //     exit;
-        // }
-        
-        // SIMULAZIONE per testing (rimuovere in produzione)
-        if ($email === 'test@example.com' && $password === 'password123') {
-            $_SESSION['user'] = 'DetectiveTest';
-            $_SESSION['user_id'] = 1;
+        if ($loginResult['success']) {
+            // Login riuscito - imposta la sessione
+            $_SESSION['user'] = $loginResult['user']['username'];
+            $_SESSION['user_id'] = $loginResult['user']['id'];
+            $_SESSION['is_admin'] = $loginResult['user']['is_admin'];
             
-            // Se "Ricordami" è attivo, imposta cookie (opzionale)
+            // Se "Ricordami" è attivo, imposta cookie sicuro
             if ($remember) {
-                setcookie('user_token', 'token_esempio', time() + (86400 * 30), '/');
+                // Genera un token casuale sicuro
+                $token = bin2hex(random_bytes(32));
+                
+                // TODO: Salvare il token nel database associato all'utente
+                // per poterlo validare in futuro
+                
+                // Imposta cookie per 30 giorni con flag sicuri
+                setcookie(
+                    'remember_token', 
+                    $token, 
+                    [
+                        'expires' => time() + (86400 * 30),
+                        'path' => '/',
+                        'secure' => isset($_SERVER['HTTPS']), // Solo HTTPS se disponibile
+                        'httponly' => true, // Non accessibile via JavaScript
+                        'samesite' => 'Strict' // Protezione CSRF
+                    ]
+                );
             }
             
+            // Redirect alla pagina profilo
             header('Location: ' . getPrefix() . '/profilo');
             exit;
         } else {
-            $errorMessage = 'Email o password non corretti.';
+            // Login fallito
+            $errorMessage = $loginResult['message'];
         }
     }
 }
@@ -53,6 +66,14 @@ if (!file_exists($templatePath)) {
 }
 
 $contenuto = file_get_contents($templatePath);
+
+// Modifica il campo email in username nel template
+$contenuto = str_replace('name="email"', 'name="username"', $contenuto);
+$contenuto = str_replace('id="email"', 'id="username"', $contenuto);
+$contenuto = str_replace('type="email"', 'type="text"', $contenuto);
+$contenuto = str_replace('<label for="email">Email</label>', '<label for="username">Username</label>', $contenuto);
+$contenuto = str_replace('placeholder="detective@example.com"', 'placeholder="detective_007"', $contenuto);
+$contenuto = str_replace('autocomplete="email"', 'autocomplete="username"', $contenuto);
 
 // Mostra eventuali messaggi di errore/successo
 if (!empty($errorMessage)) {

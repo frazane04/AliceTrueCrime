@@ -1,0 +1,9 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# Se il file o la cartella esistono, non fare nulla
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Altrimenti reindirizza tutto a index.php
+RewriteRule ^ index.php [L]
