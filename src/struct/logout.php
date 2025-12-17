@@ -1,10 +1,8 @@
 <?php
-// logout.php (da mettere nella root o in src/struct/)
+// src/struct/logout.php
 
-// Avvia la sessione se non è già attiva
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Include utils.php per session_start e getPrefix()
+require_once __DIR__ . '/utils.php';
 
 // Distruggi tutte le variabili di sessione
 $_SESSION = [];
@@ -30,9 +28,6 @@ if (isset($_COOKIE['remember_token'])) {
 
 // Distruggi la sessione
 session_destroy();
-
-// Include utils.php per getPrefix()
-require_once __DIR__ . '/src/struct/utils.php';
 
 // Redirect alla home
 header('Location: ' . getPrefix() . '/');

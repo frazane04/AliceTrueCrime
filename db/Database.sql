@@ -5,7 +5,7 @@ USE sistema_gestionale;
 -- Tabella Utente
 CREATE TABLE Utente (
     ID_Utente INT PRIMARY KEY AUTO_INCREMENT,
-    Email VARCHAR(50) NOT NULL UNIQUE,
+    Username VARCHAR(50) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     Is_Admin BOOLEAN NOT NULL
 );

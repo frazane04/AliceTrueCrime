@@ -3,8 +3,9 @@
 
 // 0. Controllo Sessione (Importante!)
 // Se l'utente NON è loggato, non deve vedere il form né poter inviare dati.
-// Assumo che tu abbia già fatto session_start() nell'index.php o in utils.php
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    
+    $prefix = getPrefix();
     
     // Preparo un messaggio di errore invece del form
     $titoloPagina = "Accesso Negato - AliceTrueCrime";
@@ -12,7 +13,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class='access-denied-container' style='text-align: center; padding: 3rem;'>
             <h1>Area Riservata agli Investigatori</h1>
             <p>Per inviare una segnalazione devi essere registrato.</p>
-            <a href='login.php' class='btn-login'>Accedi o Registrati</a>
+            <a href='$prefix/accedi' class='btn-login'>Accedi o Registrati</a>
         </div>
     ";
     
@@ -37,18 +38,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // RECUPERO AUTOMATICO DELL'AUTORE
     // Non mi fido dell'input utente, prendo il dato sicuro dalla sessione
-    $autore = $_SESSION['username']; 
-    // Oppure $autore_id = $_SESSION['user_id']; se nel DB usi l'ID numerico
+    $autoreUsername = $_SESSION['user'];
+    $autoreId = $_SESSION['user_id'];
 
     if (!empty($titolo) && !empty($data) && !empty($luogo) && !empty($descrizione)) {
         
         // QUI SALVATAGGIO NEL DB
-        // Esempio query immaginaria: 
-        // INSERT INTO casi (titolo, autore, ...) VALUES ('$titolo', '$autore', ...)
+        // Esempio query preparata:
+        // require_once __DIR__ . '/funzioni_db.php';
+        // $db = new FunzioniDB();
+        // $result = $db->inserisciCaso($titolo, $data, $luogo, $descrizione, $autoreId);
         
         $messaggioFeedback = "
             <div class='alert success'>
-                <strong>Segnalazione inviata!</strong> Grazie Agente $autore, il caso è in revisione.
+                <strong>Segnalazione inviata!</strong> Grazie, il caso è in revisione.
             </div>
         ";
     } else {
@@ -69,8 +72,8 @@ if (file_exists($templatePath)) {
 }
 
 
-// 4. INIEZIONE DATI
-$contenuto = str_replace('', $messaggioFeedback, $contenuto);
+// 4. INIEZIONE DATI - Inserisce il feedback nell'area apposita
+$contenuto = str_replace('<div id="feedback-area">', '<div id="feedback-area">' . $messaggioFeedback, $contenuto);
 
 
 // 5. OUTPUT

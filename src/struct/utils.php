@@ -79,9 +79,9 @@ function getNavBarLi($currentPath): string {
     $prefix = getPrefix();
     $links = [
         $prefix . '/' => 'Home',
-        $prefix . '/esplora' => 'Esplora Casi',      // Pagina con le card
-        $prefix . '/segnala-caso' => 'Segnala Caso', // Form per l'admin
-        $prefix . '/newsletter' => 'Newsletter'      // Pagina/Sezione notifiche
+        $prefix . '/esplora' => 'Esplora Casi',
+        $prefix . '/segnala-caso' => 'Segnala Caso',
+        $prefix . '/newsletter' => 'Newsletter'
     ];
     return generateLiList($links, $currentPath);
 }
@@ -93,12 +93,13 @@ function getHeaderButtons(): string {
     $prefix = getPrefix();
     
     // Se l'utente è loggato (Sessione attiva)
-    if (isset($_SESSION['user'])) {
-        $user = htmlspecialchars($_SESSION['user']); // Sanificazione output
-        // Immagine profilo placeholder
-        $imgProfile = "https://ui-avatars.com/api/?name=$user&background=0D8ABC&color=fff"; 
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        // Usa lo username dell'utente per mostrare informazioni
+        $user = htmlspecialchars($_SESSION['user'] ?? 'Utente');
         
-        // Eredoc syntax per pulizia
+        // Immagine profilo placeholder basata sullo username
+        $imgProfile = "https://ui-avatars.com/api/?name=" . urlencode($user) . "&background=0D8ABC&color=fff"; 
+        
         return <<<HTML
             <div class="user-menu">
                 <a href="$prefix/notifiche" class="icon-btn" aria-label="Notifiche">
@@ -109,7 +110,7 @@ function getHeaderButtons(): string {
                     <img src="$imgProfile" alt="" width="24" style="border-radius:50%; vertical-align:middle; margin-right:5px;" />
                     $user
                 </a>
-                <a href="$prefix/logout.php" class="button-layout btn-logout">Esci</a>
+                <a href="$prefix/logout" class="button-layout btn-logout">Esci</a>
             </div>
         HTML;
     } else {

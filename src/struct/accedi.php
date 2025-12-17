@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user'] = $loginResult['user']['username'];
             $_SESSION['user_id'] = $loginResult['user']['id'];
             $_SESSION['is_admin'] = $loginResult['user']['is_admin'];
+            $_SESSION['logged_in'] = true;
             
             // Se "Ricordami" è attivo, imposta cookie sicuro
             if ($remember) {
