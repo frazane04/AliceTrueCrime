@@ -8,22 +8,30 @@ $successMessage = '';
 
 // Gestione POST del form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
+    $emailOrUsername = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $remember = isset($_POST['remember']);
     
     // Validazione base
-    if (empty($username) || empty($password)) {
+    if (empty($emailOrUsername) || empty($password)) {
         $errorMessage = 'Per favore, compila tutti i campi.';
     } else {
         // Connessione al database e verifica credenziali
         $dbFunctions = new FunzioniDB();
-        $loginResult = $dbFunctions->loginUtente($username, $password);
+        
+        // Determina se l'input è un'email o uno username
+        if (filter_var($emailOrUsername, FILTER_VALIDATE_EMAIL)) {
+            // È un'email
+            $loginResult = $dbFunctions->loginUtenteEmail($emailOrUsername, $password);
+        } else {
+            // È uno username
+            $loginResult = $dbFunctions->loginUtenteUsername($emailOrUsername, $password);
+        }
         
         if ($loginResult['success']) {
             // Login riuscito - imposta la sessione
             $_SESSION['user'] = $loginResult['user']['username'];
-            $_SESSION['user_id'] = $loginResult['user']['id'];
+            $_SESSION['user_email'] = $loginResult['user']['email'];
             $_SESSION['is_admin'] = $loginResult['user']['is_admin'];
             $_SESSION['logged_in'] = true;
             
@@ -42,9 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     [
                         'expires' => time() + (86400 * 30),
                         'path' => '/',
-                        'secure' => isset($_SERVER['HTTPS']), // Solo HTTPS se disponibile
-                        'httponly' => true, // Non accessibile via JavaScript
-                        'samesite' => 'Strict' // Protezione CSRF
+                        'secure' => isset($_SERVER['HTTPS']),
+                        'httponly' => true,
+                        'samesite' => 'Strict'
                     ]
                 );
             }
@@ -68,12 +76,10 @@ if (!file_exists($templatePath)) {
 
 $contenuto = file_get_contents($templatePath);
 
-// Modifica il campo email in username nel template
-$contenuto = str_replace('name="email"', 'name="username"', $contenuto);
-$contenuto = str_replace('id="email"', 'id="username"', $contenuto);
+// Modifica il campo per accettare sia email che username
 $contenuto = str_replace('type="email"', 'type="text"', $contenuto);
-$contenuto = str_replace('<label for="email">Email</label>', '<label for="username">Username</label>', $contenuto);
-$contenuto = str_replace('placeholder="detective@example.com"', 'placeholder="detective_007"', $contenuto);
+$contenuto = str_replace('<label for="email">Email</label>', '<label for="email">Email o Username</label>', $contenuto);
+$contenuto = str_replace('placeholder="detective@example.com"', 'placeholder="email@example.com o detective_007"', $contenuto);
 $contenuto = str_replace('autocomplete="email"', 'autocomplete="username"', $contenuto);
 
 // Mostra eventuali messaggi di errore/successo

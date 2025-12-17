@@ -2,12 +2,12 @@
 CREATE DATABASE IF NOT EXISTS sistema_gestionale;
 USE sistema_gestionale;
 
--- Tabella Utente
+-- Tabella Utente (EMAIL come chiave primaria)
 CREATE TABLE Utente (
-    ID_Utente INT PRIMARY KEY AUTO_INCREMENT,
+    Email VARCHAR(100) PRIMARY KEY,
     Username VARCHAR(50) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    Is_Admin BOOLEAN NOT NULL
+    Is_Admin BOOLEAN NOT NULL DEFAULT 0
 );
 
 -- Tabella Gioco
@@ -77,24 +77,24 @@ CREATE TABLE Risposta (
     FOREIGN KEY (Domanda) REFERENCES Domanda(ID_Domanda) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Tabella Commento
+-- Tabella Commento (Email_Utente come FK)
 CREATE TABLE Commento (
     ID_Commento INT PRIMARY KEY AUTO_INCREMENT,
     Data DATE NOT NULL,
     Commento TEXT NOT NULL,
-    ID_Utente INT NOT NULL,
+    Email_Utente VARCHAR(100) NOT NULL,
     ID_Caso INT NOT NULL,
-    FOREIGN KEY (ID_Utente) REFERENCES Utente(ID_Utente) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Email_Utente) REFERENCES Utente(Email) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (ID_Caso) REFERENCES Caso(N_Caso) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Tabella Partita (relazione tra Gioco e Utente)
+-- Tabella Partita (Email_Utente come FK)
 CREATE TABLE Partita (
-    Utente INT NOT NULL,
+    Email_Utente VARCHAR(100) NOT NULL,
     Gioco VARCHAR(100) NOT NULL,
     Punteggio INT DEFAULT 0,
-    PRIMARY KEY (Utente, Gioco),
-    FOREIGN KEY (Utente) REFERENCES Utente(ID_Utente) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (Email_Utente, Gioco),
+    FOREIGN KEY (Email_Utente) REFERENCES Utente(Email) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (Gioco) REFERENCES Gioco(Nome) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

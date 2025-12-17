@@ -8,15 +8,18 @@ $successMessage = '';
 
 // Gestione POST del form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $passwordConfirm = $_POST['password_confirm'] ?? '';
     $termsAccepted = isset($_POST['terms']);
-    $newsletterOptIn = isset($_POST['newsletter']); // Al momento non gestito nel DB
+    $newsletterOptIn = isset($_POST['newsletter']);
     
     // Validazione
-    if (empty($username) || empty($password) || empty($passwordConfirm)) {
+    if (empty($email) || empty($username) || empty($password) || empty($passwordConfirm)) {
         $errorMessage = 'Per favore, compila tutti i campi obbligatori.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errorMessage = 'Inserisci un\'email valida.';
     } elseif (strlen($username) < 3 || strlen($username) > 30) {
         $errorMessage = 'Lo username deve essere tra 3 e 30 caratteri.';
     } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
@@ -28,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$termsAccepted) {
         $errorMessage = 'Devi accettare i Termini di Servizio per registrarti.';
     } else {
-        // Verifica robustezza password (opzionale ma consigliato)
+        // Verifica robustezza password
         $hasUpperCase = preg_match('/[A-Z]/', $password);
         $hasLowerCase = preg_match('/[a-z]/', $password);
         $hasNumber = preg_match('/[0-9]/', $password);
@@ -38,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Registrazione nel database
             $dbFunctions = new FunzioniDB();
-            $registrationResult = $dbFunctions->registraUtente($username, $password, false);
+            $registrationResult = $dbFunctions->registraUtente($email, $username, $password, false);
             
             if ($registrationResult['success']) {
                 // Registrazione completata
@@ -46,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // TODO: Se gestisci la newsletter, salvala in una tabella apposita
                 // if ($newsletterOptIn) {
-                //     $dbFunctions->iscriviNewsletter($registrationResult['user_id'], $email);
+                //     $dbFunctions->iscriviNewsletter($registrationResult['email'], $email);
                 // }
                 
                 // Redirect dopo 2 secondi

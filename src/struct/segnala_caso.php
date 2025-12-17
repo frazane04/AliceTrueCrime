@@ -1,13 +1,12 @@
 <?php
 // src/struct/segnala_caso.php
+// AGGIORNATO: Usa email dalla sessione
 
-// 0. Controllo Sessione (Importante!)
-// Se l'utente NON è loggato, non deve vedere il form né poter inviare dati.
+// Controllo Sessione
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     
     $prefix = getPrefix();
     
-    // Preparo un messaggio di errore invece del form
     $titoloPagina = "Accesso Negato - AliceTrueCrime";
     $contenuto = "
         <div class='access-denied-container' style='text-align: center; padding: 3rem;'>
@@ -17,18 +16,15 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         </div>
     ";
     
-    // Stampo subito e blocco l'esecuzione del resto dello script
     echo getTemplatePage($titoloPagina, $contenuto);
     exit; 
 }
 
-
-// 1. Inizializzo variabili
+// Inizializzo variabili
 $templatePath = __DIR__ . '/../template/segnala_caso.html';
 $messaggioFeedback = "";
 
-
-// 2. GESTIONE DEL FORM (Solo se loggato)
+// GESTIONE DEL FORM
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $titolo = trim($_POST['titolo'] ?? '');
@@ -37,21 +33,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descrizione = trim($_POST['descrizione'] ?? '');
     
     // RECUPERO AUTOMATICO DELL'AUTORE
-    // Non mi fido dell'input utente, prendo il dato sicuro dalla sessione
     $autoreUsername = $_SESSION['user'];
-    $autoreId = $_SESSION['user_id'];
+    $autoreEmail = $_SESSION['user_email']; // Email come chiave primaria
 
     if (!empty($titolo) && !empty($data) && !empty($luogo) && !empty($descrizione)) {
         
         // QUI SALVATAGGIO NEL DB
-        // Esempio query preparata:
         // require_once __DIR__ . '/funzioni_db.php';
         // $db = new FunzioniDB();
-        // $result = $db->inserisciCaso($titolo, $data, $luogo, $descrizione, $autoreId);
+        // $result = $db->inserisciCaso($titolo, $data, $luogo, $descrizione, $autoreEmail);
         
         $messaggioFeedback = "
             <div class='alert success'>
                 <strong>Segnalazione inviata!</strong> Grazie, il caso è in revisione.
+                <br>Autore: $autoreUsername ($autoreEmail)
             </div>
         ";
     } else {
@@ -63,20 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
-// 3. CARICAMENTO TEMPLATE
+// CARICAMENTO TEMPLATE
 if (file_exists($templatePath)) {
     $contenuto = file_get_contents($templatePath);
 } else {
     $contenuto = "<div class='error'>Errore critico: Template mancante.</div>";
 }
 
-
-// 4. INIEZIONE DATI - Inserisce il feedback nell'area apposita
+// INIEZIONE DATI
 $contenuto = str_replace('<div id="feedback-area">', '<div id="feedback-area">' . $messaggioFeedback, $contenuto);
 
-
-// 5. OUTPUT
+// OUTPUT
 $titoloPagina = "Apri Fascicolo - AliceTrueCrime";
 echo getTemplatePage($titoloPagina, $contenuto);
 

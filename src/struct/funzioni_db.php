@@ -2,6 +2,7 @@
 /**
  * Funzioni per interagire con il database
  * Utilizzano prepared statements per prevenire SQL Injection
+ * AGGIORNATO: Email come chiave primaria
  */
 
 require_once __DIR__ . '/connessione.php';
@@ -19,15 +20,36 @@ class FunzioniDB {
     
     /**
      * Registra un nuovo utente nel database
-     * @param string $username
+     * @param string $email Email dell'utente (chiave primaria)
+     * @param string $username Nome utente (univoco)
      * @param string $password Password in chiaro (verrà hashata)
      * @param bool $isAdmin Default false
-     * @return array ['success' => bool, 'message' => string, 'user_id' => int|null]
+     * @return array ['success' => bool, 'message' => string, 'email' => string|null]
      */
-    public function registraUtente($username, $password, $isAdmin = false) {
+    public function registraUtente($email, $username, $password, $isAdmin = false) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
+            }
+            
+            // Validazione email
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Email non valida',
+                    'email' => null
+                ];
+            }
+            
+            // Verifica se email esiste già
+            if ($this->verificaEmailEsistente($email)) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Email già registrata',
+                    'email' => null
+                ];
             }
             
             // Verifica se username esiste già
@@ -36,7 +58,7 @@ class FunzioniDB {
                 return [
                     'success' => false,
                     'message' => 'Username già in uso',
-                    'user_id' => null
+                    'email' => null
                 ];
             }
             
@@ -45,17 +67,16 @@ class FunzioniDB {
             $isAdminInt = $isAdmin ? 1 : 0;
             
             // Insert utente
-            $query = "INSERT INTO Utente (Username, Password, Is_Admin) VALUES (?, ?, ?)";
-            $result = $this->db->query($query, [$username, $passwordHash, $isAdminInt], "ssi");
+            $query = "INSERT INTO Utente (Email, Username, Password, Is_Admin) VALUES (?, ?, ?, ?)";
+            $result = $this->db->query($query, [$email, $username, $passwordHash, $isAdminInt], "sssi");
             
             if ($result) {
-                $userId = $this->db->getLastInsertId();
                 $this->db->chiudiConnessione();
                 
                 return [
                     'success' => true,
                     'message' => 'Registrazione completata con successo',
-                    'user_id' => $userId
+                    'email' => $email
                 ];
             } else {
                 throw new Exception("Errore durante l'inserimento nel database");
@@ -67,9 +88,24 @@ class FunzioniDB {
             return [
                 'success' => false,
                 'message' => 'Errore durante la registrazione. Riprova più tardi.',
-                'user_id' => null
+                'email' => null
             ];
         }
+    }
+    
+    /**
+     * Verifica se un'email esiste già
+     * @param string $email
+     * @return bool
+     */
+    private function verificaEmailEsistente($email) {
+        $query = "SELECT Email FROM Utente WHERE Email = ?";
+        $result = $this->db->query($query, [$email], "s");
+        
+        if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -78,7 +114,7 @@ class FunzioniDB {
      * @return bool
      */
     private function verificaUsernameEsistente($username) {
-        $query = "SELECT ID_Utente FROM Utente WHERE Username = ?";
+        $query = "SELECT Email FROM Utente WHERE Username = ?";
         $result = $this->db->query($query, [$username], "s");
         
         if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
@@ -88,18 +124,87 @@ class FunzioniDB {
     }
     
     /**
-     * Effettua il login verificando username e password
-     * @param string $username
+     * Effettua il login verificando email e password
+     * @param string $email Email dell'utente
      * @param string $password Password in chiaro
      * @return array ['success' => bool, 'message' => string, 'user' => array|null]
      */
-    public function loginUtente($username, $password) {
+    public function loginUtenteEmail($email, $password) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            $query = "SELECT ID_Utente, Username, Password, Is_Admin FROM Utente WHERE Username = ?";
+            // Validazione email
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Email non valida',
+                    'user' => null
+                ];
+            }
+            
+            $query = "SELECT Email, Username, Password, Is_Admin FROM Utente WHERE Email = ?";
+            $result = $this->db->query($query, [$email], "s");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $user = mysqli_fetch_assoc($result);
+                
+                // Verifica password
+                if (password_verify($password, $user['Password'])) {
+                    $this->db->chiudiConnessione();
+                    
+                    return [
+                        'success' => true,
+                        'message' => 'Login effettuato con successo',
+                        'user' => [
+                            'email' => $user['Email'],
+                            'username' => $user['Username'],
+                            'is_admin' => (bool)$user['Is_Admin']
+                        ]
+                    ];
+                } else {
+                    $this->db->chiudiConnessione();
+                    return [
+                        'success' => false,
+                        'message' => 'Password non corretta',
+                        'user' => null
+                    ];
+                }
+            } else {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Email non trovata',
+                    'user' => null
+                ];
+            }
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore login utente: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Errore durante il login. Riprova più tardi.',
+                'user' => null
+            ];
+        }
+    }
+    
+    /**
+     * Effettua il login verificando username e password
+     * @param string $username Username dell'utente
+     * @param string $password Password in chiaro
+     * @return array ['success' => bool, 'message' => string, 'user' => array|null]
+     */
+    public function loginUtenteUsername($username, $password) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT Email, Username, Password, Is_Admin FROM Utente WHERE Username = ?";
             $result = $this->db->query($query, [$username], "s");
             
             if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
@@ -113,7 +218,7 @@ class FunzioniDB {
                         'success' => true,
                         'message' => 'Login effettuato con successo',
                         'user' => [
-                            'id' => $user['ID_Utente'],
+                            'email' => $user['Email'],
                             'username' => $user['Username'],
                             'is_admin' => (bool)$user['Is_Admin']
                         ]
@@ -147,18 +252,48 @@ class FunzioniDB {
     }
     
     /**
-     * Ottiene i dati di un utente tramite ID
-     * @param int $userId
+     * Ottiene i dati di un utente tramite Email
+     * @param string $email
      * @return array|null
      */
-    public function getUtenteById($userId) {
+    public function getUtenteByEmail($email) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            $query = "SELECT ID_Utente, Username, Is_Admin FROM Utente WHERE ID_Utente = ?";
-            $result = $this->db->query($query, [$userId], "i");
+            $query = "SELECT Email, Username, Is_Admin FROM Utente WHERE Email = ?";
+            $result = $this->db->query($query, [$email], "s");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $user = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return $user;
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero utente: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Ottiene i dati di un utente tramite Username
+     * @param string $username
+     * @return array|null
+     */
+    public function getUtenteByUsername($username) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT Email, Username, Is_Admin FROM Utente WHERE Username = ?";
+            $result = $this->db->query($query, [$username], "s");
             
             if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
                 $user = mysqli_fetch_assoc($result);
