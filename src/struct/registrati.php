@@ -5,7 +5,6 @@ require_once __DIR__ . '/funzioni_db.php';
 
 $errorMessage = '';
 $successMessage = '';
-$debugInfo = ''; // Per debug
 
 // Gestione POST del form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -13,13 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $passwordConfirm = $_POST['password_confirm'] ?? '';
     $termsAccepted = isset($_POST['terms']);
-    $newsletterOptIn = isset($_POST['newsletter']);
-    
-    // DEBUG: Log dei dati ricevuti
-    error_log("=== TENTATIVO REGISTRAZIONE ===");
-    error_log("Username: " . $username);
-    error_log("Password length: " . strlen($password));
-    error_log("Terms accepted: " . ($termsAccepted ? 'SI' : 'NO'));
+    $newsletterOptIn = isset($_POST['newsletter']); // Al momento non gestito nel DB
     
     // Validazione
     if (empty($username) || empty($password) || empty($passwordConfirm)) {
@@ -35,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$termsAccepted) {
         $errorMessage = 'Devi accettare i Termini di Servizio per registrarti.';
     } else {
-        // Verifica robustezza password
+        // Verifica robustezza password (opzionale ma consigliato)
         $hasUpperCase = preg_match('/[A-Z]/', $password);
         $hasLowerCase = preg_match('/[a-z]/', $password);
         $hasNumber = preg_match('/[0-9]/', $password);
@@ -44,38 +37,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errorMessage = 'La password deve contenere almeno una maiuscola, una minuscola e un numero.';
         } else {
             // Registrazione nel database
-            try {
-                $dbFunctions = new FunzioniDB();
-                $registrationResult = $dbFunctions->registraUtente($username, $password, false);
+            $dbFunctions = new FunzioniDB();
+            $registrationResult = $dbFunctions->registraUtente($username, $password, false);
+            
+            if ($registrationResult['success']) {
+                // Registrazione completata
+                $successMessage = 'Registrazione completata con successo! Verrai reindirizzato alla pagina di login...';
                 
-                // DEBUG: Log del risultato
-                error_log("Risultato registrazione: " . json_encode($registrationResult));
+                // TODO: Se gestisci la newsletter, salvala in una tabella apposita
+                // if ($newsletterOptIn) {
+                //     $dbFunctions->iscriviNewsletter($registrationResult['user_id'], $email);
+                // }
                 
-                if ($registrationResult['success']) {
-                    // Registrazione completata
-                    $successMessage = 'Registrazione completata con successo! Verrai reindirizzato alla pagina di login...';
-                    error_log("Registrazione completata con successo per: " . $username);
-                    
-                    // Redirect dopo 2 secondi
-                    header('Refresh: 2; url=' . getPrefix() . '/accedi');
-                } else {
-                    // Registrazione fallita - Mostra il messaggio specifico
-                    $errorMessage = $registrationResult['message'];
-                    error_log("Registrazione fallita: " . $registrationResult['message']);
-                    
-                    // In modalità sviluppo, mostra più dettagli
-                    if (ini_get('display_errors')) {
-                        $debugInfo = "Debug: " . $registrationResult['message'];
-                    }
-                }
-            } catch (Exception $e) {
-                $errorMessage = 'Errore critico durante la registrazione.';
-                error_log("EXCEPTION in registrazione: " . $e->getMessage());
-                error_log("Stack trace: " . $e->getTraceAsString());
-                
-                if (ini_get('display_errors')) {
-                    $debugInfo = "Debug: " . $e->getMessage();
-                }
+                // Redirect dopo 2 secondi
+                header('Refresh: 2; url=' . getPrefix() . '/accedi');
+            } else {
+                // Registrazione fallita
+                $errorMessage = $registrationResult['message'];
             }
         }
     }
@@ -90,20 +68,9 @@ if (!file_exists($templatePath)) {
 
 $contenuto = file_get_contents($templatePath);
 
-// Rimuovi il campo email dal form
-$contenuto = preg_replace(
-    '/<div class="form-group">\s*<label for="email">Email<\/label>.*?<\/div>/s',
-    '',
-    $contenuto
-);
-
 // Mostra eventuali messaggi di errore/successo
 if (!empty($errorMessage)) {
-    $alert = '<div class="alert alert-error" role="alert">' . htmlspecialchars($errorMessage);
-    if (!empty($debugInfo)) {
-        $alert .= '<br><small style="color: #666;">' . htmlspecialchars($debugInfo) . '</small>';
-    }
-    $alert .= '</div>';
+    $alert = '<div class="alert alert-error" role="alert">' . htmlspecialchars($errorMessage) . '</div>';
     $contenuto = str_replace('<form class="auth-form"', $alert . '<form class="auth-form"', $contenuto);
 }
 
