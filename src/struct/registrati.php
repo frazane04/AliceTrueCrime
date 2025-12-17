@@ -68,13 +68,6 @@ if (!file_exists($templatePath)) {
 
 $contenuto = file_get_contents($templatePath);
 
-// Rimuovi il campo email dal form (non presente nel DB)
-// Se vuoi mantenerlo, devi modificare il database
-$contenuto = preg_replace(
-    '/<div class="form-group">.*?<label for="email">Email<\/label>.*?<\/div>/s',
-    '',
-    $contenuto
-);
 
 // Mostra eventuali messaggi di errore/successo
 if (!empty($errorMessage)) {

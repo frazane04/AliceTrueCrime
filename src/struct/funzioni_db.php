@@ -1,5 +1,4 @@
 <?php
-// src/struct/db_functions.php
 /**
  * Funzioni per interagire con il database
  * Utilizzano prepared statements per prevenire SQL Injection
@@ -21,17 +20,19 @@ class FunzioniDB {
     /**
      * Registra un nuovo utente nel database
      * @param string $username
-     * @param string $email (non presente nel DB originale, da aggiungere o rimuovere)
      * @param string $password Password in chiaro (verrà hashata)
      * @param bool $isAdmin Default false
      * @return array ['success' => bool, 'message' => string, 'user_id' => int|null]
      */
     public function registraUtente($username, $password, $isAdmin = false) {
         try {
-            $this->db->apriConnessione();
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
             
             // Verifica se username esiste già
             if ($this->verificaUsernameEsistente($username)) {
+                $this->db->chiudiConnessione();
                 return [
                     'success' => false,
                     'message' => 'Username già in uso',
@@ -62,9 +63,10 @@ class FunzioniDB {
             
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
+            error_log("Errore registrazione utente: " . $e->getMessage());
             return [
                 'success' => false,
-                'message' => 'Errore durante la registrazione: ' . $e->getMessage(),
+                'message' => 'Errore durante la registrazione. Riprova più tardi.',
                 'user_id' => null
             ];
         }
@@ -79,7 +81,7 @@ class FunzioniDB {
         $query = "SELECT ID_Utente FROM Utente WHERE Username = ?";
         $result = $this->db->query($query, [$username], "s");
         
-        if ($result && mysqli_num_rows($result) > 0) {
+        if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
             return true;
         }
         return false;
@@ -93,12 +95,14 @@ class FunzioniDB {
      */
     public function loginUtente($username, $password) {
         try {
-            $this->db->apriConnessione();
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
             
             $query = "SELECT ID_Utente, Username, Password, Is_Admin FROM Utente WHERE Username = ?";
             $result = $this->db->query($query, [$username], "s");
             
-            if ($result && mysqli_num_rows($result) > 0) {
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
                 $user = mysqli_fetch_assoc($result);
                 
                 // Verifica password
@@ -133,9 +137,10 @@ class FunzioniDB {
             
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
+            error_log("Errore login utente: " . $e->getMessage());
             return [
                 'success' => false,
-                'message' => 'Errore durante il login: ' . $e->getMessage(),
+                'message' => 'Errore durante il login. Riprova più tardi.',
                 'user' => null
             ];
         }
@@ -148,12 +153,14 @@ class FunzioniDB {
      */
     public function getUtenteById($userId) {
         try {
-            $this->db->apriConnessione();
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
             
             $query = "SELECT ID_Utente, Username, Is_Admin FROM Utente WHERE ID_Utente = ?";
             $result = $this->db->query($query, [$userId], "i");
             
-            if ($result && mysqli_num_rows($result) > 0) {
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
                 $user = mysqli_fetch_assoc($result);
                 $this->db->chiudiConnessione();
                 return $user;
@@ -164,13 +171,9 @@ class FunzioniDB {
             
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
+            error_log("Errore recupero utente: " . $e->getMessage());
             return null;
         }
     }
-
-
-    
-  
-
 }
 ?>
