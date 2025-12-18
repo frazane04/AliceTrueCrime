@@ -133,10 +133,28 @@ a:hover {
     width: 100%;
 }
 
+/* Container dei bottoni per dare spaziatura */
+.auth-form .btn-primary {
+    margin-top: 1em; /* distacca il bottone dalle opzioni precedenti */
+    font-size: 1em;  /* leggermente più grande per l'azione principale */
+    height: 40px;    /* altezza fissa per un look più moderno */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-alternative .btn-outline {
+    padding: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; 
+}
+
 /* Header e Navigazione */
 .main-header {
     padding: 0.5em 1em;
-    margin: 1em; 
+    margin: 1.4em; 
     background-color: var(--white-alpha); 
     backdrop-filter: blur(10px); 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
@@ -166,7 +184,8 @@ a:hover {
 }
 
 .logo-area img { 
-    height: 65px;
+    height: 60px;
+    width: auto;
     object-fit: contain;
     padding: 0.8em;
 } 
@@ -204,22 +223,26 @@ a:hover {
     padding: 2em 0; 
     background-color: var(--accent-blue); 
     border-radius: 12px;
+    margin: 1em;
 }
 
-.scrolling-container {
+.scrolling-container { /* da capire se si può usare */
     display: flex;
     padding-bottom: 1em;
     padding-left: 1em;
     padding-right: 1em; 
+    overflow-x: auto; /* permette lo scroll touch su mobile */
+    -webkit-overflow-scrolling: touch;
 }
 
 .carousel-card {
-    flex: 0 0 190px;
-    height: 200px;
+    flex: 0 0 250px;
+    height: auto;
+    min-height: 250px;
     background-color: var(--white);
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 3em;
+    padding: 1.5em;
     text-align: center;
     color: var(--text-dark);
 }
@@ -256,7 +279,7 @@ a:hover {
     grid-template-columns: 2fr 1fr; 
     gap: 32px;
     padding-top: 3.5em;
-    padding-bottom: 3.5em;
+    padding-bottom: 3.5em 1em;
 }
 
 .investigazioni-recenti h2 {
@@ -272,6 +295,7 @@ a:hover {
     margin-bottom: 1.5em;
     transition: box-shadow 0.3s ease;
     color: var(--text-dark);
+    overflow: hidden;
 }
 
 .investigazione-card:hover {
@@ -347,14 +371,13 @@ a:hover {
 .detective-container {
     display: flex;
     justify-content: center;
-    gap: 70px;
+    gap: 40px;
     flex-wrap: wrap;
 }
 
 .detective-card {
     text-align: center;
-    max-width: 80px;
-    cursor: pointer;
+    max-width: 120px;
 }
 
 .detective-photo {
@@ -363,11 +386,6 @@ a:hover {
     border-radius: 50%;
     object-fit: cover;
     border: 4px solid var(--primary);
-    transition: transform 0.3s ease;
-}
-
-.detective-photo:hover {
-    transform: scale(1.10);
 }
 
 .detective-card p {
@@ -382,7 +400,7 @@ a:hover {
     color: var(--text-light);
     padding: 5em 2em;
     border-radius: 12px;
-    margin-bottom: 2em;
+    margin: 1em;
 }
 
 .cta-area h2 {
@@ -413,6 +431,7 @@ a:hover {
 
 .newsletter-form {
     display: flex;
+    flex-wrap: wrap;
     gap: 15px; 
     justify-content: center;
     margin-top: 2rem;
@@ -422,7 +441,8 @@ a:hover {
     padding: 0.9rem 1.2rem;
     border: 2px solid var(--accent-text);
     border-radius: 8px;
-    width: 60%;
+    width: 100%;
+    max-width: 350px;
     outline: none; 
     transition: border-color 0.3s;
 }
@@ -448,7 +468,7 @@ a:hover {
     background-color: var(--primary-dark);
     color: var(--text-light);
     padding: 3em 2em 1.5em;
-    margin-top: auto;
+    margin: 1em 1em 0;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
@@ -503,11 +523,6 @@ a:hover {
     max-width: 70px;
     height: auto;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    transition: transform 0.3s ease;
-}
-
-.footer-logo-area img:hover { 
-    transform: scale(1.05); 
 }
 
 .footer-bottom {
@@ -518,6 +533,7 @@ a:hover {
     font-size: 0.85em;
 }
 
+/* Esplora Casi */
 .explore-header {
     padding: 2.5em 0 3em;
 }
@@ -577,7 +593,149 @@ a:hover {
 }
 
 .explore-grid .investigazione-card h3 {
-    min-height: 2.4em; /* Mantiene i titoli allineati */
+    min-height: 2.3em; /* Mantiene i titoli allineati */
+}
+
+/* Accedi */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4em 1em;
+    min-height: 70vh;
+}
+
+.auth-card {
+    background-color: var(--white);
+    padding: 3em;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 480px;
+    border: 1px solid var(--border-light);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.auth-header h1 {
+    font-size: 2em;
+    color: var(--primary);
+    margin-bottom: 0.5em;
+}
+
+.auth-header p {
+    font-size: 1.2em;
+    color: var(--accent-text);
+}
+
+.form-group {
+    margin-bottom: 1.2em;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    color: var(--text-dark);
+    /*font-size: 1em;*/
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8em 0.7em;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    background-color: var(--bg-lightest);
+    color: var(--text-dark);
+}
+
+.form-group input:focus {
+    border-color: var(--primary);
+    background-color: var(--white);
+}
+
+/* Stile per il testo di esempio */
+.form-group input::placeholder {
+    color: var(--text-dark);
+    opacity: 0.7;
+}
+
+/* aggiunte per registrazione */
+.form-hint {
+    display: block;
+    margin-top: 0.4em;
+    font-size: 0.9em;
+    color: var(--accent-text);
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2em;
+    font-size: 0.9em;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: var(--text-dark);
+    line-height: 1;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+.link-secondary {
+    color: var(--accent-blue);
+    text-decoration: underline;
+}
+
+.link-secondary:hover {
+    color: var(--primary);
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.4em 0;
+}
+
+.auth-divider::before,
+.auth-divider::after { /* crea le linee laterali a "oppure" */
+    content: "";         
+    flex: 1;             /* espande le linee per coprire tutto lo spazio ai lati */
+    height: 1px;         
+    background-color: var(--border-light); 
+}
+
+.auth-divider span {
+    padding: 0 1em;
+    font-size: 1em;
+}
+
+.auth-alternative p {
+    margin-bottom: 1em;
+    font-size: 0.9em;
+    color: var(--accent-text);
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 2em 1.5em;
+    }
 }
 
 /* Media Queries per la Griglia */
@@ -593,7 +751,7 @@ a:hover {
     }
     
     .explore-header h1 {
-        font-size: 2.2em;
+        font-size: 2em;
     }
     
     .section-top {
