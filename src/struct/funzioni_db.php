@@ -310,5 +310,155 @@ class FunzioniDB {
             return null;
         }
     }
+
+
+
+        // ========================================
+    // GESTIONE CASI
+    // ========================================
+    
+    /**
+     * Recupera casi per categoria (solo approvati)
+     * @param string $tipologia Nome della categoria
+     * @param int $limite Numero massimo di risultati
+     * @return array Lista di casi
+     */
+    public function getCasiPerCategoria($tipologia, $limite = 10) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT N_Caso, Titolo, Descrizione, Immagine, Tipologia, Data, Luogo 
+                      FROM Caso 
+                      WHERE Tipologia = ? AND Approvato = 1 
+                      ORDER BY Data DESC 
+                      LIMIT ?";
+            
+            $result = $this->db->query($query, [$tipologia, $limite], "si");
+            
+            $casi = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $casi[] = $row;
+                }
+            }
+            
+            $this->db->chiudiConnessione();
+            return $casi;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero casi per categoria: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Recupera i casi più recenti/letti
+     * @param int $limite Numero massimo di risultati
+     * @return array Lista di casi
+     */
+    public function getCasiPiuLetti($limite = 5) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            // Ordiniamo per data (in futuro potresti aggiungere un campo 'visualizzazioni')
+            $query = "SELECT N_Caso, Titolo, Descrizione, Immagine, Tipologia, Data, Luogo 
+                      FROM Caso 
+                      WHERE Approvato = 1 
+                      ORDER BY Data DESC 
+                      LIMIT ?";
+            
+            $result = $this->db->query($query, [$limite], "i");
+            
+            $casi = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $casi[] = $row;
+                }
+            }
+            
+            $this->db->chiudiConnessione();
+            return $casi;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero casi più letti: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Recupera un singolo caso tramite ID
+     * @param int $nCaso ID del caso
+     * @return array|null Dati del caso o null
+     */
+    public function getCasoById($nCaso) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT * FROM Caso WHERE N_Caso = ? AND Approvato = 1";
+            $result = $this->db->query($query, [$nCaso], "i");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $caso = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return $caso;
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero caso: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Cerca casi per titolo o descrizione
+     * @param string $query Testo da cercare
+     * @param int $limite Numero massimo di risultati
+     * @return array Lista di casi trovati
+     */
+    public function cercaCasi($query, $limite = 20) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $searchTerm = "%{$query}%";
+            $sql = "SELECT N_Caso, Titolo, Descrizione, Immagine, Tipologia, Data, Luogo 
+                    FROM Caso 
+                    WHERE (Titolo LIKE ? OR Descrizione LIKE ?) 
+                    AND Approvato = 1 
+                    ORDER BY Data DESC 
+                    LIMIT ?";
+            
+            $result = $this->db->query($sql, [$searchTerm, $searchTerm, $limite], "ssi");
+            
+            $casi = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $casi[] = $row;
+                }
+            }
+            
+            $this->db->chiudiConnessione();
+            return $casi;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore ricerca casi: " . $e->getMessage());
+            return [];
+        }
+    }
+    
 }
 ?>

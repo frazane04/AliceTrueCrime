@@ -75,7 +75,7 @@ function getNavBarLi($currentPath): string {
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
         $prefix . '/segnala-caso' => 'Segnala Caso',
-        $prefix . '/newsletter' => 'Newsletter'
+        $prefix . '/newsletter' => 'Newsletter',
     ];
     return generateLiList($links, $currentPath);
 }

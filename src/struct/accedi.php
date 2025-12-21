@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             // Redirect alla pagina profilo
-            header('Location: ' . getPrefix() . '/profilo');
+            header('Location: ' . getPrefix() . '/pagineutente.html');
             exit;
         } else {
             // Login fallito
@@ -79,7 +79,7 @@ $contenuto = file_get_contents($templatePath);
 // Modifica il campo per accettare sia email che username
 $contenuto = str_replace('type="email"', 'type="text"', $contenuto);
 $contenuto = str_replace('<label for="email">Email</label>', '<label for="email">Email o Username</label>', $contenuto);
-$contenuto = str_replace('placeholder="detective@example.com"', 'placeholder="email@example.com o detective_007"', $contenuto);
+$contenuto = str_replace('placeholder="detective@example.com"', 'placeholder="email@example.com o AdolfoBallan"', $contenuto);
 $contenuto = str_replace('autocomplete="email"', 'autocomplete="username"', $contenuto);
 
 // Mostra eventuali messaggi di errore/successo

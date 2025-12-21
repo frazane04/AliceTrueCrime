@@ -1,5 +1,7 @@
 <?php
 // src/struct/esplora.php
+require_once __DIR__ . '/funzioni_db.php';
+
 
 // 1. Carica il template HTML di base
 $templatePath = __DIR__ . '/../template/esplora.html'; // Assicurati che la cartella sia templates (plurale)
@@ -13,44 +15,50 @@ $contenuto = file_get_contents($templatePath);
 // 2. Simulazione dati dal Database (Array di oggetti)
 // In futuro qui farai: $casi = $db->getCasesByCategory('serial_killer');
 
-$casiPiuLetti = [
-    ['titolo' => 'Il Mostro di Firenze', 'desc' => 'Otto duplici omicidi avvenuti fra il 1968 e il 1985.', 'img' => 'landing.svg'],
-    ['titolo' => 'Il Delitto di Cogne', 'desc' => 'La tragica morte del piccolo Samuele e il caso mediatico.', 'img' => 'landing.svg'],
-    ['titolo' => 'Emanuela Orlandi', 'desc' => 'Uno dei misteri vaticani più oscuri e irrisolti.', 'img' => 'landing.svg']
-];
+$dbFunctions = new FunzioniDB();
 
-$serialKillers = [
-    ['titolo' => 'Ted Bundy', 'desc' => 'Il carismatico killer che terrorizzò l\'America negli anni \'70.', 'img' => 'landing.svg'],
-    ['titolo' => 'Jeffrey Dahmer', 'desc' => 'Il mostro di Milwaukee: storia di un cannibale.', 'img' => 'landing.svg']
-];
+$casiPiuLetti = $dbFunctions->getCasiPiuLetti(3); // Top 3 più letti
+$serialKillers = $dbFunctions->getCasiPerCategoria('Serial killer', 6);
+$amoreTossico = $dbFunctions->getCasiPerCategoria('Amore tossico', 6);
+$celebrity = $dbFunctions->getCasiPerCategoria('Celebrity', 6);
+$casiItaliani = $dbFunctions->getCasiPerCategoria('Casi mediatici italiani', 6);
+
 
 // ... Puoi creare altri array per le altre categorie ...
 
 // 3. Funzione Helper per generare l'HTML delle Card
 // Rispetta la sintassi XML (chiusura tag img />)
 function generaHtmlCards($listaCasi) {
+    if (empty($listaCasi)) {
+        return '<p class="no-results">Nessun caso trovato in questa categoria.</p>';
+    }
     $html = '';
     $prefix = getPrefix(); // Funzione presa da utils.php
-    
     foreach ($listaCasi as $caso) {
-        $imgSrc = $prefix . '/assets/imgs/' . $caso['img'];
+
+        $imgSrc = !empty($caso['Immagine']) 
+            ? $prefix . '/' . htmlspecialchars($caso['Immagine'])
+            : $prefix . '/assets/img/caso-placeholder.jpeg';
         
+        $titolo = htmlspecialchars($caso['Titolo']);
+        $descrizione = htmlspecialchars(substr($caso['Descrizione'], 0, 120)) . '...';
+        $nCaso = (int)$caso['N_Caso'];
+        $tipologia = htmlspecialchars($caso['Tipologia']);
+
         $html .= <<<HTML
-        <article class="case-card">
+        <article class="case-card" data-categoria="{$tipologia}">
             <div class="card-image">
-                <img src="{$imgSrc}" alt="Copertina caso {$caso['titolo']}" loading="lazy" />
+                <img src="{$imgSrc}" alt="Copertina caso {$titolo}" loading="lazy" />
             </div>
             <div class="card-content">
-                <h3>{$caso['titolo']}</h3>
-                <p>{$caso['desc']}</p>
-                <a href="{$prefix}/caso" class="btn-card" aria-label="Leggi approfondimento su {$caso['titolo']}">Leggi Caso</a>
+                <h3>{$titolo}</h3>
+                <p>{$descrizione}</p>
+                <a href="{$prefix}/caso?id={$nCaso}" class="btn-card" aria-label="Leggi approfondimento su {$titolo}">
+                    Leggi Caso
+                </a>
             </div>
         </article>
-HTML;
-    }
-    
-    if (empty($html)) {
-        $html = '<p>Nessun caso trovato in questa categoria.</p>';
+    HTML;
     }
     
     return $html;
@@ -59,9 +67,9 @@ HTML;
 // 4. Generazione dell'HTML per ogni sezione
 $htmlPiuLetti     = generaHtmlCards($casiPiuLetti);
 $htmlSerialKiller = generaHtmlCards($serialKillers);
-$htmlAmoreTossico = generaHtmlCards([]); // Esempio vuoto
-$htmlCelebrity    = generaHtmlCards([]); // Esempio vuoto
-$htmlCasiItaliani = generaHtmlCards([]); // Esempio vuoto
+$htmlAmoreTossico = generaHtmlCards($amoreTossico); // Esempio vuoto
+$htmlCelebrity    = generaHtmlCards($celebrity); // Esempio vuoto
+$htmlCasiItaliani = generaHtmlCards($casiItaliani); // Esempio vuoto
 
 // 5. Sostituzione dei Placeholder nel template
 $contenuto = str_replace('{{GRID_PIU_LETTI}}', $htmlPiuLetti, $contenuto);
