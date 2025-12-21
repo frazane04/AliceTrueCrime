@@ -13,8 +13,8 @@ TRUNCATE TABLE Gioco;
 TRUNCATE TABLE Utente;
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Utenti Base pass admin: admin, pass user:pass
-INSERT INTO Utente (Email, Username, Password, Is_Admin) VALUES ('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1), ('user@test.it', 'User', '$2y$10$YNpZt8wNPc1VVDnq8X98mup.lKBGLdS.Ba2imD7CQLcrEddFTR1L.', 0);
+-- Utenti Base pass admin: admin, pass user:user
+INSERT INTO Utente (Email, Username, Password, Is_Admin) VALUES ('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1), ('user@test.it', 'User', '$2y$10$9dk6FVWLhA3i.6JtCcUERuz0cW.v7GI3fyuztVmq/5YfB7G/IkEg2', 0);
 
 -- INIZIO POPOLAMENTO CASI APPROVATI (Reali)
 
