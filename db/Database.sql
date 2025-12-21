@@ -1,13 +1,13 @@
 -- Creazione del database
-CREATE DATABASE IF NOT EXISTS sistema_gestionale;
-USE sistema_gestionale;
+CREATE DATABASE IF NOT EXISTS AliceTrueCrimeDB;
+USE AliceTrueCrimeDB;
 
--- Tabella Utente (EMAIL come chiave primaria)
+-- Tabella Utente
 CREATE TABLE Utente (
-    Email VARCHAR(100) PRIMARY KEY,
+    Email VARCHAR(50) PRIMARY KEY,
     Username VARCHAR(50) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    Is_Admin BOOLEAN NOT NULL DEFAULT 0
+    Is_Admin BOOLEAN
 );
 
 -- Tabella Gioco
@@ -20,11 +20,13 @@ CREATE TABLE Gioco (
 -- Tabella Caso 
 CREATE TABLE Caso (
     N_Caso INT PRIMARY KEY AUTO_INCREMENT,
+    Titolo VARCHAR(100) NOT NULL,  -- NUOVA COLONNA
     Data DATE NOT NULL,
     Luogo VARCHAR(100) NOT NULL,
     Descrizione TEXT NOT NULL,
     Tipologia VARCHAR(50) NOT NULL,
-    Immagine VARCHAR(255) NOT NULL
+    Immagine VARCHAR(255) NOT NULL,
+    Approvato BOOLEAN NOT NULL DEFAULT 0
 );
 
 -- Tabella Vittima 
@@ -77,24 +79,24 @@ CREATE TABLE Risposta (
     FOREIGN KEY (Domanda) REFERENCES Domanda(ID_Domanda) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Tabella Commento (Email_Utente come FK)
+-- Tabella Commento
 CREATE TABLE Commento (
     ID_Commento INT PRIMARY KEY AUTO_INCREMENT,
     Data DATE NOT NULL,
     Commento TEXT NOT NULL,
-    Email_Utente VARCHAR(100) NOT NULL,
+    Email_Utente VARCHAR(50) NOT NULL,
     ID_Caso INT NOT NULL,
     FOREIGN KEY (Email_Utente) REFERENCES Utente(Email) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (ID_Caso) REFERENCES Caso(N_Caso) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Tabella Partita (Email_Utente come FK)
+-- Tabella Partita (CORRETTA)
 CREATE TABLE Partita (
-    Email_Utente VARCHAR(100) NOT NULL,
+    Utente VARCHAR(50) NOT NULL,
     Gioco VARCHAR(100) NOT NULL,
     Punteggio INT DEFAULT 0,
-    PRIMARY KEY (Email_Utente, Gioco),
-    FOREIGN KEY (Email_Utente) REFERENCES Utente(Email) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (Utente, Gioco),
+    FOREIGN KEY (Utente) REFERENCES Utente(Email) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (Gioco) REFERENCES Gioco(Nome) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

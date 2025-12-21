@@ -1,194 +1,269 @@
--- Script per popolare il database sistema_gestionale con dati realistici
-USE sistema_gestionale;
+USE AliceTrueCrimeDB;
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE Colpa;
+TRUNCATE TABLE Vittima;
+TRUNCATE TABLE Articolo;
+TRUNCATE TABLE Commento;
+TRUNCATE TABLE Partita;
+TRUNCATE TABLE Risposta;
+TRUNCATE TABLE Domanda;
+TRUNCATE TABLE Caso;
+TRUNCATE TABLE Colpevole;
+TRUNCATE TABLE Gioco;
+TRUNCATE TABLE Utente;
+SET FOREIGN_KEY_CHECKS = 1;
 
--- ============================================
--- POPOLAMENTO TABELLA UTENTE
--- ============================================
-INSERT INTO Utente (Email, Username, Password, Is_Admin) VALUES
-('admin@alicetruecrime.it', 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1),
-('detective1@email.it', 'SherlockHolmes', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0),
-('detective2@email.it', 'HerculePoirot', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0),
-('investigatore@email.it', 'MissMarple', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0),
-('crimine@email.it', 'ColomboCIA', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0),
-('alice@truecrime.it', 'AliceDetective', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0);
+-- Utenti Base pass admin: admin, pass user:pass
+INSERT INTO Utente (Email, Username, Password, Is_Admin) VALUES ('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1), ('user@test.it', 'User', '$2y$10$YNpZt8wNPc1VVDnq8X98mup.lKBGLdS.Ba2imD7CQLcrEddFTR1L.', 0);
 
--- ============================================
--- POPOLAMENTO TABELLA GIOCO
--- ============================================
-INSERT INTO Gioco (Nome, Descrizione, Immagine) VALUES
-('Quiz Criminologia Base', 'Un quiz introduttivo sui principi fondamentali della criminologia e investigazione', 'img/quiz_base.jpg'),
-('Indovina il Colpevole', 'Analizza le prove e identifica il colpevole tra i sospetti', 'img/indovina_colpevole.jpg'),
-('Timeline Criminale', 'Ricostruisci la sequenza temporale degli eventi di un crimine', 'img/timeline.jpg'),
-('Expert Detective', 'Quiz avanzato per veri esperti di criminologia forense', 'img/expert.jpg');
+-- INIZIO POPOLAMENTO CASI APPROVATI (Reali)
 
--- ============================================
--- POPOLAMENTO TABELLA CASO
--- ============================================
-INSERT INTO Caso (Data, Luogo, Descrizione, Tipologia, Immagine) VALUES
-('2023-03-15', 'Milano, Via Montenapoleone', 'Rapina a mano armata in una gioielleria di lusso. I malviventi hanno rubato gioielli per un valore di 2 milioni di euro prima di fuggire con un motociclo.', 'Rapina', 'img/caso_rapina_milano.jpg'),
-('2023-06-22', 'Roma, Quartiere EUR', 'Frode informatica ai danni di una multinazionale. Sottratti 500.000 euro attraverso un sofisticato attacco di phishing mirato.', 'Frode', 'img/caso_frode_roma.jpg'),
-('2023-09-10', 'Napoli, Centro Storico', 'Omicidio avvenuto in un appartamento del centro storico. La vittima presentava segni di colluttazione.', 'Omicidio', 'img/caso_omicidio_napoli.jpg'),
-('2023-11-05', 'Torino, Zona Industriale', 'Traffico di sostanze stupefacenti scoperto durante un controllo di routine. Sequestrati 50kg di cocaina.', 'Traffico di Droga', 'img/caso_droga_torino.jpg'),
-('2024-01-18', 'Firenze, Ponte Vecchio', 'Furto di opere d\'arte da una galleria privata. Rubati tre quadri del valore complessivo di 1,5 milioni di euro.', 'Furto', 'img/caso_furto_firenze.jpg'),
-('2024-03-30', 'Bologna, Stazione Centrale', 'Aggressione a scopo di rapina ai danni di un turista straniero. La vittima è stata soccorsa e trasportata in ospedale.', 'Aggressione', 'img/caso_aggressione_bologna.jpg');
+-- Categoria: Serial killer
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (1, 'Il mostro di Milwaukee', '2001-05-19', 'Milwaukee, USA', 'Jeffrey Dahmer ha ucciso e smembrato 17 uomini tra il 1978 e il 1991.', 'Serial killer', 'img/caso_1.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP001DAHX', 'Jeffrey', 'Dahmer', 'Ignoto', '1970-01-01', 'img/colp_1.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP001DAHX', 1);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT001HICX', 'Steven', 'Hicks', 'Milwaukee, USA', '1980-01-01', '2001-05-19', 1);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Dahmer', '2001-05-19', 'https://news.it/1', 1);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (2, 'Il Clown Killer', '2003-01-15', 'Chicago, USA', 'John Wayne Gacy, vestito da clown, ha ucciso 33 adolescenti.', 'Serial killer', 'img/caso_2.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP002GACX', 'John', 'Gacy', 'Ignoto', '1970-01-01', 'img/colp_2.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP002GACX', 2);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT002MCCX', 'Timothy', 'McCoy', 'Chicago, USA', '1980-01-01', '2003-01-15', 2);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Gacy', '2003-01-15', 'https://news.it/2', 2);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (3, 'Ted Bundy', '2002-02-11', 'Florida, USA', 'Uno dei serial killer più famosi, ha confessato 30 omicidi.', 'Serial killer', 'img/caso_3.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP003BUNX', 'Ted', 'Bundy', 'Ignoto', '1970-01-01', 'img/colp_3.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP003BUNX', 3);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT003LEAX', 'Kimberly', 'Leach', 'Florida, USA', '1980-01-01', '2002-02-11', 3);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Bundy', '2002-02-11', 'https://news.it/3', 3);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (4, 'Il Macellaio di Rostov', '1987-08-06', 'Rostov, Russia', 'Andrei Chikatilo ha mutilato e ucciso oltre 50 donne e bambini.', 'Serial killer', 'img/caso_4.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP004CHIX', 'Andrei', 'Chikatilo', 'Ignoto', '1970-01-01', 'img/colp_4.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP004CHIX', 4);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT004ZAKX', 'Yelena', 'Zakotnova', 'Rostov, Russia', '1980-01-01', '1987-08-06', 4);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Chikatilo', '1987-08-06', 'https://news.it/4', 4);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (5, 'Night Stalker', '2015-12-17', 'Los Angeles, USA', 'Richard Ramirez terrorizzò LA con omicidi satanici.', 'Serial killer', 'img/caso_5.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP005RAMX', 'Richard', 'Ramirez', 'Ignoto', '1970-01-01', 'img/colp_5.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP005RAMX', 5);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT005LEUX', 'Mei', 'Leung', 'Los Angeles, USA', '1980-01-01', '2015-12-17', 5);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Ramirez', '2015-12-17', 'https://news.it/5', 5);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (6, 'Il figlio di Sam', '1994-09-07', 'New York, USA', 'David Berkowitz sparava alle coppe appartate in auto.', 'Serial killer', 'img/caso_6.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP006BERX', 'David', 'Berkowitz', 'Ignoto', '1970-01-01', 'img/colp_6.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP006BERX', 6);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT006LAUX', 'Donna', 'Lauria', 'New York, USA', '1980-01-01', '1994-09-07', 6);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Berkowitz', '1994-09-07', 'https://news.it/6', 6);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (7, 'Zodiac Killer', '1982-02-14', 'California, USA', 'Il killer mai identificato che mandava codici ai giornali.', 'Serial killer', 'img/caso_7.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP007ZODX', 'Ignoto', 'Zodiac', 'Ignoto', '1970-01-01', 'img/colp_7.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP007ZODX', 7);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT007FARX', 'David', 'Faraday', 'California, USA', '1980-01-01', '1982-02-14', 7);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Zodiac', '1982-02-14', 'https://news.it/7', 7);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (8, 'Green River Killer', '1970-05-22', 'Washington, USA', 'Gary Ridgway ha ucciso 49 donne confermate.', 'Serial killer', 'img/caso_8.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP008RIDX', 'Gary', 'Ridgway', 'Ignoto', '1970-01-01', 'img/colp_8.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP008RIDX', 8);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT008COFX', 'Wendy', 'Coffield', 'Washington, USA', '1980-01-01', '1970-05-22', 8);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Ridgway', '1970-05-22', 'https://news.it/8', 8);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (9, 'Jack lo Squartatore', '2022-10-14', 'Londra, UK', 'Il primo serial killer mediatico della storia a Whitechapel.', 'Serial killer', 'img/caso_9.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP009JACX', 'Ignoto', 'Jack', 'Ignoto', '1970-01-01', 'img/colp_9.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP009JACX', 9);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT009NICX', 'Mary', 'Nichols', 'Londra, UK', '1980-01-01', '2022-10-14', 9);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Jack', '2022-10-14', 'https://news.it/9', 9);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (10, 'Ed Gein', '1990-01-21', 'Wisconsin, USA', 'Il killer che ispirò Psycho, creava oggetti con pelle umana.', 'Serial killer', 'img/caso_10.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP010GEIX', 'Ed', 'Gein', 'Ignoto', '1970-01-01', 'img/colp_10.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP010GEIX', 10);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT010WORX', 'Bernice', 'Worden', 'Wisconsin, USA', '1980-01-01', '1990-01-21', 10);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Gein', '1990-01-21', 'https://news.it/10', 10);
 
--- ============================================
--- POPOLAMENTO TABELLA COLPEVOLE
--- ============================================
-INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES
-('RSSMRA85M15F205Z', 'Marco', 'Rossi', 'Milano', '1985-08-15', 'img/colpevole_rossi.jpg'),
-('BNCLGU78H20H501Y', 'Luigi', 'Bianchi', 'Roma', '1978-06-20', 'img/colpevole_bianchi.jpg'),
-('VRDGPP90A10F839W', 'Giuseppe', 'Verdi', 'Napoli', '1990-01-10', 'img/colpevole_verdi.jpg'),
-('NRIFNC82D25L219X', 'Francesca', 'Neri', 'Torino', '1982-04-25', 'img/colpevole_neri.jpg'),
-('GLLSRA88M50D612V', 'Sara', 'Galli', 'Firenze', '1988-08-10', 'img/colpevole_galli.jpg'),
-('CSTDVD92T15A944U', 'Davide', 'Costa', 'Bologna', '1992-12-15', 'img/colpevole_costa.jpg'),
-('MRNGNN86L30F205T', 'Giovanni', 'Marino', 'Milano', '1986-07-30', 'img/colpevole_marino.jpg');
+-- Categoria: Casi mediatici italiani
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (11, 'Delitto di Cogne', '2019-05-25', 'Cogne', 'La madre Annamaria Franzoni accusata dell''omicidio del figlio.', 'Casi mediatici italiani', 'img/caso_11.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP011FRAX', 'Annamaria', 'Franzoni', 'Ignoto', '1970-01-01', 'img/colp_11.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP011FRAX', 11);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT011LORX', 'Samuele', 'Lorenzi', 'Cogne', '1980-01-01', '2019-05-25', 11);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Franzoni', '2019-05-25', 'https://news.it/11', 11);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (12, 'Delitto di Avetrana', '1972-01-04', 'Avetrana', 'L''omicidio della giovane Sarah Scazzi e il coinvolgimento della famiglia.', 'Casi mediatici italiani', 'img/caso_12.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP012MISX', 'Sabrina', 'Misseri', 'Ignoto', '1970-01-01', 'img/colp_12.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP012MISX', 12);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT012SCAX', 'Sarah', 'Scazzi', 'Avetrana', '1980-01-01', '1972-01-04', 12);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Misseri', '1972-01-04', 'https://news.it/12', 12);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (13, 'Omicidio di Yara', '1975-02-25', 'Brembate', 'Il caso risolto grazie al DNA di Ignoto 1.', 'Casi mediatici italiani', 'img/caso_13.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP013BOSX', 'Massimo', 'Bossetti', 'Ignoto', '1970-01-01', 'img/colp_13.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP013BOSX', 13);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT013GAMX', 'Yara', 'Gambirasio', 'Brembate', '1980-01-01', '1975-02-25', 13);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Bossetti', '1975-02-25', 'https://news.it/13', 13);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (14, 'Delitto di Perugia', '2006-10-05', 'Perugia', 'L''omicidio di Meredith Kercher che coinvolse studenti internazionali.', 'Casi mediatici italiani', 'img/caso_14.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP014GUEX', 'Rudy', 'Guede', 'Ignoto', '1970-01-01', 'img/colp_14.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP014GUEX', 14);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT014KERX', 'Meredith', 'Kercher', 'Perugia', '1980-01-01', '2006-10-05', 14);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Guede', '2006-10-05', 'https://news.it/14', 14);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (15, 'Il Mostro di Firenze', '1980-02-26', 'Firenze', 'Serie di duplici omicidi avvenuti tra il 1968 e il 1985.', 'Casi mediatici italiani', 'img/caso_15.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP015PACX', 'Pietro', 'Pacciani', 'Ignoto', '1970-01-01', 'img/colp_15.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP015PACX', 15);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT015PETX', 'Stefania', 'Pettini', 'Firenze', '1980-01-01', '1980-02-26', 15);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Pacciani', '1980-02-26', 'https://news.it/15', 15);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (16, 'Strage di Erba', '2014-10-02', 'Erba', 'Olindo e Rosa uccidono 4 persone in un condominio.', 'Casi mediatici italiani', 'img/caso_16.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP016ROMX', 'Olindo', 'Romano', 'Ignoto', '1970-01-01', 'img/colp_16.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP016ROMX', 16);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT016CASX', 'Raffaella', 'Castagna', 'Erba', '1980-01-01', '2014-10-02', 16);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Romano', '2014-10-02', 'https://news.it/16', 16);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (17, 'Delitto di Garlasco', '2012-10-03', 'Garlasco', 'L''omicidio di Chiara Poggi nella sua villetta.', 'Casi mediatici italiani', 'img/caso_17.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP017STAX', 'Alberto', 'Stasi', 'Ignoto', '1970-01-01', 'img/colp_17.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP017STAX', 17);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT017POGX', 'Chiara', 'Poggi', 'Garlasco', '1980-01-01', '2012-10-03', 17);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Stasi', '2012-10-03', 'https://news.it/17', 17);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (18, 'Caso Melania Rea', '2000-03-15', 'Teramo', 'Salvatore Parolisi uccide la moglie in un bosco.', 'Casi mediatici italiani', 'img/caso_18.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP018PARX', 'Salvatore', 'Parolisi', 'Ignoto', '1970-01-01', 'img/colp_18.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP018PARX', 18);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT018REAX', 'Melania', 'Rea', 'Teramo', '1980-01-01', '2000-03-15', 18);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Parolisi', '2000-03-15', 'https://news.it/18', 18);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (19, 'Erika e Omar', '2017-05-07', 'Novi Ligure', 'Due fidanzatini uccidono madre e fratellino di lei.', 'Casi mediatici italiani', 'img/caso_19.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP019DE X', 'Erika', 'De Nardo', 'Ignoto', '1970-01-01', 'img/colp_19.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP019DE X', 19);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT019CASX', 'Susy', 'Cassini', 'Novi Ligure', '1980-01-01', '2017-05-07', 19);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su De Nardo', '2017-05-07', 'https://news.it/19', 19);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (20, 'Marco Vannini', '1992-03-28', 'Ladispoli', 'La morte del giovane Marco in casa della fidanzata Ciontoli.', 'Casi mediatici italiani', 'img/caso_20.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP020CIOX', 'Antonio', 'Ciontoli', 'Ignoto', '1970-01-01', 'img/colp_20.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP020CIOX', 20);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT020VANX', 'Marco', 'Vannini', 'Ladispoli', '1980-01-01', '1992-03-28', 20);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Ciontoli', '1992-03-28', 'https://news.it/20', 20);
 
--- ============================================
--- POPOLAMENTO TABELLA VITTIMA
--- ============================================
-INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES
-('RSSPLA65M12F205R', 'Paola', 'Russo', 'Milano', '1965-08-12', NULL, 1),
-('FNTSMT70H15H501S', 'Simone', 'Fontana', 'Roma', '1970-06-15', NULL, 2),
-('MRNLRA83C20F839P', 'Laura', 'Morini', 'Napoli', '1983-03-20', '2023-09-10', 3),
-('CRBMTT75D10D612Q', 'Matteo', 'Carboni', 'Firenze', '1975-04-10', NULL, 5),
-('LMBGVN88T22L219W', 'Giovanni', 'Lombardi', 'Bologna', '1988-12-22', NULL, 6);
+-- Categoria: Amore tossico
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (21, 'Sid e Nancy', '1985-02-07', 'New York', 'Il bassista dei Sex Pistols uccide la fidanzata.', 'Amore tossico', 'img/caso_21.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP021VICX', 'Sid', 'Vicious', 'Ignoto', '1970-01-01', 'img/colp_21.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP021VICX', 21);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT021SPUX', 'Nancy', 'Spungen', 'New York', '1980-01-01', '1985-02-07', 21);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Vicious', '1985-02-07', 'https://news.it/21', 21);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (22, 'Il caso Pistorius', '1975-07-04', 'Pretoria', 'L''atleta paralimpico spara alla fidanzata credendola un ladro.', 'Amore tossico', 'img/caso_22.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP022PISX', 'Oscar', 'Pistorius', 'Ignoto', '1970-01-01', 'img/colp_22.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP022PISX', 22);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT022STEX', 'Reeva', 'Steenkamp', 'Pretoria', '1980-01-01', '1975-07-04', 22);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Pistorius', '1975-07-04', 'https://news.it/22', 22);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (23, 'Bertrand Cantat', '2019-11-01', 'Vilnius', 'Il cantante dei Noir Desir picchia a morte l''attrice Marie Trintignant.', 'Amore tossico', 'img/caso_23.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP023CANX', 'Bertrand', 'Cantat', 'Ignoto', '1970-01-01', 'img/colp_23.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP023CANX', 23);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT023TRIX', 'Marie', 'Trintignant', 'Vilnius', '1980-01-01', '2019-11-01', 23);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Cantat', '2019-11-01', 'https://news.it/23', 23);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (24, 'Jodi Arias', '1998-02-05', 'Arizona, USA', 'Uccide l''ex fidanzato Travis Alexander per gelosia morbosa.', 'Amore tossico', 'img/caso_24.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP024ARIX', 'Jodi', 'Arias', 'Ignoto', '1970-01-01', 'img/colp_24.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP024ARIX', 24);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT024ALEX', 'Travis', 'Alexander', 'Arizona, USA', '1980-01-01', '1998-02-05', 24);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Arias', '1998-02-05', 'https://news.it/24', 24);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (25, 'Phil Spector', '2017-04-09', 'California', 'Il produttore musicale uccide l''attrice Lana Clarkson.', 'Amore tossico', 'img/caso_25.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP025SPEX', 'Phil', 'Spector', 'Ignoto', '1970-01-01', 'img/colp_25.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP025SPEX', 25);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT025CLAX', 'Lana', 'Clarkson', 'California', '1980-01-01', '2017-04-09', 25);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Spector', '2017-04-09', 'https://news.it/25', 25);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (26, 'Caso O.J. Simpson', '1970-01-22', 'Los Angeles', 'L''ex campione accusato di aver ucciso l''ex moglie.', 'Amore tossico', 'img/caso_26.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP026SIMX', 'O.J.', 'Simpson', 'Ignoto', '1970-01-01', 'img/colp_26.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP026SIMX', 26);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT026BROX', 'Nicole', 'Brown', 'Los Angeles', '1980-01-01', '1970-01-22', 26);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Simpson', '1970-01-22', 'https://news.it/26', 26);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (27, 'Luca Varani', '1994-07-05', 'Roma', 'Ucciso durante un festino a base di droghe e follia.', 'Amore tossico', 'img/caso_27.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP027PRAX', 'Marco', 'Prato', 'Ignoto', '1970-01-01', 'img/colp_27.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP027PRAX', 27);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT027VARX', 'Luca', 'Varani', 'Roma', '1980-01-01', '1994-07-05', 27);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Prato', '1994-07-05', 'https://news.it/27', 27);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (28, 'Femminicidio Tramontano', '2004-10-03', 'Milano', 'Giulia uccisa al settimo mese di gravidanza dal compagno.', 'Amore tossico', 'img/caso_28.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP028IMPX', 'Alessandro', 'Impagnatiello', 'Ignoto', '1970-01-01', 'img/colp_28.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP028IMPX', 28);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT028TRAX', 'Giulia', 'Tramontano', 'Milano', '1980-01-01', '2004-10-03', 28);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Impagnatiello', '2004-10-03', 'https://news.it/28', 28);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (29, 'Shannan Watts', '1983-11-22', 'Colorado', 'Chris Watts uccide moglie incinta e figlie per l''amante.', 'Amore tossico', 'img/caso_29.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP029WATX', 'Chris', 'Watts', 'Ignoto', '1970-01-01', 'img/colp_29.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP029WATX', 29);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT029WATX', 'Shannan', 'Watts', 'Colorado', '1980-01-01', '1983-11-22', 29);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Watts', '1983-11-22', 'https://news.it/29', 29);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (30, 'Gabby Petito', '2018-02-09', 'Wyoming', 'Strangolata dal fidanzato durante un viaggio in van.', 'Amore tossico', 'img/caso_30.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP030LAUX', 'Brian', 'Laundrie', 'Ignoto', '1970-01-01', 'img/colp_30.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP030LAUX', 30);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT030PETX', 'Gabby', 'Petito', 'Wyoming', '1980-01-01', '2018-02-09', 30);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Laundrie', '2018-02-09', 'https://news.it/30', 30);
 
--- ============================================
--- POPOLAMENTO TABELLA COLPA
--- ============================================
-INSERT INTO Colpa (Colpevole, Caso) VALUES
-('RSSMRA85M15F205Z', 1),
-('MRNGNN86L30F205T', 1),
-('BNCLGU78H20H501Y', 2),
-('VRDGPP90A10F839W', 3),
-('NRIFNC82D25L219X', 4),
-('GLLSRA88M50D612V', 5),
-('CSTDVD92T15A944U', 6);
+-- Categoria: Celebrity
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (31, 'Gianni Versace', '2007-02-03', 'Miami', 'Lo stilista ucciso sugli scalini di casa.', 'Celebrity', 'img/caso_31.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP031CUNX', 'Andrew', 'Cunanan', 'Ignoto', '1970-01-01', 'img/colp_31.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP031CUNX', 31);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT031VERX', 'Gianni', 'Versace', 'Miami', '1980-01-01', '2007-02-03', 31);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Cunanan', '2007-02-03', 'https://news.it/31', 31);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (32, 'Sharon Tate', '1984-05-12', 'Los Angeles', 'L''attrice uccisa dalla Manson Family.', 'Celebrity', 'img/caso_32.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP032MANX', 'Charles', 'Manson', 'Ignoto', '1970-01-01', 'img/colp_32.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP032MANX', 32);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT032TATX', 'Sharon', 'Tate', 'Los Angeles', '1980-01-01', '1984-05-12', 32);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Manson', '1984-05-12', 'https://news.it/32', 32);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (33, 'John Lennon', '2006-08-03', 'New York', 'L''ex Beatle ucciso da un fan ossessionato.', 'Celebrity', 'img/caso_33.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP033CHAX', 'Mark', 'Chapman', 'Ignoto', '1970-01-01', 'img/colp_33.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP033CHAX', 33);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT033LENX', 'John', 'Lennon', 'New York', '1980-01-01', '2006-08-03', 33);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Chapman', '2006-08-03', 'https://news.it/33', 33);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (34, 'Tupac Shakur', '2018-06-18', 'Las Vegas', 'Il rapper ucciso in una sparatoria tra gang.', 'Celebrity', 'img/caso_34.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP034ANDX', 'Orlando', 'Anderson', 'Ignoto', '1970-01-01', 'img/colp_34.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP034ANDX', 34);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT034SHAX', 'Tupac', 'Shakur', 'Las Vegas', '1980-01-01', '2018-06-18', 34);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Anderson', '2018-06-18', 'https://news.it/34', 34);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (35, 'Notorious B.I.G.', '1996-11-19', 'Los Angeles', 'Ucciso pochi mesi dopo Tupac.', 'Celebrity', 'img/caso_35.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP035KILX', 'Ignoto', 'Killer', 'Ignoto', '1970-01-01', 'img/colp_35.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP035KILX', 35);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT035WALX', 'C.', 'Wallace', 'Los Angeles', '1980-01-01', '1996-11-19', 35);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Killer', '1996-11-19', 'https://news.it/35', 35);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (36, 'Marvin Gaye', '1973-10-05', 'Los Angeles', 'Il cantante ucciso dal proprio padre dopo una lite.', 'Celebrity', 'img/caso_36.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP036GAYX', 'Marvin', 'Gay Sr.', 'Ignoto', '1970-01-01', 'img/colp_36.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP036GAYX', 36);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT036GAYX', 'Marvin', 'Gaye', 'Los Angeles', '1980-01-01', '1973-10-05', 36);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Gay Sr.', '1973-10-05', 'https://news.it/36', 36);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (37, 'Selena', '2015-09-03', 'Texas', 'La regina della musica tejano uccisa dalla presidente del fan club.', 'Celebrity', 'img/caso_37.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP037SALX', 'Yolanda', 'Saldivar', 'Ignoto', '1970-01-01', 'img/colp_37.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP037SALX', 37);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT037QUIX', 'Selena', 'Quintanilla', 'Texas', '1980-01-01', '2015-09-03', 37);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Saldivar', '2015-09-03', 'https://news.it/37', 37);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (38, 'Dimebag Darrell', '2006-02-26', 'Ohio', 'Il chitarrista dei Pantera ucciso sul palco.', 'Celebrity', 'img/caso_38.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP038GALX', 'Nathan', 'Gale', 'Ignoto', '1970-01-01', 'img/colp_38.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP038GALX', 38);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT038ABBX', 'Darrell', 'Abbott', 'Ohio', '1980-01-01', '2006-02-26', 38);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Gale', '2006-02-26', 'https://news.it/38', 38);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (39, 'Christina Grimmie', '1977-03-27', 'Orlando', 'La cantante di The Voice uccisa mentre firmava autografi.', 'Celebrity', 'img/caso_39.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP039LOIX', 'Kevin', 'Loibl', 'Ignoto', '1970-01-01', 'img/colp_39.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP039LOIX', 39);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT039GRIX', 'Christina', 'Grimmie', 'Orlando', '1980-01-01', '1977-03-27', 39);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Loibl', '1977-03-27', 'https://news.it/39', 39);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (40, 'Maurizio Gucci', '2011-09-13', 'Milano', 'L''erede della moda fatto uccidere dall''ex moglie.', 'Celebrity', 'img/caso_40.jpg', 1);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('CLP040CERX', 'Benedetto', 'Ceraulo', 'Ignoto', '1970-01-01', 'img/colp_40.jpg') ON DUPLICATE KEY UPDATE Immagine=Immagine;
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('CLP040CERX', 40);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('VIT040GUCX', 'Maurizio', 'Gucci', 'Milano', '1980-01-01', '2011-09-13', 40);
+INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES ('Approfondimento su Ceraulo', '2011-09-13', 'https://news.it/40', 40);
 
--- ============================================
--- POPOLAMENTO TABELLA ARTICOLO
--- ============================================
-INSERT INTO Articolo (Titolo, Data, Link, Caso) VALUES
-('Colpo in gioielleria: rubati 2 milioni di euro', '2023-03-16', 'https://corriere.it/milano/rapina-montenapoleone', 1),
-('Rapina lampo a Milano: indagini in corso', '2023-03-17', 'https://repubblica.it/cronaca/rapina-milano-2023', 1),
-('Maxi frode informatica: 500mila euro spariti', '2023-06-23', 'https://ilsole24ore.com/frode-informatica-roma', 2),
-('Phishing colpisce multinazionale: esperto IT arrestato', '2023-06-25', 'https://corriere.it/tecnologia/frode-phishing', 2),
-('Omicidio nel centro storico: fermato un sospettato', '2023-09-11', 'https://repubblica.it/napoli/omicidio-centro', 3),
-('Droga sequestrata a Torino: maxi operazione antidroga', '2023-11-06', 'https://lastampa.it/torino/sequestro-droga', 4),
-('Traffico internazionale di cocaina: 5 arresti', '2023-11-07', 'https://corriere.it/cronaca/droga-torino-arresti', 4),
-('Furto d\'arte a Firenze: spariti tre capolavori', '2024-01-19', 'https://lanazione.it/firenze/furto-arte-ponte-vecchio', 5),
-('Aggressione in stazione: turista ferito', '2024-03-31', 'https://ilrestodelcarlino.it/bologna/aggressione-stazione', 6);
-
--- ============================================
--- POPOLAMENTO TABELLA DOMANDA
--- ============================================
-INSERT INTO Domanda (Tipologia, Testo, Gioco) VALUES
-('Multipla', 'Qual è il primo principio fondamentale della scena del crimine?', 'Quiz Criminologia Base'),
-('Multipla', 'Cosa significa "modus operandi" in criminologia?', 'Quiz Criminologia Base'),
-('Vero/Falso', 'Le impronte digitali sono uniche per ogni individuo', 'Quiz Criminologia Base'),
-('Multipla', 'Quale tecnica viene utilizzata per rilevare tracce di sangue invisibili?', 'Quiz Criminologia Base'),
-('Deduttiva', 'Basandoti sulle prove raccolte nella rapina di Milano, chi è il principale sospettato?', 'Indovina il Colpevole'),
-('Deduttiva', 'Nel caso della frode informatica, quale competenza deve avere il colpevole?', 'Indovina il Colpevole'),
-('Multipla', 'Quale indizio è più rilevante in un caso di omicidio?', 'Indovina il Colpevole'),
-('Sequenza', 'Ordina cronologicamente le fasi di una rapina a mano armata', 'Timeline Criminale'),
-('Sequenza', 'Qual è la corretta sequenza investigativa?', 'Timeline Criminale'),
-('Complessa', 'In un caso di avvelenamento, quale esame tossicologico è prioritario?', 'Expert Detective'),
-('Complessa', 'Quale tecnica forense è più efficace per datare un documento?', 'Expert Detective'),
-('Multipla', 'In quale situazione si applica la catena di custodia delle prove?', 'Expert Detective');
-
--- ============================================
--- POPOLAMENTO TABELLA RISPOSTA
--- ============================================
-INSERT INTO Risposta (Opzione, IsTrue, Domanda) VALUES
-('Preservare la scena del crimine', TRUE, 1),
-('Arrestare immediatamente i sospetti', FALSE, 1),
-('Interrogare i testimoni', FALSE, 1),
-('Chiamare i giornalisti', FALSE, 1),
-('Il metodo caratteristico con cui un criminale commette i reati', TRUE, 2),
-('Il movente del crimine', FALSE, 2),
-('La prova principale', FALSE, 2),
-('L\'alibi del sospettato', FALSE, 2),
-('Vero', TRUE, 3),
-('Falso', FALSE, 3),
-('Luminol', TRUE, 4),
-('Fenolftaleina', FALSE, 4),
-('Acido nitrico', FALSE, 4),
-('Blu di metilene', FALSE, 4),
-('Marco Rossi, pregiudicato per rapine', TRUE, 5),
-('Luigi Bianchi, esperto informatico', FALSE, 5),
-('Giuseppe Verdi, senza precedenti', FALSE, 5),
-('Competenze informatiche avanzate', TRUE, 6),
-('Forza fisica', FALSE, 6),
-('Conoscenze mediche', FALSE, 6),
-('DNA sulla scena del crimine', TRUE, 7),
-('Colore dei capelli del sospettato', FALSE, 7),
-('Orario di chiusura dei negozi', FALSE, 7),
-('Sopralluogo, esecuzione, fuga, spartizione', TRUE, 8),
-('Fuga, esecuzione, sopralluogo', FALSE, 8),
-('Esecuzione, sopralluogo, fuga', FALSE, 8),
-('Sopralluogo, raccolta prove, analisi, interrogatori, arresto', TRUE, 9),
-('Arresto, interrogatori, raccolta prove', FALSE, 9),
-('Interrogatori, sopralluogo, arresto', FALSE, 9),
-('Spettroscopia di massa', TRUE, 10),
-('Radiografia', FALSE, 10),
-('Ecografia', FALSE, 10),
-('Analisi dell\'inchiostro e della carta', TRUE, 11),
-('Peso del documento', FALSE, 11),
-('Dimensioni del foglio', FALSE, 11),
-('In ogni caso che coinvolge prove fisiche', TRUE, 12),
-('Solo per armi da fuoco', FALSE, 12),
-('Solo per stupefacenti', FALSE, 12);
-
--- ============================================
--- POPOLAMENTO TABELLA COMMENTO
--- ============================================
-INSERT INTO Commento (Data, Commento, Email_Utente, ID_Caso) VALUES
-('2023-03-18', 'Caso molto interessante! Mi chiedo come abbiano fatto a fuggire così velocemente.', 'detective1@email.it', 1),
-('2023-03-19', 'La sicurezza delle gioiellerie dovrebbe essere migliorata. Questi crimini sono troppo frequenti.', 'detective2@email.it', 1),
-('2023-06-24', 'Un altro caso di phishing! Le aziende devono investire di più nella formazione del personale.', 'investigatore@email.it', 2),
-('2023-09-12', 'Spero che venga fatta giustizia per la vittima. Un caso davvero tragico.', 'crimine@email.it', 3),
-('2023-09-13', 'Complimenti agli investigatori per la rapidità nell\'individuare il sospettato.', 'detective1@email.it', 3),
-('2023-11-08', 'Il traffico di droga è un problema serio. Ottimo lavoro delle forze dell\'ordine.', 'alice@truecrime.it', 4),
-('2024-01-20', 'Opere d\'arte inestimabili! Spero vengano recuperate presto.', 'detective2@email.it', 5),
-('2024-01-21', 'La sicurezza dei musei e gallerie deve essere una priorità assoluta.', 'investigatore@email.it', 5),
-('2024-04-01', 'Bisogna aumentare i controlli nelle stazioni, soprattutto di sera.', 'crimine@email.it', 6);
-
--- ============================================
--- POPOLAMENTO TABELLA PARTITA
--- ============================================
-INSERT INTO Partita (Email_Utente, Gioco, Punteggio) VALUES
-('detective1@email.it', 'Quiz Criminologia Base', 85),
-('detective1@email.it', 'Indovina il Colpevole', 70),
-('detective2@email.it', 'Quiz Criminologia Base', 92),
-('detective2@email.it', 'Timeline Criminale', 88),
-('investigatore@email.it', 'Indovina il Colpevole', 65),
-('investigatore@email.it', 'Expert Detective', 78),
-('crimine@email.it', 'Quiz Criminologia Base', 95),
-('crimine@email.it', 'Timeline Criminale', 82),
-('crimine@email.it', 'Expert Detective', 90);
-
--- ============================================
--- VERIFICA DATI INSERITI
--- ============================================
-SELECT 'Utenti inseriti:' AS Info, COUNT(*) AS Totale FROM Utente
-UNION ALL
-SELECT 'Giochi inseriti:', COUNT(*) FROM Gioco
-UNION ALL
-SELECT 'Casi inseriti:', COUNT(*) FROM Caso
-UNION ALL
-SELECT 'Colpevoli inseriti:', COUNT(*) FROM Colpevole
-UNION ALL
-SELECT 'Vittime inserite:', COUNT(*) FROM Vittima
-UNION ALL
-SELECT 'Articoli inseriti:', COUNT(*) FROM Articolo
-UNION ALL
-SELECT 'Domande inserite:', COUNT(*) FROM Domanda
-UNION ALL
-SELECT 'Risposte inserite:', COUNT(*) FROM Risposta
-UNION ALL
-SELECT 'Commenti inseriti:', COUNT(*) FROM Commento
-UNION ALL
-SELECT 'Partite inserite:', COUNT(*) FROM Partita
-UNION ALL
-SELECT 'Relazioni Colpa:', COUNT(*) FROM Colpa;
+-- INIZIO POPOLAMENTO CASI DA APPROVARE (False/0)
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (41, 'Morte nel Vicolo', '2025-12-17', 'Torino', 'Un caso irrisolto degli anni 90 riaperto oggi.', 'Serial killer', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN041XXX', 'Ignoto', 'X', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN041XXX', 41);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN041YYY', 'Mario', 'Rossi', 'N/A', '1995-01-01', '2025-12-17', 41);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (42, 'Il veleno del caffè', '2025-12-17', 'Napoli', 'Avvelenamento seriale in una casa di cura.', 'Serial killer', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN042XXX', 'Luisa', 'Bianchi', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN042XXX', 42);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN042YYY', 'Anna', 'Verdi', 'N/A', '1995-01-01', '2025-12-17', 42);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (43, 'Scomparsa sul Lago', '2025-12-17', 'Como', 'Una turista svanita nel nulla, si sospetta il marito.', 'Casi mediatici italiani', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN043XXX', 'Hans', 'Muller', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN043XXX', 43);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN043YYY', 'Greta', 'Schmidt', 'N/A', '1995-01-01', '2025-12-17', 43);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (44, 'Il segreto del prete', '2025-12-17', 'Potenza', 'Ritrovamento osseo in una chiesa antica.', 'Casi mediatici italiani', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN044XXX', 'Don', 'Giulio', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN044XXX', 44);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN044YYY', 'Elisa', 'Claps', 'N/A', '1995-01-01', '2025-12-17', 44);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (45, 'Gelosia fatale', '2025-12-17', 'Bologna', 'Due amanti, un coltello e una notte di follia.', 'Amore tossico', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN045XXX', 'Luca', 'Neri', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN045XXX', 45);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN045YYY', 'Sara', 'Gialli', 'N/A', '1995-01-01', '2025-12-17', 45);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (46, 'Tradimento online', '2025-12-17', 'Milano', 'Adesca la moglie su internet per ucciderla.', 'Amore tossico', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN046XXX', 'Marco', 'Viola', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN046XXX', 46);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN046YYY', 'Lisa', 'Rosa', 'N/A', '1995-01-01', '2025-12-17', 46);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (47, 'Lo stalker della TV', '2025-12-17', 'Roma', 'Conduttore perseguitato da una fan.', 'Celebrity', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN047XXX', 'Carla', 'Bruni', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN047XXX', 47);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN047YYY', 'Pippo', 'Baudo', 'N/A', '1995-01-01', '2025-12-17', 47);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (48, 'Rapimento Lampo', '2025-12-17', 'Venezia', 'Influencer rapita per riscatto finito male.', 'Celebrity', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN048XXX', 'Bandito', 'Uno', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN048XXX', 48);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN048YYY', 'Chiara', 'Nasti', 'N/A', '1995-01-01', '2025-12-17', 48);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (49, 'Il mostro del Po', '2025-12-17', 'Rovigo', 'Pescatore trova resti umani.', 'Serial killer', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN049XXX', 'Ignoto', 'Y', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN049XXX', 49);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN049YYY', 'Luigi', 'B.', 'N/A', '1995-01-01', '2025-12-17', 49);
+INSERT INTO Caso (N_Caso, Titolo, Data, Luogo, Descrizione, Tipologia, Immagine, Approvato) VALUES (50, 'Delitto di Pasqua', '2025-12-17', 'Bari', 'Lite in famiglia finisce in tragedia.', 'Casi mediatici italiani', 'img/pending.jpg', 0);
+INSERT INTO Colpevole (CF_Colpevole, Nome, Cognome, LuogoNascita, DataNascita, Immagine) VALUES ('PEN050XXX', 'Zio', 'Peppe', 'N/A', '1990-01-01', 'img/pending_c.jpg');
+INSERT INTO Colpa (Colpevole, Caso) VALUES ('PEN050XXX', 50);
+INSERT INTO Vittima (CF_Vittima, Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso) VALUES ('PEN050YYY', 'Nipote', 'Franco', 'N/A', '1995-01-01', '2025-12-17', 50);
