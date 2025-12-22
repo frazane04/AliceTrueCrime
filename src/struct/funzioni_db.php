@@ -328,7 +328,7 @@ class FunzioniDB {
      * @param string|null $tipologia Categoria del caso (opzionale)
      * @return array ['success' => bool, 'message' => string, 'caso_id' => int|null]
      */
-    public function inserisciCaso($titolo, $data, $luogo, $descrizione, $autoreEmail, $immagine = null, $tipologia = null) {
+    public function inserisciCaso($titolo, $data, $luogo, $descrizione, $immagine = null, $tipologia = null) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
@@ -344,34 +344,21 @@ class FunzioniDB {
                 ];
             }
             
-            // Verifica che l'utente esista
-            $query = "SELECT Email FROM Utente WHERE Email = ?";
-            $result = $this->db->query($query, [$autoreEmail], "s");
-            
-            if (!$result || !is_object($result) || mysqli_num_rows($result) === 0) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Utente non trovato',
-                    'caso_id' => null
-                ];
-            }
-            
             // Insert caso (Approvato = 0 di default)
-            $query = "INSERT INTO Caso (Titolo, Data, Luogo, Descrizione, Immagine, Tipologia, Autore, Approvato) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
+            $query = "INSERT INTO Caso (Titolo, Data, Luogo, Descrizione, Immagine, Tipologia, Approvato) 
+                      VALUES (?, ?, ?, ?, ?, ?, 0)";
             
             $params = [
                 $titolo,
                 $data,
                 $luogo,
                 $descrizione,
-                $immagine,
                 $tipologia,
-                $autoreEmail
+                $immagine
+                
             ];
             
-            $result = $this->db->query($query, $params, "sssssss");
+            $result = $this->db->query($query, $params, "ssssss");
             
             if ($result) {
                 $casoId = $this->db->getLastInsertId();

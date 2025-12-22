@@ -20,13 +20,14 @@ CREATE TABLE Gioco (
 -- Tabella Caso 
 CREATE TABLE Caso (
     N_Caso INT PRIMARY KEY AUTO_INCREMENT,
-    Titolo VARCHAR(100) NOT NULL,  -- NUOVA COLONNA
+    Titolo VARCHAR(100) NOT NULL,  
     Data DATE NOT NULL,
     Luogo VARCHAR(100) NOT NULL,
     Descrizione TEXT NOT NULL,
     Tipologia VARCHAR(50),
     Immagine VARCHAR(255),
     Approvato BOOLEAN DEFAULT 0
+    Autore VARCHAR(50) NOT NULL
 );
 
 -- Tabella Vittima 
