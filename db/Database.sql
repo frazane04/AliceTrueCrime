@@ -24,9 +24,9 @@ CREATE TABLE Caso (
     Data DATE NOT NULL,
     Luogo VARCHAR(100) NOT NULL,
     Descrizione TEXT NOT NULL,
-    Tipologia VARCHAR(50) NOT NULL,
-    Immagine VARCHAR(255) NOT NULL,
-    Approvato BOOLEAN NOT NULL DEFAULT 0
+    Tipologia VARCHAR(50),
+    Immagine VARCHAR(255),
+    Approvato BOOLEAN DEFAULT 0
 );
 
 -- Tabella Vittima 

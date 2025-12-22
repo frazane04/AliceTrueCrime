@@ -1,3 +1,4 @@
+
 <section class="segnalazione-container">
     <header class="page-header">
         <h1>Apri un nuovo fascicolo</h1>
@@ -5,34 +6,69 @@
     </header>
 
     <div id="feedback-area">
-        </div>
+        <!-- I messaggi di feedback appariranno qui -->
+    </div>
 
     <div class="form-wrapper">
-        <form action="" method="POST" class="form-crimine">
+        <form action="{{PATH_PREFIX}}/segnala-caso" method="POST" class="form-crimine">
             
             <div class="form-group">
                 <label for="titolo">Nome del Caso (Titolo) *</label>
-                <input type="text" id="titolo" name="titolo" placeholder="Es. Il mistero di..." required>
+                <input 
+                    type="text" 
+                    id="titolo" 
+                    name="titolo" 
+                    placeholder="Es. Il mistero di..." 
+                    required
+                    minlength="5"
+                    maxlength="200"
+                    aria-describedby="titolo-hint"
+                />
+                <small id="titolo-hint" class="form-hint">Minimo 5 caratteri, massimo 200</small>
             </div>
 
             <div class="form-row">
                 <div class="form-group half">
                     <label for="data_crimine">Data Accaduto *</label>
-                    <input type="date" id="data_crimine" name="data_crimine" required>
+                    <input type="date" id="data_crimine" name="data_crimine" required/>
                 </div>
                 <div class="form-group half">
                     <label for="luogo">Luogo *</label>
-                    <input type="text" id="luogo" name="luogo" placeholder="Città, Paese" required>
+                    <input 
+                        type="text" 
+                        id="luogo" 
+                        name="luogo" 
+                        placeholder="Città, Paese" 
+                        required
+                        maxlength="100"
+                    />
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="descrizione">Ricostruzione / Dettagli *</label>
-                <textarea id="descrizione" name="descrizione" rows="6" placeholder="Descrivi i fatti principali e le fonti..." required></textarea>
+                <textarea 
+                    id="descrizione" 
+                    name="descrizione" 
+                    rows="8" 
+                    placeholder="Descrivi i fatti principali, le circostanze, le fonti da cui provengono le informazioni..."
+                    required
+                    maxlength="5000"
+                    aria-describedby="descrizione-hint"
+                ></textarea>
+            </div>
+
+            <div class="form-notice">
+                <p><strong>📋 Nota importante:</strong></p>
+                <ul>
+                    <li>La segnalazione verrà inviata al team di moderazione per la revisione</li>
+                    <li>Solo i casi verificati e con fonti attendibili verranno pubblicati</li>
+                </ul>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-submit">Invia Segnalazione</button>
+                <button type="submit" class="btn-submit">📤 Invia Segnalazione</button>
+                <button type="reset" class="btn-reset">↺ Cancella</button>
             </div>
 
         </form>

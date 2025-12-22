@@ -313,9 +313,89 @@ class FunzioniDB {
 
 
 
-        // ========================================
+ // ========================================
     // GESTIONE CASI
     // ========================================
+    
+    /**
+     * Inserisce un nuovo caso nel database (non approvato di default)
+     * @param string $titolo Titolo del caso
+     * @param string $data Data dell'accaduto (formato YYYY-MM-DD)
+     * @param string $luogo Luogo del caso
+     * @param string $descrizione Descrizione dettagliata
+     * @param string $autoreEmail Email dell'autore (chiave esterna)
+     * @param string|null $immagine Path dell'immagine (opzionale)
+     * @param string|null $tipologia Categoria del caso (opzionale)
+     * @return array ['success' => bool, 'message' => string, 'caso_id' => int|null]
+     */
+    public function inserisciCaso($titolo, $data, $luogo, $descrizione, $autoreEmail, $immagine = null, $tipologia = null) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            // Validazione base
+            if (empty($titolo) || empty($data) || empty($luogo) || empty($descrizione)) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Tutti i campi obbligatori devono essere compilati',
+                    'caso_id' => null
+                ];
+            }
+            
+            // Verifica che l'utente esista
+            $query = "SELECT Email FROM Utente WHERE Email = ?";
+            $result = $this->db->query($query, [$autoreEmail], "s");
+            
+            if (!$result || !is_object($result) || mysqli_num_rows($result) === 0) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Utente non trovato',
+                    'caso_id' => null
+                ];
+            }
+            
+            // Insert caso (Approvato = 0 di default)
+            $query = "INSERT INTO Caso (Titolo, Data, Luogo, Descrizione, Immagine, Tipologia, Autore, Approvato) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
+            
+            $params = [
+                $titolo,
+                $data,
+                $luogo,
+                $descrizione,
+                $immagine,
+                $tipologia,
+                $autoreEmail
+            ];
+            
+            $result = $this->db->query($query, $params, "sssssss");
+            
+            if ($result) {
+                $casoId = $this->db->getLastInsertId();
+                $this->db->chiudiConnessione();
+                
+                return [
+                    'success' => true,
+                    'message' => 'Caso inserito con successo. In attesa di approvazione.',
+                    'caso_id' => $casoId
+                ];
+            } else {
+                throw new Exception("Errore durante l'inserimento del caso");
+            }
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore inserimento caso: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Errore durante l\'inserimento. Riprova più tardi.'. var_dump($params),
+                'caso_id' => null
+            ];
+        }
+    }
     
     /**
      * Recupera casi per categoria (solo approvati)
@@ -460,5 +540,65 @@ class FunzioniDB {
         }
     }
     
+    /**
+     * Recupera casi in attesa di approvazione (solo admin)
+     * @param int $limite Numero massimo di risultati
+     * @return array Lista di casi non approvati
+     */
+    public function getCasiNonApprovati($limite = 50) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT c.*, u.Username as Autore_Username 
+                      FROM Caso c
+                      LEFT JOIN Utente u ON c.Autore = u.Email
+                      WHERE c.Approvato = 0 
+                      ORDER BY c.Data DESC 
+                      LIMIT ?";
+            
+            $result = $this->db->query($query, [$limite], "i");
+            
+            $casi = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $casi[] = $row;
+                }
+            }
+            
+            $this->db->chiudiConnessione();
+            return $casi;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero casi non approvati: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Approva un caso (solo admin)
+     * @param int $nCaso ID del caso
+     * @return bool True se l'operazione ha successo
+     */
+    public function approvaCaso($nCaso) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "UPDATE Caso SET Approvato = 1 WHERE N_Caso = ?";
+            $result = $this->db->query($query, [$nCaso], "i");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore approvazione caso: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?>
