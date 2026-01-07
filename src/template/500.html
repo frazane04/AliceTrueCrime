@@ -1,0 +1,53 @@
+<div class="error-container" role="main" aria-labelledby="error-title">
+  <div class="error-content">
+    <!-- Badge con codice errore -->
+    <div class="error-badge" role="status" aria-live="polite">
+      <span class="error-code" aria-label="Errore cinquecento">500</span>
+      <span class="error-label">SCENA COMPROMESSA</span>
+    </div>
+
+    <!-- Titolo principale -->
+    <h1 id="error-title" class="error-title">Scena del Crimine Compromessa</h1>
+
+    <!-- Descrizione con tema investigativo -->
+    <div class="error-description">
+      <p>
+        Si è verificato un <strong>errore interno imprevisto</strong> durante l'elaborazione 
+        della richiesta. La scena del crimine è stata compromessa e stiamo lavorando per ripristinare il sistema e riordinare le prove.
+      </p>
+      <p class="error-hint">
+        L'errore è stato registrato nei nostri archivi e verrà analizzato al più presto. 
+        Riprova tra qualche istante.
+      </p>
+    </div>
+
+    <!-- Box con "prove" (suggerimenti per l'utente) -->
+    <nav class="evidence-box" aria-labelledby="evidence-heading">
+      <h2 id="evidence-heading">Cosa è successo:</h2>
+      <ul class="evidence-list">
+        <li>
+          <span class="evidence-icon" aria-hidden="true">⚠️</span>
+          <span>Errore interno del server durante l'elaborazione</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">🔧</span>
+          <span>Il team tecnico è stato allertato automaticamente</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">🔄</span>
+          <span>Riprova tra qualche minuto o torna alla home</span>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Azioni disponibili -->
+    <div class="error-actions">
+      <a href="{{PREFIX}}/" class="btn btn-primary btn-xl" aria-label="Torna alla pagina principale di AliceTrueCrime">
+        Torna alla Home
+      </a>
+      <a href="{{PREFIX}}/esplora" class="btn btn-outline" aria-label="Esplora tutti i casi di cronaca nera">
+        Esplora i Casi
+      </a>
+    </div>
+  </div>
+</div>

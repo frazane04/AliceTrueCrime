@@ -797,3 +797,204 @@ a:hover {
         justify-content: center;
     }
 }
+
+/* ========================================
+   PAGINE DI ERRORE (404, 403, 500, 503)
+   Conforme WCAG 2.1 Level AAA
+   ======================================== */
+
+.error-container {
+    min-height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4em 2em;
+    background-color: var(--bg-lightest);
+}
+
+/* Focus visibile per navigazione da tastiera */
+.error-container a:focus,
+.error-container button:focus {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.error-content {
+    max-width: 700px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Badge con codice errore */
+.error-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+    padding: 1.5em 2.5em;
+    border-radius: 12px;
+    margin-bottom: 2em;
+    box-shadow: 0 4px 15px rgba(71, 0, 36, 0.3);
+}
+
+.error-code {
+    font-size: 4em;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.2em;
+}
+
+.error-label {
+    font-size: 0.9em;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Titolo principale */
+.error-title {
+    font-size: 2.5em;
+    color: var(--primary);
+    margin-bottom: 1em;
+    font-weight: 700;
+}
+
+/* Descrizione */
+.error-description {
+    margin-bottom: 2.5em;
+    color: var(--text-dark);
+}
+
+.error-description p {
+    font-size: 1.1em;
+    line-height: 1.6em;
+    margin-bottom: 1em;
+}
+
+/* WCAG AAA: Contrasto minimo 7:1 per testo normale */
+.error-hint {
+    font-size: 1em;
+    color: #2c4a5d; /* Scurito per contrasto 7:1 su bg-lightest */
+    font-style: italic;
+}
+
+/* Box con "prove" / suggerimenti */
+.evidence-box {
+    background-color: var(--white);
+    border: 2px solid var(--border-light);
+    border-radius: 12px;
+    padding: 2em;
+    margin-bottom: 2.5em;
+    text-align: left;
+}
+
+.evidence-box h2 {
+    font-size: 1.3em;
+    color: var(--primary);
+    margin-bottom: 1.2em;
+    text-align: center;
+}
+
+.evidence-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.evidence-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+    padding: 0.8em 0;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 1em;
+    color: var(--text-dark);
+}
+
+.evidence-list li:last-child {
+    border-bottom: none;
+}
+
+.evidence-icon {
+    font-size: 1.3em;
+    flex-shrink: 0;
+}
+
+/* Azioni */
+.error-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5em;
+    flex-wrap: wrap;
+    margin-bottom: 2em;
+}
+
+/* Footer della pagina errore */
+.error-footer {
+    padding-top: 2em;
+    border-top: 1px solid var(--border-light);
+    color: #2c4a5d; /* Contrasto migliorato per WCAG AAA */
+    font-size: 0.95em;
+}
+
+.error-footer p {
+    margin: 0;
+}
+
+/* Link con sottolineatura sempre visibile per accessibilità */
+.error-footer .link-secondary {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 3em;
+    }
+    
+    .error-title {
+        font-size: 2em;
+    }
+    
+    .error-description p {
+        font-size: 1em;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        gap: 1em;
+    }
+    
+    .error-actions .btn {
+        width: 100%;
+    }
+    
+    .evidence-box {
+        padding: 1.5em;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-container {
+        padding: 2em 1em;
+    }
+    
+    .error-badge {
+        padding: 1em 2em;
+    }
+    
+    .error-code {
+        font-size: 2.5em;
+    }
+    
+    .error-title {
+        font-size: 1.8em;
+    }
+}
+
+/* ========================================
+   Momentaneo, alice prova a vedere
+   ======================================== */

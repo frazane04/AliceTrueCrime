@@ -1,0 +1,53 @@
+<div class="error-container" role="main" aria-labelledby="error-title">
+  <div class="error-content">
+    <!-- Badge con codice errore -->
+    <div class="error-badge error-badge-forbidden" role="status" aria-live="polite">
+      <span class="error-code" aria-label="Errore quattrocentotre">403</span>
+      <span class="error-label">ACCESSO NEGATO</span>
+    </div>
+
+    <!-- Titolo principale -->
+    <h1 id="error-title" class="error-title">Area Riservata agli Investigatori</h1>
+
+    <!-- Descrizione con tema investigativo -->
+    <div class="error-description">
+      <p>
+        Questa sezione è <strong>riservata al personale autorizzato</strong>. 
+        Le prove e i documenti qui contenuti richiedono un livello di autorizzazione che al momento non possiedi.
+      </p>
+      <p class="error-hint">
+        Se ritieni di dover accedere a questa area, contatta il responsabile 
+        delle indagini o verifica le tue credenziali.
+      </p>
+    </div>
+
+    <!-- Box con "prove" (suggerimenti per l'utente) -->
+    <nav class="evidence-box" aria-labelledby="evidence-heading">
+      <h2 id="evidence-heading">Motivi del blocco:</h2>
+      <ul class="evidence-list">
+        <li>
+          <span class="evidence-icon" aria-hidden="true">🔒</span>
+          <span>Contenuto protetto riservato agli investigatori</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">🆔</span>
+          <span>Credenziali di accesso non valide o mancanti</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">⚖️</span>
+          <span>Accesso limitato per motivi di sicurezza delle indagini</span>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Azioni disponibili -->
+    <div class="error-actions">
+      <a href="{{PREFIX}}/" class="btn btn-primary btn-xl" aria-label="Torna alla pagina principale di AliceTrueCrime">
+        Torna alla Home
+      </a>
+      <a href="{{PREFIX}}/esplora" class="btn btn-outline" aria-label="Esplora tutti i casi di cronaca nera">
+        Esplora i Casi
+      </a>
+    </div>
+  </div>
+</div>

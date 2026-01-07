@@ -2,7 +2,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-//richiamo di utils.php per la configurazione iniziale
+
+// Richiamo di utils.php per la configurazione iniziale
 require_once 'src/struct/utils.php';
 
 // 1. Analisi URL
@@ -29,7 +30,13 @@ $routes = [
     '/accedi'        => 'accedi.php',
     '/registrati'    => 'registrati.php',
     '/profilo'       => 'profilo.php',
-    '/logout'        => 'logout.php'
+    '/logout'        => 'logout.php',
+
+    
+    '/404'           => '404.php',
+    '/403'           => '403.php',
+    '/500'           => '500.php',
+    '/503'           => '503.php'
 ];
 
 // 4. CONTROLLO E REINDIRIZZAMENTO
@@ -42,21 +49,32 @@ if (array_key_exists($path, $routes)) {
         require $fileToLoad;
     } else {
         // Errore 500: Rotta definita ma file mancante
-        die("Errore configurazione: Il file $fileToLoad non esiste.");
+        http_response_code(500);
+        $error500File = __DIR__ . '/src/struct/500.php';
+        if (file_exists($error500File)) {
+            require $error500File;
+        } else {
+            die("Errore critico: Il file $fileToLoad non esiste e nemmeno la pagina 500.php");
+        }
     }
 
 } else {
     // 5. GESTIONE 404 (Pagina non trovata)
     http_response_code(404);
     
-    // Puoi creare un file src/struct/404.php per gestirlo meglio, oppure stampare al volo:
-    echo getTemplatePage(
-        "404 Not Found", 
-        "<div style='text-align:center; padding:5rem;'>
-            <h1>Errore 404</h1>
-            <p>La pagina che cerchi non esiste.</p>
-            <a href='$prefix/' class='btn btn-primary'>Torna alla Home</a>
-         </div>"
-    );
+    $error404File = __DIR__ . '/src/struct/404.php';
+    if (file_exists($error404File)) {
+        require $error404File;
+    } else {
+        // Fallback se anche 404.php non esiste
+        echo getTemplatePage(
+            "404 Not Found", 
+            "<div style='text-align:center; padding:5rem;'>
+                <h1>Errore 404</h1>
+                <p>La pagina che cerchi non esiste.</p>
+                <a href='$prefix/' class='btn btn-primary'>Torna alla Home</a>
+             </div>"
+        );
+    }
 }
 ?>

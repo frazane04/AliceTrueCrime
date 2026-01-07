@@ -1,0 +1,54 @@
+<div class="error-container" role="main" aria-labelledby="error-title">
+  <div class="error-content">
+    <!-- Badge con codice errore -->
+    <div class="error-badge" role="status" aria-live="polite">
+      <span class="error-code" aria-label="Errore quattrocentoquattro">404</span>
+      <span class="error-label">CASO ARCHIVIATO</span>
+    </div>
+
+    <!-- Titolo principale -->
+    <h1 id="error-title" class="error-title">Tracce Perdute</h1>
+
+    <!-- Descrizione con tema investigativo -->
+    <div class="error-description">
+      <p>
+        La pagina che stai cercando è <strong>scomparsa senza lasciare traccia</strong>. 
+        I nostri detective hanno setacciato l'intero archivio, ma non ci sono prove 
+        della sua esistenza.
+      </p>
+      <p class="error-hint">
+        Possibili cause: URL digitato erroneamente, link obsoleto, 
+        o la pagina è stata rimossa dalle nostre indagini.
+      </p>
+    </div>
+
+    <!-- Box con "prove" (suggerimenti per l'utente) -->
+    <nav class="evidence-box" aria-labelledby="evidence-heading">
+      <h2 id="evidence-heading">Elementi da verificare:</h2>
+      <ul class="evidence-list">
+        <li>
+          <span class="evidence-icon" aria-hidden="true">🔍</span>
+          <span>Controlla che l'indirizzo sia stato digitato correttamente</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">📋</span>
+          <span>Il link potrebbe essere obsoleto o non più valido</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">🏠</span>
+          <span>Torna alla home per riprendere le indagini</span>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Azioni disponibili -->
+    <div class="error-actions">
+      <a href="{{PREFIX}}/" class="btn btn-primary btn-xl" aria-label="Torna alla pagina principale di AliceTrueCrime">
+        Torna alla Home
+      </a>
+      <a href="{{PREFIX}}/esplora" class="btn btn-outline" aria-label="Esplora tutti i casi di cronaca nera">
+        Esplora i Casi
+      </a>
+    </div>
+  </div>
+</div>

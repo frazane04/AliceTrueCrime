@@ -1,0 +1,54 @@
+<div class="error-container" role="main" aria-labelledby="error-title">
+  <div class="error-content">
+    <!-- Badge con codice errore -->
+    <div class="error-badge" role="status" aria-live="polite">
+      <span class="error-code" aria-label="Errore cinquecentotre">503</span>
+      <span class="error-label">ARCHIVIO CHIUSO</span>
+    </div>
+
+    <!-- Titolo principale -->
+    <h1 id="error-title" class="error-title">Archivio Temporaneamente Chiuso</h1>
+
+    <!-- Descrizione con tema investigativo -->
+    <div class="error-description">
+      <p>
+        L'archivio è <strong>temporaneamente chiuso per manutenzione</strong>. 
+        I nostri archivisti stanno riorganizzando i fascicoli e aggiornando 
+        il sistema di catalogazione per garantirti un'esperienza migliore.
+      </p>
+      <p class="error-hint">
+        Il servizio dovrebbe tornare disponibile a breve. 
+        Ti preghiamo di riprovare tra qualche minuto.
+      </p>
+    </div>
+
+    <!-- Box con "prove" (suggerimenti per l'utente) -->
+    <nav class="evidence-box" aria-labelledby="evidence-heading">
+      <h2 id="evidence-heading">Informazioni sul disservizio:</h2>
+      <ul class="evidence-list">
+        <li>
+          <span class="evidence-icon" aria-hidden="true">🔨</span>
+          <span>Manutenzione programmata in corso</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">⏱️</span>
+          <span>Il servizio tornerà operativo a breve</span>
+        </li>
+        <li>
+          <span class="evidence-icon" aria-hidden="true">📧</span>
+          <span>Iscriviti alla newsletter per ricevere aggiornamenti</span>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Azioni disponibili -->
+    <div class="error-actions">
+      <a href="{{PREFIX}}/" class="btn btn-primary btn-xl" aria-label="Torna alla pagina principale di AliceTrueCrime">
+        Torna alla Home
+      </a>
+      <a href="{{PREFIX}}/esplora" class="btn btn-outline" aria-label="Esplora tutti i casi di cronaca nera">
+        Esplora i Casi
+      </a>
+    </div>
+  </div>
+</div>
