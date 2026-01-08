@@ -487,7 +487,73 @@ class FunzioniDB {
             return null;
         }
     }
+
+
+    /**
+     * Recupera le vittime di un caso tramite ID
+     * @param int $ID del caso
+     * @return array|null Dati dei colpevoli o null
+     */
+    public function getVittimeByCaso($id) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT * FROM Caso JOIN Vittima ON Caso.N_Caso=Vittima.Caso WHERE N_Caso=? AND Approvato = 1";
+            $result = $this->db->query($query, [$id], "i");
+            $vittime=[];
+            if ($result && is_object($result)) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $vittime[] = $row;
+            }
+        }
+
+        $this->db->chiudiConnessione();
+        return $vittime;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero vittime di un caso: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Recupera i colpevoli di un caso tramite ID
+     * @param int $ID del caso
+     * @return array|null Dati dei colpevoli o null
+     */
+    public function getColpevoliByCaso($id) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT * FROM Caso JOIN Colpa ON Caso.N_Caso=Colpa.Caso JOIN Colpevole ON Colpevole.CF_Colpevole=Colpa.Colpevole WHERE N_Caso=?  AND Approvato = 1";
+            $result = $this->db->query($query, [$id], "i");
+            
+             $colpevoli = [];
+
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $colpevoli[] = $row;
+                }
+            }
+
+        $this->db->chiudiConnessione();
+        return $colpevoli;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero colpevoli di un caso: " . $e->getMessage());
+            return null;
+        }
+    }
+
     
+
+
     /**
      * Cerca casi per titolo o descrizione
      * @param string $query Testo da cercare

@@ -1,36 +1,60 @@
-<div class="display-error">
+<div class="caso-container">
+
+    <div class="caso-header">
+        <!-- caso_titolo -->
     </div>
 
-<section class="caso-panoramica">
-    <!-- caso_immagine -->
-    
-    <div class="dati-caso">
-        
-        <!-- caso_titolo -->
-        <!-- caso_tipologia -->
-        
-        <h2>Scheda Tecnica</h2>
-        <div class="scheda-tecnica">
-            <p><span class="bold">Data: </span> <!-- caso_data --> </p>
-            <p><span class="bold">Luogo: </span> <!-- caso_luogo --> </p>
-            <p><span class="bold">Vittime: </span> <!-- caso_vittime --> </p>
-            <p><span class="bold">Sospettato: </span> <!-- caso_sospettato --> </p>
-            <p><span class="bold">Arma: </span> <!-- caso_arma --> </p>
+    <section class="caso-panoramica">
+        <div class="box-immagine">
+            <!-- caso_immagine -->
         </div>
 
-        <h2>Ricostruzione dei fatti</h2>
+        <div class="dati-caso">
+
+            <h2>Scheda Tecnica</h2>
+            <div class="scheda-tecnica">
+                <p><span class="bold">Data: </span> <!-- caso_data --> </p>
+                <p><span class="bold">Luogo: </span> <!-- caso_luogo --> </p>
+                <p><span class="bold">Arma: </span> <!-- caso_tipologia --> </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="caso-storia">
+        <h2>Storia &amp; Ricostruzione</h2>
         <div id="description-text" class="testo-racconto">
             <!-- caso_descrizione -->
         </div>
 
-        
+        <div class="fonti-box">
+            <!-- caso_articoli -->
+        </div>
+    </section>
 
-    </div>
-</section>
+    <section class="caso-profili">
 
-<section class="caso-approfondimenti">
-    <h2>Timeline &amp; Discussione</h2>
-    <div class="timeline-container"> 
-        <!-- caso_timeline -->
-    </div>
-</section>
+        <div class="sezione-dinamica colpevoli">
+            <h2>Colpevoli</h2>
+
+            <div class="griglia-dinamica">
+                <!-- caso_colpevoli -->
+            </div>
+        </div>
+
+        <div class="sezione-dinamica vittime">
+            <h2>Vittime</h2>
+            <div class="griglia-dinamica">
+                <!-- caso_vittime -->
+            </div>
+        </div>
+
+    </section>
+
+    <section class="caso-approfondimenti">
+        <h2>Timeline &amp; Discussione</h2>
+        <div class="timeline-container">
+            <!-- caso_timeline -->
+        </div>
+    </section>
+
+</div>
