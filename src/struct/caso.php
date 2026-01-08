@@ -33,6 +33,7 @@ $dbFunctions = new FunzioniDB();
 $caso = $dbFunctions->getCasoById($casoId);
 $colpevoli = $dbFunctions->getColpevoliByCaso($casoId);
 $vittime=$dbFunctions->getVittimeByCaso($casoId);
+$articoli=$dbFunctions->getArticoliByCaso($casoId);
 // Verifico se il caso esiste
 if (!$caso) {
     http_response_code(504);
@@ -44,8 +45,7 @@ if (!$caso) {
             <a href='$prefix/esplora' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
                 Esplora tutti i Casi
             </a>
-        </div>
-    ";
+        </div>";
     
     echo getTemplatePage("Caso Non Trovato - AliceTrueCrime", $contenuto);
     exit;
@@ -75,7 +75,7 @@ foreach ($colpevoli as $colpevole) {
 
 
     $html_colpevoli .= '
-    <div class="card-personaggio">
+    <article class="carousel-card">
         <div class="card-foto">
             <img src="' . $imgColpevole . '" alt="' . $nome_colpevole." " .$cognome_colpevole. '">
         </div>
@@ -84,7 +84,7 @@ foreach ($colpevoli as $colpevole) {
             <p><strong>Nato a:</strong> ' . $luogoNascita_colpevole. '</p>
             <p><strong>Il:</strong> ' . $dataNascita_colpevole . '</p>
         </div>
-    </div>';
+    </article>';
 }
 
 $html_vittime = ""; // Variabile vuota inizialmente
@@ -108,7 +108,7 @@ foreach ($vittime as $vittima) {
 
     // Costruzione HTML (Concatenazione)
     $html_vittime .= '
-    <div class="card-personaggio">
+    <article class="carousel-card">
         <div class="card-foto">
             <img src="' . $imgVittima . '" alt="' . $nome_vittima . " " . $cognome_vittima . '">
         </div>
@@ -118,12 +118,30 @@ foreach ($vittime as $vittima) {
             <p><strong>Il:</strong> ' . $dataNascita_vittima . '</p>
             <p><strong>Il:</strong> ' . $dataDecesso_vittima . '</p>
         </div>
-    </div>';
+    </article>';
+}
+
+$html_articoli= "";
+
+foreach($articoli as $articolo){
+    $art_Titolo=htmlspecialchars($articolo['Titolo']);
+    $art_data = !empty($articolo['Data']) 
+        ? date('d/m/Y', strtotime($articolo['Data'])) 
+        : 'Sconosciuta';
+    $art_link=htmlspecialchars($articolo['Link']);
+
+    $html_articoli.='
+    <li class="approfondimento">
+    <p class="approfondimento-fonte">
+        <a href="'.$art_link.'" target="_blank" rel="noopener noreferrer">'.$art_Titolo.'</a>
+        <time class="approfondimento-data" datetime="d/m/Y">'.$art_data.'</time>
+    </p>
+    </li>';
 }
 
 // Preparo i dati per la visualizzazione
 $titolo = htmlspecialchars($caso['Titolo']);
-$descrizione = nl2br(htmlspecialchars($caso['Descrizione']));
+$storia = nl2br(htmlspecialchars($caso['Storia']));
 $data = date('d/m/Y', strtotime($caso['Data']));
 $luogo = htmlspecialchars($caso['Luogo']);
 $tipologia = htmlspecialchars($caso['Tipologia'] ?? 'Non specificata');
@@ -153,10 +171,10 @@ $contenuto = str_replace('<!-- caso_titolo -->', $htmlTitolo, $contenuto);
 
 // Tipologia
 $htmlTipologia = '<p class="italic">Categoria: ' . $tipologia . '</p>';
-$contenuto = str_replace('<!-- [caso_tipologia -->', $htmlTipologia, $contenuto);
+$contenuto = str_replace('<!-- caso_tipologia -->', $htmlTipologia, $contenuto);
 
 // Descrizione
-$contenuto = str_replace('<!-- caso_descrizione -->', $descrizione, $contenuto);
+$contenuto = str_replace('<!-- caso_storia -->', $storia, $contenuto);
 
 // Data
 $contenuto = str_replace('<!-- caso_data -->', $data, $contenuto);
@@ -164,11 +182,15 @@ $contenuto = str_replace('<!-- caso_data -->', $data, $contenuto);
 // Luogo
 $contenuto = str_replace('<!-- caso_luogo -->', $luogo, $contenuto);
 
-// Vittime (da implementare)
+// Vittime 
 $contenuto = str_replace('<!-- caso_vittime -->', $html_vittime, $contenuto);
 
-// Sospettato (da implementare)
+//Colpevoli
 $contenuto = str_replace('<!-- caso_colpevoli -->', $html_colpevoli, $contenuto);
+
+//Articoli
+$contenuto = str_replace('<!-- caso_articoli -->', $html_articoli, $contenuto);
+
 
 // Timeline (da implementare)
 $htmlTimeline = '<p style="color: #666; font-style: italic;">Timeline non ancora disponibile per questo caso.</p>';

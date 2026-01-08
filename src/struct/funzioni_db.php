@@ -551,7 +551,37 @@ class FunzioniDB {
         }
     }
 
-    
+    /**
+     * Recupera gli articoli di un caso tramite ID
+     * @param int $ID del caso
+     * @return array|null Dati degli articoli o null
+     */
+    public function getArticoliByCaso($id) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT * FROM Caso JOIN Articolo ON Caso.N_Caso=Articolo.Caso WHERE N_Caso=?";
+            $result = $this->db->query($query, [$id], "i");
+            
+             $articoli = [];
+
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $articoli[] = $row;
+                }
+            }
+
+        $this->db->chiudiConnessione();
+        return $articoli;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero articoli di un caso: " . $e->getMessage());
+            return null;
+        }
+    }
 
 
     /**
