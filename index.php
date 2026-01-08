@@ -24,6 +24,7 @@ $routes = [
     '/home'          => 'home.php',
     
     '/esplora'       => 'esplora.php',
+    '/caso'          => 'caso.php',
     '/segnala-caso'  => 'segnala.php',
     '/newsletter'    => 'newsletter.php',
     
