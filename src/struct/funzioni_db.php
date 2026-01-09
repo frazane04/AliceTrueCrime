@@ -684,97 +684,69 @@ class FunzioniDB {
         }
     }
     /**
-     * Inserisce un nuovo commento
-     * @param string $emailUtente Email dell'utente (chiave esterna)
-     * @param int $idCaso ID del caso
-     * @param string $commento Testo del commento
-     * @return array ['success' => bool, 'message' => string, 'commento_id' => int|null]
-     */
-    public function inserisciCommento($emailUtente, $idCaso, $commento) {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-            
-            // Validazione base
-            if (empty($emailUtente) || empty($idCaso) || empty($commento)) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Tutti i campi sono obbligatori',
-                    'commento_id' => null
-                ];
-            }
-            
-            // Verifica lunghezza commento
-            if (strlen($commento) < 10) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Il commento deve contenere almeno 10 caratteri',
-                    'commento_id' => null
-                ];
-            }
-            
-            if (strlen($commento) > 2000) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Il commento non può superare i 2000 caratteri',
-                    'commento_id' => null
-                ];
-            }
-            
-            // Verifica che l'utente esista
-            if (!$this->verificaEmailEsistente($emailUtente)) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Utente non trovato',
-                    'commento_id' => null
-                ];
-            }
-            
-            // Verifica che il caso esista ed è approvato
-            $caso = $this->getCasoById($idCaso);
-            if (!$caso) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Caso non trovato',
-                    'commento_id' => null
-                ];
-            }
-            
-            // Insert commento
-            $query = "INSERT INTO Commento (Commento, Email_Utente, ID_Caso) 
-                    VALUES (?, ?, ?)";
-            
-            $result = $this->db->query($query, [$commento, $emailUtente, $idCaso], "ssi");
-            
-            if ($result) {
-                $commentoId = $this->db->getLastInsertId();
-                $this->db->chiudiConnessione();
-                
-                return [
-                    'success' => true,
-                    'message' => 'Commento pubblicato con successo',
-                    'commento_id' => $commentoId
-                ];
-            } else {
-                throw new Exception("Errore durante l'inserimento del commento");
-            }
-            
-        } catch (Exception $e) {
+ * Inserisce un nuovo commento
+ * @param string $emailUtente Email dell'utente (chiave esterna)
+ * @param int $idCaso ID del caso
+ * @param string $commento Testo del commento
+ * @return array ['success' => bool, 'message' => string, 'commento_id' => int|null]
+ */
+public function inserisciCommento($emailUtente, $idCaso, $commento) {
+    try {
+        if (!$this->db->apriConnessione()) {
+            throw new Exception("Impossibile connettersi al database");
+        }
+        
+        // Validazione base
+        if (empty($emailUtente) || empty($idCaso) || empty($commento)) {
             $this->db->chiudiConnessione();
-            error_log("Errore inserimento commento: " . $e->getMessage());
             return [
                 'success' => false,
-                'message' => 'Errore durante la pubblicazione del commento',
+                'message' => 'Tutti i campi sono obbligatori',
                 'commento_id' => null
             ];
         }
+        
+        
+        if (strlen($commento) > 2000) {
+            $this->db->chiudiConnessione();
+            return [
+                'success' => false,
+                'message' => 'Il commento non può superare i 2000 caratteri',
+                'commento_id' => null
+            ];
+        }
+        
+        
+        $query = "INSERT INTO Commento (Commento, Email_Utente, ID_Caso) 
+                  VALUES (?, ?, ?)";
+        
+        $result = $this->db->query($query, [$commento, $emailUtente, $idCaso], "ssi");
+        
+        if ($result) {
+            $commentoId = $this->db->getLastInsertId();
+            $this->db->chiudiConnessione();
+            
+            return [
+                'success' => true,
+                'message' => 'Commento pubblicato con successo',
+                'commento_id' => $commentoId
+            ];
+        } else {
+            // Log dell'errore MySQL
+            error_log("Errore MySQL inserimento commento: " . mysqli_error($this->db->getConnessione()));
+            throw new Exception("Errore durante l'inserimento del commento");
+        }
+        
+    } catch (Exception $e) {
+        $this->db->chiudiConnessione();
+        error_log("Errore inserimento commento: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Errore durante la pubblicazione del commento: ' . $e->getMessage(),
+            'commento_id' => null
+        ];
     }
+}
 
     /**
      * Recupera i commenti di un caso
