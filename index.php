@@ -3,21 +3,40 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Richiamo di utils.php per la configurazione iniziale
 require_once 'src/struct/utils.php';
 
-// 1. Analisi URL
+//Analisi URL
 $request = $_SERVER['REQUEST_URI'];
 $path = parse_url($request, PHP_URL_PATH);
 
-// 2. Gestione Prefisso
+//Gestione Prefisso
 $prefix = getPrefix();
 if ($prefix && strpos($path, $prefix) === 0) {
     $path = substr($path, strlen($prefix));
 }
 
-// 3. CONFIGURAZIONE DELLE ROTTE
-// Qui definisci l'URL (chiave) e il nome del file PHP dentro src/struct/ (valore)
+$path = rtrim($path, '/');
+if (empty($path)) {
+    $path = '/';
+}
+
+//ROTTE DINAMICHE 
+if (preg_match('#^/caso/([a-z0-9\-]+)$#i', $path, $matches)) {
+    // Cattura lo slug dall'URL
+    $_GET['slug'] = $matches[1];
+    
+    $fileToLoad = __DIR__ . '/src/struct/caso.php';
+    
+    if (file_exists($fileToLoad)) {
+        require $fileToLoad;
+        exit;
+    } else {
+        http_response_code(500);
+        die("Errore: caso.php non trovato");
+    }
+}
+
+// ROTTE STATICHE
 $routes = [
     '/'              => 'home.php',
     '/index.php'     => 'home.php',
@@ -32,7 +51,6 @@ $routes = [
     '/registrati'    => 'registrati.php',
     '/profilo'       => 'profilo.php',
     '/logout'        => 'logout.php',
-
     
     '/404'           => '404.php',
     '/403'           => '403.php',
@@ -40,16 +58,14 @@ $routes = [
     '/503'           => '503.php'
 ];
 
-// 4. CONTROLLO E REINDIRIZZAMENTO
+//CONTROLLO E REINDIRIZZAMENTO
 if (array_key_exists($path, $routes)) {
     // Se l'URL esiste nell'array, carichiamo il file corrispondente
     $fileToLoad = __DIR__ . '/src/struct/' . $routes[$path];
-    
-    // Controllo di sicurezza extra: il file esiste davvero?
+
     if (file_exists($fileToLoad)) {
         require $fileToLoad;
     } else {
-        // Errore 500: Rotta definita ma file mancante
         http_response_code(500);
         $error500File = __DIR__ . '/src/struct/500.php';
         if (file_exists($error500File)) {
@@ -60,7 +76,7 @@ if (array_key_exists($path, $routes)) {
     }
 
 } else {
-    // 5. GESTIONE 404 (Pagina non trovata)
+    // GESTIONE 404 (Pagina non trovata)
     http_response_code(404);
     
     $error404File = __DIR__ . '/src/struct/404.php';

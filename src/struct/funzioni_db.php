@@ -383,6 +383,35 @@ class FunzioniDB {
             ];
         }
     }
+    /**
+     * Recupera l'ID di un caso dal suo slug
+     * @param string $slug Slug del caso
+     * @return int|null ID del caso o null se non trovato
+     */
+    public function getCasoIdBySlug($slug) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT N_Caso FROM Caso WHERE Slug = ? AND Approvato = 1";
+            $result = $this->db->query($query, [$slug], "s");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return (int)$row['N_Caso'];
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero caso da slug: " . $e->getMessage());
+            return null;
+        }
+    }
     
     /**
      * Recupera casi per categoria (solo approvati)

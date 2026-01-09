@@ -3,8 +3,40 @@
 
 require_once __DIR__ . '/funzioni_db.php';
 
-// Recupero ID del caso dalla query string
-$casoId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// ========================================
+// GESTIONE SLUG/ID - Supporta entrambi i formati
+// ========================================
+$casoId = 0;
+$dbFunctions = new FunzioniDB();
+
+// Controlla se c'è uno slug nell'URL (es: /caso/il-mostro-di-milwaukee)
+if (isset($_GET['slug']) && !empty($_GET['slug'])) {
+    $slug = trim($_GET['slug']);
+    
+    // Converti lo slug in ID
+    $casoId = $dbFunctions->getCasoIdBySlug($slug);
+    
+    if ($casoId === null) {
+        // Slug non trovato
+        http_response_code(404);
+        $prefix = getPrefix();
+        $contenuto = "
+            <div class='error-container' style='text-align: center; padding: 3rem;'>
+                <h1>🔍 Caso Non Trovato</h1>
+                <p>Il caso richiesto (<strong>" . htmlspecialchars($slug) . "</strong>) non esiste.</p>
+                <a href='$prefix/esplora' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+                    Esplora tutti i Casi
+                </a>
+            </div>
+        ";
+        echo getTemplatePage("Caso Non Trovato - AliceTrueCrime", $contenuto);
+        exit;
+    }
+}
+// Fallback: supporta ancora il vecchio formato ?id=1 per compatibilità
+elseif (isset($_GET['id']) && !empty($_GET['id'])) {
+    $casoId = intval($_GET['id']);
+}
 
 // Inizializzo variabili
 $templatePath = __DIR__ . '/../template/caso.html';
@@ -29,22 +61,19 @@ if ($casoId <= 0) {
 }
 
 // Recupero i dati del caso dal database
-$dbFunctions = new FunzioniDB();
 $caso = $dbFunctions->getCasoById($casoId);
 $colpevoli = $dbFunctions->getColpevoliByCaso($casoId);
-$vittime=$dbFunctions->getVittimeByCaso($casoId);
-$articoli=$dbFunctions->getArticoliByCaso($casoId);
+$vittime = $dbFunctions->getVittimeByCaso($casoId);
 $articoli = $dbFunctions->getArticoliByCaso($casoId);
-
 
 // Verifico se il caso esiste
 if (!$caso) {
-    http_response_code(504);
+    http_response_code(404);
     
     $contenuto = "
         <div class='error-container' style='text-align: center; padding: 3rem;'>
             <h1>🔍 Caso Non Trovato</h1>
-            <p>Il caso richiesto (ID: $casoId) non esiste o non è stato ancora approvato.</p>
+            <p>Il caso richiesto non esiste o non è stato ancora approvato.</p>
             <a href='$prefix/esplora' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
                 Esplora tutti i Casi
             </a>
@@ -61,55 +90,54 @@ if (!file_exists($templatePath)) {
 
 $contenuto = file_get_contents($templatePath);
 
-$html_colpevoli = ""; // Variabile vuota inizialmente
+// ========================================
+// GENERAZIONE HTML COLPEVOLI
+// ========================================
+$html_colpevoli = "";
 
 foreach ($colpevoli as $colpevole) {
-    // Aggiungo (concateno) ogni card alla variabile $html_colpevoli
-    // NOTA: Qui definisco l'HTML della SINGOLA card
-    $nome_colpevole=htmlspecialchars($colpevole['Nome']);
-    $cognome_colpevole=htmlspecialchars($colpevole['Cognome']);
-    $luogoNascita_colpevole=htmlspecialchars($colpevole['LuogoNascita']);
+    $nome_colpevole = htmlspecialchars($colpevole['Nome']);
+    $cognome_colpevole = htmlspecialchars($colpevole['Cognome']);
+    $luogoNascita_colpevole = htmlspecialchars($colpevole['LuogoNascita']);
     $dataNascita_colpevole = !empty($colpevole['DataNascita']) 
         ? date('d/m/Y', strtotime($colpevole['DataNascita'])) 
         : 'Sconosciuta';    
-    $imgColpevole=!empty($colpevole['Immagine']) 
+    $imgColpevole = !empty($colpevole['Immagine']) 
         ? $prefix . '/' . htmlspecialchars($colpevole['Immagine'])
         : $prefix . '/assets/img/caso-placeholder.jpeg';
-
 
     $html_colpevoli .= '
     <article class="carousel-card">
         <div class="card-foto">
-            <img src="' . $imgColpevole . '" alt="' . $nome_colpevole." " .$cognome_colpevole. '">
+            <img src="' . $imgColpevole . '" alt="' . $nome_colpevole . " " . $cognome_colpevole . '">
         </div>
         <div class="card-info">
-            <h4>' . $nome_colpevole." " .$cognome_colpevole . '</h4>
-            <p><strong>Nato a:</strong> ' . $luogoNascita_colpevole. '</p>
+            <h4>' . $nome_colpevole . " " . $cognome_colpevole . '</h4>
+            <p><strong>Nato a:</strong> ' . $luogoNascita_colpevole . '</p>
             <p><strong>Il:</strong> ' . $dataNascita_colpevole . '</p>
         </div>
     </article>';
 }
 
-$html_vittime = ""; // Variabile vuota inizialmente
+// ========================================
+// GENERAZIONE HTML VITTIME
+// ========================================
+$html_vittime = "";
 
 foreach ($vittime as $vittima) {
-    
-    // Preparazione variabili (Sanitizzazione)
     $nome_vittima = htmlspecialchars($vittima['Nome']);
     $cognome_vittima = htmlspecialchars($vittima['Cognome']);
     $luogoNascita_vittima = htmlspecialchars($vittima['LuogoNascita']);
     $dataNascita_vittima = !empty($vittima['DataNascita']) 
         ? date('d/m/Y', strtotime($vittima['DataNascita'])) 
         : 'Sconosciuta';
-    $dataDecesso_vittima = !empty($vittima['DataNascita']) 
+    $dataDecesso_vittima = !empty($vittima['DataDecesso']) 
         ? date('d/m/Y', strtotime($vittima['DataDecesso'])) 
         : 'Sconosciuta';
-    // Gestione Immagine
     $imgVittima = !empty($vittima['Immagine']) 
         ? $prefix . '/' . htmlspecialchars($vittima['Immagine'])
         : $prefix . '/assets/img/caso-placeholder.jpeg';
 
-    // Costruzione HTML (Concatenazione)
     $html_vittime .= '
     <article class="carousel-card">
         <div class="card-foto">
@@ -119,30 +147,35 @@ foreach ($vittime as $vittima) {
             <h4>' . $nome_vittima . " " . $cognome_vittima . '</h4>
             <p><strong>Nato a:</strong> ' . $luogoNascita_vittima . '</p>
             <p><strong>Il:</strong> ' . $dataNascita_vittima . '</p>
-            <p><strong>Il:</strong> ' . $dataDecesso_vittima . '</p>
+            <p><strong>Decesso:</strong> ' . $dataDecesso_vittima . '</p>
         </div>
     </article>';
 }
 
-$html_articoli= "";
+// ========================================
+// GENERAZIONE HTML ARTICOLI
+// ========================================
+$html_articoli = "";
 
-foreach($articoli as $articolo){
-    $art_Titolo=htmlspecialchars($articolo['Titolo']);
+foreach ($articoli as $articolo) {
+    $art_Titolo = htmlspecialchars($articolo['Titolo']);
     $art_data = !empty($articolo['Data']) 
         ? date('d/m/Y', strtotime($articolo['Data'])) 
         : 'Sconosciuta';
-    $art_link=htmlspecialchars($articolo['Link']);
+    $art_link = htmlspecialchars($articolo['Link']);
 
-    $html_articoli.='
+    $html_articoli .= '
     <li class="approfondimento">
-    <p class="approfondimento-fonte">
-        <a href="'.$art_link.'" target="_blank" rel="noopener noreferrer">'.$art_Titolo.'</a>
-        <time class="approfondimento-data" datetime="d/m/Y">'.$art_data.'</time>
-    </p>
+        <p class="approfondimento-fonte">
+            <a href="' . $art_link . '" target="_blank" rel="noopener noreferrer">' . $art_Titolo . '</a>
+            <time class="approfondimento-data" datetime="d/m/Y">' . $art_data . '</time>
+        </p>
     </li>';
 }
 
-// Preparo i dati per la visualizzazione
+// ========================================
+// PREPARO DATI PER VISUALIZZAZIONE
+// ========================================
 $titolo = htmlspecialchars($caso['Titolo']);
 $storia = nl2br(htmlspecialchars($caso['Storia']));
 $data = date('d/m/Y', strtotime($caso['Data']));
@@ -158,55 +191,36 @@ $immagine = !empty($caso['Immagine'])
 $statusClass = $caso['Approvato'] ? 'status-approved' : 'status-pending';
 $statusText = $caso['Approvato'] ? '✓ Caso Verificato' : '⏳ In Revisione';
 
-// Sostituisco i placeholder con i dati reali
-
-// Immagine
+// ========================================
+// SOSTITUZIONI PLACEHOLDER
+// ========================================
 $htmlImmagine = '<img alt="Evidenza principale del caso ' . $titolo . '" src="' . $immagine . '" class="img-evidence" width="300" />';
 $contenuto = str_replace('<!-- caso_immagine -->', $htmlImmagine, $contenuto);
 
-// Status badge
 $htmlStatus = '<p class="status-badge ' . $statusClass . '">' . $statusText . '</p>';
 $contenuto = str_replace('<!-- caso_status -->', $htmlStatus, $contenuto);
 
-// Titolo
 $htmlTitolo = '<h1>' . $titolo . '</h1>';
 $contenuto = str_replace('<!-- caso_titolo -->', $htmlTitolo, $contenuto);
 
-// Tipologia
 $htmlTipologia = '<p class="italic">Categoria: ' . $tipologia . '</p>';
 $contenuto = str_replace('<!-- caso_tipologia -->', $htmlTipologia, $contenuto);
 
-// Descrizione
 $contenuto = str_replace('<!-- caso_storia -->', $storia, $contenuto);
-
-// Data
 $contenuto = str_replace('<!-- caso_data -->', $data, $contenuto);
-
-// Luogo
 $contenuto = str_replace('<!-- caso_luogo -->', $luogo, $contenuto);
-
-// Vittime 
 $contenuto = str_replace('<!-- caso_vittime -->', $html_vittime, $contenuto);
-
-//Colpevoli
 $contenuto = str_replace('<!-- caso_colpevoli -->', $html_colpevoli, $contenuto);
-
-//Articoli
 $contenuto = str_replace('<!-- caso_articoli -->', $html_articoli, $contenuto);
-
-
-//aaaaa
 
 // ========================================
 // GESTIONE COMMENTI
 // ========================================
-
 $messaggioCommento = '';
 
 // Gestione POST per nuovo commento
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'aggiungi_commento') {
     
-    // Verifica che l'utente sia loggato
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login per commentare.</div>';
     } else {
@@ -220,7 +234,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             
             if ($resultCommento['success']) {
                 $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultCommento['message']) . '</div>';
-                // Redirect per evitare reinvio del form
                 header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
                 exit;
             } else {
@@ -268,10 +281,8 @@ if (!empty($commenti)) {
         $testoCommento = nl2br(htmlspecialchars($commento['Commento']));
         $idCommento = (int)$commento['ID_Commento'];
         
-        // Avatar utente
         $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($usernameCommento) . "&background=0D8ABC&color=fff&size=48";
         
-        // Verifica se l'utente può eliminare il commento
         $pulsanteElimina = '';
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
             $emailLoggata = $_SESSION['user_email'];
@@ -306,7 +317,7 @@ if (!empty($commenti)) {
     $htmlCommenti = '<p class="no-commenti">Nessun commento ancora. Sii il primo a commentare!</p>';
 }
 
-// Form commento (solo per utenti loggati)
+// Form commento
 $htmlFormCommento = '';
 
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
@@ -337,7 +348,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                     required
                     maxlength="2000"
                 ></textarea>
-                <small class="form-hint">Massimo 2000</small>
+                <small class="form-hint">Massimo 2000 caratteri</small>
             </div>
             
             <button type="submit" class="btn btn-primary">💬 Pubblica Commento</button>
@@ -351,14 +362,9 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     </div>';
 }
 
-// Sostituisci placeholder commenti
 $contenuto = str_replace('<!-- caso_numero_commenti -->', $numeroCommenti, $contenuto);
 $contenuto = str_replace('<!-- caso_form_commento -->', $htmlFormCommento, $contenuto);
 $contenuto = str_replace('<!-- caso_lista_commenti -->', $htmlCommenti, $contenuto);
-
-
-
-//bbbbbb
 
 // Output finale
 $titoloPagina = $titolo . " - AliceTrueCrime";
