@@ -34,6 +34,9 @@ $caso = $dbFunctions->getCasoById($casoId);
 $colpevoli = $dbFunctions->getColpevoliByCaso($casoId);
 $vittime=$dbFunctions->getVittimeByCaso($casoId);
 $articoli=$dbFunctions->getArticoliByCaso($casoId);
+$articoli = $dbFunctions->getArticoliByCaso($casoId);
+
+
 // Verifico se il caso esiste
 if (!$caso) {
     http_response_code(504);
@@ -192,9 +195,170 @@ $contenuto = str_replace('<!-- caso_colpevoli -->', $html_colpevoli, $contenuto)
 $contenuto = str_replace('<!-- caso_articoli -->', $html_articoli, $contenuto);
 
 
-// Timeline (da implementare)
-$htmlTimeline = '<p style="color: #666; font-style: italic;">Timeline non ancora disponibile per questo caso.</p>';
-$contenuto = str_replace('<!-- caso_timeline -->', $htmlTimeline, $contenuto);
+//aaaaa
+
+// ========================================
+// GESTIONE COMMENTI
+// ========================================
+
+$messaggioCommento = '';
+
+// Gestione POST per nuovo commento
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'aggiungi_commento') {
+    
+    // Verifica che l'utente sia loggato
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login per commentare.</div>';
+    } else {
+        $testoCommento = trim($_POST['commento'] ?? '');
+        $emailUtente = $_SESSION['user_email'];
+        
+        if (empty($testoCommento)) {
+            $messaggioCommento = '<div class="alert alert-error">Il commento non può essere vuoto.</div>';
+        } else {
+            $resultCommento = $dbFunctions->inserisciCommento($emailUtente, $casoId, $testoCommento);
+            
+            if ($resultCommento['success']) {
+                $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultCommento['message']) . '</div>';
+                // Redirect per evitare reinvio del form
+                header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
+                exit;
+            } else {
+                $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultCommento['message']) . '</div>';
+            }
+        }
+    }
+}
+
+// Gestione eliminazione commento
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'elimina_commento') {
+    
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login.</div>';
+    } else {
+        $idCommento = intval($_POST['id_commento'] ?? 0);
+        $emailUtente = $_SESSION['user_email'];
+        $isAdmin = $_SESSION['is_admin'] ?? false;
+        
+        if ($idCommento > 0) {
+            $resultEliminazione = $dbFunctions->eliminaCommento($idCommento, $emailUtente, $isAdmin);
+            
+            if ($resultEliminazione['success']) {
+                $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
+                header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
+                exit;
+            } else {
+                $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
+            }
+        }
+    }
+}
+
+// Recupera i commenti
+$commenti = $dbFunctions->getCommentiCaso($casoId);
+$numeroCommenti = $dbFunctions->contaCommentiCaso($casoId);
+
+// Genera HTML commenti
+$htmlCommenti = '';
+
+if (!empty($commenti)) {
+    foreach ($commenti as $commento) {
+        $usernameCommento = htmlspecialchars($commento['Username']);
+        $dataCommento = date('d/m/Y H:i', strtotime($commento['Data']));
+        $testoCommento = nl2br(htmlspecialchars($commento['Commento']));
+        $idCommento = (int)$commento['ID_Commento'];
+        
+        // Avatar utente
+        $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($usernameCommento) . "&background=0D8ABC&color=fff&size=48";
+        
+        // Verifica se l'utente può eliminare il commento
+        $pulsanteElimina = '';
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            $emailLoggata = $_SESSION['user_email'];
+            $isAdmin = $_SESSION['is_admin'] ?? false;
+            
+            if ($commento['Email'] === $emailLoggata || $isAdmin) {
+                $pulsanteElimina = '
+                <form method="POST" style="display: inline;" onsubmit="return confirm(\'Sei sicuro di voler eliminare questo commento?\');">
+                    <input type="hidden" name="action" value="elimina_commento" />
+                    <input type="hidden" name="id_commento" value="' . $idCommento . '" />
+                    <button type="submit" class="btn-elimina-commento" aria-label="Elimina commento">🗑️ Elimina</button>
+                </form>';
+            }
+        }
+        
+        $htmlCommenti .= '
+        <article class="commento-card">
+            <div class="commento-header">
+                <img src="' . $avatarUrl . '" alt="" class="commento-avatar" />
+                <div class="commento-info">
+                    <strong class="commento-autore">' . $usernameCommento . '</strong>
+                    <time class="commento-data" datetime="' . $commento['Data'] . '">' . $dataCommento . '</time>
+                </div>
+                ' . $pulsanteElimina . '
+            </div>
+            <div class="commento-contenuto">
+                <p>' . $testoCommento . '</p>
+            </div>
+        </article>';
+    }
+} else {
+    $htmlCommenti = '<p class="no-commenti">Nessun commento ancora. Sii il primo a commentare!</p>';
+}
+
+// Form commento (solo per utenti loggati)
+$htmlFormCommento = '';
+
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    $usernameLoggato = htmlspecialchars($_SESSION['user']);
+    $avatarLoggato = "https://ui-avatars.com/api/?name=" . urlencode($usernameLoggato) . "&background=0D8ABC&color=fff&size=48";
+    
+    $htmlFormCommento = '
+    <div class="form-commento-container">
+        <h3>Scrivi un commento</h3>
+        
+        ' . $messaggioCommento . '
+        
+        <form method="POST" class="form-commento" action="#commenti">
+            <input type="hidden" name="action" value="aggiungi_commento" />
+            
+            <div class="form-commento-header">
+                <img src="' . $avatarLoggato . '" alt="" class="commento-avatar" />
+                <strong>' . $usernameLoggato . '</strong>
+            </div>
+            
+            <div class="form-group">
+                <label for="commento" class="sr-only">Il tuo commento</label>
+                <textarea 
+                    id="commento" 
+                    name="commento" 
+                    rows="4" 
+                    placeholder="Condividi la tua opinione su questo caso..."
+                    required
+                    maxlength="2000"
+                ></textarea>
+                <small class="form-hint">Massimo 2000</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">💬 Pubblica Commento</button>
+        </form>
+    </div>';
+} else {
+    $htmlFormCommento = '
+    <div class="login-prompt">
+        <p>Per commentare devi essere registrato.</p>
+        <a href="' . $prefix . '/accedi" class="btn btn-primary">Accedi per Commentare</a>
+    </div>';
+}
+
+// Sostituisci placeholder commenti
+$contenuto = str_replace('<!-- caso_numero_commenti -->', $numeroCommenti, $contenuto);
+$contenuto = str_replace('<!-- caso_form_commento -->', $htmlFormCommento, $contenuto);
+$contenuto = str_replace('<!-- caso_lista_commenti -->', $htmlCommenti, $contenuto);
+
+
+
+//bbbbbb
 
 // Output finale
 $titoloPagina = $titolo . " - AliceTrueCrime";

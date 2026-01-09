@@ -683,5 +683,232 @@ class FunzioniDB {
             return false;
         }
     }
+    /**
+     * Inserisce un nuovo commento
+     * @param string $emailUtente Email dell'utente (chiave esterna)
+     * @param int $idCaso ID del caso
+     * @param string $commento Testo del commento
+     * @return array ['success' => bool, 'message' => string, 'commento_id' => int|null]
+     */
+    public function inserisciCommento($emailUtente, $idCaso, $commento) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            // Validazione base
+            if (empty($emailUtente) || empty($idCaso) || empty($commento)) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Tutti i campi sono obbligatori',
+                    'commento_id' => null
+                ];
+            }
+            
+            // Verifica lunghezza commento
+            if (strlen($commento) < 10) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Il commento deve contenere almeno 10 caratteri',
+                    'commento_id' => null
+                ];
+            }
+            
+            if (strlen($commento) > 2000) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Il commento non può superare i 2000 caratteri',
+                    'commento_id' => null
+                ];
+            }
+            
+            // Verifica che l'utente esista
+            if (!$this->verificaEmailEsistente($emailUtente)) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Utente non trovato',
+                    'commento_id' => null
+                ];
+            }
+            
+            // Verifica che il caso esista ed è approvato
+            $caso = $this->getCasoById($idCaso);
+            if (!$caso) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Caso non trovato',
+                    'commento_id' => null
+                ];
+            }
+            
+            // Insert commento
+            $query = "INSERT INTO Commento (Commento, Email_Utente, ID_Caso) 
+                    VALUES (?, ?, ?)";
+            
+            $result = $this->db->query($query, [$commento, $emailUtente, $idCaso], "ssi");
+            
+            if ($result) {
+                $commentoId = $this->db->getLastInsertId();
+                $this->db->chiudiConnessione();
+                
+                return [
+                    'success' => true,
+                    'message' => 'Commento pubblicato con successo',
+                    'commento_id' => $commentoId
+                ];
+            } else {
+                throw new Exception("Errore durante l'inserimento del commento");
+            }
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore inserimento commento: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Errore durante la pubblicazione del commento',
+                'commento_id' => null
+            ];
+        }
+    }
+
+    /**
+     * Recupera i commenti di un caso
+     * @param int $idCaso ID del caso
+     * @param int $limite Numero massimo di commenti
+     * @return array Lista di commenti con dati utente
+     */
+    public function getCommentiCaso($idCaso, $limite = 50) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT c.ID_Commento, c.Data, c.Commento, 
+                            u.Username, u.Email
+                    FROM Commento c
+                    JOIN Utente u ON c.Email_Utente = u.Email
+                    WHERE c.ID_Caso = ?
+                    ORDER BY c.Data DESC, c.ID_Commento DESC
+                    LIMIT ?";
+            
+            $result = $this->db->query($query, [$idCaso, $limite], "ii");
+            
+            $commenti = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $commenti[] = $row;
+                }
+            }
+            
+            $this->db->chiudiConnessione();
+            return $commenti;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore recupero commenti: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Conta i commenti di un caso
+     * @param int $idCaso ID del caso
+     * @return int Numero di commenti
+     */
+    public function contaCommentiCaso($idCaso) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "SELECT COUNT(*) as totale FROM Commento WHERE ID_Caso = ?";
+            $result = $this->db->query($query, [$idCaso], "i");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return (int)$row['totale'];
+            }
+            
+            $this->db->chiudiConnessione();
+            return 0;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore conteggio commenti: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Elimina un commento (solo se l'utente è il proprietario o admin)
+     * @param int $idCommento ID del commento
+     * @param string $emailUtente Email dell'utente che richiede l'eliminazione
+     * @param bool $isAdmin Se l'utente è admin
+     * @return array ['success' => bool, 'message' => string]
+     */
+    public function eliminaCommento($idCommento, $emailUtente, $isAdmin = false) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            // Verifica proprietà del commento
+            if (!$isAdmin) {
+                $query = "SELECT Email_Utente FROM Commento WHERE ID_Commento = ?";
+                $result = $this->db->query($query, [$idCommento], "i");
+                
+                if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                    $row = mysqli_fetch_assoc($result);
+                    
+                    if ($row['Email_Utente'] !== $emailUtente) {
+                        $this->db->chiudiConnessione();
+                        return [
+                            'success' => false,
+                            'message' => 'Non hai i permessi per eliminare questo commento'
+                        ];
+                    }
+                } else {
+                    $this->db->chiudiConnessione();
+                    return [
+                        'success' => false,
+                        'message' => 'Commento non trovato'
+                    ];
+                }
+            }
+            
+            // Elimina il commento
+            $query = "DELETE FROM Commento WHERE ID_Commento = ?";
+            $result = $this->db->query($query, [$idCommento], "i");
+            
+            $this->db->chiudiConnessione();
+            
+            if ($result) {
+                return [
+                    'success' => true,
+                    'message' => 'Commento eliminato con successo'
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Errore durante l\'eliminazione'
+                ];
+            }
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore eliminazione commento: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Errore durante l\'eliminazione del commento'
+            ];
+        }
+    }
+    
 }
 ?>
