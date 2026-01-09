@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Creato il: Gen 08, 2026 alle 16:37
+-- Creato il: Gen 09, 2026 alle 01:07
 -- Versione del server: 8.0.44
 -- Versione PHP: 8.3.28
 
@@ -79,7 +79,8 @@ INSERT INTO `Articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
 (37, 'Approfondimento su Saldivar', '2015-09-03', 'https://news.it/37', 37),
 (38, 'Approfondimento su Gale', '2006-02-26', 'https://news.it/38', 38),
 (39, 'Approfondimento su Loibl', '1977-03-27', 'https://news.it/39', 39),
-(40, 'Approfondimento su Ceraulo', '2011-09-13', 'https://news.it/40', 40);
+(40, 'Approfondimento su Ceraulo', '2011-09-13', 'https://news.it/40', 40),
+(41, 'Approfondimento su Gay', '2003-01-15', 'https://news.it/3', 2);
 
 -- --------------------------------------------------------
 
@@ -306,11 +307,18 @@ INSERT INTO `Colpevole` (`CF_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `Dat
 
 CREATE TABLE `Commento` (
   `ID_Commento` int NOT NULL,
-  `Data` date NOT NULL,
   `Commento` text COLLATE utf8mb4_general_ci NOT NULL,
   `Email_Utente` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `ID_Caso` int NOT NULL
+  `ID_Caso` int NOT NULL,
+  `Data` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `Commento`
+--
+
+INSERT INTO `Commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `Data`) VALUES
+(2, 'Napoleone Suca', 'lore.grolla04@gmail.com', 9, '2026-01-09 01:55:05');
 
 -- --------------------------------------------------------
 
@@ -331,6 +339,8 @@ CREATE TABLE `Utente` (
 
 INSERT INTO `Utente` (`Email`, `Username`, `Password`, `Is_Admin`) VALUES
 ('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1),
+('lore.grolla04@gmail.com', 'Lorenzo', '$2y$10$RPrVyIOXQguBlR6kRDz2h.KqskfkwyFmKGXGwlbxIil3V06DCMSFm', 0),
+('paolo@gmail.com', 'Paolo', '$2y$10$aW49yojpjRL7JsBVv9TlZ.a7119SoKRteJ8XA8.U9rNC/3Xlj8V7i', 0),
 ('user@test.it', 'User', '$2y$10$9dk6FVWLhA3i.6JtCcUERuz0cW.v7GI3fyuztVmq/5YfB7G/IkEg2', 0);
 
 -- --------------------------------------------------------
@@ -471,7 +481,7 @@ ALTER TABLE `Vittima`
 -- AUTO_INCREMENT per la tabella `Articolo`
 --
 ALTER TABLE `Articolo`
-  MODIFY `ID_Articolo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `ID_Articolo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT per la tabella `Caso`
@@ -483,7 +493,7 @@ ALTER TABLE `Caso`
 -- AUTO_INCREMENT per la tabella `Commento`
 --
 ALTER TABLE `Commento`
-  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Limiti per le tabelle scaricate
