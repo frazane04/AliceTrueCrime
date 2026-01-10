@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Creato il: Gen 09, 2026 alle 01:07
+-- Creato il: Gen 10, 2026 alle 15:36
 -- Versione del server: 8.0.44
 -- Versione PHP: 8.3.28
 
@@ -168,7 +168,7 @@ INSERT INTO `Caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, 
 --
 
 CREATE TABLE `Colpa` (
-  `Colpevole` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+  `Colpevole` int NOT NULL,
   `Caso` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -177,56 +177,56 @@ CREATE TABLE `Colpa` (
 --
 
 INSERT INTO `Colpa` (`Colpevole`, `Caso`) VALUES
-('CLP001DAHX', 1),
-('CLP002GACX', 2),
-('CLP003BUNX', 3),
-('CLP004CHIX', 4),
-('CLP005RAMX', 5),
-('CLP006BERX', 6),
-('CLP007ZODX', 7),
-('CLP008RIDX', 8),
-('CLP009JACX', 9),
-('CLP010GEIX', 10),
-('CLP011FRAX', 11),
-('CLP012MISX', 12),
-('CLP013BOSX', 13),
-('CLP014GUEX', 14),
-('CLP015PACX', 15),
-('CLP016ROMX', 16),
-('CLP017STAX', 17),
-('CLP018PARX', 18),
-('CLP019DE X', 19),
-('CLP020CIOX', 20),
-('CLP021VICX', 21),
-('CLP022PISX', 22),
-('CLP023CANX', 23),
-('CLP024ARIX', 24),
-('CLP025SPEX', 25),
-('CLP026SIMX', 26),
-('CLP027PRAX', 27),
-('CLP028IMPX', 28),
-('CLP029WATX', 29),
-('CLP030LAUX', 30),
-('CLP031CUNX', 31),
-('CLP032MANX', 32),
-('CLP033CHAX', 33),
-('CLP034ANDX', 34),
-('CLP035KILX', 35),
-('CLP036GAYX', 36),
-('CLP037SALX', 37),
-('CLP038GALX', 38),
-('CLP039LOIX', 39),
-('CLP040CERX', 40),
-('PEN041XXX', 41),
-('PEN042XXX', 42),
-('PEN043XXX', 43),
-('PEN044XXX', 44),
-('PEN045XXX', 45),
-('PEN046XXX', 46),
-('PEN047XXX', 47),
-('PEN048XXX', 48),
-('PEN049XXX', 49),
-('PEN050XXX', 50);
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10),
+(11, 11),
+(12, 12),
+(13, 13),
+(14, 14),
+(15, 15),
+(16, 16),
+(17, 17),
+(18, 18),
+(19, 19),
+(20, 20),
+(21, 21),
+(22, 22),
+(23, 23),
+(24, 24),
+(25, 25),
+(26, 26),
+(27, 27),
+(28, 28),
+(29, 29),
+(30, 30),
+(31, 31),
+(32, 32),
+(33, 33),
+(34, 34),
+(35, 35),
+(36, 36),
+(37, 37),
+(38, 38),
+(39, 39),
+(40, 40),
+(41, 41),
+(42, 42),
+(43, 43),
+(44, 44),
+(45, 45),
+(46, 46),
+(47, 47),
+(48, 48),
+(49, 49),
+(50, 50);
 
 -- --------------------------------------------------------
 
@@ -235,7 +235,7 @@ INSERT INTO `Colpa` (`Colpevole`, `Caso`) VALUES
 --
 
 CREATE TABLE `Colpevole` (
-  `CF_Colpevole` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+  `ID_Colpevole` int NOT NULL,
   `Nome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `Cognome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `LuogoNascita` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -247,57 +247,57 @@ CREATE TABLE `Colpevole` (
 -- Dump dei dati per la tabella `Colpevole`
 --
 
-INSERT INTO `Colpevole` (`CF_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `Immagine`) VALUES
-('CLP001DAHX', 'Jeffrey', 'Dahmer', 'Ignoto', '1970-01-01', ''),
-('CLP002GACX', 'John', 'Gacy', 'Ignoto', '1970-01-01', ''),
-('CLP003BUNX', 'Ted', 'Bundy', 'Ignoto', '1970-01-01', ''),
-('CLP004CHIX', 'Andrei', 'Chikatilo', 'Ignoto', '1970-01-01', ''),
-('CLP005RAMX', 'Richard', 'Ramirez', 'Ignoto', '1970-01-01', ''),
-('CLP006BERX', 'David', 'Berkowitz', 'Ignoto', '1970-01-01', ''),
-('CLP007ZODX', 'Ignoto', 'Zodiac', 'Ignoto', '1970-01-01', ''),
-('CLP008RIDX', 'Gary', 'Ridgway', 'Ignoto', '1970-01-01', ''),
-('CLP009JACX', 'Ignoto', 'Jack', 'Ignoto', '1970-01-01', ''),
-('CLP010GEIX', 'Ed', 'Gein', 'Ignoto', '1970-01-01', ''),
-('CLP011FRAX', 'Annamaria', 'Franzoni', 'Ignoto', '1970-01-01', ''),
-('CLP012MISX', 'Sabrina', 'Misseri', 'Ignoto', '1970-01-01', ''),
-('CLP013BOSX', 'Massimo', 'Bossetti', 'Ignoto', '1970-01-01', ''),
-('CLP014GUEX', 'Rudy', 'Guede', 'Ignoto', '1970-01-01', ''),
-('CLP015PACX', 'Pietro', 'Pacciani', 'Ignoto', '1970-01-01', ''),
-('CLP016ROMX', 'Olindo', 'Romano', 'Ignoto', '1970-01-01', ''),
-('CLP017STAX', 'Alberto', 'Stasi', 'Ignoto', '1970-01-01', ''),
-('CLP018PARX', 'Salvatore', 'Parolisi', 'Ignoto', '1970-01-01', ''),
-('CLP019DE X', 'Erika', 'De Nardo', 'Ignoto', '1970-01-01', ''),
-('CLP020CIOX', 'Antonio', 'Ciontoli', 'Ignoto', '1970-01-01', ''),
-('CLP021VICX', 'Sid', 'Vicious', 'Ignoto', '1970-01-01', ''),
-('CLP022PISX', 'Oscar', 'Pistorius', 'Ignoto', '1970-01-01', ''),
-('CLP023CANX', 'Bertrand', 'Cantat', 'Ignoto', '1970-01-01', ''),
-('CLP024ARIX', 'Jodi', 'Arias', 'Ignoto', '1970-01-01', ''),
-('CLP025SPEX', 'Phil', 'Spector', 'Ignoto', '1970-01-01', ''),
-('CLP026SIMX', 'O.J.', 'Simpson', 'Ignoto', '1970-01-01', ''),
-('CLP027PRAX', 'Marco', 'Prato', 'Ignoto', '1970-01-01', ''),
-('CLP028IMPX', 'Alessandro', 'Impagnatiello', 'Ignoto', '1970-01-01', ''),
-('CLP029WATX', 'Chris', 'Watts', 'Ignoto', '1970-01-01', ''),
-('CLP030LAUX', 'Brian', 'Laundrie', 'Ignoto', '1970-01-01', ''),
-('CLP031CUNX', 'Andrew', 'Cunanan', 'Ignoto', '1970-01-01', ''),
-('CLP032MANX', 'Charles', 'Manson', 'Ignoto', '1970-01-01', ''),
-('CLP033CHAX', 'Mark', 'Chapman', 'Ignoto', '1970-01-01', ''),
-('CLP034ANDX', 'Orlando', 'Anderson', 'Ignoto', '1970-01-01', ''),
-('CLP035KILX', 'Ignoto', 'Killer', 'Ignoto', '1970-01-01', ''),
-('CLP036GAYX', 'Marvin', 'Gay Sr.', 'Ignoto', '1970-01-01', ''),
-('CLP037SALX', 'Yolanda', 'Saldivar', 'Ignoto', '1970-01-01', ''),
-('CLP038GALX', 'Nathan', 'Gale', 'Ignoto', '1970-01-01', ''),
-('CLP039LOIX', 'Kevin', 'Loibl', 'Ignoto', '1970-01-01', ''),
-('CLP040CERX', 'Benedetto', 'Ceraulo', 'Ignoto', '1970-01-01', ''),
-('PEN041XXX', 'Ignoto', 'X', 'N/A', '1990-01-01', ''),
-('PEN042XXX', 'Luisa', 'Bianchi', 'N/A', '1990-01-01', ''),
-('PEN043XXX', 'Hans', 'Muller', 'N/A', '1990-01-01', ''),
-('PEN044XXX', 'Don', 'Giulio', 'N/A', '1990-01-01', ''),
-('PEN045XXX', 'Luca', 'Neri', 'N/A', '1990-01-01', ''),
-('PEN046XXX', 'Marco', 'Viola', 'N/A', '1990-01-01', ''),
-('PEN047XXX', 'Carla', 'Bruni', 'N/A', '1990-01-01', ''),
-('PEN048XXX', 'Bandito', 'Uno', 'N/A', '1990-01-01', ''),
-('PEN049XXX', 'Ignoto', 'Y', 'N/A', '1990-01-01', ''),
-('PEN050XXX', 'Zio', 'Peppe', 'N/A', '1990-01-01', '');
+INSERT INTO `Colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `Immagine`) VALUES
+(1, 'Jeffrey', 'Dahmer', 'Ignoto', '1970-01-01', ''),
+(2, 'John', 'Gacy', 'Ignoto', '1970-01-01', ''),
+(3, 'Ted', 'Bundy', 'Ignoto', '1970-01-01', ''),
+(4, 'Andrei', 'Chikatilo', 'Ignoto', '1970-01-01', ''),
+(5, 'Richard', 'Ramirez', 'Ignoto', '1970-01-01', ''),
+(6, 'David', 'Berkowitz', 'Ignoto', '1970-01-01', ''),
+(7, 'Ignoto', 'Zodiac', 'Ignoto', '1970-01-01', ''),
+(8, 'Gary', 'Ridgway', 'Ignoto', '1970-01-01', ''),
+(9, 'Ignoto', 'Jack', 'Ignoto', '1970-01-01', ''),
+(10, 'Ed', 'Gein', 'Ignoto', '1970-01-01', ''),
+(11, 'Annamaria', 'Franzoni', 'Ignoto', '1970-01-01', ''),
+(12, 'Sabrina', 'Misseri', 'Ignoto', '1970-01-01', ''),
+(13, 'Massimo', 'Bossetti', 'Ignoto', '1970-01-01', ''),
+(14, 'Rudy', 'Guede', 'Ignoto', '1970-01-01', ''),
+(15, 'Pietro', 'Pacciani', 'Ignoto', '1970-01-01', ''),
+(16, 'Olindo', 'Romano', 'Ignoto', '1970-01-01', ''),
+(17, 'Alberto', 'Stasi', 'Ignoto', '1970-01-01', ''),
+(18, 'Salvatore', 'Parolisi', 'Ignoto', '1970-01-01', ''),
+(19, 'Erika', 'De Nardo', 'Ignoto', '1970-01-01', ''),
+(20, 'Antonio', 'Ciontoli', 'Ignoto', '1970-01-01', ''),
+(21, 'Sid', 'Vicious', 'Ignoto', '1970-01-01', ''),
+(22, 'Oscar', 'Pistorius', 'Ignoto', '1970-01-01', ''),
+(23, 'Bertrand', 'Cantat', 'Ignoto', '1970-01-01', ''),
+(24, 'Jodi', 'Arias', 'Ignoto', '1970-01-01', ''),
+(25, 'Phil', 'Spector', 'Ignoto', '1970-01-01', ''),
+(26, 'O.J.', 'Simpson', 'Ignoto', '1970-01-01', ''),
+(27, 'Marco', 'Prato', 'Ignoto', '1970-01-01', ''),
+(28, 'Alessandro', 'Impagnatiello', 'Ignoto', '1970-01-01', ''),
+(29, 'Chris', 'Watts', 'Ignoto', '1970-01-01', ''),
+(30, 'Brian', 'Laundrie', 'Ignoto', '1970-01-01', ''),
+(31, 'Andrew', 'Cunanan', 'Ignoto', '1970-01-01', ''),
+(32, 'Charles', 'Manson', 'Ignoto', '1970-01-01', ''),
+(33, 'Mark', 'Chapman', 'Ignoto', '1970-01-01', ''),
+(34, 'Orlando', 'Anderson', 'Ignoto', '1970-01-01', ''),
+(35, 'Ignoto', 'Killer', 'Ignoto', '1970-01-01', ''),
+(36, 'Marvin', 'Gay Sr.', 'Ignoto', '1970-01-01', ''),
+(37, 'Yolanda', 'Saldivar', 'Ignoto', '1970-01-01', ''),
+(38, 'Nathan', 'Gale', 'Ignoto', '1970-01-01', ''),
+(39, 'Kevin', 'Loibl', 'Ignoto', '1970-01-01', ''),
+(40, 'Benedetto', 'Ceraulo', 'Ignoto', '1970-01-01', ''),
+(41, 'Ignoto', 'X', 'N/A', '1990-01-01', ''),
+(42, 'Luisa', 'Bianchi', 'N/A', '1990-01-01', ''),
+(43, 'Hans', 'Muller', 'N/A', '1990-01-01', ''),
+(44, 'Don', 'Giulio', 'N/A', '1990-01-01', ''),
+(45, 'Luca', 'Neri', 'N/A', '1990-01-01', ''),
+(46, 'Marco', 'Viola', 'N/A', '1990-01-01', ''),
+(47, 'Carla', 'Bruni', 'N/A', '1990-01-01', ''),
+(48, 'Bandito', 'Uno', 'N/A', '1990-01-01', ''),
+(49, 'Ignoto', 'Y', 'N/A', '1990-01-01', ''),
+(50, 'Zio', 'Peppe', 'N/A', '1990-01-01', '');
 
 -- --------------------------------------------------------
 
@@ -318,7 +318,10 @@ CREATE TABLE `Commento` (
 --
 
 INSERT INTO `Commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `Data`) VALUES
-(2, 'Napoleone Suca', 'lore.grolla04@gmail.com', 9, '2026-01-09 01:55:05');
+(2, 'Napoleone Suca', 'lore.grolla04@gmail.com', 9, '2026-01-09 01:55:05'),
+(6, 'sono l\'admin e sto mbriacoo', 'admin@test.it', 9, '2026-01-09 18:31:02'),
+(7, 'prova penna 123', 'admin@test.it', 9, '2026-01-09 18:32:11'),
+(8, 'mangiami la renga perozzo', 'admin@test.it', 9, '2026-01-09 19:44:57');
 
 -- --------------------------------------------------------
 
@@ -350,7 +353,7 @@ INSERT INTO `Utente` (`Email`, `Username`, `Password`, `Is_Admin`) VALUES
 --
 
 CREATE TABLE `Vittima` (
-  `CF_Vittima` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+  `ID_Vittima` int NOT NULL,
   `Nome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `Cognome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `LuogoNascita` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -364,58 +367,58 @@ CREATE TABLE `Vittima` (
 -- Dump dei dati per la tabella `Vittima`
 --
 
-INSERT INTO `Vittima` (`CF_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `DataDecesso`, `Caso`, `Immagine`) VALUES
-('PEN041YYY', 'Mario', 'Rossi', 'N/A', '1995-01-01', '2025-12-17', 41, ''),
-('PEN042YYY', 'Anna', 'Verdi', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
-('PEN042ZZZ', 'Anna', 'Violetta', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
-('PEN043YYY', 'Greta', 'Schmidt', 'N/A', '1995-01-01', '2025-12-17', 43, ''),
-('PEN044YYY', 'Elisa', 'Claps', 'N/A', '1995-01-01', '2025-12-17', 44, ''),
-('PEN045YYY', 'Sara', 'Gialli', 'N/A', '1995-01-01', '2025-12-17', 45, ''),
-('PEN046YYY', 'Lisa', 'Rosa', 'N/A', '1995-01-01', '2025-12-17', 46, ''),
-('PEN047YYY', 'Pippo', 'Baudo', 'N/A', '1995-01-01', '2025-12-17', 47, ''),
-('PEN048YYY', 'Chiara', 'Nasti', 'N/A', '1995-01-01', '2025-12-17', 48, ''),
-('PEN049YYY', 'Luigi', 'B.', 'N/A', '1995-01-01', '2025-12-17', 49, ''),
-('PEN050YYY', 'Nipote', 'Franco', 'N/A', '1995-01-01', '2025-12-17', 50, ''),
-('VIT001HICX', 'Steven', 'Hicks', 'Milwaukee, USA', '1980-01-01', '2001-05-19', 1, ''),
-('VIT002MCCX', 'Timothy', 'McCoy', 'Chicago, USA', '1980-01-01', '2003-01-15', 2, ''),
-('VIT003LEAX', 'Kimberly', 'Leach', 'Florida, USA', '1980-01-01', '2002-02-11', 3, ''),
-('VIT004ZAKX', 'Yelena', 'Zakotnova', 'Rostov, Russia', '1980-01-01', '1987-08-06', 4, ''),
-('VIT005LEUX', 'Mei', 'Leung', 'Los Angeles, USA', '1980-01-01', '2015-12-17', 5, ''),
-('VIT006LAUX', 'Donna', 'Lauria', 'New York, USA', '1980-01-01', '1994-09-07', 6, ''),
-('VIT007FARX', 'David', 'Faraday', 'California, USA', '1980-01-01', '1982-02-14', 7, ''),
-('VIT008COFX', 'Wendy', 'Coffield', 'Washington, USA', '1980-01-01', '1970-05-22', 8, ''),
-('VIT009NICX', 'Mary', 'Nichols', 'Londra, UK', '1980-01-01', '2022-10-14', 9, ''),
-('VIT010WORX', 'Bernice', 'Worden', 'Wisconsin, USA', '1980-01-01', '1990-01-21', 10, ''),
-('VIT011LORX', 'Samuele', 'Lorenzi', 'Cogne', '1980-01-01', '2019-05-25', 11, ''),
-('VIT012SCAX', 'Sarah', 'Scazzi', 'Avetrana', '1980-01-01', '1972-01-04', 12, ''),
-('VIT013GAMX', 'Yara', 'Gambirasio', 'Brembate', '1980-01-01', '1975-02-25', 13, ''),
-('VIT014KERX', 'Meredith', 'Kercher', 'Perugia', '1980-01-01', '2006-10-05', 14, ''),
-('VIT015PETX', 'Stefania', 'Pettini', 'Firenze', '1980-01-01', '1980-02-26', 15, ''),
-('VIT016CASX', 'Raffaella', 'Castagna', 'Erba', '1980-01-01', '2014-10-02', 16, ''),
-('VIT017POGX', 'Chiara', 'Poggi', 'Garlasco', '1980-01-01', '2012-10-03', 17, ''),
-('VIT018REAX', 'Melania', 'Rea', 'Teramo', '1980-01-01', '2000-03-15', 18, ''),
-('VIT019CASX', 'Susy', 'Cassini', 'Novi Ligure', '1980-01-01', '2017-05-07', 19, ''),
-('VIT020VANX', 'Marco', 'Vannini', 'Ladispoli', '1980-01-01', '1992-03-28', 20, ''),
-('VIT021SPUX', 'Nancy', 'Spungen', 'New York', '1980-01-01', '1985-02-07', 21, ''),
-('VIT022STEX', 'Reeva', 'Steenkamp', 'Pretoria', '1980-01-01', '1975-07-04', 22, ''),
-('VIT023TRIX', 'Marie', 'Trintignant', 'Vilnius', '1980-01-01', '2019-11-01', 23, ''),
-('VIT024ALEX', 'Travis', 'Alexander', 'Arizona, USA', '1980-01-01', '1998-02-05', 24, ''),
-('VIT025CLAX', 'Lana', 'Clarkson', 'California', '1980-01-01', '2017-04-09', 25, ''),
-('VIT026BROX', 'Nicole', 'Brown', 'Los Angeles', '1980-01-01', '1970-01-22', 26, ''),
-('VIT027VARX', 'Luca', 'Varani', 'Roma', '1980-01-01', '1994-07-05', 27, ''),
-('VIT028TRAX', 'Giulia', 'Tramontano', 'Milano', '1980-01-01', '2004-10-03', 28, ''),
-('VIT029WATX', 'Shannan', 'Watts', 'Colorado', '1980-01-01', '1983-11-22', 29, ''),
-('VIT030PETX', 'Gabby', 'Petito', 'Wyoming', '1980-01-01', '2018-02-09', 30, ''),
-('VIT031VERX', 'Gianni', 'Versace', 'Miami', '1980-01-01', '2007-02-03', 31, ''),
-('VIT032TATX', 'Sharon', 'Tate', 'Los Angeles', '1980-01-01', '1984-05-12', 32, ''),
-('VIT033LENX', 'John', 'Lennon', 'New York', '1980-01-01', '2006-08-03', 33, ''),
-('VIT034SHAX', 'Tupac', 'Shakur', 'Las Vegas', '1980-01-01', '2018-06-18', 34, ''),
-('VIT035WALX', 'C.', 'Wallace', 'Los Angeles', '1980-01-01', '1996-11-19', 35, ''),
-('VIT036GAYX', 'Marvin', 'Gaye', 'Los Angeles', '1980-01-01', '1973-10-05', 36, ''),
-('VIT037QUIX', 'Selena', 'Quintanilla', 'Texas', '1980-01-01', '2015-09-03', 37, ''),
-('VIT038ABBX', 'Darrell', 'Abbott', 'Ohio', '1980-01-01', '2006-02-26', 38, ''),
-('VIT039GRIX', 'Christina', 'Grimmie', 'Orlando', '1980-01-01', '1977-03-27', 39, ''),
-('VIT040GUCX', 'Maurizio', 'Gucci', 'Milano', '1980-01-01', '2011-09-13', 40, '');
+INSERT INTO `Vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `DataDecesso`, `Caso`, `Immagine`) VALUES
+(1, 'Mario', 'Rossi', 'N/A', '1995-01-01', '2025-12-17', 41, ''),
+(2, 'Anna', 'Verdi', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
+(3, 'Anna', 'Violetta', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
+(4, 'Greta', 'Schmidt', 'N/A', '1995-01-01', '2025-12-17', 43, ''),
+(5, 'Elisa', 'Claps', 'N/A', '1995-01-01', '2025-12-17', 44, ''),
+(6, 'Sara', 'Gialli', 'N/A', '1995-01-01', '2025-12-17', 45, ''),
+(7, 'Lisa', 'Rosa', 'N/A', '1995-01-01', '2025-12-17', 46, ''),
+(8, 'Pippo', 'Baudo', 'N/A', '1995-01-01', '2025-12-17', 47, ''),
+(9, 'Chiara', 'Nasti', 'N/A', '1995-01-01', '2025-12-17', 48, ''),
+(10, 'Luigi', 'B.', 'N/A', '1995-01-01', '2025-12-17', 49, ''),
+(11, 'Nipote', 'Franco', 'N/A', '1995-01-01', '2025-12-17', 50, ''),
+(12, 'Steven', 'Hicks', 'Milwaukee, USA', '1980-01-01', '2001-05-19', 1, ''),
+(13, 'Timothy', 'McCoy', 'Chicago, USA', '1980-01-01', '2003-01-15', 2, ''),
+(14, 'Kimberly', 'Leach', 'Florida, USA', '1980-01-01', '2002-02-11', 3, ''),
+(15, 'Yelena', 'Zakotnova', 'Rostov, Russia', '1980-01-01', '1987-08-06', 4, ''),
+(16, 'Mei', 'Leung', 'Los Angeles, USA', '1980-01-01', '2015-12-17', 5, ''),
+(17, 'Donna', 'Lauria', 'New York, USA', '1980-01-01', '1994-09-07', 6, ''),
+(18, 'David', 'Faraday', 'California, USA', '1980-01-01', '1982-02-14', 7, ''),
+(19, 'Wendy', 'Coffield', 'Washington, USA', '1980-01-01', '1970-05-22', 8, ''),
+(20, 'Mary', 'Nichols', 'Londra, UK', '1980-01-01', '2022-10-14', 9, ''),
+(21, 'Bernice', 'Worden', 'Wisconsin, USA', '1980-01-01', '1990-01-21', 10, ''),
+(22, 'Samuele', 'Lorenzi', 'Cogne', '1980-01-01', '2019-05-25', 11, ''),
+(23, 'Sarah', 'Scazzi', 'Avetrana', '1980-01-01', '1972-01-04', 12, ''),
+(24, 'Yara', 'Gambirasio', 'Brembate', '1980-01-01', '1975-02-25', 13, ''),
+(25, 'Meredith', 'Kercher', 'Perugia', '1980-01-01', '2006-10-05', 14, ''),
+(26, 'Stefania', 'Pettini', 'Firenze', '1980-01-01', '1980-02-26', 15, ''),
+(27, 'Raffaella', 'Castagna', 'Erba', '1980-01-01', '2014-10-02', 16, ''),
+(28, 'Chiara', 'Poggi', 'Garlasco', '1980-01-01', '2012-10-03', 17, ''),
+(29, 'Melania', 'Rea', 'Teramo', '1980-01-01', '2000-03-15', 18, ''),
+(30, 'Susy', 'Cassini', 'Novi Ligure', '1980-01-01', '2017-05-07', 19, ''),
+(31, 'Marco', 'Vannini', 'Ladispoli', '1980-01-01', '1992-03-28', 20, ''),
+(32, 'Nancy', 'Spungen', 'New York', '1980-01-01', '1985-02-07', 21, ''),
+(33, 'Reeva', 'Steenkamp', 'Pretoria', '1980-01-01', '1975-07-04', 22, ''),
+(34, 'Marie', 'Trintignant', 'Vilnius', '1980-01-01', '2019-11-01', 23, ''),
+(35, 'Travis', 'Alexander', 'Arizona, USA', '1980-01-01', '1998-02-05', 24, ''),
+(36, 'Lana', 'Clarkson', 'California', '1980-01-01', '2017-04-09', 25, ''),
+(37, 'Nicole', 'Brown', 'Los Angeles', '1980-01-01', '1970-01-22', 26, ''),
+(38, 'Luca', 'Varani', 'Roma', '1980-01-01', '1994-07-05', 27, ''),
+(39, 'Giulia', 'Tramontano', 'Milano', '1980-01-01', '2004-10-03', 28, ''),
+(40, 'Shannan', 'Watts', 'Colorado', '1980-01-01', '1983-11-22', 29, ''),
+(41, 'Gabby', 'Petito', 'Wyoming', '1980-01-01', '2018-02-09', 30, ''),
+(42, 'Gianni', 'Versace', 'Miami', '1980-01-01', '2007-02-03', 31, ''),
+(43, 'Sharon', 'Tate', 'Los Angeles', '1980-01-01', '1984-05-12', 32, ''),
+(44, 'John', 'Lennon', 'New York', '1980-01-01', '2006-08-03', 33, ''),
+(45, 'Tupac', 'Shakur', 'Las Vegas', '1980-01-01', '2018-06-18', 34, ''),
+(46, 'C.', 'Wallace', 'Los Angeles', '1980-01-01', '1996-11-19', 35, ''),
+(47, 'Marvin', 'Gaye', 'Los Angeles', '1980-01-01', '1973-10-05', 36, ''),
+(48, 'Selena', 'Quintanilla', 'Texas', '1980-01-01', '2015-09-03', 37, ''),
+(49, 'Darrell', 'Abbott', 'Ohio', '1980-01-01', '2006-02-26', 38, ''),
+(50, 'Christina', 'Grimmie', 'Orlando', '1980-01-01', '1977-03-27', 39, ''),
+(51, 'Maurizio', 'Gucci', 'Milano', '1980-01-01', '2011-09-13', 40, '');
 
 --
 -- Indici per le tabelle scaricate
@@ -449,7 +452,7 @@ ALTER TABLE `Colpa`
 -- Indici per le tabelle `Colpevole`
 --
 ALTER TABLE `Colpevole`
-  ADD PRIMARY KEY (`CF_Colpevole`);
+  ADD PRIMARY KEY (`ID_Colpevole`);
 
 --
 -- Indici per le tabelle `Commento`
@@ -470,7 +473,7 @@ ALTER TABLE `Utente`
 -- Indici per le tabelle `Vittima`
 --
 ALTER TABLE `Vittima`
-  ADD PRIMARY KEY (`CF_Vittima`),
+  ADD PRIMARY KEY (`ID_Vittima`),
   ADD KEY `Caso` (`Caso`);
 
 --
@@ -490,10 +493,22 @@ ALTER TABLE `Caso`
   MODIFY `N_Caso` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
+-- AUTO_INCREMENT per la tabella `Colpevole`
+--
+ALTER TABLE `Colpevole`
+  MODIFY `ID_Colpevole` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
+--
 -- AUTO_INCREMENT per la tabella `Commento`
 --
 ALTER TABLE `Commento`
-  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT per la tabella `Vittima`
+--
+ALTER TABLE `Vittima`
+  MODIFY `ID_Vittima` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- Limiti per le tabelle scaricate
@@ -509,7 +524,7 @@ ALTER TABLE `Articolo`
 -- Limiti per la tabella `Colpa`
 --
 ALTER TABLE `Colpa`
-  ADD CONSTRAINT `Colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `Colpevole` (`CF_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `Colpevole` (`ID_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `Colpa_ibfk_2` FOREIGN KEY (`Caso`) REFERENCES `Caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

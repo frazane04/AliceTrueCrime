@@ -558,8 +558,7 @@ class FunzioniDB {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
-            
-            $query = "SELECT * FROM Caso JOIN Colpa ON Caso.N_Caso=Colpa.Caso JOIN Colpevole ON Colpevole.CF_Colpevole=Colpa.Colpevole WHERE N_Caso=?  AND Approvato = 1";
+            $query = "SELECT * FROM Caso JOIN Colpa ON Caso.N_Caso=Colpa.Caso JOIN Colpevole ON Colpevole.ID_Colpevole=Colpa.Colpevole WHERE N_Caso=?  AND Approvato = 1";
             $result = $this->db->query($query, [$id], "i");
             
              $colpevoli = [];
