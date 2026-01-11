@@ -1,98 +1,99 @@
 <?php
 // src/struct/accedi.php
+// Gestione Login - Versione con template HTML separato
 
 require_once __DIR__ . '/funzioni_db.php';
 
-$errorMessage = '';
-$successMessage = '';
+// Se l'utente è già loggato, redirect al profilo
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    $prefix = getPrefix();
+    header("Location: $prefix/profilo");
+    exit;
+}
 
-// Gestione POST del form
+$templatePath = __DIR__ . '/../template/accedi.html';
+$email = '';
+$messaggioHTML = '';
+
+// ========================================
+// GESTIONE FORM POST
+// ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
     $emailOrUsername = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $remember = isset($_POST['remember']);
-    
     // Validazione base
     if (empty($emailOrUsername) || empty($password)) {
-        $errorMessage = 'Per favore, compila tutti i campi.';
+        $messaggioHTML = '
+            <div class="alert alert-error">
+                <strong>⚠️ Errore:</strong> Email e password sono obbligatori.
+            </div>
+        ';
     } else {
-        // Connessione al database e verifica credenziali
+        // Tentativo di login
         $dbFunctions = new FunzioniDB();
-        
+
         // Determina se l'input è un'email o uno username
         if (filter_var($emailOrUsername, FILTER_VALIDATE_EMAIL)) {
             // È un'email
-            $loginResult = $dbFunctions->loginUtenteEmail($emailOrUsername, $password);
+            $result = $dbFunctions->loginUtenteEmail($emailOrUsername, $password);
         } else {
             // È uno username
-            $loginResult = $dbFunctions->loginUtenteUsername($emailOrUsername, $password);
+            $result = $dbFunctions->loginUtenteUsername($emailOrUsername, $password);
         }
         
-        if ($loginResult['success']) {
-            // Login riuscito - imposta la sessione
-            $_SESSION['user'] = $loginResult['user']['username'];
-            $_SESSION['user_email'] = $loginResult['user']['email'];
-            $_SESSION['is_admin'] = $loginResult['user']['is_admin'];
+        if ($result['success']) {
+            // Login riuscito
             $_SESSION['logged_in'] = true;
+            $_SESSION['user'] = $result['user']['username'];
+            $_SESSION['user_email'] = $result['user']['email'];
+            $_SESSION['is_admin'] = $result['user']['is_admin'];
             
-            // Se "Ricordami" è attivo, imposta cookie sicuro
+            // Gestione "Ricordami"
             if ($remember) {
-                // Genera un token casuale sicuro
-                $token = bin2hex(random_bytes(32));
+                $cookieExpiry = time() + (30 * 24 * 60 * 60);
+                $rememberToken = bin2hex(random_bytes(32));
                 
-                // TODO: Salvare il token nel database associato all'utente
-                // per poterlo validare in futuro
-                
-                // Imposta cookie per 30 giorni con flag sicuri
-                setcookie(
-                    'remember_token', 
-                    $token, 
-                    [
-                        'expires' => time() + (86400 * 30),
-                        'path' => '/',
-                        'secure' => isset($_SERVER['HTTPS']),
-                        'httponly' => true,
-                        'samesite' => 'Strict'
-                    ]
-                );
+                setcookie('remember_token', $rememberToken, $cookieExpiry, '/', '', true, true);
+                setcookie('user_email', $result['user']['email'], $cookieExpiry, '/', '', true, true);
             }
             
-            // Redirect alla pagina profilo
-            header('Location: ' . getPrefix() . '/pagineutente.html');
+            // Redirect al profilo
+            $prefix = getPrefix();
+            header("Location: $prefix/profilo");
             exit;
+            
         } else {
             // Login fallito
-            $errorMessage = $loginResult['message'];
+            $messaggioHTML = '
+                <div class="alert alert-error">
+                    <strong>⚠️ Errore:</strong> ' . htmlspecialchars($result['message']) . '
+                </div>
+            ';
         }
     }
 }
 
-// Carica il template HTML
-$templatePath = __DIR__ . '/../template/accedi.html';
-
-if (!file_exists($templatePath)) {
-    die("Errore: Template accedi.html non trovato in $templatePath");
+// ========================================
+// CARICAMENTO E SOSTITUZIONE TEMPLATE
+// ========================================
+if (file_exists($templatePath)) {
+    $contenuto = file_get_contents($templatePath);
+} else {
+    die("Errore: Template non trovato in $templatePath");
 }
 
-$contenuto = file_get_contents($templatePath);
+$prefix = getPrefix();
 
-// Modifica il campo per accettare sia email che username
-$contenuto = str_replace('type="email"', 'type="text"', $contenuto);
-$contenuto = str_replace('<label for="email">Email</label>', '<label for="email">Email o Username</label>', $contenuto);
-$contenuto = str_replace('placeholder="detective@example.com"', 'placeholder="email@example.com o AdolfoBallan"', $contenuto);
-$contenuto = str_replace('autocomplete="email"', 'autocomplete="username"', $contenuto);
+// Sostituzioni semplici e pulite
+$contenuto = str_replace('{{PREFIX}}', $prefix, $contenuto);
+$contenuto = str_replace('{{EMAIL_VALUE}}', htmlspecialchars($email, ENT_QUOTES), $contenuto);
+$contenuto = str_replace('<!-- PLACEHOLDER_MESSAGGI -->', $messaggioHTML, $contenuto);
 
-// Mostra eventuali messaggi di errore/successo
-if (!empty($errorMessage)) {
-    $alert = '<div class="alert alert-error" role="alert">' . htmlspecialchars($errorMessage) . '</div>';
-    $contenuto = str_replace('<form class="auth-form"', $alert . '<form class="auth-form"', $contenuto);
-}
-
-if (!empty($successMessage)) {
-    $alert = '<div class="alert alert-success" role="alert">' . htmlspecialchars($successMessage) . '</div>';
-    $contenuto = str_replace('<form class="auth-form"', $alert . '<form class="auth-form"', $contenuto);
-}
-
-// Output finale
-echo getTemplatePage("Accedi - AliceTrueCrime", $contenuto);
+// ========================================
+// OUTPUT FINALE
+// ========================================
+$titoloPagina = "Accedi - AliceTrueCrime";
+echo getTemplatePage($titoloPagina, $contenuto);
 ?>

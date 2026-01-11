@@ -317,72 +317,7 @@ class FunzioniDB {
     // GESTIONE CASI
     // ========================================
     
-    /**
-     * Inserisce un nuovo caso nel database (non approvato di default)
-     * @param string $titolo Titolo del caso
-     * @param string $data Data dell'accaduto (formato YYYY-MM-DD)
-     * @param string $luogo Luogo del caso
-     * @param string $descrizione Descrizione dettagliata
-     * @param string $autoreEmail Email dell'autore (chiave esterna)
-     * @param string|null $immagine Path dell'immagine (opzionale)
-     * @param string|null $tipologia Categoria del caso (opzionale)
-     * @return array ['success' => bool, 'message' => string, 'caso_id' => int|null]
-     */
-    public function inserisciCaso($titolo, $data, $luogo, $descrizione, $immagine = null, $tipologia = null) {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-            
-            // Validazione base
-            if (empty($titolo) || empty($data) || empty($luogo) || empty($descrizione)) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Tutti i campi obbligatori devono essere compilati',
-                    'caso_id' => null
-                ];
-            }
-            
-            // Insert caso (Approvato = 0 di default)
-            $query = "INSERT INTO Caso (Titolo, Data, Luogo, Descrizione, Immagine, Tipologia, Approvato) 
-                      VALUES (?, ?, ?, ?, ?, ?, 0)";
-            
-            $params = [
-                $titolo,
-                $data,
-                $luogo,
-                $descrizione,
-                $tipologia,
-                $immagine
-                
-            ];
-            
-            $result = $this->db->query($query, $params, "ssssss");
-            
-            if ($result) {
-                $casoId = $this->db->getLastInsertId();
-                $this->db->chiudiConnessione();
-                
-                return [
-                    'success' => true,
-                    'message' => 'Caso inserito con successo. In attesa di approvazione.',
-                    'caso_id' => $casoId
-                ];
-            } else {
-                throw new Exception("Errore durante l'inserimento del caso");
-            }
-            
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            error_log("Errore inserimento caso: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Errore durante l\'inserimento. Riprova più tardi.'. var_dump($params),
-                'caso_id' => null
-            ];
-        }
-    }
+    
     /**
      * Recupera l'ID di un caso dal suo slug
      * @param string $slug Slug del caso
@@ -910,5 +845,258 @@ public function inserisciCommento($emailUtente, $idCaso, $commento) {
         }
     }
     
+
+
+    // ========================================
+    // GESTIONE CASO COMPLETO (NUOVE FUNZIONI)
+    // ========================================
+    
+    /**
+     * Inserisce un caso completo con generazione automatica dello slug
+     */
+    public function inserisciCaso($titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $immagine = null, $autoreEmail = '') {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            if (empty($titolo) || empty($data) || empty($luogo) || empty($descrizione) || empty($storia)) {
+                $this->db->chiudiConnessione();
+                return [
+                    'success' => false,
+                    'message' => 'Tutti i campi obbligatori devono essere compilati',
+                    'caso_id' => null
+                ];
+            }
+            
+            $slug = $this->generaSlugUnico($titolo);
+            
+            $query = "INSERT INTO Caso (Titolo, Slug, Data, Luogo, Descrizione, Storia, Tipologia, Immagine, Approvato, Autore) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, '')";
+            
+            $params = [
+                $titolo,
+                $slug,
+                $data,
+                $luogo,
+                $descrizione,
+                $storia,
+                $tipologia,
+                $immagine
+            ];
+            
+            $result = $this->db->query($query, $params, "ssssssss");
+            
+            if ($result) {
+                $casoId = $this->db->getLastInsertId();
+                $this->db->chiudiConnessione();
+                
+                return [
+                    'success' => true,
+                    'message' => 'Caso inserito con successo. In attesa di approvazione.',
+                    'caso_id' => $casoId
+                ];
+            } else {
+                throw new Exception("Errore durante l'inserimento del caso");
+            }
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore inserimento caso completo: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Errore durante l\'inserimento. Riprova più tardi.',
+                'caso_id' => null
+            ];
+        }
+    }
+
+    private function generaSlugUnico($titolo) {
+        $slug = strtolower($titolo);
+        $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        $slug = preg_replace('/-+/', '-', $slug);
+        $slug = trim($slug, '-');
+        $slug = substr($slug, 0, 200);
+        
+        $slugBase = $slug;
+        $counter = 1;
+        
+        while ($this->slugEsiste($slug)) {
+            $slug = $slugBase . '-' . $counter;
+            $counter++;
+        }
+        
+        return $slug;
+    }
+
+    private function slugEsiste($slug) {
+        $query = "SELECT N_Caso FROM Caso WHERE Slug = ?";
+        $result = $this->db->query($query, [$slug], "s");
+        
+        if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    // ========================================
+    // GESTIONE VITTIME
+    // ========================================
+    
+    public function inserisciVittima($casoId, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            if (empty($nome) || empty($cognome) || empty($casoId)) {
+                $this->db->chiudiConnessione();
+                return null;
+            }
+            
+            $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1980-01-01';
+            $dataDecessoFinal = !empty($dataDecesso) ? $dataDecesso : null;
+            
+            $query = "INSERT INTO Vittima (Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso, Immagine) 
+                      VALUES (?, ?, ?, ?, ?, ?, '')";
+            
+            $params = [
+                $nome,
+                $cognome,
+                $luogoNascita,
+                $dataNascitaFinal,
+                $dataDecessoFinal,
+                $casoId
+            ];
+            
+            $result = $this->db->query($query, $params, "sssssi");
+            
+            if ($result) {
+                $vittimaId = $this->db->getLastInsertId();
+                $this->db->chiudiConnessione();
+                return $vittimaId;
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore inserimento vittima: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    // ========================================
+    // GESTIONE COLPEVOLI
+    // ========================================
+    
+    public function inserisciColpevole($nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            if (empty($nome) || empty($cognome)) {
+                $this->db->chiudiConnessione();
+                return null;
+            }
+            
+            $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1990-01-01';
+            
+            $query = "INSERT INTO Colpevole (Nome, Cognome, LuogoNascita, DataNascita, Immagine) 
+                      VALUES (?, ?, ?, ?, '')";
+            
+            $params = [
+                $nome,
+                $cognome,
+                $luogoNascita,
+                $dataNascitaFinal
+            ];
+            
+            $result = $this->db->query($query, $params, "ssss");
+            
+            if ($result) {
+                $colpevoleId = $this->db->getLastInsertId();
+                $this->db->chiudiConnessione();
+                return $colpevoleId;
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore inserimento colpevole: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function collegaColpevoleACaso($colpevoleId, $casoId) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $query = "INSERT INTO Colpa (Colpevole, Caso) VALUES (?, ?)";
+            $result = $this->db->query($query, [$colpevoleId, $casoId], "ii");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore collegamento colpevole-caso: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // ========================================
+    // GESTIONE ARTICOLI/FONTI
+    // ========================================
+    
+    public function inserisciArticolo($casoId, $titolo, $data = null, $link = '') {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            if (empty($casoId) || (empty($titolo) && empty($link))) {
+                $this->db->chiudiConnessione();
+                return null;
+            }
+            
+            $dataFinal = !empty($data) ? $data : date('Y-m-d');
+            $linkFinal = !empty($link) ? $link : 'https://source-unavailable.com';
+            
+            $query = "INSERT INTO Articolo (Titolo, Data, Link, Caso) 
+                      VALUES (?, ?, ?, ?)";
+            
+            $params = [
+                $titolo,
+                $dataFinal,
+                $linkFinal,
+                $casoId
+            ];
+            
+            $result = $this->db->query($query, $params, "sssi");
+            
+            if ($result) {
+                $articoloId = $this->db->getLastInsertId();
+                $this->db->chiudiConnessione();
+                return $articoloId;
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            error_log("Errore inserimento articolo: " . $e->getMessage());
+            return null;
+        }
+    }
+
 }
 ?>
