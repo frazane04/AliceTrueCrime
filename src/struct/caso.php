@@ -8,13 +8,19 @@ require_once __DIR__ . '/funzioni_db.php';
 // ========================================
 $casoId = 0;
 $dbFunctions = new FunzioniDB();
+$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+$isAdminPreview = isset($_GET['preview']) && $_GET['preview'] === 'admin' && $isAdmin;
 
 // Controlla se c'è uno slug nell'URL (es: /caso/il-mostro-di-milwaukee)
 if (isset($_GET['slug']) && !empty($_GET['slug'])) {
     $slug = trim($_GET['slug']);
     
-    // Converti lo slug in ID
-    $casoId = $dbFunctions->getCasoIdBySlug($slug);
+    // Se è admin in preview, cerca anche i casi non approvati
+    if ($isAdminPreview) {
+        $casoId = $dbFunctions->getCasoIdBySlugAdmin($slug);
+    } else {
+        $casoId = $dbFunctions->getCasoIdBySlug($slug);
+    }
     
     if ($casoId === null) {
         // Slug non trovato
@@ -60,10 +66,50 @@ if ($casoId <= 0) {
     exit;
 }
 
+// ========================================
+// GESTIONE AZIONI ADMIN (POST)
+// ========================================
+$messaggioAdmin = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
+    
+    // Approva Caso
+    if (isset($_POST['action']) && $_POST['action'] === 'approva_caso') {
+        $result = $dbFunctions->approvaCaso($casoId);
+        if ($result['success']) {
+            // Redirect alla pagina del caso approvato (senza preview)
+            header("Location: $prefix/caso/" . $slug);
+            exit;
+        } else {
+            $messaggioAdmin = '<div class="alert alert-error">❌ ' . htmlspecialchars($result['message']) . '</div>';
+        }
+    }
+    
+    // Rifiuta Caso
+    if (isset($_POST['action']) && $_POST['action'] === 'rifiuta_caso') {
+        $result = $dbFunctions->rifiutaCaso($casoId);
+        if ($result['success']) {
+            // Redirect al profilo
+            header("Location: $prefix/profilo");
+            exit;
+        } else {
+            $messaggioAdmin = '<div class="alert alert-error">❌ ' . htmlspecialchars($result['message']) . '</div>';
+        }
+    }
+}
+
 // Recupero i dati del caso dal database
-$caso = $dbFunctions->getCasoById($casoId);
-$colpevoli = $dbFunctions->getColpevoliByCaso($casoId);
-$vittime = $dbFunctions->getVittimeByCaso($casoId);
+// Se admin preview, usa la funzione che recupera anche i non approvati
+if ($isAdminPreview) {
+    $caso = $dbFunctions->getCasoByIdAdmin($casoId);
+    $colpevoli = $dbFunctions->getColpevoliByCasoAdmin($casoId);
+    $vittime = $dbFunctions->getVittimeByCasoAdmin($casoId);
+} else {
+    $caso = $dbFunctions->getCasoById($casoId);
+    $colpevoli = $dbFunctions->getColpevoliByCaso($casoId);
+    $vittime = $dbFunctions->getVittimeByCaso($casoId);
+}
+
 $articoli = $dbFunctions->getArticoliByCaso($casoId);
 
 // Verifico se il caso esiste
@@ -95,28 +141,32 @@ $contenuto = file_get_contents($templatePath);
 // ========================================
 $html_colpevoli = "";
 
-foreach ($colpevoli as $colpevole) {
-    $nome_colpevole = htmlspecialchars($colpevole['Nome']);
-    $cognome_colpevole = htmlspecialchars($colpevole['Cognome']);
-    $luogoNascita_colpevole = htmlspecialchars($colpevole['LuogoNascita']);
-    $dataNascita_colpevole = !empty($colpevole['DataNascita']) 
-        ? date('d/m/Y', strtotime($colpevole['DataNascita'])) 
-        : 'Sconosciuta';    
-    $imgColpevole = !empty($colpevole['Immagine']) 
-        ? $prefix . '/' . htmlspecialchars($colpevole['Immagine'])
-        : $prefix . '/assets/img/caso-placeholder.jpeg';
+if (!empty($colpevoli)) {
+    foreach ($colpevoli as $colpevole) {
+        $nome_colpevole = htmlspecialchars($colpevole['Nome']);
+        $cognome_colpevole = htmlspecialchars($colpevole['Cognome']);
+        $luogoNascita_colpevole = htmlspecialchars($colpevole['LuogoNascita']);
+        $dataNascita_colpevole = !empty($colpevole['DataNascita']) 
+            ? date('d/m/Y', strtotime($colpevole['DataNascita'])) 
+            : 'Sconosciuta';    
+        $imgColpevole = !empty($colpevole['Immagine']) 
+            ? $prefix . '/' . htmlspecialchars($colpevole['Immagine'])
+            : $prefix . '/assets/img/caso-placeholder.jpeg';
 
-    $html_colpevoli .= '
-    <article class="carousel-card">
-        <div class="card-foto">
-            <img src="' . $imgColpevole . '" alt="' . $nome_colpevole . " " . $cognome_colpevole . '">
-        </div>
-        <div class="card-info">
-            <h4>' . $nome_colpevole . " " . $cognome_colpevole . '</h4>
-            <p><strong>Nato a:</strong> ' . $luogoNascita_colpevole . '</p>
-            <p><strong>Il:</strong> ' . $dataNascita_colpevole . '</p>
-        </div>
-    </article>';
+        $html_colpevoli .= '
+        <article class="carousel-card">
+            <div class="card-foto">
+                <img src="' . $imgColpevole . '" alt="' . $nome_colpevole . " " . $cognome_colpevole . '">
+            </div>
+            <div class="card-info">
+                <h4>' . $nome_colpevole . " " . $cognome_colpevole . '</h4>
+                <p><strong>Nato a:</strong> ' . $luogoNascita_colpevole . '</p>
+                <p><strong>Il:</strong> ' . $dataNascita_colpevole . '</p>
+            </div>
+        </article>';
+    }
+} else {
+    $html_colpevoli = '<p>Nessun colpevole registrato.</p>';
 }
 
 // ========================================
@@ -124,32 +174,36 @@ foreach ($colpevoli as $colpevole) {
 // ========================================
 $html_vittime = "";
 
-foreach ($vittime as $vittima) {
-    $nome_vittima = htmlspecialchars($vittima['Nome']);
-    $cognome_vittima = htmlspecialchars($vittima['Cognome']);
-    $luogoNascita_vittima = htmlspecialchars($vittima['LuogoNascita']);
-    $dataNascita_vittima = !empty($vittima['DataNascita']) 
-        ? date('d/m/Y', strtotime($vittima['DataNascita'])) 
-        : 'Sconosciuta';
-    $dataDecesso_vittima = !empty($vittima['DataDecesso']) 
-        ? date('d/m/Y', strtotime($vittima['DataDecesso'])) 
-        : 'Sconosciuta';
-    $imgVittima = !empty($vittima['Immagine']) 
-        ? $prefix . '/' . htmlspecialchars($vittima['Immagine'])
-        : $prefix . '/assets/img/caso-placeholder.jpeg';
+if (!empty($vittime)) {
+    foreach ($vittime as $vittima) {
+        $nome_vittima = htmlspecialchars($vittima['Nome']);
+        $cognome_vittima = htmlspecialchars($vittima['Cognome']);
+        $luogoNascita_vittima = htmlspecialchars($vittima['LuogoNascita']);
+        $dataNascita_vittima = !empty($vittima['DataNascita']) 
+            ? date('d/m/Y', strtotime($vittima['DataNascita'])) 
+            : 'Sconosciuta';
+        $dataDecesso_vittima = !empty($vittima['DataDecesso']) 
+            ? date('d/m/Y', strtotime($vittima['DataDecesso'])) 
+            : 'Sconosciuta';
+        $imgVittima = !empty($vittima['Immagine']) 
+            ? $prefix . '/' . htmlspecialchars($vittima['Immagine'])
+            : $prefix . '/assets/img/caso-placeholder.jpeg';
 
-    $html_vittime .= '
-    <article class="carousel-card">
-        <div class="card-foto">
-            <img src="' . $imgVittima . '" alt="' . $nome_vittima . " " . $cognome_vittima . '">
-        </div>
-        <div class="card-info">
-            <h4>' . $nome_vittima . " " . $cognome_vittima . '</h4>
-            <p><strong>Nato a:</strong> ' . $luogoNascita_vittima . '</p>
-            <p><strong>Il:</strong> ' . $dataNascita_vittima . '</p>
-            <p><strong>Decesso:</strong> ' . $dataDecesso_vittima . '</p>
-        </div>
-    </article>';
+        $html_vittime .= '
+        <article class="carousel-card">
+            <div class="card-foto">
+                <img src="' . $imgVittima . '" alt="' . $nome_vittima . " " . $cognome_vittima . '">
+            </div>
+            <div class="card-info">
+                <h4>' . $nome_vittima . " " . $cognome_vittima . '</h4>
+                <p><strong>Nato a:</strong> ' . $luogoNascita_vittima . '</p>
+                <p><strong>Il:</strong> ' . $dataNascita_vittima . '</p>
+                <p><strong>Decesso:</strong> ' . $dataDecesso_vittima . '</p>
+            </div>
+        </article>';
+    }
+} else {
+    $html_vittime = '<p>Nessuna vittima registrata.</p>';
 }
 
 // ========================================
@@ -157,20 +211,24 @@ foreach ($vittime as $vittima) {
 // ========================================
 $html_articoli = "";
 
-foreach ($articoli as $articolo) {
-    $art_Titolo = htmlspecialchars($articolo['Titolo']);
-    $art_data = !empty($articolo['Data']) 
-        ? date('d/m/Y', strtotime($articolo['Data'])) 
-        : 'Sconosciuta';
-    $art_link = htmlspecialchars($articolo['Link']);
+if (!empty($articoli)) {
+    foreach ($articoli as $articolo) {
+        $art_Titolo = htmlspecialchars($articolo['Titolo']);
+        $art_data = !empty($articolo['Data']) 
+            ? date('d/m/Y', strtotime($articolo['Data'])) 
+            : 'Sconosciuta';
+        $art_link = htmlspecialchars($articolo['Link']);
 
-    $html_articoli .= '
-    <li class="approfondimento">
-        <p class="approfondimento-fonte">
-            <a href="' . $art_link . '" target="_blank" rel="noopener noreferrer">' . $art_Titolo . '</a>
-            <time class="approfondimento-data" datetime="d/m/Y">' . $art_data . '</time>
-        </p>
-    </li>';
+        $html_articoli .= '
+        <li class="approfondimento">
+            <p class="approfondimento-fonte">
+                <a href="' . $art_link . '" target="_blank" rel="noopener noreferrer">' . $art_Titolo . '</a>
+                <time class="approfondimento-data" datetime="d/m/Y">' . $art_data . '</time>
+            </p>
+        </li>';
+    }
+} else {
+    $html_articoli = '<li>Nessuna fonte disponibile.</li>';
 }
 
 // ========================================
@@ -181,6 +239,7 @@ $storia = nl2br(htmlspecialchars($caso['Storia']));
 $data = date('d/m/Y', strtotime($caso['Data']));
 $luogo = htmlspecialchars($caso['Luogo']);
 $tipologia = htmlspecialchars($caso['Tipologia'] ?? 'Non specificata');
+$isApprovato = (bool)$caso['Approvato'];
 
 // Gestione immagine
 $immagine = !empty($caso['Immagine']) 
@@ -188,12 +247,48 @@ $immagine = !empty($caso['Immagine'])
     : $prefix . '/assets/img/caso-placeholder.jpeg';
 
 // Badge status
-$statusClass = $caso['Approvato'] ? 'status-approved' : 'status-pending';
-$statusText = $caso['Approvato'] ? '✓ Caso Verificato' : '⏳ In Revisione';
+$statusClass = $isApprovato ? 'status-approved' : 'status-pending';
+$statusText = $isApprovato ? '✓ Caso Verificato' : '⏳ In Revisione';
+
+// ========================================
+// BARRA ADMIN (se admin e caso non approvato)
+// ========================================
+$htmlAdminBar = '';
+
+if ($isAdmin && !$isApprovato) {
+    $htmlAdminBar = '
+    <div class="admin-action-bar">
+        <div class="admin-bar-content">
+            <span class="admin-bar-label">Pannello Admin - Caso in attesa di approvazione</span>
+            
+            ' . $messaggioAdmin . '
+            
+            <div class="admin-bar-actions">
+                <form method="POST">
+                    <input type="hidden" name="action" value="approva_caso">
+                    <button type="submit" class="btn btn-success" onclick="return confirm(\'Confermi l\\\'approvazione di questo caso?\')">
+                        Approva Caso
+                    </button>
+                </form>
+                
+                <form method="POST">
+                    <input type="hidden" name="action" value="rifiuta_caso">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm(\'⚠️ ATTENZIONE: Questa azione eliminerà definitivamente il caso. Continuare?\')">
+                        Rifiuta ed Elimina
+                    </button>
+                </form>                
+            </div>
+        </div>
+    </div>';
+}
 
 // ========================================
 // SOSTITUZIONI PLACEHOLDER
 // ========================================
+
+// Admin bar in alto
+$contenuto = str_replace('<!-- admin_bar -->', $htmlAdminBar, $contenuto);
+
 $htmlImmagine = '<img alt="Evidenza principale del caso ' . $titolo . '" src="' . $immagine . '" class="img-evidence" width="300" />';
 $contenuto = str_replace('<!-- caso_immagine -->', $htmlImmagine, $contenuto);
 
@@ -214,152 +309,157 @@ $contenuto = str_replace('<!-- caso_colpevoli -->', $html_colpevoli, $contenuto)
 $contenuto = str_replace('<!-- caso_articoli -->', $html_articoli, $contenuto);
 
 // ========================================
-// GESTIONE COMMENTI
+// GESTIONE COMMENTI (solo per casi approvati)
 // ========================================
 $messaggioCommento = '';
-
-// Gestione POST per nuovo commento
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'aggiungi_commento') {
-    
-    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login per commentare.</div>';
-    } else {
-        $testoCommento = trim($_POST['commento'] ?? '');
-        $emailUtente = $_SESSION['user_email'];
-        
-        if (empty($testoCommento)) {
-            $messaggioCommento = '<div class="alert alert-error">Il commento non può essere vuoto.</div>';
-        } else {
-            $resultCommento = $dbFunctions->inserisciCommento($emailUtente, $casoId, $testoCommento);
-            
-            if ($resultCommento['success']) {
-                $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultCommento['message']) . '</div>';
-                header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
-                exit;
-            } else {
-                $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultCommento['message']) . '</div>';
-            }
-        }
-    }
-}
-
-// Gestione eliminazione commento
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'elimina_commento') {
-    
-    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login.</div>';
-    } else {
-        $idCommento = intval($_POST['id_commento'] ?? 0);
-        $emailUtente = $_SESSION['user_email'];
-        $isAdmin = $_SESSION['is_admin'] ?? false;
-        
-        if ($idCommento > 0) {
-            $resultEliminazione = $dbFunctions->eliminaCommento($idCommento, $emailUtente, $isAdmin);
-            
-            if ($resultEliminazione['success']) {
-                $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
-                header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
-                exit;
-            } else {
-                $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
-            }
-        }
-    }
-}
-
-// Recupera i commenti
-$commenti = $dbFunctions->getCommentiCaso($casoId);
-$numeroCommenti = $dbFunctions->contaCommentiCaso($casoId);
-
-// Genera HTML commenti
 $htmlCommenti = '';
+$htmlFormCommento = '';
+$numeroCommenti = 0;
 
-if (!empty($commenti)) {
-    foreach ($commenti as $commento) {
-        $usernameCommento = htmlspecialchars($commento['Username']);
-        $dataCommento = date('d/m/Y H:i', strtotime($commento['Data']));
-        $testoCommento = nl2br(htmlspecialchars($commento['Commento']));
-        $idCommento = (int)$commento['ID_Commento'];
+if ($isApprovato) {
+    // Gestione POST per nuovo commento
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'aggiungi_commento') {
         
-        $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($usernameCommento) . "&background=0D8ABC&color=fff&size=48";
-        
-        $pulsanteElimina = '';
-        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-            $emailLoggata = $_SESSION['user_email'];
-            $isAdmin = $_SESSION['is_admin'] ?? false;
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login per commentare.</div>';
+        } else {
+            $testoCommento = trim($_POST['commento'] ?? '');
+            $emailUtente = $_SESSION['user_email'];
             
-            if ($commento['Email'] === $emailLoggata || $isAdmin) {
-                $pulsanteElimina = '
-                <form method="POST" style="display: inline;" onsubmit="return confirm(\'Sei sicuro di voler eliminare questo commento?\');">
-                    <input type="hidden" name="action" value="elimina_commento" />
-                    <input type="hidden" name="id_commento" value="' . $idCommento . '" />
-                    <button type="submit" class="btn-elimina-commento" aria-label="Elimina commento">🗑️ Elimina</button>
-                </form>';
+            if (empty($testoCommento)) {
+                $messaggioCommento = '<div class="alert alert-error">Il commento non può essere vuoto.</div>';
+            } else {
+                $resultCommento = $dbFunctions->inserisciCommento($emailUtente, $casoId, $testoCommento);
+                
+                if ($resultCommento['success']) {
+                    $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultCommento['message']) . '</div>';
+                    header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
+                    exit;
+                } else {
+                    $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultCommento['message']) . '</div>';
+                }
             }
         }
+    }
+
+    // Gestione eliminazione commento
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'elimina_commento') {
         
-        $htmlCommenti .= '
-        <article class="commento-card">
-            <div class="commento-header">
-                <img src="' . $avatarUrl . '" alt="" class="commento-avatar" />
-                <div class="commento-info">
-                    <strong class="commento-autore">' . $usernameCommento . '</strong>
-                    <time class="commento-data" datetime="' . $commento['Data'] . '">' . $dataCommento . '</time>
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login.</div>';
+        } else {
+            $idCommento = intval($_POST['id_commento'] ?? 0);
+            $emailUtente = $_SESSION['user_email'];
+            $isAdminComment = $_SESSION['is_admin'] ?? false;
+            
+            if ($idCommento > 0) {
+                $resultEliminazione = $dbFunctions->eliminaCommento($idCommento, $emailUtente, $isAdminComment);
+                
+                if ($resultEliminazione['success']) {
+                    $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
+                    header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
+                    exit;
+                } else {
+                    $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
+                }
+            }
+        }
+    }
+
+    // Recupera i commenti
+    $commenti = $dbFunctions->getCommentiCaso($casoId);
+    $numeroCommenti = $dbFunctions->contaCommentiCaso($casoId);
+
+    // Genera HTML commenti
+    if (!empty($commenti)) {
+        foreach ($commenti as $commento) {
+            $usernameCommento = htmlspecialchars($commento['Username']);
+            $dataCommento = date('d/m/Y H:i', strtotime($commento['Data']));
+            $testoCommento = nl2br(htmlspecialchars($commento['Commento']));
+            $idCommento = (int)$commento['ID_Commento'];
+            
+            $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($usernameCommento) . "&background=0D8ABC&color=fff&size=48";
+            
+            $pulsanteElimina = '';
+            if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+                $emailLoggata = $_SESSION['user_email'];
+                $isAdminComment = $_SESSION['is_admin'] ?? false;
+                
+                if ($commento['Email'] === $emailLoggata || $isAdminComment) {
+                    $pulsanteElimina = '
+                    <form method="POST" style="display: inline;" onsubmit="return confirm(\'Sei sicuro di voler eliminare questo commento?\');">
+                        <input type="hidden" name="action" value="elimina_commento" />
+                        <input type="hidden" name="id_commento" value="' . $idCommento . '" />
+                        <button type="submit" class="btn-elimina-commento" aria-label="Elimina commento">🗑️ Elimina</button>
+                    </form>';
+                }
+            }
+            
+            $htmlCommenti .= '
+            <article class="commento-card">
+                <div class="commento-header">
+                    <img src="' . $avatarUrl . '" alt="" class="commento-avatar" />
+                    <div class="commento-info">
+                        <strong class="commento-autore">' . $usernameCommento . '</strong>
+                        <time class="commento-data" datetime="' . $commento['Data'] . '">' . $dataCommento . '</time>
+                    </div>
+                    ' . $pulsanteElimina . '
                 </div>
-                ' . $pulsanteElimina . '
-            </div>
-            <div class="commento-contenuto">
-                <p>' . $testoCommento . '</p>
-            </div>
-        </article>';
+                <div class="commento-contenuto">
+                    <p>' . $testoCommento . '</p>
+                </div>
+            </article>';
+        }
+    } else {
+        $htmlCommenti = '<p class="no-commenti">Nessun commento ancora. Sii il primo a commentare!</p>';
+    }
+
+    // Form commento
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        $usernameLoggato = htmlspecialchars($_SESSION['user']);
+        $avatarLoggato = "https://ui-avatars.com/api/?name=" . urlencode($usernameLoggato) . "&background=0D8ABC&color=fff&size=48";
+        
+        $htmlFormCommento = '
+        <div class="form-commento-container">
+            <h3>Scrivi un commento</h3>
+            
+            ' . $messaggioCommento . '
+            
+            <form method="POST" class="form-commento" action="#commenti">
+                <input type="hidden" name="action" value="aggiungi_commento" />
+                
+                <div class="form-commento-header">
+                    <img src="' . $avatarLoggato . '" alt="" class="commento-avatar" />
+                    <strong>' . $usernameLoggato . '</strong>
+                </div>
+                
+                <div class="form-group">
+                    <label for="commento" class="sr-only">Il tuo commento</label>
+                    <textarea 
+                        id="commento" 
+                        name="commento" 
+                        rows="4" 
+                        placeholder="Condividi la tua opinione su questo caso..."
+                        required
+                        maxlength="2000"
+                    ></textarea>
+                    <small class="form-hint">Massimo 2000 caratteri</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">💬 Pubblica Commento</button>
+            </form>
+        </div>';
+    } else {
+        $htmlFormCommento = '
+        <div class="login-prompt">
+            <p>Per commentare devi essere registrato.</p>
+            <a href="' . $prefix . '/accedi" class="btn btn-primary">Accedi per Commentare</a>
+        </div>';
     }
 } else {
-    $htmlCommenti = '<p class="no-commenti">Nessun commento ancora. Sii il primo a commentare!</p>';
-}
-
-// Form commento
-$htmlFormCommento = '';
-
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-    $usernameLoggato = htmlspecialchars($_SESSION['user']);
-    $avatarLoggato = "https://ui-avatars.com/api/?name=" . urlencode($usernameLoggato) . "&background=0D8ABC&color=fff&size=48";
-    
-    $htmlFormCommento = '
-    <div class="form-commento-container">
-        <h3>Scrivi un commento</h3>
-        
-        ' . $messaggioCommento . '
-        
-        <form method="POST" class="form-commento" action="#commenti">
-            <input type="hidden" name="action" value="aggiungi_commento" />
-            
-            <div class="form-commento-header">
-                <img src="' . $avatarLoggato . '" alt="" class="commento-avatar" />
-                <strong>' . $usernameLoggato . '</strong>
-            </div>
-            
-            <div class="form-group">
-                <label for="commento" class="sr-only">Il tuo commento</label>
-                <textarea 
-                    id="commento" 
-                    name="commento" 
-                    rows="4" 
-                    placeholder="Condividi la tua opinione su questo caso..."
-                    required
-                    maxlength="2000"
-                ></textarea>
-                <small class="form-hint">Massimo 2000 caratteri</small>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">💬 Pubblica Commento</button>
-        </form>
-    </div>';
-} else {
-    $htmlFormCommento = '
-    <div class="login-prompt">
-        <p>Per commentare devi essere registrato.</p>
-        <a href="' . $prefix . '/accedi" class="btn btn-primary">Accedi per Commentare</a>
-    </div>';
+    // Caso non approvato - niente commenti
+    $htmlCommenti = '<p class="no-commenti">I commenti saranno disponibili dopo l\'approvazione del caso.</p>';
+    $htmlFormCommento = '';
 }
 
 $contenuto = str_replace('<!-- caso_numero_commenti -->', $numeroCommenti, $contenuto);
