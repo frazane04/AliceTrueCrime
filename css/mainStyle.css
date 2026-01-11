@@ -2315,3 +2315,63 @@ input:focus-visible,
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
+
+
+/* ============================================
+   Aggiunta CSS Newsletter (da Approvare)
+   ============================================ */
+
+.newsletter-exclusive-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.newsletter-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.newsletter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.news-card {
+    background: #fff;
+    padding: 25px;
+    border-left: 5px solid #0D8ABC; /* Il colore del tuo brand */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-10px);
+}
+
+.news-badge {
+    display: inline-block;
+    background: #e74c3c;
+    color: white;
+    padding: 2px 10px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.btn-text {
+    color: #0D8ABC;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.error-msg-container {
+    text-align: center;
+    padding: 100px 20px;
+}
+

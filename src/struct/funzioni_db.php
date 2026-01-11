@@ -19,12 +19,7 @@ class FunzioniDB {
     // ========================================
     
     /**
-     * Registra un nuovo utente nel database
-     * @param string $email Email dell'utente (chiave primaria)
-     * @param string $username Nome utente (univoco)
-     * @param string $password Password in chiaro (verrà hashata)
-     * @param bool $isAdmin Default false
-     * @return array ['success' => bool, 'message' => string, 'email' => string|null]
+     * Registra un nuovo utente (Versione aggiornata con Is_Newsletter)
      */
     public function registraUtente($email, $username, $password, $isAdmin = false) {
         try {
@@ -32,67 +27,45 @@ class FunzioniDB {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            // Validazione email
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Email non valida',
-                    'email' => null
-                ];
+                return ['success' => false, 'message' => 'Email non valida'];
             }
             
-            // Verifica se email esiste già
             if ($this->verificaEmailEsistente($email)) {
                 $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Email già registrata',
-                    'email' => null
-                ];
+                return ['success' => false, 'message' => 'Email già registrata'];
             }
             
-            // Verifica se username esiste già
-            if ($this->verificaUsernameEsistente($username)) {
-                $this->db->chiudiConnessione();
-                return [
-                    'success' => false,
-                    'message' => 'Username già in uso',
-                    'email' => null
-                ];
-            }
-            
-            // Hash della password
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
             $isAdminInt = $isAdmin ? 1 : 0;
             
-            // Insert utente
-            $query = "INSERT INTO Utente (Email, Username, Password, Is_Admin) VALUES (?, ?, ?, ?)";
+            // AGGIORNATO: Inseriamo il campo Is_Newsletter inizializzato a 0
+            $query = "INSERT INTO Utente (Email, Username, Password, Is_Admin, Is_Newsletter) VALUES (?, ?, ?, ?, 0)";
             $result = $this->db->query($query, [$email, $username, $passwordHash, $isAdminInt], "sssi");
             
-            if ($result) {
-                $this->db->chiudiConnessione();
-                
-                return [
-                    'success' => true,
-                    'message' => 'Registrazione completata con successo',
-                    'email' => $email
-                ];
-            } else {
-                throw new Exception("Errore durante l'inserimento nel database");
-            }
+            $this->db->chiudiConnessione();
+            return ['success' => true, 'email' => $email];
             
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
-            error_log("Errore registrazione utente: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Errore durante la registrazione. Riprova più tardi.',
-                'email' => null
-            ];
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
-    
+
+        /**
+     * Salva la scelta dell'utente nel database
+     */
+    public function updateNewsletter($email, $stato) {
+        try {
+            if (!$this->db->apriConnessione()) return false;
+            $query = "UPDATE Utente SET Is_Newsletter = ? WHERE Email = ?";
+            $result = $this->db->query($query, [$stato, $email], "is");
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+        } catch (Exception $e) { return false; }
+    }
+  
     /**
      * Verifica se un'email esiste già
      * @param string $email
@@ -262,7 +235,8 @@ class FunzioniDB {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            $query = "SELECT Email, Username, Is_Admin FROM Utente WHERE Email = ?";
+            // AGGIUNTO Is_Newsletter alla SELECT
+            $query = "SELECT Email, Username, Is_Admin, Is_Newsletter FROM Utente WHERE Email = ?";
             $result = $this->db->query($query, [$email], "s");
             
             if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
@@ -276,7 +250,6 @@ class FunzioniDB {
             
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
-            error_log("Errore recupero utente: " . $e->getMessage());
             return null;
         }
     }
@@ -317,6 +290,36 @@ class FunzioniDB {
     // GESTIONE CASI
     // ========================================
     
+
+    /**
+    * Recupera gli ultimi casi approvati per l'area newsletter
+    */
+    public function getContenutiNewsletter($limite = 6) {
+        try {
+            if (!$this->db->apriConnessione()) return [];
+            
+            // AGGIUNTO 'Slug' nella SELECT
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Data 
+                    FROM Caso 
+                    WHERE Approvato = 1 
+                    ORDER BY Data DESC 
+                    LIMIT ?";
+            
+            $result = $this->db->query($query, [$limite], "i");
+            $casi = [];
+            
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $casi[] = $row;
+                }
+            }
+            
+            $this->db->chiudiConnessione();
+            return $casi;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
     
     /**
      * Recupera l'ID di un caso dal suo slug

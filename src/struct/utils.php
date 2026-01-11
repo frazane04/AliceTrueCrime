@@ -75,8 +75,20 @@ function getNavBarLi($currentPath): string {
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
         $prefix . '/segnala-caso' => 'Segnala Caso',
-        $prefix . '/newsletter' => 'Newsletter',
     ];
+
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        // RISOLUZIONE ERRORE: Carichiamo la classe FunzioniDB
+        require_once __DIR__ . '/funzioni_db.php';
+        $db_nav = new FunzioniDB();
+        $utente = $db_nav->getUtenteByEmail($_SESSION['user_email']);
+        
+        // Se è iscritto, mostra il link
+        if ($utente && isset($utente['Is_Newsletter']) && $utente['Is_Newsletter'] == 1) {
+            $links[$prefix . '/newsletter'] = 'Newsletter';
+        }
+    }
+
     return generateLiList($links, $currentPath);
 }
 

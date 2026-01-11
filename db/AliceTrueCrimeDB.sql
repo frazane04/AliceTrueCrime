@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:8889
--- Creato il: Gen 10, 2026 alle 15:36
--- Versione del server: 8.0.44
--- Versione PHP: 8.3.28
+-- Host: 127.0.0.1
+-- Creato il: Gen 11, 2026 alle 14:50
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,22 +24,22 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Articolo`
+-- Struttura della tabella `articolo`
 --
 
-CREATE TABLE `Articolo` (
-  `ID_Articolo` int NOT NULL,
-  `Titolo` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
+CREATE TABLE `articolo` (
+  `ID_Articolo` int(11) NOT NULL,
+  `Titolo` varchar(200) NOT NULL,
   `Data` date NOT NULL,
-  `Link` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `Caso` int DEFAULT NULL
+  `Link` varchar(255) NOT NULL,
+  `Caso` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Articolo`
+-- Dump dei dati per la tabella `articolo`
 --
 
-INSERT INTO `Articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
+INSERT INTO `articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
 (1, 'Approfondimento su Dahmer', '2001-05-19', 'https://news.it/1', 1),
 (2, 'Approfondimento su Gacy', '2003-01-15', 'https://news.it/2', 2),
 (3, 'Approfondimento su Bundy', '2002-02-11', 'https://news.it/3', 3),
@@ -85,30 +85,30 @@ INSERT INTO `Articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Caso`
+-- Struttura della tabella `caso`
 --
 
-CREATE TABLE `Caso` (
-  `N_Caso` int NOT NULL,
-  `Titolo` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `Slug` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+CREATE TABLE `caso` (
+  `N_Caso` int(11) NOT NULL,
+  `Titolo` varchar(100) NOT NULL,
+  `Slug` varchar(255) DEFAULT NULL,
   `Data` date NOT NULL,
-  `Luogo` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `Descrizione` text COLLATE utf8mb4_general_ci NOT NULL,
-  `Storia` text COLLATE utf8mb4_general_ci NOT NULL,
-  `Tipologia` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `Immagine` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `Approvato` tinyint(1) DEFAULT '0',
-  `Visualizzazioni` int DEFAULT '0',
-  `Data_Inserimento` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `Autore` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+  `Luogo` varchar(100) NOT NULL,
+  `Descrizione` text NOT NULL,
+  `Storia` text NOT NULL,
+  `Tipologia` varchar(50) DEFAULT NULL,
+  `Immagine` varchar(255) DEFAULT NULL,
+  `Approvato` tinyint(1) DEFAULT 0,
+  `Visualizzazioni` int(11) DEFAULT 0,
+  `Data_Inserimento` timestamp NULL DEFAULT current_timestamp(),
+  `Autore` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Caso`
+-- Dump dei dati per la tabella `caso`
 --
 
-INSERT INTO `Caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
+INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
 (1, 'Il mostro di Milwaukee', 'il-mostro-di-milwaukee', '2001-05-19', 'Milwaukee, USA', 'Jeffrey Dahmer ha ucciso e smembrato 17 uomini tra il 1978 e il 1991.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
 (2, 'Il Clown Killer', 'il-clown-killer', '2003-01-15', 'Chicago, USA', 'John Wayne Gacy, vestito da clown, ha ucciso 33 adolescenti.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
 (3, 'Ted Bundy', 'ted-bundy', '2002-02-11', 'Florida, USA', 'Uno dei serial killer più famosi, ha confessato 30 omicidi.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
@@ -142,7 +142,7 @@ INSERT INTO `Caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, 
 (31, 'Gianni Versace', 'gianni-versace', '2007-02-03', 'Miami', 'Lo stilista ucciso sugli scalini di casa.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
 (32, 'Sharon Tate', 'sharon-tate', '1984-05-12', 'Los Angeles', 'L\'attrice uccisa dalla Manson Family.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
 (33, 'John Lennon', 'john-lennon', '2006-08-03', 'New York', 'L\'ex Beatle ucciso da un fan ossessionato.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', '');
-INSERT INTO `Caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
+INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
 (34, 'Tupac Shakur', 'tupac-shakur', '2018-06-18', 'Las Vegas', 'Il rapper ucciso in una sparatoria tra gang.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
 (35, 'Notorious B.I.G.', 'notorious-b.i.g.', '1996-11-19', 'Los Angeles', 'Ucciso pochi mesi dopo Tupac.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
 (36, 'Marvin Gaye', 'marvin-gaye', '1973-10-05', 'Los Angeles', 'Il cantante ucciso dal proprio padre dopo una lite.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
@@ -164,19 +164,19 @@ INSERT INTO `Caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Colpa`
+-- Struttura della tabella `colpa`
 --
 
-CREATE TABLE `Colpa` (
-  `Colpevole` int NOT NULL,
-  `Caso` int NOT NULL
+CREATE TABLE `colpa` (
+  `Colpevole` int(11) NOT NULL,
+  `Caso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Colpa`
+-- Dump dei dati per la tabella `colpa`
 --
 
-INSERT INTO `Colpa` (`Colpevole`, `Caso`) VALUES
+INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
 (1, 1),
 (2, 2),
 (3, 3),
@@ -231,23 +231,23 @@ INSERT INTO `Colpa` (`Colpevole`, `Caso`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Colpevole`
+-- Struttura della tabella `colpevole`
 --
 
-CREATE TABLE `Colpevole` (
-  `ID_Colpevole` int NOT NULL,
-  `Nome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `Cognome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `LuogoNascita` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+CREATE TABLE `colpevole` (
+  `ID_Colpevole` int(11) NOT NULL,
+  `Nome` varchar(50) NOT NULL,
+  `Cognome` varchar(50) NOT NULL,
+  `LuogoNascita` varchar(100) NOT NULL,
   `DataNascita` date NOT NULL,
-  `Immagine` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
+  `Immagine` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Colpevole`
+-- Dump dei dati per la tabella `colpevole`
 --
 
-INSERT INTO `Colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `Immagine`) VALUES
+INSERT INTO `colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `Immagine`) VALUES
 (1, 'Jeffrey', 'Dahmer', 'Ignoto', '1970-01-01', ''),
 (2, 'John', 'Gacy', 'Ignoto', '1970-01-01', ''),
 (3, 'Ted', 'Bundy', 'Ignoto', '1970-01-01', ''),
@@ -302,22 +302,22 @@ INSERT INTO `Colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `Dat
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Commento`
+-- Struttura della tabella `commento`
 --
 
-CREATE TABLE `Commento` (
-  `ID_Commento` int NOT NULL,
-  `Commento` text COLLATE utf8mb4_general_ci NOT NULL,
-  `Email_Utente` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `ID_Caso` int NOT NULL,
-  `Data` datetime DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE `commento` (
+  `ID_Commento` int(11) NOT NULL,
+  `Commento` text NOT NULL,
+  `Email_Utente` varchar(50) NOT NULL,
+  `ID_Caso` int(11) NOT NULL,
+  `Data` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Commento`
+-- Dump dei dati per la tabella `commento`
 --
 
-INSERT INTO `Commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `Data`) VALUES
+INSERT INTO `commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `Data`) VALUES
 (2, 'Napoleone Suca', 'lore.grolla04@gmail.com', 9, '2026-01-09 01:55:05'),
 (6, 'sono l\'admin e sto mbriacoo', 'admin@test.it', 9, '2026-01-09 18:31:02'),
 (7, 'prova penna 123', 'admin@test.it', 9, '2026-01-09 18:32:11'),
@@ -326,48 +326,49 @@ INSERT INTO `Commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `D
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Utente`
+-- Struttura della tabella `utente`
 --
 
-CREATE TABLE `Utente` (
-  `Email` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `Username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `Password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `Is_Admin` tinyint(1) DEFAULT NULL
+CREATE TABLE `utente` (
+  `Email` varchar(50) NOT NULL,
+  `Username` varchar(50) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `Is_Admin` tinyint(1) DEFAULT NULL,
+  `Is_Newsletter` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Utente`
+-- Dump dei dati per la tabella `utente`
 --
 
-INSERT INTO `Utente` (`Email`, `Username`, `Password`, `Is_Admin`) VALUES
-('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1),
-('lore.grolla04@gmail.com', 'Lorenzo', '$2y$10$RPrVyIOXQguBlR6kRDz2h.KqskfkwyFmKGXGwlbxIil3V06DCMSFm', 0),
-('paolo@gmail.com', 'Paolo', '$2y$10$aW49yojpjRL7JsBVv9TlZ.a7119SoKRteJ8XA8.U9rNC/3Xlj8V7i', 0),
-('user@test.it', 'User', '$2y$10$9dk6FVWLhA3i.6JtCcUERuz0cW.v7GI3fyuztVmq/5YfB7G/IkEg2', 0);
+INSERT INTO `utente` (`Email`, `Username`, `Password`, `Is_Admin`, `Is_Newsletter`) VALUES
+('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1, 1),
+('lore.grolla04@gmail.com', 'Lorenzo', '$2y$10$RPrVyIOXQguBlR6kRDz2h.KqskfkwyFmKGXGwlbxIil3V06DCMSFm', 0, 0),
+('paolo@gmail.com', 'Paolo', '$2y$10$aW49yojpjRL7JsBVv9TlZ.a7119SoKRteJ8XA8.U9rNC/3Xlj8V7i', 0, 0),
+('user@test.it', 'User', '$2y$10$9dk6FVWLhA3i.6JtCcUERuz0cW.v7GI3fyuztVmq/5YfB7G/IkEg2', 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Vittima`
+-- Struttura della tabella `vittima`
 --
 
-CREATE TABLE `Vittima` (
-  `ID_Vittima` int NOT NULL,
-  `Nome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `Cognome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `LuogoNascita` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+CREATE TABLE `vittima` (
+  `ID_Vittima` int(11) NOT NULL,
+  `Nome` varchar(50) NOT NULL,
+  `Cognome` varchar(50) NOT NULL,
+  `LuogoNascita` varchar(100) NOT NULL,
   `DataNascita` date NOT NULL,
   `DataDecesso` date DEFAULT NULL,
-  `Caso` int NOT NULL,
-  `Immagine` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
+  `Caso` int(11) NOT NULL,
+  `Immagine` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Vittima`
+-- Dump dei dati per la tabella `vittima`
 --
 
-INSERT INTO `Vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `DataDecesso`, `Caso`, `Immagine`) VALUES
+INSERT INTO `vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `DataDecesso`, `Caso`, `Immagine`) VALUES
 (1, 'Mario', 'Rossi', 'N/A', '1995-01-01', '2025-12-17', 41, ''),
 (2, 'Anna', 'Verdi', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
 (3, 'Anna', 'Violetta', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
@@ -425,54 +426,54 @@ INSERT INTO `Vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNas
 --
 
 --
--- Indici per le tabelle `Articolo`
+-- Indici per le tabelle `articolo`
 --
-ALTER TABLE `Articolo`
+ALTER TABLE `articolo`
   ADD PRIMARY KEY (`ID_Articolo`),
   ADD KEY `Caso` (`Caso`);
 
 --
--- Indici per le tabelle `Caso`
+-- Indici per le tabelle `caso`
 --
-ALTER TABLE `Caso`
+ALTER TABLE `caso`
   ADD PRIMARY KEY (`N_Caso`),
   ADD UNIQUE KEY `Slug` (`Slug`),
-  ADD KEY `idx_visualizzazioni` (`Visualizzazioni` DESC),
+  ADD KEY `idx_visualizzazioni` (`Visualizzazioni`),
   ADD KEY `idx_approvato` (`Approvato`),
-  ADD KEY `idx_n_caso_desc` (`N_Caso` DESC);
+  ADD KEY `idx_n_caso_desc` (`N_Caso`);
 
 --
--- Indici per le tabelle `Colpa`
+-- Indici per le tabelle `colpa`
 --
-ALTER TABLE `Colpa`
+ALTER TABLE `colpa`
   ADD PRIMARY KEY (`Colpevole`,`Caso`),
   ADD KEY `Caso` (`Caso`);
 
 --
--- Indici per le tabelle `Colpevole`
+-- Indici per le tabelle `colpevole`
 --
-ALTER TABLE `Colpevole`
+ALTER TABLE `colpevole`
   ADD PRIMARY KEY (`ID_Colpevole`);
 
 --
--- Indici per le tabelle `Commento`
+-- Indici per le tabelle `commento`
 --
-ALTER TABLE `Commento`
+ALTER TABLE `commento`
   ADD PRIMARY KEY (`ID_Commento`),
   ADD KEY `Email_Utente` (`Email_Utente`),
   ADD KEY `ID_Caso` (`ID_Caso`);
 
 --
--- Indici per le tabelle `Utente`
+-- Indici per le tabelle `utente`
 --
-ALTER TABLE `Utente`
+ALTER TABLE `utente`
   ADD PRIMARY KEY (`Email`),
   ADD UNIQUE KEY `Username` (`Username`);
 
 --
--- Indici per le tabelle `Vittima`
+-- Indici per le tabelle `vittima`
 --
-ALTER TABLE `Vittima`
+ALTER TABLE `vittima`
   ADD PRIMARY KEY (`ID_Vittima`),
   ADD KEY `Caso` (`Caso`);
 
@@ -481,64 +482,64 @@ ALTER TABLE `Vittima`
 --
 
 --
--- AUTO_INCREMENT per la tabella `Articolo`
+-- AUTO_INCREMENT per la tabella `articolo`
 --
-ALTER TABLE `Articolo`
-  MODIFY `ID_Articolo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+ALTER TABLE `articolo`
+  MODIFY `ID_Articolo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
--- AUTO_INCREMENT per la tabella `Caso`
+-- AUTO_INCREMENT per la tabella `caso`
 --
-ALTER TABLE `Caso`
-  MODIFY `N_Caso` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+ALTER TABLE `caso`
+  MODIFY `N_Caso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
--- AUTO_INCREMENT per la tabella `Colpevole`
+-- AUTO_INCREMENT per la tabella `colpevole`
 --
-ALTER TABLE `Colpevole`
-  MODIFY `ID_Colpevole` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+ALTER TABLE `colpevole`
+  MODIFY `ID_Colpevole` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
--- AUTO_INCREMENT per la tabella `Commento`
+-- AUTO_INCREMENT per la tabella `commento`
 --
-ALTER TABLE `Commento`
-  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+ALTER TABLE `commento`
+  MODIFY `ID_Commento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT per la tabella `Vittima`
+-- AUTO_INCREMENT per la tabella `vittima`
 --
-ALTER TABLE `Vittima`
-  MODIFY `ID_Vittima` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+ALTER TABLE `vittima`
+  MODIFY `ID_Vittima` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- Limiti per le tabelle scaricate
 --
 
 --
--- Limiti per la tabella `Articolo`
+-- Limiti per la tabella `articolo`
 --
-ALTER TABLE `Articolo`
-  ADD CONSTRAINT `Articolo_ibfk_1` FOREIGN KEY (`Caso`) REFERENCES `Caso` (`N_Caso`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `articolo`
+  ADD CONSTRAINT `Articolo_ibfk_1` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Limiti per la tabella `Colpa`
+-- Limiti per la tabella `colpa`
 --
-ALTER TABLE `Colpa`
-  ADD CONSTRAINT `colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `Colpevole` (`ID_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Colpa_ibfk_2` FOREIGN KEY (`Caso`) REFERENCES `Caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `colpa`
+  ADD CONSTRAINT `Colpa_ibfk_2` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `colpevole` (`ID_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Limiti per la tabella `Commento`
+-- Limiti per la tabella `commento`
 --
-ALTER TABLE `Commento`
-  ADD CONSTRAINT `Commento_ibfk_1` FOREIGN KEY (`Email_Utente`) REFERENCES `Utente` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Commento_ibfk_2` FOREIGN KEY (`ID_Caso`) REFERENCES `Caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `commento`
+  ADD CONSTRAINT `Commento_ibfk_1` FOREIGN KEY (`Email_Utente`) REFERENCES `utente` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Commento_ibfk_2` FOREIGN KEY (`ID_Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Limiti per la tabella `Vittima`
+-- Limiti per la tabella `vittima`
 --
-ALTER TABLE `Vittima`
-  ADD CONSTRAINT `Vittima_ibfk_1` FOREIGN KEY (`Caso`) REFERENCES `Caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `vittima`
+  ADD CONSTRAINT `Vittima_ibfk_1` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
