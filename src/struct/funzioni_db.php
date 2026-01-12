@@ -2,7 +2,9 @@
 /**
  * Funzioni per interagire con il database
  * Utilizzano prepared statements per prevenire SQL Injection
- * AGGIORNATO: Email come chiave primaria + Gestione Admin Casi
+ * 
+ * REFACTORED: Rimossa duplicazione metodi admin/utente
+ * Ora si usa un parametro $soloApprovati per controllare il filtro
  */
 
 require_once __DIR__ . '/connessione.php';
@@ -19,7 +21,7 @@ class FunzioniDB {
     // ========================================
     
     /**
-     * Registra un nuovo utente (Versione aggiornata con Is_Newsletter)
+     * Registra un nuovo utente
      */
     public function registraUtente($email, $username, $password, $isAdmin = false) {
         try {
@@ -53,7 +55,7 @@ class FunzioniDB {
     }
 
     /**
-     * Salva la scelta dell'utente nel database
+     * Aggiorna lo stato newsletter dell'utente
      */
     public function updateNewsletter($email, $stato) {
         try {
@@ -62,7 +64,9 @@ class FunzioniDB {
             $result = $this->db->query($query, [$stato, $email], "is");
             $this->db->chiudiConnessione();
             return (bool)$result;
-        } catch (Exception $e) { return false; }
+        } catch (Exception $e) { 
+            return false; 
+        }
     }
   
     /**
@@ -72,23 +76,7 @@ class FunzioniDB {
         $query = "SELECT Email FROM Utente WHERE Email = ?";
         $result = $this->db->query($query, [$email], "s");
         
-        if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Verifica se uno username esiste già
-     */
-    private function verificaUsernameEsistente($username) {
-        $query = "SELECT Email FROM Utente WHERE Username = ?";
-        $result = $this->db->query($query, [$username], "s");
-        
-        if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
-            return true;
-        }
-        return false;
+        return ($result && is_object($result) && mysqli_num_rows($result) > 0);
     }
     
     /**
@@ -233,21 +221,26 @@ class FunzioniDB {
     }
 
     // ========================================
-    // GESTIONE CASI
+    // GESTIONE CASI - METODI REFACTORIZZATI
     // ========================================
     
     /**
-     * Recupera gli ultimi casi approvati per l'area newsletter
+     * Recupera gli ultimi casi per l'area newsletter
+     * 
+     * @param int $limite Numero massimo di casi
+     * @param bool $soloApprovati Se true, filtra solo i casi approvati
      */
-    public function getContenutiNewsletter($limite = 6) {
+    public function getContenutiNewsletter($limite = 6, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) return [];
             
-            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Data 
-                    FROM Caso 
-                    WHERE Approvato = 1 
-                    ORDER BY Data DESC 
-                    LIMIT ?";
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Data FROM Caso";
+            
+            if ($soloApprovati) {
+                $query .= " WHERE Approvato = 1";
+            }
+            
+            $query .= " ORDER BY Data DESC LIMIT ?";
             
             $result = $this->db->query($query, [$limite], "i");
             $casi = [];
@@ -266,42 +259,24 @@ class FunzioniDB {
     }
     
     /**
-     * Recupera l'ID di un caso dal suo slug (solo approvati)
+     * Recupera l'ID di un caso dal suo slug
+     * 
+     * @param string $slug Lo slug del caso
+     * @param bool $soloApprovati Se true (default), cerca solo tra i casi approvati
+     * @return int|null L'ID del caso o null se non trovato
      */
-    public function getCasoIdBySlug($slug) {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-            
-            $query = "SELECT N_Caso FROM Caso WHERE Slug = ? AND Approvato = 1";
-            $result = $this->db->query($query, [$slug], "s");
-            
-            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
-                $row = mysqli_fetch_assoc($result);
-                $this->db->chiudiConnessione();
-                return (int)$row['N_Caso'];
-            }
-            
-            $this->db->chiudiConnessione();
-            return null;
-            
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            return null;
-        }
-    }
-
-    /**
-     * Recupera l'ID di un caso dal suo slug (anche non approvati - per admin)
-     */
-    public function getCasoIdBySlugAdmin($slug) {
+    public function getCasoIdBySlug($slug, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
             $query = "SELECT N_Caso FROM Caso WHERE Slug = ?";
+            
+            if ($soloApprovati) {
+                $query .= " AND Approvato = 1";
+            }
+            
             $result = $this->db->query($query, [$slug], "s");
             
             if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
@@ -320,19 +295,27 @@ class FunzioniDB {
     }
     
     /**
-     * Recupera casi per categoria (solo approvati)
+     * Recupera casi per categoria
+     * 
+     * @param string $tipologia La categoria del caso
+     * @param int $limite Numero massimo di risultati
+     * @param bool $soloApprovati Se true (default), filtra solo approvati
      */
-    public function getCasiPerCategoria($tipologia, $limite = 10) {
+    public function getCasiPerCategoria($tipologia, $limite = 10, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            $query = "SELECT N_Caso, Titolo, Descrizione, Immagine, Tipologia, Data, Luogo 
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
                       FROM Caso 
-                      WHERE Tipologia = ? AND Approvato = 1 
-                      ORDER BY Data DESC 
-                      LIMIT ?";
+                      WHERE Tipologia = ?";
+            
+            if ($soloApprovati) {
+                $query .= " AND Approvato = 1";
+            }
+            
+            $query .= " ORDER BY Data DESC LIMIT ?";
             
             $result = $this->db->query($query, [$tipologia, $limite], "si");
             
@@ -354,18 +337,24 @@ class FunzioniDB {
     
     /**
      * Recupera i casi più recenti/letti
+     * 
+     * @param int $limite Numero massimo di risultati
+     * @param bool $soloApprovati Se true (default), filtra solo approvati
      */
-    public function getCasiPiuLetti($limite = 5) {
+    public function getCasiPiuLetti($limite = 5, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            $query = "SELECT N_Caso, Titolo, Descrizione, Immagine, Tipologia, Data, Luogo 
-                      FROM Caso 
-                      WHERE Approvato = 1 
-                      ORDER BY Data DESC 
-                      LIMIT ?";
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
+                      FROM Caso";
+            
+            if ($soloApprovati) {
+                $query .= " WHERE Approvato = 1";
+            }
+            
+            $query .= " ORDER BY Data DESC LIMIT ?";
             
             $result = $this->db->query($query, [$limite], "i");
             
@@ -386,42 +375,24 @@ class FunzioniDB {
     }
     
     /**
-     * Recupera un singolo caso tramite ID (solo approvati)
+     * Recupera un singolo caso tramite ID
+     * 
+     * @param int $nCaso ID del caso
+     * @param bool $soloApprovati Se true (default), cerca solo tra i casi approvati
+     * @return array|null Dati del caso o null se non trovato
      */
-    public function getCasoById($nCaso) {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-            
-            $query = "SELECT * FROM Caso WHERE N_Caso = ? AND Approvato = 1";
-            $result = $this->db->query($query, [$nCaso], "i");
-            
-            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
-                $caso = mysqli_fetch_assoc($result);
-                $this->db->chiudiConnessione();
-                return $caso;
-            }
-            
-            $this->db->chiudiConnessione();
-            return null;
-            
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            return null;
-        }
-    }
-
-    /**
-     * Recupera un caso per ID (anche non approvato - per admin)
-     */
-    public function getCasoByIdAdmin($nCaso) {
+    public function getCasoById($nCaso, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
             $query = "SELECT * FROM Caso WHERE N_Caso = ?";
+            
+            if ($soloApprovati) {
+                $query .= " AND Approvato = 1";
+            }
+            
             $result = $this->db->query($query, [$nCaso], "i");
             
             if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
@@ -440,17 +411,25 @@ class FunzioniDB {
     }
 
     /**
-     * Recupera le vittime di un caso (solo approvati)
+     * Recupera le vittime di un caso
+     * 
+     * @param int $id ID del caso
+     * @param bool $soloApprovati Se true (default), filtra per casi approvati
      */
-    public function getVittimeByCaso($id) {
+    public function getVittimeByCaso($id, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            $query = "SELECT v.* FROM Vittima v 
-                      JOIN Caso c ON v.Caso = c.N_Caso 
-                      WHERE c.N_Caso = ? AND c.Approvato = 1";
+            if ($soloApprovati) {
+                $query = "SELECT v.* FROM Vittima v 
+                          JOIN Caso c ON v.Caso = c.N_Caso 
+                          WHERE c.N_Caso = ? AND c.Approvato = 1";
+            } else {
+                $query = "SELECT * FROM Vittima WHERE Caso = ?";
+            }
+            
             $result = $this->db->query($query, [$id], "i");
             $vittime = [];
             
@@ -470,46 +449,28 @@ class FunzioniDB {
     }
 
     /**
-     * Recupera vittime di un caso (anche non approvato - per admin)
+     * Recupera i colpevoli di un caso
+     * 
+     * @param int $id ID del caso
+     * @param bool $soloApprovati Se true (default), filtra per casi approvati
      */
-    public function getVittimeByCasoAdmin($id) {
+    public function getColpevoliByCaso($id, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
-            $query = "SELECT * FROM Vittima WHERE Caso = ?";
-            $result = $this->db->query($query, [$id], "i");
-            $vittime = [];
-            
-            if ($result && is_object($result)) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $vittime[] = $row;
-                }
+            if ($soloApprovati) {
+                $query = "SELECT col.* FROM Colpevole col 
+                          JOIN Colpa cp ON col.ID_Colpevole = cp.Colpevole 
+                          JOIN Caso c ON cp.Caso = c.N_Caso 
+                          WHERE c.N_Caso = ? AND c.Approvato = 1";
+            } else {
+                $query = "SELECT c.* FROM Colpevole c 
+                          JOIN Colpa cp ON c.ID_Colpevole = cp.Colpevole 
+                          WHERE cp.Caso = ?";
             }
             
-            $this->db->chiudiConnessione();
-            return $vittime;
-            
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            return [];
-        }
-    }
-
-    /**
-     * Recupera i colpevoli di un caso (solo approvati)
-     */
-    public function getColpevoliByCaso($id) {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-            
-            $query = "SELECT col.* FROM Colpevole col 
-                      JOIN Colpa cp ON col.ID_Colpevole = cp.Colpevole 
-                      JOIN Caso c ON cp.Caso = c.N_Caso 
-                      WHERE c.N_Caso = ? AND c.Approvato = 1";
             $result = $this->db->query($query, [$id], "i");
             $colpevoli = [];
 
@@ -519,36 +480,6 @@ class FunzioniDB {
                 }
             }
 
-            $this->db->chiudiConnessione();
-            return $colpevoli;
-            
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            return [];
-        }
-    }
-
-    /**
-     * Recupera colpevoli di un caso (anche non approvato - per admin)
-     */
-    public function getColpevoliByCasoAdmin($id) {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-            
-            $query = "SELECT c.* FROM Colpevole c 
-                      JOIN Colpa cp ON c.ID_Colpevole = cp.Colpevole 
-                      WHERE cp.Caso = ?";
-            $result = $this->db->query($query, [$id], "i");
-            $colpevoli = [];
-            
-            if ($result && is_object($result)) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $colpevoli[] = $row;
-                }
-            }
-            
             $this->db->chiudiConnessione();
             return $colpevoli;
             
@@ -560,6 +491,7 @@ class FunzioniDB {
 
     /**
      * Recupera gli articoli di un caso
+     * Nota: Gli articoli non hanno filtro approvazione perché sono legati al caso
      */
     public function getArticoliByCaso($id) {
         try {
@@ -588,20 +520,27 @@ class FunzioniDB {
 
     /**
      * Cerca casi per titolo o descrizione
+     * 
+     * @param string $query Termine di ricerca
+     * @param int $limite Numero massimo risultati
+     * @param bool $soloApprovati Se true (default), filtra solo approvati
      */
-    public function cercaCasi($query, $limite = 20) {
+    public function cercaCasi($query, $limite = 20, $soloApprovati = true) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
             
             $searchTerm = "%{$query}%";
-            $sql = "SELECT N_Caso, Titolo, Descrizione, Immagine, Tipologia, Data, Luogo 
+            $sql = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
                     FROM Caso 
-                    WHERE (Titolo LIKE ? OR Descrizione LIKE ?) 
-                    AND Approvato = 1 
-                    ORDER BY Data DESC 
-                    LIMIT ?";
+                    WHERE (Titolo LIKE ? OR Descrizione LIKE ?)";
+            
+            if ($soloApprovati) {
+                $sql .= " AND Approvato = 1";
+            }
+            
+            $sql .= " ORDER BY Data DESC LIMIT ?";
             
             $result = $this->db->query($sql, [$searchTerm, $searchTerm, $limite], "ssi");
             
@@ -623,6 +562,7 @@ class FunzioniDB {
     
     /**
      * Recupera casi in attesa di approvazione (solo admin)
+     * Questo metodo resta separato perché ha una logica specifica
      */
     public function getCasiNonApprovati($limite = 50) {
         try {
@@ -876,11 +816,11 @@ class FunzioniDB {
             $slug = $this->generaSlugUnico($titolo);
             
             $query = "INSERT INTO Caso (Titolo, Slug, Data, Luogo, Descrizione, Storia, Tipologia, Immagine, Approvato, Autore) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, '')";
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
             
-            $params = [$titolo, $slug, $data, $luogo, $descrizione, $storia, $tipologia, $immagine];
+            $params = [$titolo, $slug, $data, $luogo, $descrizione, $storia, $tipologia, $immagine, $autoreEmail];
             
-            $result = $this->db->query($query, $params, "ssssssss");
+            $result = $this->db->query($query, $params, "sssssssss");
             
             if ($result) {
                 $casoId = $this->db->getLastInsertId();
@@ -896,6 +836,9 @@ class FunzioniDB {
         }
     }
 
+    /**
+     * Genera uno slug unico dal titolo
+     */
     private function generaSlugUnico($titolo) {
         $slug = strtolower($titolo);
         $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
@@ -915,20 +858,23 @@ class FunzioniDB {
         return $slug;
     }
 
+    /**
+     * Verifica se uno slug esiste già
+     */
     private function slugEsiste($slug) {
         $query = "SELECT N_Caso FROM Caso WHERE Slug = ?";
         $result = $this->db->query($query, [$slug], "s");
         
-        if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
-            return true;
-        }
-        return false;
+        return ($result && is_object($result) && mysqli_num_rows($result) > 0);
     }
 
     // ========================================
     // GESTIONE VITTIME
     // ========================================
     
+    /**
+     * Inserisce una vittima
+     */
     public function inserisciVittima($casoId, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null) {
         try {
             if (!$this->db->apriConnessione()) {
@@ -969,6 +915,9 @@ class FunzioniDB {
     // GESTIONE COLPEVOLI
     // ========================================
     
+    /**
+     * Inserisce un colpevole
+     */
     public function inserisciColpevole($nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null) {
         try {
             if (!$this->db->apriConnessione()) {
@@ -1004,6 +953,9 @@ class FunzioniDB {
         }
     }
 
+    /**
+     * Collega un colpevole a un caso
+     */
     public function collegaColpevoleACaso($colpevoleId, $casoId) {
         try {
             if (!$this->db->apriConnessione()) {
@@ -1026,6 +978,9 @@ class FunzioniDB {
     // GESTIONE ARTICOLI/FONTI
     // ========================================
     
+    /**
+     * Inserisce un articolo/fonte
+     */
     public function inserisciArticolo($casoId, $titolo, $data = null, $link = '') {
         try {
             if (!$this->db->apriConnessione()) {

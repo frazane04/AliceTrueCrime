@@ -11,16 +11,14 @@ $dbFunctions = new FunzioniDB();
 $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 $isAdminPreview = isset($_GET['preview']) && $_GET['preview'] === 'admin' && $isAdmin;
 
+// Determina se filtrare solo approvati (default true, false se admin in preview)
+$soloApprovati = !$isAdminPreview;
+
 // Controlla se c'è uno slug nell'URL (es: /caso/il-mostro-di-milwaukee)
 if (isset($_GET['slug']) && !empty($_GET['slug'])) {
     $slug = trim($_GET['slug']);
     
-    // Se è admin in preview, cerca anche i casi non approvati
-    if ($isAdminPreview) {
-        $casoId = $dbFunctions->getCasoIdBySlugAdmin($slug);
-    } else {
-        $casoId = $dbFunctions->getCasoIdBySlug($slug);
-    }
+    $casoId = $dbFunctions->getCasoIdBySlug($slug, $soloApprovati);
     
     if ($casoId === null) {
         // Slug non trovato
@@ -98,18 +96,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
     }
 }
 
-// Recupero i dati del caso dal database
-// Se admin preview, usa la funzione che recupera anche i non approvati
-if ($isAdminPreview) {
-    $caso = $dbFunctions->getCasoByIdAdmin($casoId);
-    $colpevoli = $dbFunctions->getColpevoliByCasoAdmin($casoId);
-    $vittime = $dbFunctions->getVittimeByCasoAdmin($casoId);
-} else {
-    $caso = $dbFunctions->getCasoById($casoId);
-    $colpevoli = $dbFunctions->getColpevoliByCaso($casoId);
-    $vittime = $dbFunctions->getVittimeByCaso($casoId);
-}
-
+// ========================================
+// RECUPERO DATI 
+// ========================================
+$caso = $dbFunctions->getCasoById($casoId, $soloApprovati);
+$colpevoli = $dbFunctions->getColpevoliByCaso($casoId, $soloApprovati);
+$vittime = $dbFunctions->getVittimeByCaso($casoId, $soloApprovati);
 $articoli = $dbFunctions->getArticoliByCaso($casoId);
 
 // Verifico se il caso esiste
@@ -292,14 +284,13 @@ $contenuto = str_replace('<!-- admin_bar -->', $htmlAdminBar, $contenuto);
 $htmlImmagine = '<img alt="Evidenza principale del caso ' . $titolo . '" src="' . $immagine . '" class="img-evidence" width="300" />';
 $contenuto = str_replace('<!-- caso_immagine -->', $htmlImmagine, $contenuto);
 
-$htmlStatus = '<p class="status-badge ' . $statusClass . '">' . $statusText . '</p>';
-$contenuto = str_replace('<!-- caso_status -->', $htmlStatus, $contenuto);
+$contenuto = str_replace('{{caso_status}}', $statusClass, $contenuto);
 
-$htmlTitolo = '<h1>' . $titolo . '</h1>';
-$contenuto = str_replace('<!-- caso_titolo -->', $htmlTitolo, $contenuto);
+$contenuto = str_replace('<!-- caso_status_text -->', $statusText, $contenuto);
 
-$htmlTipologia = '<p class="italic">Categoria: ' . $tipologia . '</p>';
-$contenuto = str_replace('<!-- caso_tipologia -->', $htmlTipologia, $contenuto);
+$contenuto = str_replace('<!-- caso_titolo -->', $titolo, $contenuto);
+
+$contenuto = str_replace('<!-- caso_tipologia -->', $tipologia, $contenuto);
 
 $contenuto = str_replace('<!-- caso_storia -->', $storia, $contenuto);
 $contenuto = str_replace('<!-- caso_data -->', $data, $contenuto);
