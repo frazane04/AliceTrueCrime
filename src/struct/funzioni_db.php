@@ -1040,5 +1040,384 @@ class FunzioniDB {
             return false;
         }
     }
+    // ========================================
+    // GESTIONE MODIFICA CASO
+    // ========================================
+
+    /**
+     * Aggiorna i dati principali di un caso
+     * 
+     * @param int $nCaso ID del caso
+     * @param string $titolo Nuovo titolo
+     * @param string $data Nuova data
+     * @param string $luogo Nuovo luogo
+     * @param string $descrizione Nuova descrizione
+     * @param string $storia Nuova storia
+     * @param string|null $tipologia Nuova tipologia
+     * @param bool $riApprova Se true, imposta Approvato = 0
+     * @return array Risultato operazione
+     */
+    public function aggiornaCaso($nCaso, $titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $riApprova = false) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            if (empty($titolo) || empty($data) || empty($luogo) || empty($descrizione) || empty($storia)) {
+                $this->db->chiudiConnessione();
+                return ['success' => false, 'message' => 'Tutti i campi obbligatori devono essere compilati'];
+            }
+            
+            // Costruisci la query in base a se deve tornare in approvazione
+            if ($riApprova) {
+                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Approvato = 0 WHERE N_Caso = ?";
+            } else {
+                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ? WHERE N_Caso = ?";
+            }
+            
+            $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $nCaso];
+            $result = $this->db->query($query, $params, "ssssssi");
+            
+            $this->db->chiudiConnessione();
+            
+            if ($result) {
+                return ['success' => true, 'message' => 'Caso aggiornato con successo'];
+            }
+            return ['success' => false, 'message' => 'Errore durante l\'aggiornamento'];
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return ['success' => false, 'message' => 'Errore: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Verifica se un utente può modificare un caso
+     * 
+     * @param int $nCaso ID del caso
+     * @param string $emailUtente Email dell'utente
+     * @param bool $isAdmin Se l'utente è admin
+     * @return bool True se può modificare
+     */
+    public function puoModificareCaso($nCaso, $emailUtente, $isAdmin = false) {
+        // Admin può sempre modificare
+        if ($isAdmin) {
+            return true;
+        }
+        
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            // Verifica se l'utente è l'autore
+            $query = "SELECT Autore FROM Caso WHERE N_Caso = ?";
+            $result = $this->db->query($query, [$nCaso], "i");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return ($row['Autore'] === $emailUtente);
+            }
+            
+            $this->db->chiudiConnessione();
+            return false;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Elimina un caso completo (con tutte le relazioni)
+     * Può essere usato da admin o autore
+     * 
+     * @param int $nCaso ID del caso
+     * @param string $emailUtente Email dell'utente che richiede l'eliminazione
+     * @param bool $isAdmin Se l'utente è admin
+     * @return array Risultato operazione
+     */
+    public function eliminaCaso($nCaso, $emailUtente, $isAdmin = false) {
+        try {
+            // Verifica permessi
+            if (!$this->puoModificareCaso($nCaso, $emailUtente, $isAdmin)) {
+                return ['success' => false, 'message' => 'Non hai i permessi per eliminare questo caso'];
+            }
+            
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            // Elimina tutte le relazioni collegate (stesso codice di rifiutaCaso)
+            $this->db->query("DELETE FROM Commento WHERE ID_Caso = ?", [$nCaso], "i");
+            $this->db->query("DELETE FROM Articolo WHERE Caso = ?", [$nCaso], "i");
+            $this->db->query("DELETE FROM Vittima WHERE Caso = ?", [$nCaso], "i");
+            
+            // Per i colpevoli: elimina solo la relazione, non il colpevole stesso
+            // (potrebbe essere collegato ad altri casi)
+            $this->db->query("DELETE FROM Colpa WHERE Caso = ?", [$nCaso], "i");
+            
+            // Elimina il caso
+            $query = "DELETE FROM Caso WHERE N_Caso = ?";
+            $result = $this->db->query($query, [$nCaso], "i");
+            
+            $this->db->chiudiConnessione();
+            
+            if ($result) {
+                return ['success' => true, 'message' => 'Caso eliminato con successo'];
+            }
+            return ['success' => false, 'message' => 'Errore durante l\'eliminazione'];
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return ['success' => false, 'message' => 'Errore: ' . $e->getMessage()];
+        }
+    }
+
+    // ========================================
+    // GESTIONE VITTIME - MODIFICA/ELIMINAZIONE
+    // ========================================
+
+    /**
+     * Aggiorna una vittima esistente
+     */
+    public function aggiornaVittima($idVittima, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1980-01-01';
+            
+            $query = "UPDATE Vittima SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ?, DataDecesso = ? WHERE ID_Vittima = ?";
+            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $dataDecesso, $idVittima];
+            
+            $result = $this->db->query($query, $params, "sssssi");
+            $this->db->chiudiConnessione();
+            
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Elimina una vittima
+     */
+    public function eliminaVittima($idVittima) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "DELETE FROM Vittima WHERE ID_Vittima = ?";
+            $result = $this->db->query($query, [$idVittima], "i");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Elimina tutte le vittime di un caso
+     */
+    public function eliminaVittimeByCaso($casoId) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "DELETE FROM Vittima WHERE Caso = ?";
+            $result = $this->db->query($query, [$casoId], "i");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    // ========================================
+    // GESTIONE COLPEVOLI - MODIFICA/ELIMINAZIONE
+    // ========================================
+
+    /**
+     * Aggiorna un colpevole esistente
+     */
+    public function aggiornaColpevole($idColpevole, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1990-01-01';
+            
+            $query = "UPDATE Colpevole SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ? WHERE ID_Colpevole = ?";
+            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $idColpevole];
+            
+            $result = $this->db->query($query, $params, "ssssi");
+            $this->db->chiudiConnessione();
+            
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Rimuove un colpevole da un caso (elimina solo la relazione in Colpa)
+     */
+    public function rimuoviColpevoleDaCaso($idColpevole, $casoId) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "DELETE FROM Colpa WHERE Colpevole = ? AND Caso = ?";
+            $result = $this->db->query($query, [$idColpevole, $casoId], "ii");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Rimuove tutti i colpevoli da un caso
+     */
+    public function rimuoviColpevoliByCaso($casoId) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "DELETE FROM Colpa WHERE Caso = ?";
+            $result = $this->db->query($query, [$casoId], "i");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    // ========================================
+    // GESTIONE ARTICOLI - MODIFICA/ELIMINAZIONE
+    // ========================================
+
+    /**
+     * Aggiorna un articolo esistente
+     */
+    public function aggiornaArticolo($idArticolo, $titolo, $data = null, $link = '') {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+            
+            $dataFinal = !empty($data) ? $data : date('Y-m-d');
+            $linkFinal = !empty($link) ? $link : 'https://source-unavailable.com';
+            
+            $query = "UPDATE Articolo SET Titolo = ?, Data = ?, Link = ? WHERE ID_Articolo = ?";
+            $params = [$titolo, $dataFinal, $linkFinal, $idArticolo];
+            
+            $result = $this->db->query($query, $params, "sssi");
+            $this->db->chiudiConnessione();
+            
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Elimina un articolo
+     */
+    public function eliminaArticolo($idArticolo) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "DELETE FROM Articolo WHERE ID_Articolo = ?";
+            $result = $this->db->query($query, [$idArticolo], "i");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Elimina tutti gli articoli di un caso
+     */
+    public function eliminaArticoliByCaso($casoId) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "DELETE FROM Articolo WHERE Caso = ?";
+            $result = $this->db->query($query, [$casoId], "i");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    // ========================================
+    // UTILITY: Recupera autore caso
+    // ========================================
+
+    /**
+     * Recupera l'email dell'autore di un caso
+     */
+    public function getAutoreCaso($nCaso) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return null;
+            }
+            
+            $query = "SELECT Autore FROM Caso WHERE N_Caso = ?";
+            $result = $this->db->query($query, [$nCaso], "i");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return $row['Autore'];
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return null;
+        }
+    }
 }
 ?>

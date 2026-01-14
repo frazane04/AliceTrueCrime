@@ -45,6 +45,7 @@ $routes = [
     '/esplora'       => 'esplora.php',
     '/caso'          => 'caso.php',
     '/segnala-caso'  => 'segnala.php',
+    '/modifica-caso' => 'modifica_caso.php',  // <-- AGGIUNGI QUESTA RIGA
     '/newsletter'    => 'newsletter.php',
     
     '/accedi'        => 'accedi.php',

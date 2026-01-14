@@ -2375,3 +2375,265 @@ input:focus-visible,
     padding: 100px 20px;
 }
 
+Modifica caso · CSS
+Copia
+
+/* ===========================================
+   STILI PER PAGINA MODIFICA CASO FATTO DA GROLLA QUINDI DA RIVEDERE :)
+   Estende mainStyle.css - Solo stili aggiuntivi
+   =========================================== */
+
+/* Container principale */
+.page-modifica-caso {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Header pagina */
+.page-modifica-caso .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-modifica-caso .subtitle {
+    color: var(--accent-text);
+    font-size: 1.1rem;
+}
+
+/* Sezioni form - riutilizza stile .investigazione-card */
+.form-section {
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-section legend {
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 0 0.5rem;
+    color: var(--primary);
+}
+
+.section-hint {
+    color: var(--accent-text);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s;
+    background-color: var(--white);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Layout righe form */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Entry card - stile simile a .commento-card */
+.entry-card {
+    background-color: var(--bg-lightest);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    transition: box-shadow 0.3s;
+}
+
+.entry-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Pulsante rimuovi - stile .btn-elimina-commento adattato */
+.btn-remove {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: transparent;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-remove:hover {
+    background-color: #d32f2f;
+    color: var(--white);
+}
+
+/* Pulsante aggiungi */
+.btn-add {
+    margin-top: 0.5rem;
+}
+
+/* Azioni form */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border-light);
+}
+
+/* Pulsante large */
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+/* Zona pericolosa */
+.danger-zone {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background-color: #fff5f5;
+    border: 2px solid #d32f2f;
+    border-radius: 12px;
+}
+
+.danger-zone h3 {
+    color: #d32f2f;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.danger-zone p {
+    color: #721c24;
+    margin-bottom: 1rem;
+}
+
+.danger-zone .btn-danger {
+    background-color: #d32f2f;
+    color: var(--white);
+}
+
+.danger-zone .btn-danger:hover {
+    background-color: #b71c1c;
+}
+
+/* Alert messages */
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+.alert ul {
+    margin: 0.5rem 0 0 1.5rem;
+    padding: 0;
+}
+
+/* Pulsante azioni utente su caso.php */
+.caso-azioni-utente {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: var(--bg-lightest);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .page-modifica-caso {
+        padding: 1rem;
+    }
+    
+    .form-section {
+        padding: 1rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-row .form-group {
+        min-width: 100%;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+    
+    .caso-azioni-utente {
+        flex-direction: column;
+    }
+}

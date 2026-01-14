@@ -1,0 +1,250 @@
+<main class="container page-modifica-caso">
+    <header class="page-header">
+        <h1>✏️ Modifica Caso</h1>
+        <p class="subtitle">Stai modificando: <strong><!-- caso_titolo --></strong></p>
+    </header>
+
+    <div id="feedback-area">
+        <!-- feedback_message -->
+    </div>
+
+    <!-- avviso_riapprovazione -->
+
+    <form method="POST" class="form-segnala" id="form-modifica-caso">
+        <input type="hidden" name="action" value="modifica_caso">
+        
+        <!-- SEZIONE: Informazioni Caso -->
+        <fieldset class="form-section">
+            <legend>📋 Informazioni Generali</legend>
+            
+            <div class="form-group">
+                <label for="titolo">Titolo del Caso *</label>
+                <input type="text" id="titolo" name="titolo" required 
+                       minlength="5" maxlength="200"
+                       value="<!-- value_titolo -->"
+                       placeholder="Es: Il caso di Via Poma">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="data_crimine">Data dell'Accaduto *</label>
+                    <input type="date" id="data_crimine" name="data_crimine" required
+                           value="<!-- value_data -->">
+                </div>
+                
+                <div class="form-group">
+                    <label for="luogo">Luogo *</label>
+                    <input type="text" id="luogo" name="luogo" required
+                           value="<!-- value_luogo -->"
+                           placeholder="Es: Roma, Italia">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tipologia">Categoria</label>
+                <select id="tipologia" name="tipologia">
+                    <!-- opzioni_tipologia -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="descrizione_breve">Descrizione Breve * <small>(max 500 caratteri)</small></label>
+                <textarea id="descrizione_breve" name="descrizione_breve" required
+                          maxlength="500" rows="3"
+                          placeholder="Breve sintesi del caso..."><!-- value_descrizione --></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="storia">Ricostruzione Completa *</label>
+                <textarea id="storia" name="storia" required
+                          minlength="50" rows="10"
+                          placeholder="Descrivi in dettaglio la storia del caso..."><!-- value_storia --></textarea>
+            </div>
+        </fieldset>
+
+        <!-- SEZIONE: Vittime -->
+        <fieldset class="form-section">
+            <legend>🕯️ Vittime</legend>
+            <p class="section-hint">Inserisci almeno una vittima.</p>
+            
+            <div id="vittime-container">
+                <!-- vittime_html -->
+            </div>
+            
+            <button type="button" class="btn btn-secondary btn-add" onclick="aggiungiVittima()">
+                + Aggiungi Vittima
+            </button>
+        </fieldset>
+
+        <!-- SEZIONE: Colpevoli -->
+        <fieldset class="form-section">
+            <legend>⚖️ Colpevoli / Sospettati</legend>
+            <p class="section-hint">Inserisci almeno un colpevole. Usa "Ignoto" se non identificato.</p>
+            
+            <div id="colpevoli-container">
+                <!-- colpevoli_html -->
+            </div>
+            
+            <button type="button" class="btn btn-secondary btn-add" onclick="aggiungiColpevole()">
+                + Aggiungi Colpevole
+            </button>
+        </fieldset>
+
+        <!-- SEZIONE: Fonti/Articoli -->
+        <fieldset class="form-section">
+            <legend>📰 Fonti e Articoli</legend>
+            <p class="section-hint">Aggiungi link a fonti attendibili (opzionale ma consigliato).</p>
+            
+            <div id="articoli-container">
+                <!-- articoli_html -->
+            </div>
+            
+            <button type="button" class="btn btn-secondary btn-add" onclick="aggiungiArticolo()">
+                + Aggiungi Fonte
+            </button>
+        </fieldset>
+
+        <!-- PULSANTI AZIONE -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">
+                💾 Salva Modifiche
+            </button>
+            
+            <a href="<!-- link_annulla -->" class="btn btn-secondary">
+                Annulla
+            </a>
+        </div>
+    </form>
+
+    <!-- SEZIONE ELIMINAZIONE -->
+    <div class="danger-zone">
+        <h3>Elimina Caso</h3>
+        <p>L'eliminazione del caso è permanente e non può essere annullata.</p>
+        
+        <form method="POST" onsubmit="return confirm('⚠️ ATTENZIONE: Stai per eliminare definitivamente questo caso e tutti i dati correlati (vittime, colpevoli, commenti, articoli). Questa azione NON può essere annullata. Continuare?');">
+            <input type="hidden" name="action" value="elimina_caso">
+            <button type="submit" class="btn btn-danger">
+                🗑️ Elimina Caso Definitivamente
+            </button>
+        </form>
+    </div>
+</main>
+
+<script>
+// Contatori per ID unici
+let vittimeCount = document.querySelectorAll('.vittima-entry').length;
+let colpevoliCount = document.querySelectorAll('.colpevole-entry').length;
+let articoliCount = document.querySelectorAll('.articolo-entry').length;
+
+function aggiungiVittima() {
+    const container = document.getElementById('vittime-container');
+    const html = `
+        <div class="entry-card vittima-entry">
+            <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi vittima">×</button>
+            <input type="hidden" name="vittima_id[]" value="0">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" name="vittima_nome[]" required placeholder="Nome">
+                </div>
+                <div class="form-group">
+                    <label>Cognome *</label>
+                    <input type="text" name="vittima_cognome[]" required placeholder="Cognome">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Luogo di Nascita</label>
+                    <input type="text" name="vittima_luogo_nascita[]" placeholder="Luogo">
+                </div>
+                <div class="form-group">
+                    <label>Data di Nascita</label>
+                    <input type="date" name="vittima_data_nascita[]">
+                </div>
+                <div class="form-group">
+                    <label>Data Decesso</label>
+                    <input type="date" name="vittima_data_decesso[]">
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+    vittimeCount++;
+}
+
+function aggiungiColpevole() {
+    const container = document.getElementById('colpevoli-container');
+    const html = `
+        <div class="entry-card colpevole-entry">
+            <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi colpevole">×</button>
+            <input type="hidden" name="colpevole_id[]" value="0">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" name="colpevole_nome[]" required placeholder="Nome (o 'Ignoto')">
+                </div>
+                <div class="form-group">
+                    <label>Cognome *</label>
+                    <input type="text" name="colpevole_cognome[]" required placeholder="Cognome">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Luogo di Nascita</label>
+                    <input type="text" name="colpevole_luogo_nascita[]" placeholder="Luogo">
+                </div>
+                <div class="form-group">
+                    <label>Data di Nascita</label>
+                    <input type="date" name="colpevole_data_nascita[]">
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+    colpevoliCount++;
+}
+
+function aggiungiArticolo() {
+    const container = document.getElementById('articoli-container');
+    const html = `
+        <div class="entry-card articolo-entry">
+            <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi articolo">×</button>
+            <input type="hidden" name="articolo_id[]" value="0">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Titolo Fonte</label>
+                    <input type="text" name="articolo_titolo[]" placeholder="Es: Articolo Repubblica">
+                </div>
+                <div class="form-group">
+                    <label>Data Pubblicazione</label>
+                    <input type="date" name="articolo_data[]">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Link</label>
+                <input type="url" name="articolo_link[]" placeholder="https://...">
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+    articoliCount++;
+}
+
+function rimuoviEntry(button) {
+    const entry = button.closest('.entry-card');
+    const container = entry.parentElement;
+    
+    // Verifica che rimanga almeno un elemento per vittime e colpevoli
+    /*
+    if (container.id === 'vittime-container' && container.querySelectorAll('.vittima-entry').length <= 1) {
+        alert('Deve esserci almeno una vittima.');
+        return;
+    }
+    if (container.id === 'colpevoli-container' && container.querySelectorAll('.colpevole-entry').length <= 1) {
+        alert('Deve esserci almeno un colpevole.');
+        return;
+    }
+    */
+    entry.remove();
+}
+</script>

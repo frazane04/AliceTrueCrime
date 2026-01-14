@@ -104,6 +104,9 @@ $colpevoli = $dbFunctions->getColpevoliByCaso($casoId, $soloApprovati);
 $vittime = $dbFunctions->getVittimeByCaso($casoId, $soloApprovati);
 $articoli = $dbFunctions->getArticoliByCaso($casoId);
 
+
+
+
 // Verifico se il caso esiste
 if (!$caso) {
     http_response_code(404);
@@ -119,6 +122,29 @@ if (!$caso) {
     
     echo getTemplatePage("Caso Non Trovato - AliceTrueCrime", $contenuto);
     exit;
+}
+
+// Verifica se l'utente può modificare questo caso
+$puoModificare = false;
+$htmlAzioniUtente = '';
+
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    $emailUtente = $_SESSION['user_email'];
+    $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+    
+    // Usa il metodo puoModificareCaso per verificare i permessi
+    $puoModificare = $dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin);
+    
+    if ($puoModificare) {
+        $linkModifica = $prefix . '/modifica-caso?id=' . $casoId;
+        
+        $htmlAzioniUtente = '
+        <div class="caso-azioni-utente">
+            <a href="' . $linkModifica . '" class="btn btn-secondary">
+                ✏️ Modifica Caso
+            </a>
+        </div>';
+    }
 }
 
 // Carico il template HTML
@@ -233,6 +259,7 @@ $data = date('d/m/Y', strtotime($caso['Data']));
 $luogo = htmlspecialchars($caso['Luogo']);
 $tipologia = htmlspecialchars($caso['Tipologia'] ?? 'Non specificata');
 $isApprovato = (bool)$caso['Approvato'];
+$autore = htmlspecialchars($caso['Autore'] ?? 'Anonimo');
 
 // Gestione immagine
 $immagine = !empty($caso['Immagine']) 
@@ -304,7 +331,7 @@ $contenuto = str_replace('<!-- caso_tipologia -->', $tipologia, $contenuto);
 
 $contenuto = str_replace('<!-- caso_storia -->', $storia, $contenuto);
 $contenuto = str_replace('<!-- caso_descrizione -->', $descrizione, $contenuto);
-
+$contenuto = str_replace('<!-- caso_autore -->', $autore, $contenuto);
 $contenuto = str_replace('<!-- caso_data -->', $data, $contenuto);
 $contenuto = str_replace('<!-- caso_luogo -->', $luogo, $contenuto);
 $contenuto = str_replace('<!-- caso_vittime -->', $html_vittime, $contenuto);
@@ -468,6 +495,7 @@ if ($isApprovato) {
 $contenuto = str_replace('<!-- caso_numero_commenti -->', $numeroCommenti, $contenuto);
 $contenuto = str_replace('<!-- caso_form_commento -->', $htmlFormCommento, $contenuto);
 $contenuto = str_replace('<!-- caso_lista_commenti -->', $htmlCommenti, $contenuto);
+$contenuto = str_replace('<!-- caso_azioni_utente -->', $htmlAzioniUtente, $contenuto);
 
 // Output finale
 $titoloPagina = $titolo . " - AliceTrueCrime";
