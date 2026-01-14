@@ -227,6 +227,7 @@ if (!empty($articoli)) {
 // PREPARO DATI PER VISUALIZZAZIONE
 // ========================================
 $titolo = htmlspecialchars($caso['Titolo']);
+$descrizione= htmlspecialchars($caso['Descrizione']);
 $storia = nl2br(htmlspecialchars($caso['Storia']));
 $data = date('d/m/Y', strtotime($caso['Data']));
 $luogo = htmlspecialchars($caso['Luogo']);
@@ -241,6 +242,15 @@ $immagine = !empty($caso['Immagine'])
 // Badge status
 $statusClass = $isApprovato ? 'status-approved' : 'status-pending';
 $statusText = $isApprovato ? '✓ Caso Verificato' : '⏳ In Revisione';
+
+// ========================================
+// INCREMENTO VISUALIZZAZIONI
+// ========================================
+// Incrementa il contatore delle visualizzazioni solo per casi approvati
+// Non incrementa in modalità preview admin
+if ($isApprovato && !$isAdminPreview) {
+    $dbFunctions->incrementaVisualizzazioni($casoId);
+}
 
 // ========================================
 // BARRA ADMIN (se admin e caso non approvato)
@@ -293,6 +303,8 @@ $contenuto = str_replace('<!-- caso_titolo -->', $titolo, $contenuto);
 $contenuto = str_replace('<!-- caso_tipologia -->', $tipologia, $contenuto);
 
 $contenuto = str_replace('<!-- caso_storia -->', $storia, $contenuto);
+$contenuto = str_replace('<!-- caso_descrizione -->', $descrizione, $contenuto);
+
 $contenuto = str_replace('<!-- caso_data -->', $data, $contenuto);
 $contenuto = str_replace('<!-- caso_luogo -->', $luogo, $contenuto);
 $contenuto = str_replace('<!-- caso_vittime -->', $html_vittime, $contenuto);

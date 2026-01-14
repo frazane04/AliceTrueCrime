@@ -1015,5 +1015,30 @@ class FunzioniDB {
             return null;
         }
     }
+
+    /**
+     * Incrementa il contatore delle visualizzazioni di un caso
+     * Viene chiamato quando un utente visualizza un caso approvato
+     * 
+     * @param int $casoId - ID del caso
+     * @return bool - true se l'incremento è avvenuto con successo
+     */
+    public function incrementaVisualizzazioni($casoId) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "UPDATE caso SET Visualizzazioni = Visualizzazioni + 1 WHERE N_Caso = ? AND Approvato = 1";
+            $result = $this->db->query($query, [$casoId], "i");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
 }
 ?>
