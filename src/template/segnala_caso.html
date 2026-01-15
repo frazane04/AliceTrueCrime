@@ -161,10 +161,11 @@
                                 />
                             </div>
                             <div class="form-group half">
-                                <label for="vittima_data_nascita_0">Data di Nascita</label>
+                                <label for="vittima_data_nascita_0">Data di Nascita *</label>
                                 <input type="date" 
                                     id="vittima_data_nascita_0" 
                                     name="vittima_data_nascita[]"
+                                    required
                                 />
                             </div>
                         </div>
@@ -177,6 +178,7 @@
                                     name="vittima_data_decesso[]"
                                 />
                             </div>
+
                             <div class="form-group half">
                                 <label for="vittima_immagine_0">Foto (opzionale)</label>
                                 <input type="file" 
@@ -244,10 +246,11 @@
                                 />
                             </div>
                             <div class="form-group half">
-                                <label for="colpevole_data_nascita_0">Data di Nascita</label>
+                                <label for="colpevole_data_nascita_0">Data di Nascita *</label>
                                 <input type="date" 
                                     id="colpevole_data_nascita_0" 
                                     name="colpevole_data_nascita[]"
+                                    required
                                 />
                             </div>
                         </div>
@@ -427,8 +430,8 @@ document.getElementById('btn-add-vittima').addEventListener('click', function() 
                 <input type="text" id="vittima_luogo_nascita_${index}" name="vittima_luogo_nascita[]" placeholder="Città, Paese" maxlength="100"/>
             </div>
             <div class="form-group half">
-                <label for="vittima_data_nascita_${index}">Data di Nascita</label>
-                <input type="date" id="vittima_data_nascita_${index}" name="vittima_data_nascita[]"/>
+                <label for="vittima_data_nascita_${index}">Data di Nascita *</label>
+                <input type="date" id="vittima_data_nascita_${index}" name="vittima_data_nascita[]" required/>
             </div>
         </div>
 
@@ -481,8 +484,8 @@ document.getElementById('btn-add-colpevole').addEventListener('click', function(
                 <input type="text" id="colpevole_luogo_nascita_${index}" name="colpevole_luogo_nascita[]" placeholder="Città, Paese" maxlength="100"/>
             </div>
             <div class="form-group half">
-                <label for="colpevole_data_nascita_${index}">Data di Nascita</label>
-                <input type="date" id="colpevole_data_nascita_${index}" name="colpevole_data_nascita[]"/>
+                <label for="colpevole_data_nascita_${index}">Data di Nascita *</label>
+                <input type="date" id="colpevole_data_nascita_${index}" name="colpevole_data_nascita[]" required/>
             </div>
         </div>
 

@@ -251,6 +251,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if (empty($colpevoli)) {
         $errori[] = "Inserisci almeno un colpevole";
     }
+    // Validazione vittime
+    foreach ($vittime as $v) {
+        if (empty($v['data_nascita'])) {
+            $errori[] = "La data di nascita è obbligatoria per tutte le vittime";
+            break;
+        }
+    }
+
+    // Validazione colpevoli
+    foreach ($colpevoli as $c) {
+        if (empty($c['data_nascita'])) {
+            $errori[] = "La data di nascita è obbligatoria per tutti i colpevoli";
+            break;
+        }
+    }
+
 
     // ========================================
     // SALVATAGGIO
@@ -564,10 +580,10 @@ function generaHtmlVittima($dati = null, $prefix = '', $index = 0) {
     $dataDecesso = $dati['DataDecesso'] ?? '';
     $immagine = $dati['Immagine'] ?? '';
     
-    // Campo hidden per preservare l'immagine esistente (verrà svuotato se si rimuove)
+    // Campo hidden per preservare l'immagine esistente
     $hiddenImmagine = '<input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine) . '">';
     
-    // Anteprima immagine esistente con pulsante rimuovi
+    // Anteprima immagine esistente
     $anteprimaImg = '';
     if (!empty($immagine)) {
         $altVittima = ImageHandler::generaAlt('vittima', ['nome' => $nome, 'cognome' => $cognome]);
@@ -605,8 +621,8 @@ function generaHtmlVittima($dati = null, $prefix = '', $index = 0) {
                 <input type="text" name="vittima_luogo_nascita[]" placeholder="Luogo" value="$luogo">
             </div>
             <div class="form-group">
-                <label>Data di Nascita</label>
-                <input type="date" name="vittima_data_nascita[]" value="$dataNascita">
+                <label>Data di Nascita *</label>
+                <input type="date" name="vittima_data_nascita[]" required value="$dataNascita">
             </div>
             <div class="form-group">
                 <label>Data Decesso</label>
@@ -633,10 +649,10 @@ function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
     $dataNascita = $dati['DataNascita'] ?? '';
     $immagine = $dati['Immagine'] ?? '';
     
-    // Campo hidden per preservare l'immagine esistente (verrà svuotato se si rimuove)
+    // Campo hidden per preservare l'immagine esistente
     $hiddenImmagine = '<input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine) . '">';
     
-    // Anteprima immagine esistente con pulsante rimuovi
+    // Anteprima immagine esistente
     $anteprimaImg = '';
     if (!empty($immagine)) {
         $altColpevole = ImageHandler::generaAlt('colpevole', ['nome' => $nome, 'cognome' => $cognome]);
@@ -674,8 +690,8 @@ function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
                 <input type="text" name="colpevole_luogo_nascita[]" placeholder="Luogo" value="$luogo">
             </div>
             <div class="form-group">
-                <label>Data di Nascita</label>
-                <input type="date" name="colpevole_data_nascita[]" value="$dataNascita">
+                <label>Data di Nascita *</label>
+                <input type="date" name="colpevole_data_nascita[]" required value="$dataNascita">
             </div>
         </div>
         <div class="form-row">

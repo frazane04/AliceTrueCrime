@@ -130,6 +130,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($colpevoli)) {
         $errori[] = "Devi inserire almeno un colpevole (o 'Ignoto' se sconosciuto)";
     }
+    // Validazione vittime
+    foreach ($vittime as $v) {
+        if (empty($v['data_nascita'])) {
+            $errori[] = "La data di nascita è obbligatoria per tutte le vittime";
+            break;
+        }
+    }
+
+    // Validazione colpevoli
+    foreach ($colpevoli as $c) {
+        if (empty($c['data_nascita'])) {
+            $errori[] = "La data di nascita è obbligatoria per tutti i colpevoli";
+            break;
+        }
+    }
+
 
     // ========================================
     // INSERIMENTO NEL DATABASE
