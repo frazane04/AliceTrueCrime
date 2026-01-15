@@ -5,6 +5,8 @@
  * 
  * REFACTORED: Rimossa duplicazione metodi admin/utente
  * Ora si usa un parametro $soloApprovati per controllare il filtro
+ * 
+ * AGGIORNATO: Aggiunto supporto per upload immagini
  */
 
 require_once __DIR__ . '/connessione.php';
@@ -801,6 +803,7 @@ class FunzioniDB {
     
     /**
      * Inserisce un caso completo con generazione automatica dello slug
+     * AGGIORNATO: Supporto immagine
      */
     public function inserisciCaso($titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $immagine = null, $autoreEmail = '') {
         try {
@@ -810,7 +813,7 @@ class FunzioniDB {
             
             if (empty($titolo) || empty($data) || empty($luogo) || empty($descrizione) || empty($storia)) {
                 $this->db->chiudiConnessione();
-                return ['success' => false, 'message' => 'Tutti i campi obbligatori devono essere compilati', 'caso_id' => null];
+                return ['success' => false, 'message' => 'Tutti i campi obbligatori devono essere compilati', 'caso_id' => null, 'slug' => null];
             }
             
             $slug = $this->generaSlugUnico($titolo);
@@ -825,21 +828,21 @@ class FunzioniDB {
             if ($result) {
                 $casoId = $this->db->getLastInsertId();
                 $this->db->chiudiConnessione();
-                return ['success' => true, 'message' => 'Caso inserito con successo.', 'caso_id' => $casoId];
+                return ['success' => true, 'message' => 'Caso inserito con successo.', 'caso_id' => $casoId, 'slug' => $slug];
             } else {
                 throw new Exception("Errore durante l'inserimento del caso");
             }
             
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
-            return ['success' => false, 'message' => 'Errore: ' . $e->getMessage(), 'caso_id' => null];
+            return ['success' => false, 'message' => 'Errore: ' . $e->getMessage(), 'caso_id' => null, 'slug' => null];
         }
     }
 
     /**
      * Genera uno slug unico dal titolo
      */
-    private function generaSlugUnico($titolo) {
+    public function generaSlugUnico($titolo) {
         $slug = strtolower($titolo);
         $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
         $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
@@ -868,14 +871,42 @@ class FunzioniDB {
         return ($result && is_object($result) && mysqli_num_rows($result) > 0);
     }
 
+    /**
+     * Recupera lo slug di un caso dall'ID
+     */
+    public function getSlugById($casoId) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return null;
+            }
+            
+            $query = "SELECT Slug FROM Caso WHERE N_Caso = ?";
+            $result = $this->db->query($query, [$casoId], "i");
+            
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return $row['Slug'];
+            }
+            
+            $this->db->chiudiConnessione();
+            return null;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return null;
+        }
+    }
+
     // ========================================
     // GESTIONE VITTIME
     // ========================================
     
     /**
      * Inserisce una vittima
+     * AGGIORNATO: Supporto immagine
      */
-    public function inserisciVittima($casoId, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null) {
+    public function inserisciVittima($casoId, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null, $immagine = null) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
@@ -888,13 +919,14 @@ class FunzioniDB {
             
             $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1980-01-01';
             $dataDecessoFinal = !empty($dataDecesso) ? $dataDecesso : null;
+            $immagineFinal = !empty($immagine) ? $immagine : '';
             
             $query = "INSERT INTO Vittima (Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso, Immagine) 
-                      VALUES (?, ?, ?, ?, ?, ?, '')";
+                      VALUES (?, ?, ?, ?, ?, ?, ?)";
             
-            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $dataDecessoFinal, $casoId];
+            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $dataDecessoFinal, $casoId, $immagineFinal];
             
-            $result = $this->db->query($query, $params, "sssssi");
+            $result = $this->db->query($query, $params, "sssssis");
             
             if ($result) {
                 $vittimaId = $this->db->getLastInsertId();
@@ -917,8 +949,9 @@ class FunzioniDB {
     
     /**
      * Inserisce un colpevole
+     * AGGIORNATO: Supporto immagine
      */
-    public function inserisciColpevole($nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null) {
+    public function inserisciColpevole($nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $immagine = null) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
@@ -930,13 +963,14 @@ class FunzioniDB {
             }
             
             $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1990-01-01';
+            $immagineFinal = !empty($immagine) ? $immagine : '';
             
             $query = "INSERT INTO Colpevole (Nome, Cognome, LuogoNascita, DataNascita, Immagine) 
-                      VALUES (?, ?, ?, ?, '')";
+                      VALUES (?, ?, ?, ?, ?)";
             
-            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal];
+            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $immagineFinal];
             
-            $result = $this->db->query($query, $params, "ssss");
+            $result = $this->db->query($query, $params, "sssss");
             
             if ($result) {
                 $colpevoleId = $this->db->getLastInsertId();
@@ -1040,12 +1074,14 @@ class FunzioniDB {
             return false;
         }
     }
+
     // ========================================
     // GESTIONE MODIFICA CASO
     // ========================================
 
     /**
      * Aggiorna i dati principali di un caso
+     * AGGIORNATO: Supporto immagine opzionale
      * 
      * @param int $nCaso ID del caso
      * @param string $titolo Nuovo titolo
@@ -1055,9 +1091,10 @@ class FunzioniDB {
      * @param string $storia Nuova storia
      * @param string|null $tipologia Nuova tipologia
      * @param bool $riApprova Se true, imposta Approvato = 0
+     * @param string|null $immagine Nuovo percorso immagine (null = non modificare)
      * @return array Risultato operazione
      */
-    public function aggiornaCaso($nCaso, $titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $riApprova = false) {
+    public function aggiornaCaso($nCaso, $titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $riApprova = false, $immagine = null) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
@@ -1068,15 +1105,28 @@ class FunzioniDB {
                 return ['success' => false, 'message' => 'Tutti i campi obbligatori devono essere compilati'];
             }
             
-            // Costruisci la query in base a se deve tornare in approvazione
-            if ($riApprova) {
-                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Approvato = 0 WHERE N_Caso = ?";
+            // Costruisci la query in base ai parametri
+            if ($immagine !== null) {
+                // Aggiorna anche l'immagine
+                if ($riApprova) {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ?, Approvato = 0 WHERE N_Caso = ?";
+                } else {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ? WHERE N_Caso = ?";
+                }
+                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagine, $nCaso];
+                $types = "sssssssi";
             } else {
-                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ? WHERE N_Caso = ?";
+                // Non toccare l'immagine
+                if ($riApprova) {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Approvato = 0 WHERE N_Caso = ?";
+                } else {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ? WHERE N_Caso = ?";
+                }
+                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $nCaso];
+                $types = "ssssssi";
             }
             
-            $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $nCaso];
-            $result = $this->db->query($query, $params, "ssssssi");
+            $result = $this->db->query($query, $params, $types);
             
             $this->db->chiudiConnessione();
             
@@ -1088,6 +1138,27 @@ class FunzioniDB {
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
             return ['success' => false, 'message' => 'Errore: ' . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Aggiorna solo l'immagine di un caso
+     */
+    public function aggiornaImmagineCaso($nCaso, $immagine) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "UPDATE Caso SET Immagine = ? WHERE N_Caso = ?";
+            $result = $this->db->query($query, [$immagine, $nCaso], "si");
+            
+            $this->db->chiudiConnessione();
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
         }
     }
 
@@ -1181,8 +1252,9 @@ class FunzioniDB {
 
     /**
      * Aggiorna una vittima esistente
+     * AGGIORNATO: Supporto immagine
      */
-    public function aggiornaVittima($idVittima, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null) {
+    public function aggiornaVittima($idVittima, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null, $immagine = null) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
@@ -1190,12 +1262,40 @@ class FunzioniDB {
             
             $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1980-01-01';
             
-            $query = "UPDATE Vittima SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ?, DataDecesso = ? WHERE ID_Vittima = ?";
-            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $dataDecesso, $idVittima];
+            if ($immagine !== null) {
+                $query = "UPDATE Vittima SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ?, DataDecesso = ?, Immagine = ? WHERE ID_Vittima = ?";
+                $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $dataDecesso, $immagine, $idVittima];
+                $types = "ssssssi";
+            } else {
+                $query = "UPDATE Vittima SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ?, DataDecesso = ? WHERE ID_Vittima = ?";
+                $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $dataDecesso, $idVittima];
+                $types = "sssssi";
+            }
             
-            $result = $this->db->query($query, $params, "sssssi");
+            $result = $this->db->query($query, $params, $types);
             $this->db->chiudiConnessione();
             
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Aggiorna solo l'immagine di una vittima
+     */
+    public function aggiornaImmagineVittima($idVittima, $immagine) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "UPDATE Vittima SET Immagine = ? WHERE ID_Vittima = ?";
+            $result = $this->db->query($query, [$immagine, $idVittima], "si");
+            
+            $this->db->chiudiConnessione();
             return (bool)$result;
             
         } catch (Exception $e) {
@@ -1252,8 +1352,9 @@ class FunzioniDB {
 
     /**
      * Aggiorna un colpevole esistente
+     * AGGIORNATO: Supporto immagine
      */
-    public function aggiornaColpevole($idColpevole, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null) {
+    public function aggiornaColpevole($idColpevole, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $immagine = null) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
@@ -1261,12 +1362,40 @@ class FunzioniDB {
             
             $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1990-01-01';
             
-            $query = "UPDATE Colpevole SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ? WHERE ID_Colpevole = ?";
-            $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $idColpevole];
+            if ($immagine !== null) {
+                $query = "UPDATE Colpevole SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ?, Immagine = ? WHERE ID_Colpevole = ?";
+                $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $immagine, $idColpevole];
+                $types = "sssssi";
+            } else {
+                $query = "UPDATE Colpevole SET Nome = ?, Cognome = ?, LuogoNascita = ?, DataNascita = ? WHERE ID_Colpevole = ?";
+                $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $idColpevole];
+                $types = "ssssi";
+            }
             
-            $result = $this->db->query($query, $params, "ssssi");
+            $result = $this->db->query($query, $params, $types);
             $this->db->chiudiConnessione();
             
+            return (bool)$result;
+            
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Aggiorna solo l'immagine di un colpevole
+     */
+    public function aggiornaImmagineColpevole($idColpevole, $immagine) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+            
+            $query = "UPDATE Colpevole SET Immagine = ? WHERE ID_Colpevole = ?";
+            $result = $this->db->query($query, [$immagine, $idColpevole], "si");
+            
+            $this->db->chiudiConnessione();
             return (bool)$result;
             
         } catch (Exception $e) {

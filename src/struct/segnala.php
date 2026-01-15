@@ -1,9 +1,9 @@
 <?php
 // src/struct/segnala.php
-// Gestione segnalazione casi completa - VERSIONE AGGIORNATA
-// Include: informazioni caso, vittime, colpevoli, articoli/fonti
+// Gestione segnalazione casi completa - VERSIONE CON UPLOAD IMMAGINI
 
 require_once __DIR__ . '/funzioni_db.php';
+require_once __DIR__ . '/ImageHandler.php';
 
 // ========================================
 // CONTROLLO SESSIONE
@@ -29,11 +29,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 // ========================================
 $templatePath = __DIR__ . '/../template/segnala_caso.html';
 $messaggioFeedback = "";
-
-// Dati caso
 $titolo = $data = $luogo = $descrizione_breve = $storia = $tipologia = '';
-
-// Arrays per dati dinamici (mantenuti in caso di errore)
 $vittime = [];
 $colpevoli = [];
 $articoli = [];
@@ -43,79 +39,62 @@ $articoli = [];
 // ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // ----------------------------------------
-    // RECUPERO DATI GENERALI CASO
-    // ----------------------------------------
+    // Recupero dati generali caso
     $titolo = trim($_POST['titolo'] ?? '');
     $data = $_POST['data_crimine'] ?? '';
     $luogo = trim($_POST['luogo'] ?? '');
     $descrizione_breve = trim($_POST['descrizione_breve'] ?? '');
     $storia = trim($_POST['storia'] ?? '');
     $tipologia = trim($_POST['tipologia'] ?? '');
-    
     $autoreEmail = $_SESSION['user_email'];
 
-    // ----------------------------------------
-    // RECUPERO VITTIME (Array di array)
-    // ----------------------------------------
+    // Recupero vittime
     $vittime_nomi = $_POST['vittima_nome'] ?? [];
     $vittime_cognomi = $_POST['vittima_cognome'] ?? [];
     $vittime_luoghi_nascita = $_POST['vittima_luogo_nascita'] ?? [];
     $vittime_date_nascita = $_POST['vittima_data_nascita'] ?? [];
     $vittime_date_decesso = $_POST['vittima_data_decesso'] ?? [];
     
-    // Costruisco array di vittime
     $vittime = [];
-    $vittimeCount = count($vittime_nomi);
-    
-    for ($i = 0; $i < $vittimeCount; $i++) {
+    for ($i = 0; $i < count($vittime_nomi); $i++) {
         if (!empty($vittime_nomi[$i]) && !empty($vittime_cognomi[$i])) {
             $vittime[] = [
                 'nome' => trim($vittime_nomi[$i]),
                 'cognome' => trim($vittime_cognomi[$i]),
                 'luogo_nascita' => !empty($vittime_luoghi_nascita[$i]) ? trim($vittime_luoghi_nascita[$i]) : 'N/A',
                 'data_nascita' => !empty($vittime_date_nascita[$i]) ? $vittime_date_nascita[$i] : null,
-                'data_decesso' => !empty($vittime_date_decesso[$i]) ? $vittime_date_decesso[$i] : null
+                'data_decesso' => !empty($vittime_date_decesso[$i]) ? $vittime_date_decesso[$i] : null,
+                'file_index' => $i
             ];
         }
     }
 
-    // ----------------------------------------
-    // RECUPERO COLPEVOLI (Array di array)
-    // ----------------------------------------
+    // Recupero colpevoli
     $colpevoli_nomi = $_POST['colpevole_nome'] ?? [];
     $colpevoli_cognomi = $_POST['colpevole_cognome'] ?? [];
     $colpevoli_luoghi_nascita = $_POST['colpevole_luogo_nascita'] ?? [];
     $colpevoli_date_nascita = $_POST['colpevole_data_nascita'] ?? [];
     
-    // Costruisco array di colpevoli
     $colpevoli = [];
-    $colpevoliCount = count($colpevoli_nomi);
-    
-    for ($i = 0; $i < $colpevoliCount; $i++) {
+    for ($i = 0; $i < count($colpevoli_nomi); $i++) {
         if (!empty($colpevoli_nomi[$i]) && !empty($colpevoli_cognomi[$i])) {
             $colpevoli[] = [
                 'nome' => trim($colpevoli_nomi[$i]),
                 'cognome' => trim($colpevoli_cognomi[$i]),
                 'luogo_nascita' => !empty($colpevoli_luoghi_nascita[$i]) ? trim($colpevoli_luoghi_nascita[$i]) : 'N/A',
-                'data_nascita' => !empty($colpevoli_date_nascita[$i]) ? $colpevoli_date_nascita[$i] : null
+                'data_nascita' => !empty($colpevoli_date_nascita[$i]) ? $colpevoli_date_nascita[$i] : null,
+                'file_index' => $i
             ];
         }
     }
 
-    // ----------------------------------------
-    // RECUPERO ARTICOLI/FONTI (Array di array)
-    // ----------------------------------------
+    // Recupero articoli
     $articoli_titoli = $_POST['articolo_titolo'] ?? [];
     $articoli_date = $_POST['articolo_data'] ?? [];
     $articoli_link = $_POST['articolo_link'] ?? [];
     
-    // Costruisco array di articoli
     $articoli = [];
-    $articoliCount = count($articoli_titoli);
-    
-    for ($i = 0; $i < $articoliCount; $i++) {
-        // Aggiungo solo se almeno titolo o link sono presenti
+    for ($i = 0; $i < count($articoli_titoli); $i++) {
         if (!empty($articoli_titoli[$i]) || !empty($articoli_link[$i])) {
             $articoli[] = [
                 'titolo' => !empty($articoli_titoli[$i]) ? trim($articoli_titoli[$i]) : 'Fonte senza titolo',
@@ -126,47 +105,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // ========================================
-    // VALIDAZIONE DATI
+    // VALIDAZIONE
     // ========================================
     $errori = [];
 
-    // Validazione campi obbligatori
-    if (empty($titolo)) {
-        $errori[] = "Il titolo del caso è obbligatorio";
-    } elseif (strlen($titolo) < 5 || strlen($titolo) > 200) {
+    if (empty($titolo) || strlen($titolo) < 5 || strlen($titolo) > 200) {
         $errori[] = "Il titolo deve essere tra 5 e 200 caratteri";
     }
-
-    if (empty($data)) {
-        $errori[] = "La data dell'accaduto è obbligatoria";
-    } elseif (strtotime($data) > time()) {
-        $errori[] = "La data non può essere nel futuro";
+    if (empty($data) || strtotime($data) > time()) {
+        $errori[] = "Data non valida o nel futuro";
     }
-
     if (empty($luogo)) {
         $errori[] = "Il luogo è obbligatorio";
     }
-
-    if (empty($descrizione_breve)) {
-        $errori[] = "La descrizione breve è obbligatoria";
-    } elseif (strlen($descrizione_breve) > 500) {
-        $errori[] = "La descrizione breve non può superare i 500 caratteri";
+    if (empty($descrizione_breve) || strlen($descrizione_breve) > 500) {
+        $errori[] = "Descrizione breve obbligatoria (max 500 caratteri)";
     }
-
-    if (empty($storia)) {
-        $errori[] = "La ricostruzione completa del caso è obbligatoria";
-    } elseif (strlen($storia) < 50) {
-        $errori[] = "La storia deve contenere almeno 50 caratteri";
-    } elseif (strlen($storia) > 10000) {
-        $errori[] = "La storia non può superare i 10.000 caratteri";
+    if (empty($storia) || strlen($storia) < 50 || strlen($storia) > 10000) {
+        $errori[] = "La storia deve essere tra 50 e 10.000 caratteri";
     }
-
-    // Validazione vittime (almeno una richiesta)
     if (empty($vittime)) {
         $errori[] = "Devi inserire almeno una vittima";
     }
-
-    // Validazione colpevoli (almeno uno richiesto)
     if (empty($colpevoli)) {
         $errori[] = "Devi inserire almeno un colpevole (o 'Ignoto' se sconosciuto)";
     }
@@ -177,99 +137,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errori)) {
         try {
             $dbFunctions = new FunzioniDB();
+            $imageHandler = new ImageHandler();
             
-            // Tipologia finale (NULL se vuota)
             $tipologiaFinal = !empty($tipologia) ? $tipologia : null;
+            $slugCaso = $dbFunctions->generaSlugUnico($titolo);
             
-            // 1. INSERIMENTO CASO
-            $resultCaso = $dbFunctions->inserisciCaso(
-                $titolo,
-                $data,
-                $luogo,
-                $descrizione_breve,
-                $storia,
-                $tipologiaFinal,
-                null, // immagine (per ora NULL)
-                $autoreEmail
-            );
-
-            if ($resultCaso['success']) {
-                $casoId = $resultCaso['caso_id'];
-                
-                // 2. INSERIMENTO VITTIME
-                foreach ($vittime as $vittima) {
-                    $dbFunctions->inserisciVittima(
-                        $casoId,
-                        $vittima['nome'],
-                        $vittima['cognome'],
-                        $vittima['luogo_nascita'],
-                        $vittima['data_nascita'],
-                        $vittima['data_decesso']
-                    );
+            // Gestione immagine caso
+            $immagineCaso = null;
+            if (isset($_FILES['immagine_caso']) && $_FILES['immagine_caso']['error'] !== UPLOAD_ERR_NO_FILE) {
+                $resultImg = $imageHandler->caricaImmagine($_FILES['immagine_caso'], 'caso', $slugCaso);
+                if ($resultImg['success'] && $resultImg['path']) {
+                    $immagineCaso = $resultImg['path'];
+                } elseif (!$resultImg['success']) {
+                    $errori[] = "Errore immagine caso: " . $resultImg['message'];
                 }
+            }
+            
+            if (empty($errori)) {
+                // 1. Inserimento caso
+                $resultCaso = $dbFunctions->inserisciCaso(
+                    $titolo, $data, $luogo, $descrizione_breve, $storia,
+                    $tipologiaFinal, $immagineCaso, $autoreEmail
+                );
 
-                // 3. INSERIMENTO COLPEVOLI
-                foreach ($colpevoli as $colpevole) {
-                    $colpevoleId = $dbFunctions->inserisciColpevole(
-                        $colpevole['nome'],
-                        $colpevole['cognome'],
-                        $colpevole['luogo_nascita'],
-                        $colpevole['data_nascita']
-                    );
+                if ($resultCaso['success']) {
+                    $casoId = $resultCaso['caso_id'];
                     
-                    // Collegamento colpevole-caso
-                    if ($colpevoleId) {
-                        $dbFunctions->collegaColpevoleACaso($colpevoleId, $casoId);
+                    // 2. Inserimento vittime con immagini
+                    foreach ($vittime as $vittima) {
+                        $immagineVittima = null;
+                        $idx = $vittima['file_index'];
+                        
+                        if (isset($_FILES['vittima_immagine']['name'][$idx]) && 
+                            $_FILES['vittima_immagine']['error'][$idx] !== UPLOAD_ERR_NO_FILE) {
+                            
+                            $fileVittima = [
+                                'name' => $_FILES['vittima_immagine']['name'][$idx],
+                                'type' => $_FILES['vittima_immagine']['type'][$idx],
+                                'tmp_name' => $_FILES['vittima_immagine']['tmp_name'][$idx],
+                                'error' => $_FILES['vittima_immagine']['error'][$idx],
+                                'size' => $_FILES['vittima_immagine']['size'][$idx]
+                            ];
+                            
+                            $slugV = $imageHandler->generaSlugPersona($vittima['nome'], $vittima['cognome']);
+                            $resultImgV = $imageHandler->caricaImmagine($fileVittima, 'vittime', $slugV);
+                            
+                            if ($resultImgV['success'] && $resultImgV['path']) {
+                                $immagineVittima = $resultImgV['path'];
+                            }
+                        }
+                        
+                        $dbFunctions->inserisciVittima(
+                            $casoId, $vittima['nome'], $vittima['cognome'],
+                            $vittima['luogo_nascita'], $vittima['data_nascita'],
+                            $vittima['data_decesso'], $immagineVittima
+                        );
                     }
+
+                    // 3. Inserimento colpevoli con immagini
+                    foreach ($colpevoli as $colpevole) {
+                        $immagineColpevole = null;
+                        $idx = $colpevole['file_index'];
+                        
+                        if (isset($_FILES['colpevole_immagine']['name'][$idx]) && 
+                            $_FILES['colpevole_immagine']['error'][$idx] !== UPLOAD_ERR_NO_FILE) {
+                            
+                            $fileColpevole = [
+                                'name' => $_FILES['colpevole_immagine']['name'][$idx],
+                                'type' => $_FILES['colpevole_immagine']['type'][$idx],
+                                'tmp_name' => $_FILES['colpevole_immagine']['tmp_name'][$idx],
+                                'error' => $_FILES['colpevole_immagine']['error'][$idx],
+                                'size' => $_FILES['colpevole_immagine']['size'][$idx]
+                            ];
+                            
+                            $slugC = $imageHandler->generaSlugPersona($colpevole['nome'], $colpevole['cognome']);
+                            $resultImgC = $imageHandler->caricaImmagine($fileColpevole, 'colpevoli', $slugC);
+                            
+                            if ($resultImgC['success'] && $resultImgC['path']) {
+                                $immagineColpevole = $resultImgC['path'];
+                            }
+                        }
+                        
+                        $colpevoleId = $dbFunctions->inserisciColpevole(
+                            $colpevole['nome'], $colpevole['cognome'],
+                            $colpevole['luogo_nascita'], $colpevole['data_nascita'],
+                            $immagineColpevole
+                        );
+                        
+                        if ($colpevoleId) {
+                            $dbFunctions->collegaColpevoleACaso($colpevoleId, $casoId);
+                        }
+                    }
+
+                    // 4. Inserimento articoli
+                    foreach ($articoli as $articolo) {
+                        $dbFunctions->inserisciArticolo(
+                            $casoId, $articolo['titolo'],
+                            $articolo['data'], $articolo['link']
+                        );
+                    }
+
+                    // Success
+                    $messaggioFeedback = "
+                        <div class='alert alert-success'>
+                            <strong>✅ Segnalazione inviata con successo!</strong><br>
+                            Il caso è stato inoltrato per la revisione.<br><br>
+                            <small>
+                                <strong>Riepilogo:</strong><br>
+                                • Caso ID: {$casoId}<br>
+                                • Vittime: " . count($vittime) . "<br>
+                                • Colpevoli: " . count($colpevoli) . "<br>
+                                • Fonti: " . count($articoli) . "<br>
+                                • Segnalato da: {$_SESSION['user']}
+                            </small>
+                        </div>
+                    ";
+
+                    // Reset campi
+                    $titolo = $data = $luogo = $descrizione_breve = $storia = $tipologia = '';
+                    $vittime = [];
+                    $colpevoli = [];
+                    $articoli = [];
+
+                } else {
+                    $errori[] = $resultCaso['message'];
                 }
-
-                // 4. INSERIMENTO ARTICOLI/FONTI
-                foreach ($articoli as $articolo) {
-                    $dbFunctions->inserisciArticolo(
-                        $casoId,
-                        $articolo['titolo'],
-                        $articolo['data'],
-                        $articolo['link']
-                    );
-                }
-
-                // SUCCESS MESSAGE
-                $messaggioFeedback = "
-                    <div class='alert alert-success'>
-                        <strong>✅ Segnalazione completa inviata con successo!</strong><br>
-                        Il caso è stato inoltrato al team di moderazione per la revisione.<br><br>
-                        <small>
-                            <strong>Riepilogo:</strong><br>
-                            • Caso ID: {$casoId}<br>
-                            • Vittime inserite: " . count($vittime) . "<br>
-                            • Colpevoli inseriti: " . count($colpevoli) . "<br>
-                            • Fonti inserite: " . count($articoli) . "<br>
-                            • Segnalato da: {$_SESSION['user']}
-                        </small>
-                    </div>
-                ";
-
-                // Reset campi dopo successo
-                $titolo = $data = $luogo = $descrizione_breve = $storia = $tipologia = '';
-                $vittime = [];
-                $colpevoli = [];
-                $articoli = [];
-
-            } else {
-                $errori[] = $resultCaso['message'];
             }
 
         } catch (Exception $e) {
-            error_log("Errore segnalazione caso completa: " . $e->getMessage());
-            $errori[] = "Si è verificato un errore durante l'invio. Riprova più tardi.";
+            error_log("Errore segnalazione caso: " . $e->getMessage());
+            $errori[] = "Si è verificato un errore. Riprova più tardi.";
         }
     }
 
-    // ========================================
-    // MESSAGGIO ERRORI
-    // ========================================
+    // Messaggio errori
     if (!empty($errori)) {
-        $messaggioFeedback = "<div class='alert alert-error'><strong>⚠️ Errori nella segnalazione:</strong><ul>";
+        $messaggioFeedback = "<div class='alert alert-error'><strong>⚠️ Errori:</strong><ul>";
         foreach ($errori as $errore) {
             $messaggioFeedback .= "<li>" . htmlspecialchars($errore) . "</li>";
         }
@@ -283,17 +286,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (file_exists($templatePath)) {
     $contenuto = file_get_contents($templatePath);
 } else {
-    $contenuto = "
-        <div class='error' style='padding: 2rem; text-align: center; color: red;'>
-            <h1>Errore Critico</h1>
-            <p>Template mancante: $templatePath</p>
-        </div>
-    ";
+    $contenuto = "<div class='error'><h1>Errore</h1><p>Template mancante</p></div>";
 }
 
-// ========================================
-// INIEZIONE FEEDBACK
-// ========================================
+// Iniezione feedback
 $contenuto = str_replace(
     '<div id="feedback-area">',
     '<div id="feedback-area">' . $messaggioFeedback,
@@ -301,53 +297,7 @@ $contenuto = str_replace(
 );
 
 // ========================================
-// MANTENIMENTO VALORI IN CASO DI ERRORE
-// ========================================
-if (!empty($_POST) && !empty($messaggioFeedback) && strpos($messaggioFeedback, 'alert-error') !== false) {
-    
-    // Titolo
-    $contenuto = preg_replace(
-        '/<input\s+type="text"\s+id="titolo"([^>]*)>/',
-        '<input type="text" id="titolo"$1 value="' . htmlspecialchars($titolo, ENT_QUOTES) . '">',
-        $contenuto,
-        1
-    );
-
-    // Data
-    $contenuto = preg_replace(
-        '/<input\s+type="date"\s+id="data_crimine"([^>]*)>/',
-        '<input type="date" id="data_crimine"$1 value="' . htmlspecialchars($data, ENT_QUOTES) . '">',
-        $contenuto,
-        1
-    );
-
-    // Luogo
-    $contenuto = preg_replace(
-        '/<input\s+type="text"\s+id="luogo"([^>]*)>/',
-        '<input type="text" id="luogo"$1 value="' . htmlspecialchars($luogo, ENT_QUOTES) . '">',
-        $contenuto,
-        1
-    );
-
-    // Descrizione breve
-    $contenuto = preg_replace(
-        '/<textarea\s+id="descrizione_breve"([^>]*)><\/textarea>/',
-        '<textarea id="descrizione_breve"$1>' . htmlspecialchars($descrizione_breve, ENT_QUOTES) . '</textarea>',
-        $contenuto,
-        1
-    );
-
-    // Storia
-    $contenuto = preg_replace(
-        '/<textarea\s+id="storia"([^>]*)><\/textarea>/',
-        '<textarea id="storia"$1>' . htmlspecialchars($storia, ENT_QUOTES) . '</textarea>',
-        $contenuto,
-        1
-    );
-}
-
-// ========================================
-// OUTPUT FINALE
+// OUTPUT
 // ========================================
 $titoloPagina = "Apri Fascicolo - AliceTrueCrime";
 echo getTemplatePage($titoloPagina, $contenuto);

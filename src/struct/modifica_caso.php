@@ -1,8 +1,10 @@
 <?php
 // src/struct/modifica_caso.php
-// Gestione modifica casi - Logica PHP separata dal template HTML
+// Gestione modifica casi - Con supporto upload immagini
+// VERSIONE CORRETTA: Preserva immagini esistenti
 
 require_once __DIR__ . '/funzioni_db.php';
+require_once __DIR__ . '/ImageHandler.php';
 
 // ========================================
 // CONTROLLO SESSIONE
@@ -18,6 +20,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 // ========================================
 $prefix = getPrefix();
 $dbFunctions = new FunzioniDB();
+$imageHandler = new ImageHandler();
 $templatePath = __DIR__ . '/../template/modifica_caso.html';
 
 $emailUtente = $_SESSION['user_email'];
@@ -57,7 +60,6 @@ if (!$dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin)) {
         <div class='error-container' style='text-align: center; padding: 3rem;'>
             <h1>🔒 Accesso Negato</h1>
             <p>Non hai i permessi per modificare questo caso.</p>
-            <p>Solo l'autore originale o un amministratore possono modificare un caso.</p>
             <a href='$prefix/esplora' class='btn btn-primary'>Torna all'Esplorazione</a>
         </div>
     ";
@@ -86,7 +88,6 @@ if (!$caso) {
     exit;
 }
 
-// Determina se l'utente è l'autore
 $autoreOriginale = $dbFunctions->getAutoreCaso($casoId);
 $isAutore = ($autoreOriginale === $emailUtente);
 
@@ -99,6 +100,21 @@ $messaggioFeedback = "";
 // GESTIONE ELIMINAZIONE CASO
 // ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'elimina_caso') {
+    // Elimina le immagini associate
+    if (!empty($caso['Immagine'])) {
+        $imageHandler->eliminaImmagine($caso['Immagine']);
+    }
+    foreach ($vittimeEsistenti as $v) {
+        if (!empty($v['Immagine'])) {
+            $imageHandler->eliminaImmagine($v['Immagine']);
+        }
+    }
+    foreach ($colpevoliEsistenti as $c) {
+        if (!empty($c['Immagine'])) {
+            $imageHandler->eliminaImmagine($c['Immagine']);
+        }
+    }
+    
     $result = $dbFunctions->eliminaCaso($casoId, $emailUtente, $isAdmin);
     
     if ($result['success']) {
@@ -107,6 +123,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     } else {
         $messaggioFeedback = '<div class="alert alert-error">❌ ' . htmlspecialchars($result['message']) . '</div>';
     }
+}
+
+// ========================================
+// GESTIONE RIMOZIONE IMMAGINE SINGOLA
+// ========================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'rimuovi_immagine') {
+    $tipoImg = $_POST['tipo_immagine'] ?? '';
+    $idEntita = intval($_POST['id_entita'] ?? 0);
+    
+    if ($tipoImg === 'caso' && $idEntita === $casoId) {
+        if (!empty($caso['Immagine'])) {
+            $imageHandler->eliminaImmagine($caso['Immagine']);
+            $dbFunctions->aggiornaImmagineCaso($casoId, '');
+            $caso['Immagine'] = '';
+        }
+    } elseif ($tipoImg === 'vittima' && $idEntita > 0) {
+        foreach ($vittimeEsistenti as &$v) {
+            if ($v['ID_Vittima'] == $idEntita && !empty($v['Immagine'])) {
+                $imageHandler->eliminaImmagine($v['Immagine']);
+                $dbFunctions->aggiornaImmagineVittima($idEntita, '');
+                $v['Immagine'] = '';
+                break;
+            }
+        }
+    } elseif ($tipoImg === 'colpevole' && $idEntita > 0) {
+        foreach ($colpevoliEsistenti as &$c) {
+            if ($c['ID_Colpevole'] == $idEntita && !empty($c['Immagine'])) {
+                $imageHandler->eliminaImmagine($c['Immagine']);
+                $dbFunctions->aggiornaImmagineColpevole($idEntita, '');
+                $c['Immagine'] = '';
+                break;
+            }
+        }
+    }
+    
+    $messaggioFeedback = '<div class="alert alert-success">✅ Immagine rimossa con successo</div>';
 }
 
 // ========================================
@@ -122,13 +174,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $storia = trim($_POST['storia'] ?? '');
     $tipologia = trim($_POST['tipologia'] ?? '');
 
-    // Recupero vittime
+    // Recupero vittime con immagini esistenti
     $vittime_ids = $_POST['vittima_id'] ?? [];
     $vittime_nomi = $_POST['vittima_nome'] ?? [];
     $vittime_cognomi = $_POST['vittima_cognome'] ?? [];
     $vittime_luoghi_nascita = $_POST['vittima_luogo_nascita'] ?? [];
     $vittime_date_nascita = $_POST['vittima_data_nascita'] ?? [];
     $vittime_date_decesso = $_POST['vittima_data_decesso'] ?? [];
+    $vittime_immagini_esistenti = $_POST['vittima_immagine_esistente'] ?? []; // NUOVO: campo hidden
     
     $vittime = [];
     for ($i = 0; $i < count($vittime_nomi); $i++) {
@@ -139,17 +192,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 'cognome' => trim($vittime_cognomi[$i]),
                 'luogo_nascita' => !empty($vittime_luoghi_nascita[$i]) ? trim($vittime_luoghi_nascita[$i]) : 'N/A',
                 'data_nascita' => !empty($vittime_date_nascita[$i]) ? $vittime_date_nascita[$i] : null,
-                'data_decesso' => !empty($vittime_date_decesso[$i]) ? $vittime_date_decesso[$i] : null
+                'data_decesso' => !empty($vittime_date_decesso[$i]) ? $vittime_date_decesso[$i] : null,
+                'immagine_esistente' => $vittime_immagini_esistenti[$i] ?? '', // Immagine esistente
+                'file_index' => $i
             ];
         }
     }
 
-    // Recupero colpevoli
+    // Recupero colpevoli con immagini esistenti
     $colpevoli_ids = $_POST['colpevole_id'] ?? [];
     $colpevoli_nomi = $_POST['colpevole_nome'] ?? [];
     $colpevoli_cognomi = $_POST['colpevole_cognome'] ?? [];
     $colpevoli_luoghi_nascita = $_POST['colpevole_luogo_nascita'] ?? [];
     $colpevoli_date_nascita = $_POST['colpevole_data_nascita'] ?? [];
+    $colpevoli_immagini_esistenti = $_POST['colpevole_immagine_esistente'] ?? []; // NUOVO: campo hidden
     
     $colpevoli = [];
     for ($i = 0; $i < count($colpevoli_nomi); $i++) {
@@ -159,7 +215,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 'nome' => trim($colpevoli_nomi[$i]),
                 'cognome' => trim($colpevoli_cognomi[$i]),
                 'luogo_nascita' => !empty($colpevoli_luoghi_nascita[$i]) ? trim($colpevoli_luoghi_nascita[$i]) : 'N/A',
-                'data_nascita' => !empty($colpevoli_date_nascita[$i]) ? $colpevoli_date_nascita[$i] : null
+                'data_nascita' => !empty($colpevoli_date_nascita[$i]) ? $colpevoli_date_nascita[$i] : null,
+                'immagine_esistente' => $colpevoli_immagini_esistenti[$i] ?? '', // Immagine esistente
+                'file_index' => $i
             ];
         }
     }
@@ -202,13 +260,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if (empty($storia) || strlen($storia) < 50) {
         $errori[] = "La storia deve contenere almeno 50 caratteri";
     }
-    /*
     if (empty($vittime)) {
         $errori[] = "Inserisci almeno una vittima";
     }
     if (empty($colpevoli)) {
         $errori[] = "Inserisci almeno un colpevole";
-    }*/
+    }
 
     // ========================================
     // SALVATAGGIO
@@ -218,58 +275,176 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $riApprova = $isAutore && !$isAdmin;
             $tipologiaFinal = !empty($tipologia) ? $tipologia : null;
             
-            // 1. Aggiorna caso
-            $resultCaso = $dbFunctions->aggiornaCaso(
-                $casoId, $titolo, $data, $luogo, 
-                $descrizione_breve, $storia, $tipologiaFinal, $riApprova
-            );
-
-            if ($resultCaso['success']) {
-                // 2. Aggiorna vittime (delete + reinsert)
-                $dbFunctions->eliminaVittimeByCaso($casoId);
-                foreach ($vittime as $v) {
-                    $dbFunctions->inserisciVittima(
-                        $casoId, $v['nome'], $v['cognome'],
-                        $v['luogo_nascita'], $v['data_nascita'], $v['data_decesso']
-                    );
-                }
-
-                // 3. Aggiorna colpevoli (delete relations + reinsert)
-                $dbFunctions->rimuoviColpevoliByCaso($casoId);
-                foreach ($colpevoli as $c) {
-                    $colpevoleId = $dbFunctions->inserisciColpevole(
-                        $c['nome'], $c['cognome'], $c['luogo_nascita'], $c['data_nascita']
-                    );
-                    if ($colpevoleId) {
-                        $dbFunctions->collegaColpevoleACaso($colpevoleId, $casoId);
+            // Gestione immagine caso
+            $nuovaImmagineCaso = null;
+            if (isset($_FILES['immagine_caso']) && $_FILES['immagine_caso']['error'] !== UPLOAD_ERR_NO_FILE) {
+                $resultImg = $imageHandler->caricaImmagine($_FILES['immagine_caso'], 'caso', $caso['Slug']);
+                if ($resultImg['success'] && $resultImg['path']) {
+                    // Elimina vecchia immagine
+                    if (!empty($caso['Immagine'])) {
+                        $imageHandler->eliminaImmagine($caso['Immagine']);
                     }
+                    $nuovaImmagineCaso = $resultImg['path'];
+                } elseif (!$resultImg['success']) {
+                    $errori[] = "Errore immagine caso: " . $resultImg['message'];
                 }
+            }
+            
+            if (empty($errori)) {
+                // 1. Aggiorna caso
+                $resultCaso = $dbFunctions->aggiornaCaso(
+                    $casoId, $titolo, $data, $luogo, 
+                    $descrizione_breve, $storia, $tipologiaFinal, $riApprova,
+                    $nuovaImmagineCaso
+                );
 
-                // 4. Aggiorna articoli (delete + reinsert)
-                $dbFunctions->eliminaArticoliByCaso($casoId);
-                foreach ($articoli as $a) {
-                    $dbFunctions->inserisciArticolo($casoId, $a['titolo'], $a['data'], $a['link']);
+                if ($resultCaso['success']) {
+                    
+                    // 2. Gestione vittime
+                    // Raccogli le immagini esistenti da preservare
+                    $immaginiVittimeDaPreservare = [];
+                    foreach ($vittime as $v) {
+                        if (!empty($v['immagine_esistente'])) {
+                            $immaginiVittimeDaPreservare[] = $v['immagine_esistente'];
+                        }
+                    }
+                    
+                    // Elimina solo le immagini che non sono più usate
+                    foreach ($vittimeEsistenti as $vOld) {
+                        if (!empty($vOld['Immagine']) && !in_array($vOld['Immagine'], $immaginiVittimeDaPreservare)) {
+                            $imageHandler->eliminaImmagine($vOld['Immagine']);
+                        }
+                    }
+                    
+                    $dbFunctions->eliminaVittimeByCaso($casoId);
+                    
+                    // Inserisci nuove vittime
+                    foreach ($vittime as $v) {
+                        $immagineVittima = null;
+                        $idx = $v['file_index'];
+                        
+                        // Prima controlla se c'è una nuova immagine caricata
+                        if (isset($_FILES['vittima_immagine']['name'][$idx]) && 
+                            !empty($_FILES['vittima_immagine']['name'][$idx]) &&
+                            $_FILES['vittima_immagine']['error'][$idx] === UPLOAD_ERR_OK) {
+                            
+                            $fileV = [
+                                'name' => $_FILES['vittima_immagine']['name'][$idx],
+                                'type' => $_FILES['vittima_immagine']['type'][$idx],
+                                'tmp_name' => $_FILES['vittima_immagine']['tmp_name'][$idx],
+                                'error' => $_FILES['vittima_immagine']['error'][$idx],
+                                'size' => $_FILES['vittima_immagine']['size'][$idx]
+                            ];
+                            
+                            // Se c'era un'immagine esistente, eliminala
+                            if (!empty($v['immagine_esistente'])) {
+                                $imageHandler->eliminaImmagine($v['immagine_esistente']);
+                            }
+                            
+                            $slugV = $imageHandler->generaSlugPersona($v['nome'], $v['cognome']);
+                            $resultImgV = $imageHandler->caricaImmagine($fileV, 'vittime', $slugV);
+                            
+                            if ($resultImgV['success'] && $resultImgV['path']) {
+                                $immagineVittima = $resultImgV['path'];
+                            }
+                        } else {
+                            // Usa l'immagine esistente se presente
+                            $immagineVittima = !empty($v['immagine_esistente']) ? $v['immagine_esistente'] : null;
+                        }
+                        
+                        $dbFunctions->inserisciVittima(
+                            $casoId, $v['nome'], $v['cognome'],
+                            $v['luogo_nascita'], $v['data_nascita'], $v['data_decesso'],
+                            $immagineVittima
+                        );
+                    }
+
+                    // 3. Gestione colpevoli
+                    // Raccogli le immagini esistenti da preservare
+                    $immaginiColpevoliDaPreservare = [];
+                    foreach ($colpevoli as $c) {
+                        if (!empty($c['immagine_esistente'])) {
+                            $immaginiColpevoliDaPreservare[] = $c['immagine_esistente'];
+                        }
+                    }
+                    
+                    // Elimina solo le immagini che non sono più usate
+                    foreach ($colpevoliEsistenti as $cOld) {
+                        if (!empty($cOld['Immagine']) && !in_array($cOld['Immagine'], $immaginiColpevoliDaPreservare)) {
+                            $imageHandler->eliminaImmagine($cOld['Immagine']);
+                        }
+                    }
+                    
+                    $dbFunctions->rimuoviColpevoliByCaso($casoId);
+                    
+                    foreach ($colpevoli as $c) {
+                        $immagineColpevole = null;
+                        $idx = $c['file_index'];
+                        
+                        // Prima controlla se c'è una nuova immagine caricata
+                        if (isset($_FILES['colpevole_immagine']['name'][$idx]) && 
+                            !empty($_FILES['colpevole_immagine']['name'][$idx]) &&
+                            $_FILES['colpevole_immagine']['error'][$idx] === UPLOAD_ERR_OK) {
+                            
+                            $fileC = [
+                                'name' => $_FILES['colpevole_immagine']['name'][$idx],
+                                'type' => $_FILES['colpevole_immagine']['type'][$idx],
+                                'tmp_name' => $_FILES['colpevole_immagine']['tmp_name'][$idx],
+                                'error' => $_FILES['colpevole_immagine']['error'][$idx],
+                                'size' => $_FILES['colpevole_immagine']['size'][$idx]
+                            ];
+                            
+                            // Se c'era un'immagine esistente, eliminala
+                            if (!empty($c['immagine_esistente'])) {
+                                $imageHandler->eliminaImmagine($c['immagine_esistente']);
+                            }
+                            
+                            $slugC = $imageHandler->generaSlugPersona($c['nome'], $c['cognome']);
+                            $resultImgC = $imageHandler->caricaImmagine($fileC, 'colpevoli', $slugC);
+                            
+                            if ($resultImgC['success'] && $resultImgC['path']) {
+                                $immagineColpevole = $resultImgC['path'];
+                            }
+                        } else {
+                            // Usa l'immagine esistente se presente
+                            $immagineColpevole = !empty($c['immagine_esistente']) ? $c['immagine_esistente'] : null;
+                        }
+                        
+                        $colpevoleId = $dbFunctions->inserisciColpevole(
+                            $c['nome'], $c['cognome'], $c['luogo_nascita'], $c['data_nascita'],
+                            $immagineColpevole
+                        );
+                        if ($colpevoleId) {
+                            $dbFunctions->collegaColpevoleACaso($colpevoleId, $casoId);
+                        }
+                    }
+
+                    // 4. Aggiorna articoli
+                    $dbFunctions->eliminaArticoliByCaso($casoId);
+                    foreach ($articoli as $a) {
+                        $dbFunctions->inserisciArticolo($casoId, $a['titolo'], $a['data'], $a['link']);
+                    }
+
+                    // Success
+                    $msgRiApprova = $riApprova ? '<br><strong>⚠️ Il caso è stato rimesso in attesa di approvazione.</strong>' : '';
+                    $btnVisualizza = $isAdmin ? "<br><br><a href='$prefix/caso/{$caso['Slug']}' class='btn btn-primary'>Visualizza Caso</a>" : "";
+                    $messaggioFeedback = "
+                        <div class='alert alert-success'>
+                            <strong>✅ Caso aggiornato con successo!</strong>
+                            $msgRiApprova
+                            $btnVisualizza
+                        </div>
+                    ";
+
+                    // Ricarica dati aggiornati
+                    $caso = $dbFunctions->getCasoById($casoId, false);
+                    $vittimeEsistenti = $dbFunctions->getVittimeByCaso($casoId, false);
+                    $colpevoliEsistenti = $dbFunctions->getColpevoliByCaso($casoId, false);
+                    $articoliEsistenti = $dbFunctions->getArticoliByCaso($casoId);
+
+                } else {
+                    $errori[] = $resultCaso['message'];
                 }
-
-                // Success
-                $msgRiApprova = $riApprova ? '<br><strong>⚠️ Il caso è stato rimesso in attesa di approvazione.</strong>' : '';
-                $btnVisualizza = $isAdmin ? "<br><br><a href='$prefix/caso/{$caso['Slug']}' class='btn btn-primary'>Visualizza Caso</a>" : "";
-                $messaggioFeedback = "
-                    <div class='alert alert-success'>
-                        <strong>✅ Caso aggiornato con successo!</strong>
-                        $msgRiApprova
-                        $btnVisualizza
-                    </div>
-                ";
-
-                // Ricarica dati aggiornati
-                $caso = $dbFunctions->getCasoById($casoId, false);
-                $vittimeEsistenti = $dbFunctions->getVittimeByCaso($casoId, false);
-                $colpevoliEsistenti = $dbFunctions->getColpevoliByCaso($casoId, false);
-                $articoliEsistenti = $dbFunctions->getArticoliByCaso($casoId);
-
-            } else {
-                $errori[] = $resultCaso['message'];
             }
         } catch (Exception $e) {
             error_log("Errore modifica caso: " . $e->getMessage());
@@ -302,25 +477,25 @@ $contenuto = file_get_contents($templatePath);
 
 // Vittime
 $htmlVittime = '';
-foreach ($vittimeEsistenti as $index => $v) {
-    $htmlVittime .= generaHtmlVittima($v);
+foreach ($vittimeEsistenti as $v) {
+    $htmlVittime .= generaHtmlVittima($v, $prefix);
 }
 if (empty($vittimeEsistenti)) {
-    $htmlVittime = generaHtmlVittima(null);
+    $htmlVittime = generaHtmlVittima(null, $prefix);
 }
 
 // Colpevoli
 $htmlColpevoli = '';
-foreach ($colpevoliEsistenti as $index => $c) {
-    $htmlColpevoli .= generaHtmlColpevole($c);
+foreach ($colpevoliEsistenti as $c) {
+    $htmlColpevoli .= generaHtmlColpevole($c, $prefix);
 }
 if (empty($colpevoliEsistenti)) {
-    $htmlColpevoli = generaHtmlColpevole(null);
+    $htmlColpevoli = generaHtmlColpevole(null, $prefix);
 }
 
 // Articoli
 $htmlArticoli = '';
-foreach ($articoliEsistenti as $index => $a) {
+foreach ($articoliEsistenti as $a) {
     $htmlArticoli .= generaHtmlArticolo($a);
 }
 
@@ -341,6 +516,22 @@ if ($isAutore && !$isAdmin) {
     </div>';
 }
 
+// Anteprima immagine caso esistente
+$anteprimaImmagineCaso = '';
+if (!empty($caso['Immagine']) && $imageHandler->immagineEsiste($caso['Immagine'])) {
+    $altCaso = ImageHandler::generaAlt('caso', ['titolo' => $caso['Titolo']]);
+    $anteprimaImmagineCaso = '
+    <div class="image-preview-existing">
+        <img src="' . $prefix . '/' . htmlspecialchars($caso['Immagine']) . '" alt="' . $altCaso . '" class="preview-image">
+        <form method="POST" class="inline-form">
+            <input type="hidden" name="action" value="rimuovi_immagine">
+            <input type="hidden" name="tipo_immagine" value="caso">
+            <input type="hidden" name="id_entita" value="' . $casoId . '">
+            <button type="submit" class="btn-remove-preview" onclick="return confirm(\'Rimuovere questa immagine?\')">✕ Rimuovi immagine</button>
+        </form>
+    </div>';
+}
+
 // ========================================
 // SOSTITUZIONI TEMPLATE
 // ========================================
@@ -355,6 +546,7 @@ $contenuto = str_replace('<!-- value_descrizione -->', htmlspecialchars($caso['D
 $contenuto = str_replace('<!-- value_storia -->', htmlspecialchars($caso['Storia']), $contenuto);
 
 $contenuto = str_replace('<!-- opzioni_tipologia -->', $opzioniTipologia, $contenuto);
+$contenuto = str_replace('<!-- anteprima_immagine_caso -->', $anteprimaImmagineCaso, $contenuto);
 $contenuto = str_replace('<!-- vittime_html -->', $htmlVittime, $contenuto);
 $contenuto = str_replace('<!-- colpevoli_html -->', $htmlColpevoli, $contenuto);
 $contenuto = str_replace('<!-- articoli_html -->', $htmlArticoli, $contenuto);
@@ -368,18 +560,34 @@ echo getTemplatePage("Modifica Caso - AliceTrueCrime", $contenuto);
 // ========================================
 // FUNZIONI HELPER
 // ========================================
-function generaHtmlVittima($dati = null) {
+function generaHtmlVittima($dati = null, $prefix = '') {
     $id = $dati['ID_Vittima'] ?? 0;
     $nome = htmlspecialchars($dati['Nome'] ?? '');
     $cognome = htmlspecialchars($dati['Cognome'] ?? '');
     $luogo = htmlspecialchars($dati['LuogoNascita'] ?? '');
     $dataNascita = $dati['DataNascita'] ?? '';
     $dataDecesso = $dati['DataDecesso'] ?? '';
+    $immagine = $dati['Immagine'] ?? '';
+    
+    // Campo hidden per preservare l'immagine esistente
+    $hiddenImmagine = '<input type="hidden" name="vittima_immagine_esistente[]" value="' . htmlspecialchars($immagine) . '">';
+    
+    // Anteprima immagine esistente
+    $anteprimaImg = '';
+    if (!empty($immagine)) {
+        $altVittima = ImageHandler::generaAlt('vittima', ['nome' => $nome, 'cognome' => $cognome]);
+        $anteprimaImg = '
+        <div class="image-preview-existing">
+            <img src="' . $prefix . '/' . htmlspecialchars($immagine) . '" alt="' . $altVittima . '" class="preview-image preview-image-small">
+            <span class="img-label">Immagine attuale</span>
+        </div>';
+    }
     
     return <<<HTML
     <div class="entry-card vittima-entry">
         <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi vittima">×</button>
         <input type="hidden" name="vittima_id[]" value="$id">
+        $hiddenImmagine
         <div class="form-row">
             <div class="form-group">
                 <label>Nome *</label>
@@ -404,21 +612,45 @@ function generaHtmlVittima($dati = null) {
                 <input type="date" name="vittima_data_decesso[]" value="$dataDecesso">
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Foto (carica per sostituire)</label>
+                $anteprimaImg
+                <input type="file" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp">
+                <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
+            </div>
+        </div>
     </div>
 HTML;
 }
 
-function generaHtmlColpevole($dati = null) {
+function generaHtmlColpevole($dati = null, $prefix = '') {
     $id = $dati['ID_Colpevole'] ?? 0;
     $nome = htmlspecialchars($dati['Nome'] ?? '');
     $cognome = htmlspecialchars($dati['Cognome'] ?? '');
     $luogo = htmlspecialchars($dati['LuogoNascita'] ?? '');
     $dataNascita = $dati['DataNascita'] ?? '';
+    $immagine = $dati['Immagine'] ?? '';
+    
+    // Campo hidden per preservare l'immagine esistente
+    $hiddenImmagine = '<input type="hidden" name="colpevole_immagine_esistente[]" value="' . htmlspecialchars($immagine) . '">';
+    
+    // Anteprima immagine esistente
+    $anteprimaImg = '';
+    if (!empty($immagine)) {
+        $altColpevole = ImageHandler::generaAlt('colpevole', ['nome' => $nome, 'cognome' => $cognome]);
+        $anteprimaImg = '
+        <div class="image-preview-existing">
+            <img src="' . $prefix . '/' . htmlspecialchars($immagine) . '" alt="' . $altColpevole . '" class="preview-image preview-image-small">
+            <span class="img-label">Immagine attuale</span>
+        </div>';
+    }
     
     return <<<HTML
     <div class="entry-card colpevole-entry">
         <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi colpevole">×</button>
         <input type="hidden" name="colpevole_id[]" value="$id">
+        $hiddenImmagine
         <div class="form-row">
             <div class="form-group">
                 <label>Nome *</label>
@@ -437,6 +669,14 @@ function generaHtmlColpevole($dati = null) {
             <div class="form-group">
                 <label>Data di Nascita</label>
                 <input type="date" name="colpevole_data_nascita[]" value="$dataNascita">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Foto (carica per sostituire)</label>
+                $anteprimaImg
+                <input type="file" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp">
+                <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
             </div>
         </div>
     </div>

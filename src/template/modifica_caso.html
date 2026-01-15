@@ -10,7 +10,7 @@
 
     <!-- avviso_riapprovazione -->
 
-    <form method="POST" class="form-segnala" id="form-modifica-caso">
+    <form method="POST" enctype="multipart/form-data" class="form-segnala" id="form-modifica-caso">
         <input type="hidden" name="action" value="modifica_caso">
         
         <!-- SEZIONE: Informazioni Caso -->
@@ -60,12 +60,29 @@
                           minlength="50" rows="10"
                           placeholder="Descrivi in dettaglio la storia del caso..."><!-- value_storia --></textarea>
             </div>
+
+            <!-- IMMAGINE CASO -->
+            <div class="form-group">
+                <label for="immagine_caso">Immagine del Caso (opzionale)</label>
+                <!-- anteprima_immagine_caso -->
+                <div class="file-upload-wrapper">
+                    <input type="file" 
+                        id="immagine_caso" 
+                        name="immagine_caso" 
+                        accept="image/jpeg,image/png,image/webp"
+                        aria-describedby="immagine-caso-hint"
+                        onchange="mostraAnteprimaImmagine(this, 'preview-caso-new')"
+                    />
+                    <small id="immagine-caso-hint" class="form-hint">Formati: JPG, PNG, WebP. Max 5MB.</small>
+                </div>
+                <div id="preview-caso-new" class="image-preview" aria-live="polite"></div>
+            </div>
         </fieldset>
 
         <!-- SEZIONE: Vittime -->
         <fieldset class="form-section">
             <legend>🕯️ Vittime</legend>
-            <p class="section-hint">Inserisci almeno una vittima.</p>
+            <p class="section-hint">Modifica le vittime esistenti o aggiungine di nuove.</p>
             
             <div id="vittime-container">
                 <!-- vittime_html -->
@@ -79,7 +96,7 @@
         <!-- SEZIONE: Colpevoli -->
         <fieldset class="form-section">
             <legend>⚖️ Colpevoli / Sospettati</legend>
-            <p class="section-hint">Inserisci almeno un colpevole. Usa "Ignoto" se non identificato.</p>
+            <p class="section-hint">Modifica i colpevoli esistenti o aggiungine di nuovi.</p>
             
             <div id="colpevoli-container">
                 <!-- colpevoli_html -->
@@ -93,7 +110,7 @@
         <!-- SEZIONE: Fonti/Articoli -->
         <fieldset class="form-section">
             <legend>📰 Fonti e Articoli</legend>
-            <p class="section-hint">Aggiungi link a fonti attendibili (opzionale ma consigliato).</p>
+            <p class="section-hint">Aggiungi link a fonti attendibili.</p>
             
             <div id="articoli-container">
                 <!-- articoli_html -->
@@ -106,127 +123,128 @@
 
         <!-- PULSANTI AZIONE -->
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary btn-lg">
-                💾 Salva Modifiche
-            </button>
-            
-            <a href="<!-- link_annulla -->" class="btn btn-secondary">
-                Annulla
-            </a>
+            <button type="submit" class="btn btn-primary btn-lg">💾 Salva Modifiche</button>
+            <a href="<!-- link_annulla -->" class="btn btn-secondary">Annulla</a>
         </div>
     </form>
 
     <!-- SEZIONE ELIMINAZIONE -->
     <div class="danger-zone">
         <h3>Elimina Caso</h3>
-        <p>L'eliminazione del caso è permanente e non può essere annullata.</p>
+        <p>L'eliminazione è permanente. Verranno eliminate anche tutte le immagini associate.</p>
         
-        <form method="POST" onsubmit="return confirm('⚠️ ATTENZIONE: Stai per eliminare definitivamente questo caso e tutti i dati correlati (vittime, colpevoli, commenti, articoli). Questa azione NON può essere annullata. Continuare?');">
+        <form method="POST" onsubmit="return confirm('⚠️ ATTENZIONE: Stai per eliminare definitivamente questo caso. Continuare?');">
             <input type="hidden" name="action" value="elimina_caso">
-            <button type="submit" class="btn btn-danger">
-                🗑️ Elimina Caso Definitivamente
-            </button>
+            <button type="submit" class="btn btn-danger">🗑️ Elimina Caso Definitivamente</button>
         </form>
     </div>
 </main>
 
 <script>
-// Contatori per ID unici
 let vittimeCount = document.querySelectorAll('.vittima-entry').length;
 let colpevoliCount = document.querySelectorAll('.colpevole-entry').length;
 let articoliCount = document.querySelectorAll('.articolo-entry').length;
 
+function mostraAnteprimaImmagine(input, previewId) {
+    const preview = document.getElementById(previewId);
+    if (!preview) return;
+    preview.innerHTML = '';
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        
+        if (!validTypes.includes(file.type)) {
+            preview.innerHTML = '<p class="error-text" role="alert">⚠️ Formato non supportato.</p>';
+            input.value = '';
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            preview.innerHTML = '<p class="error-text" role="alert">⚠️ File troppo grande (max 5MB).</p>';
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Anteprima nuova immagine" class="preview-image">
+                <button type="button" class="btn-remove-preview" onclick="rimuoviAnteprima('${input.id}', '${previewId}')">✕ Rimuovi</button>
+            `;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function rimuoviAnteprima(inputId, previewId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(previewId).innerHTML = '';
+}
+
 function aggiungiVittima() {
     const container = document.getElementById('vittime-container');
-    const html = `
+    const idx = vittimeCount++;
+    container.insertAdjacentHTML('beforeend', `
         <div class="entry-card vittima-entry">
             <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi vittima">×</button>
             <input type="hidden" name="vittima_id[]" value="0">
+            <input type="hidden" name="vittima_immagine_esistente[]" value="">
             <div class="form-row">
-                <div class="form-group">
-                    <label>Nome *</label>
-                    <input type="text" name="vittima_nome[]" required placeholder="Nome">
-                </div>
-                <div class="form-group">
-                    <label>Cognome *</label>
-                    <input type="text" name="vittima_cognome[]" required placeholder="Cognome">
-                </div>
+                <div class="form-group"><label>Nome *</label><input type="text" name="vittima_nome[]" required placeholder="Nome"></div>
+                <div class="form-group"><label>Cognome *</label><input type="text" name="vittima_cognome[]" required placeholder="Cognome"></div>
             </div>
             <div class="form-row">
-                <div class="form-group">
-                    <label>Luogo di Nascita</label>
-                    <input type="text" name="vittima_luogo_nascita[]" placeholder="Luogo">
-                </div>
-                <div class="form-group">
-                    <label>Data di Nascita</label>
-                    <input type="date" name="vittima_data_nascita[]">
-                </div>
-                <div class="form-group">
-                    <label>Data Decesso</label>
-                    <input type="date" name="vittima_data_decesso[]">
-                </div>
+                <div class="form-group"><label>Luogo Nascita</label><input type="text" name="vittima_luogo_nascita[]" placeholder="Luogo"></div>
+                <div class="form-group"><label>Data Nascita</label><input type="date" name="vittima_data_nascita[]"></div>
+                <div class="form-group"><label>Data Decesso</label><input type="date" name="vittima_data_decesso[]"></div>
+            </div>
+            <div class="form-group">
+                <label>Foto (opzionale)</label>
+                <input type="file" id="vittima_img_${idx}" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp" onchange="mostraAnteprimaImmagine(this, 'pv_${idx}')">
+                <div id="pv_${idx}" class="image-preview image-preview-small"></div>
             </div>
         </div>
-    `;
-    container.insertAdjacentHTML('beforeend', html);
-    vittimeCount++;
+    `);
 }
 
 function aggiungiColpevole() {
     const container = document.getElementById('colpevoli-container');
-    const html = `
+    const idx = colpevoliCount++;
+    container.insertAdjacentHTML('beforeend', `
         <div class="entry-card colpevole-entry">
             <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi colpevole">×</button>
             <input type="hidden" name="colpevole_id[]" value="0">
+            <input type="hidden" name="colpevole_immagine_esistente[]" value="">
             <div class="form-row">
-                <div class="form-group">
-                    <label>Nome *</label>
-                    <input type="text" name="colpevole_nome[]" required placeholder="Nome (o 'Ignoto')">
-                </div>
-                <div class="form-group">
-                    <label>Cognome *</label>
-                    <input type="text" name="colpevole_cognome[]" required placeholder="Cognome">
-                </div>
+                <div class="form-group"><label>Nome *</label><input type="text" name="colpevole_nome[]" required placeholder="Nome"></div>
+                <div class="form-group"><label>Cognome *</label><input type="text" name="colpevole_cognome[]" required placeholder="Cognome"></div>
             </div>
             <div class="form-row">
-                <div class="form-group">
-                    <label>Luogo di Nascita</label>
-                    <input type="text" name="colpevole_luogo_nascita[]" placeholder="Luogo">
-                </div>
-                <div class="form-group">
-                    <label>Data di Nascita</label>
-                    <input type="date" name="colpevole_data_nascita[]">
-                </div>
+                <div class="form-group"><label>Luogo Nascita</label><input type="text" name="colpevole_luogo_nascita[]" placeholder="Luogo"></div>
+                <div class="form-group"><label>Data Nascita</label><input type="date" name="colpevole_data_nascita[]"></div>
+            </div>
+            <div class="form-group">
+                <label>Foto (opzionale)</label>
+                <input type="file" id="colp_img_${idx}" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp" onchange="mostraAnteprimaImmagine(this, 'pc_${idx}')">
+                <div id="pc_${idx}" class="image-preview image-preview-small"></div>
             </div>
         </div>
-    `;
-    container.insertAdjacentHTML('beforeend', html);
-    colpevoliCount++;
+    `);
 }
 
 function aggiungiArticolo() {
     const container = document.getElementById('articoli-container');
-    const html = `
+    container.insertAdjacentHTML('beforeend', `
         <div class="entry-card articolo-entry">
             <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi articolo">×</button>
             <input type="hidden" name="articolo_id[]" value="0">
             <div class="form-row">
-                <div class="form-group">
-                    <label>Titolo Fonte</label>
-                    <input type="text" name="articolo_titolo[]" placeholder="Es: Articolo Repubblica">
-                </div>
-                <div class="form-group">
-                    <label>Data Pubblicazione</label>
-                    <input type="date" name="articolo_data[]">
-                </div>
+                <div class="form-group"><label>Titolo Fonte</label><input type="text" name="articolo_titolo[]" placeholder="Titolo"></div>
+                <div class="form-group"><label>Data</label><input type="date" name="articolo_data[]"></div>
             </div>
-            <div class="form-group">
-                <label>Link</label>
-                <input type="url" name="articolo_link[]" placeholder="https://...">
-            </div>
+            <div class="form-group"><label>Link</label><input type="url" name="articolo_link[]" placeholder="https://..."></div>
         </div>
-    `;
-    container.insertAdjacentHTML('beforeend', html);
+    `);
     articoliCount++;
 }
 
@@ -235,7 +253,7 @@ function rimuoviEntry(button) {
     const container = entry.parentElement;
     
     // Verifica che rimanga almeno un elemento per vittime e colpevoli
-    /*
+    
     if (container.id === 'vittime-container' && container.querySelectorAll('.vittima-entry').length <= 1) {
         alert('Deve esserci almeno una vittima.');
         return;
@@ -244,7 +262,7 @@ function rimuoviEntry(button) {
         alert('Deve esserci almeno un colpevole.');
         return;
     }
-    */
+    
     entry.remove();
 }
 </script>
