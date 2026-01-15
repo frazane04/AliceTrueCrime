@@ -141,9 +141,40 @@
 </main>
 
 <script>
+// Inizializza i conteggi dal server
 let vittimeCount = document.querySelectorAll('.vittima-entry').length;
 let colpevoliCount = document.querySelectorAll('.colpevole-entry').length;
 let articoliCount = document.querySelectorAll('.articolo-entry').length;
+
+// Funzione per marcare l'immagine come da rimuovere
+function marcaRimozioneImmagine(tipo, index, originalPath) {
+    // Nascondi anteprima
+    const preview = document.getElementById(tipo + '-img-preview-' + index);
+    if (preview) preview.style.display = 'none';
+    
+    // Mostra avviso rimozione
+    const notice = document.getElementById(tipo + '-img-removed-' + index);
+    if (notice) notice.style.display = 'flex';
+    
+    // Svuota il campo hidden (questo causa la rimozione al salvataggio)
+    const hidden = document.getElementById(tipo + '-img-hidden-' + index);
+    if (hidden) hidden.value = '';
+}
+
+// Funzione per annullare la rimozione
+function annullaRimozioneImmagine(tipo, index, originalPath) {
+    // Mostra anteprima
+    const preview = document.getElementById(tipo + '-img-preview-' + index);
+    if (preview) preview.style.display = 'block';
+    
+    // Nascondi avviso rimozione
+    const notice = document.getElementById(tipo + '-img-removed-' + index);
+    if (notice) notice.style.display = 'none';
+    
+    // Ripristina il campo hidden
+    const hidden = document.getElementById(tipo + '-img-hidden-' + index);
+    if (hidden) hidden.value = originalPath;
+}
 
 function mostraAnteprimaImmagine(input, previewId) {
     const preview = document.getElementById(previewId);
@@ -188,7 +219,7 @@ function aggiungiVittima() {
         <div class="entry-card vittima-entry">
             <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi vittima">×</button>
             <input type="hidden" name="vittima_id[]" value="0">
-            <input type="hidden" name="vittima_immagine_esistente[]" value="">
+            <input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-${idx}" value="">
             <div class="form-row">
                 <div class="form-group"><label>Nome *</label><input type="text" name="vittima_nome[]" required placeholder="Nome"></div>
                 <div class="form-group"><label>Cognome *</label><input type="text" name="vittima_cognome[]" required placeholder="Cognome"></div>
@@ -214,7 +245,7 @@ function aggiungiColpevole() {
         <div class="entry-card colpevole-entry">
             <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi colpevole">×</button>
             <input type="hidden" name="colpevole_id[]" value="0">
-            <input type="hidden" name="colpevole_immagine_esistente[]" value="">
+            <input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-${idx}" value="">
             <div class="form-row">
                 <div class="form-group"><label>Nome *</label><input type="text" name="colpevole_nome[]" required placeholder="Nome"></div>
                 <div class="form-group"><label>Cognome *</label><input type="text" name="colpevole_cognome[]" required placeholder="Cognome"></div>
@@ -253,7 +284,6 @@ function rimuoviEntry(button) {
     const container = entry.parentElement;
     
     // Verifica che rimanga almeno un elemento per vittime e colpevoli
-    
     if (container.id === 'vittime-container' && container.querySelectorAll('.vittima-entry').length <= 1) {
         alert('Deve esserci almeno una vittima.');
         return;

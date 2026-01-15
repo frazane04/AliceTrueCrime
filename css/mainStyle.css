@@ -2785,3 +2785,51 @@ input[type="file"]:focus-visible {
     border-color: var(--accent-color, #8b0000);
     background: rgba(139, 0, 0, 0.05);
 }
+/* Stile per pulsante rimozione immagine */
+.btn-remove-img {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.3rem 0.8rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-remove-img:hover {
+    background: #c82333;
+}
+
+/* Avviso immagine rimossa */
+.image-removed-notice {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.image-removed-notice span {
+    color: #856404;
+    font-size: 0.9rem;
+}
+
+.btn-undo-remove {
+    padding: 0.3rem 0.8rem;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-undo-remove:hover {
+    background: #5a6268;
+}

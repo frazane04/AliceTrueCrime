@@ -1,7 +1,7 @@
 <?php
 // src/struct/modifica_caso.php
 // Gestione modifica casi - Con supporto upload immagini
-// VERSIONE CORRETTA: Preserva immagini esistenti
+// VERSIONE CORRETTA: Preserva immagini esistenti + Rimozione immagini vittime/colpevoli
 
 require_once __DIR__ . '/funzioni_db.php';
 require_once __DIR__ . '/ImageHandler.php';
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // ========================================
-// GESTIONE RIMOZIONE IMMAGINE SINGOLA
+// GESTIONE RIMOZIONE IMMAGINE CASO (singola)
 // ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'rimuovi_immagine') {
     $tipoImg = $_POST['tipo_immagine'] ?? '';
@@ -137,24 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $imageHandler->eliminaImmagine($caso['Immagine']);
             $dbFunctions->aggiornaImmagineCaso($casoId, '');
             $caso['Immagine'] = '';
-        }
-    } elseif ($tipoImg === 'vittima' && $idEntita > 0) {
-        foreach ($vittimeEsistenti as &$v) {
-            if ($v['ID_Vittima'] == $idEntita && !empty($v['Immagine'])) {
-                $imageHandler->eliminaImmagine($v['Immagine']);
-                $dbFunctions->aggiornaImmagineVittima($idEntita, '');
-                $v['Immagine'] = '';
-                break;
-            }
-        }
-    } elseif ($tipoImg === 'colpevole' && $idEntita > 0) {
-        foreach ($colpevoliEsistenti as &$c) {
-            if ($c['ID_Colpevole'] == $idEntita && !empty($c['Immagine'])) {
-                $imageHandler->eliminaImmagine($c['Immagine']);
-                $dbFunctions->aggiornaImmagineColpevole($idEntita, '');
-                $c['Immagine'] = '';
-                break;
-            }
         }
     }
     
@@ -174,6 +156,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $storia = trim($_POST['storia'] ?? '');
     $tipologia = trim($_POST['tipologia'] ?? '');
 
+    // Recupero checkbox per rimozione immagini (non più usate, ma manteniamo compatibilità)
+    // Ora la rimozione avviene svuotando il campo hidden vittima_immagine_esistente
+
     // Recupero vittime con immagini esistenti
     $vittime_ids = $_POST['vittima_id'] ?? [];
     $vittime_nomi = $_POST['vittima_nome'] ?? [];
@@ -181,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $vittime_luoghi_nascita = $_POST['vittima_luogo_nascita'] ?? [];
     $vittime_date_nascita = $_POST['vittima_data_nascita'] ?? [];
     $vittime_date_decesso = $_POST['vittima_data_decesso'] ?? [];
-    $vittime_immagini_esistenti = $_POST['vittima_immagine_esistente'] ?? []; // NUOVO: campo hidden
+    $vittime_immagini_esistenti = $_POST['vittima_immagine_esistente'] ?? [];
     
     $vittime = [];
     for ($i = 0; $i < count($vittime_nomi); $i++) {
@@ -193,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 'luogo_nascita' => !empty($vittime_luoghi_nascita[$i]) ? trim($vittime_luoghi_nascita[$i]) : 'N/A',
                 'data_nascita' => !empty($vittime_date_nascita[$i]) ? $vittime_date_nascita[$i] : null,
                 'data_decesso' => !empty($vittime_date_decesso[$i]) ? $vittime_date_decesso[$i] : null,
-                'immagine_esistente' => $vittime_immagini_esistenti[$i] ?? '', // Immagine esistente
+                'immagine_esistente' => $vittime_immagini_esistenti[$i] ?? '',
                 'file_index' => $i
             ];
         }
@@ -205,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $colpevoli_cognomi = $_POST['colpevole_cognome'] ?? [];
     $colpevoli_luoghi_nascita = $_POST['colpevole_luogo_nascita'] ?? [];
     $colpevoli_date_nascita = $_POST['colpevole_data_nascita'] ?? [];
-    $colpevoli_immagini_esistenti = $_POST['colpevole_immagine_esistente'] ?? []; // NUOVO: campo hidden
+    $colpevoli_immagini_esistenti = $_POST['colpevole_immagine_esistente'] ?? [];
     
     $colpevoli = [];
     for ($i = 0; $i < count($colpevoli_nomi); $i++) {
@@ -216,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 'cognome' => trim($colpevoli_cognomi[$i]),
                 'luogo_nascita' => !empty($colpevoli_luoghi_nascita[$i]) ? trim($colpevoli_luoghi_nascita[$i]) : 'N/A',
                 'data_nascita' => !empty($colpevoli_date_nascita[$i]) ? $colpevoli_date_nascita[$i] : null,
-                'immagine_esistente' => $colpevoli_immagini_esistenti[$i] ?? '', // Immagine esistente
+                'immagine_esistente' => $colpevoli_immagini_esistenti[$i] ?? '',
                 'file_index' => $i
             ];
         }
@@ -277,7 +262,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             
             // Gestione immagine caso
             $nuovaImmagineCaso = null;
-            if (isset($_FILES['immagine_caso']) && $_FILES['immagine_caso']['error'] !== UPLOAD_ERR_NO_FILE) {
+            if (isset($_FILES['immagine_caso']) && 
+                isset($_FILES['immagine_caso']['error']) && 
+                $_FILES['immagine_caso']['error'] !== UPLOAD_ERR_NO_FILE &&
+                $_FILES['immagine_caso']['error'] === UPLOAD_ERR_OK) {
+                
                 $resultImg = $imageHandler->caricaImmagine($_FILES['immagine_caso'], 'caso', $caso['Slug']);
                 if ($resultImg['success'] && $resultImg['path']) {
                     // Elimina vecchia immagine
@@ -285,7 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         $imageHandler->eliminaImmagine($caso['Immagine']);
                     }
                     $nuovaImmagineCaso = $resultImg['path'];
-                } elseif (!$resultImg['success']) {
+                } elseif (!$resultImg['success'] && $resultImg['message'] !== 'Nessuna immagine caricata') {
                     $errori[] = "Errore immagine caso: " . $resultImg['message'];
                 }
             }
@@ -326,6 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         // Prima controlla se c'è una nuova immagine caricata
                         if (isset($_FILES['vittima_immagine']['name'][$idx]) && 
                             !empty($_FILES['vittima_immagine']['name'][$idx]) &&
+                            isset($_FILES['vittima_immagine']['error'][$idx]) &&
                             $_FILES['vittima_immagine']['error'][$idx] === UPLOAD_ERR_OK) {
                             
                             $fileV = [
@@ -348,7 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 $immagineVittima = $resultImgV['path'];
                             }
                         } else {
-                            // Usa l'immagine esistente se presente
+                            // Usa l'immagine esistente se presente (sarà vuota se rimossa via JS)
                             $immagineVittima = !empty($v['immagine_esistente']) ? $v['immagine_esistente'] : null;
                         }
                         
@@ -384,6 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         // Prima controlla se c'è una nuova immagine caricata
                         if (isset($_FILES['colpevole_immagine']['name'][$idx]) && 
                             !empty($_FILES['colpevole_immagine']['name'][$idx]) &&
+                            isset($_FILES['colpevole_immagine']['error'][$idx]) &&
                             $_FILES['colpevole_immagine']['error'][$idx] === UPLOAD_ERR_OK) {
                             
                             $fileC = [
@@ -406,7 +397,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 $immagineColpevole = $resultImgC['path'];
                             }
                         } else {
-                            // Usa l'immagine esistente se presente
+                            // Usa l'immagine esistente se presente (sarà vuota se rimossa via JS)
                             $immagineColpevole = !empty($c['immagine_esistente']) ? $c['immagine_esistente'] : null;
                         }
                         
@@ -477,20 +468,24 @@ $contenuto = file_get_contents($templatePath);
 
 // Vittime
 $htmlVittime = '';
+$vittimeIndex = 0;
 foreach ($vittimeEsistenti as $v) {
-    $htmlVittime .= generaHtmlVittima($v, $prefix);
+    $htmlVittime .= generaHtmlVittima($v, $prefix, $vittimeIndex);
+    $vittimeIndex++;
 }
 if (empty($vittimeEsistenti)) {
-    $htmlVittime = generaHtmlVittima(null, $prefix);
+    $htmlVittime = generaHtmlVittima(null, $prefix, 0);
 }
 
 // Colpevoli
 $htmlColpevoli = '';
+$colpevoliIndex = 0;
 foreach ($colpevoliEsistenti as $c) {
-    $htmlColpevoli .= generaHtmlColpevole($c, $prefix);
+    $htmlColpevoli .= generaHtmlColpevole($c, $prefix, $colpevoliIndex);
+    $colpevoliIndex++;
 }
 if (empty($colpevoliEsistenti)) {
-    $htmlColpevoli = generaHtmlColpevole(null, $prefix);
+    $htmlColpevoli = generaHtmlColpevole(null, $prefix, 0);
 }
 
 // Articoli
@@ -560,7 +555,7 @@ echo getTemplatePage("Modifica Caso - AliceTrueCrime", $contenuto);
 // ========================================
 // FUNZIONI HELPER
 // ========================================
-function generaHtmlVittima($dati = null, $prefix = '') {
+function generaHtmlVittima($dati = null, $prefix = '', $index = 0) {
     $id = $dati['ID_Vittima'] ?? 0;
     $nome = htmlspecialchars($dati['Nome'] ?? '');
     $cognome = htmlspecialchars($dati['Cognome'] ?? '');
@@ -569,17 +564,22 @@ function generaHtmlVittima($dati = null, $prefix = '') {
     $dataDecesso = $dati['DataDecesso'] ?? '';
     $immagine = $dati['Immagine'] ?? '';
     
-    // Campo hidden per preservare l'immagine esistente
-    $hiddenImmagine = '<input type="hidden" name="vittima_immagine_esistente[]" value="' . htmlspecialchars($immagine) . '">';
+    // Campo hidden per preservare l'immagine esistente (verrà svuotato se si rimuove)
+    $hiddenImmagine = '<input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine) . '">';
     
-    // Anteprima immagine esistente
+    // Anteprima immagine esistente con pulsante rimuovi
     $anteprimaImg = '';
     if (!empty($immagine)) {
         $altVittima = ImageHandler::generaAlt('vittima', ['nome' => $nome, 'cognome' => $cognome]);
         $anteprimaImg = '
-        <div class="image-preview-existing">
+        <div class="image-preview-existing" id="vittima-img-preview-' . $index . '">
             <img src="' . $prefix . '/' . htmlspecialchars($immagine) . '" alt="' . $altVittima . '" class="preview-image preview-image-small">
             <span class="img-label">Immagine attuale</span>
+            <button type="button" class="btn-remove-img" onclick="marcaRimozioneImmagine(\'vittima\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">✕ Rimuovi</button>
+        </div>
+        <div class="image-removed-notice" id="vittima-img-removed-' . $index . '" style="display:none;">
+            <span>🗑️ Immagine sarà rimossa al salvataggio</span>
+            <button type="button" class="btn-undo-remove" onclick="annullaRimozioneImmagine(\'vittima\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">↩ Annulla</button>
         </div>';
     }
     
@@ -587,6 +587,7 @@ function generaHtmlVittima($dati = null, $prefix = '') {
     <div class="entry-card vittima-entry">
         <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi vittima">×</button>
         <input type="hidden" name="vittima_id[]" value="$id">
+        <input type="hidden" name="vittima_index[]" value="$index">
         $hiddenImmagine
         <div class="form-row">
             <div class="form-group">
@@ -624,7 +625,7 @@ function generaHtmlVittima($dati = null, $prefix = '') {
 HTML;
 }
 
-function generaHtmlColpevole($dati = null, $prefix = '') {
+function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
     $id = $dati['ID_Colpevole'] ?? 0;
     $nome = htmlspecialchars($dati['Nome'] ?? '');
     $cognome = htmlspecialchars($dati['Cognome'] ?? '');
@@ -632,17 +633,22 @@ function generaHtmlColpevole($dati = null, $prefix = '') {
     $dataNascita = $dati['DataNascita'] ?? '';
     $immagine = $dati['Immagine'] ?? '';
     
-    // Campo hidden per preservare l'immagine esistente
-    $hiddenImmagine = '<input type="hidden" name="colpevole_immagine_esistente[]" value="' . htmlspecialchars($immagine) . '">';
+    // Campo hidden per preservare l'immagine esistente (verrà svuotato se si rimuove)
+    $hiddenImmagine = '<input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine) . '">';
     
-    // Anteprima immagine esistente
+    // Anteprima immagine esistente con pulsante rimuovi
     $anteprimaImg = '';
     if (!empty($immagine)) {
         $altColpevole = ImageHandler::generaAlt('colpevole', ['nome' => $nome, 'cognome' => $cognome]);
         $anteprimaImg = '
-        <div class="image-preview-existing">
+        <div class="image-preview-existing" id="colpevole-img-preview-' . $index . '">
             <img src="' . $prefix . '/' . htmlspecialchars($immagine) . '" alt="' . $altColpevole . '" class="preview-image preview-image-small">
             <span class="img-label">Immagine attuale</span>
+            <button type="button" class="btn-remove-img" onclick="marcaRimozioneImmagine(\'colpevole\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">✕ Rimuovi</button>
+        </div>
+        <div class="image-removed-notice" id="colpevole-img-removed-' . $index . '" style="display:none;">
+            <span>🗑️ Immagine sarà rimossa al salvataggio</span>
+            <button type="button" class="btn-undo-remove" onclick="annullaRimozioneImmagine(\'colpevole\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">↩ Annulla</button>
         </div>';
     }
     
@@ -650,6 +656,7 @@ function generaHtmlColpevole($dati = null, $prefix = '') {
     <div class="entry-card colpevole-entry">
         <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi colpevole">×</button>
         <input type="hidden" name="colpevole_id[]" value="$id">
+        <input type="hidden" name="colpevole_index[]" value="$index">
         $hiddenImmagine
         <div class="form-row">
             <div class="form-group">
