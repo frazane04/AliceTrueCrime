@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Creato il: Gen 11, 2026 alle 14:50
--- Versione del server: 10.4.32-MariaDB
--- Versione PHP: 8.2.12
+-- Host: localhost:8889
+-- Creato il: Gen 16, 2026 alle 09:57
+-- Versione del server: 8.0.44
+-- Versione PHP: 8.3.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `articolo` (
-  `ID_Articolo` int(11) NOT NULL,
-  `Titolo` varchar(200) NOT NULL,
+  `ID_Articolo` int NOT NULL,
+  `Titolo` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
   `Data` date NOT NULL,
-  `Link` varchar(255) NOT NULL,
-  `Caso` int(11) DEFAULT NULL
+  `Link` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `Caso` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -40,47 +40,53 @@ CREATE TABLE `articolo` (
 --
 
 INSERT INTO `articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
-(1, 'Approfondimento su Dahmer', '2001-05-19', 'https://news.it/1', 1),
-(2, 'Approfondimento su Gacy', '2003-01-15', 'https://news.it/2', 2),
-(3, 'Approfondimento su Bundy', '2002-02-11', 'https://news.it/3', 3),
-(4, 'Approfondimento su Chikatilo', '1987-08-06', 'https://news.it/4', 4),
-(5, 'Approfondimento su Ramirez', '2015-12-17', 'https://news.it/5', 5),
-(6, 'Approfondimento su Berkowitz', '1994-09-07', 'https://news.it/6', 6),
-(7, 'Approfondimento su Zodiac', '1982-02-14', 'https://news.it/7', 7),
-(8, 'Approfondimento su Ridgway', '1970-05-22', 'https://news.it/8', 8),
-(9, 'Approfondimento su Jack', '2022-10-14', 'https://news.it/9', 9),
-(10, 'Approfondimento su Gein', '1990-01-21', 'https://news.it/10', 10),
-(11, 'Approfondimento su Franzoni', '2019-05-25', 'https://news.it/11', 11),
-(12, 'Approfondimento su Misseri', '1972-01-04', 'https://news.it/12', 12),
-(13, 'Approfondimento su Bossetti', '1975-02-25', 'https://news.it/13', 13),
-(14, 'Approfondimento su Guede', '2006-10-05', 'https://news.it/14', 14),
-(15, 'Approfondimento su Pacciani', '1980-02-26', 'https://news.it/15', 15),
-(16, 'Approfondimento su Romano', '2014-10-02', 'https://news.it/16', 16),
-(17, 'Approfondimento su Stasi', '2012-10-03', 'https://news.it/17', 17),
-(18, 'Approfondimento su Parolisi', '2000-03-15', 'https://news.it/18', 18),
-(19, 'Approfondimento su De Nardo', '2017-05-07', 'https://news.it/19', 19),
-(20, 'Approfondimento su Ciontoli', '1992-03-28', 'https://news.it/20', 20),
-(21, 'Approfondimento su Vicious', '1985-02-07', 'https://news.it/21', 21),
-(22, 'Approfondimento su Pistorius', '1975-07-04', 'https://news.it/22', 22),
-(23, 'Approfondimento su Cantat', '2019-11-01', 'https://news.it/23', 23),
-(24, 'Approfondimento su Arias', '1998-02-05', 'https://news.it/24', 24),
-(25, 'Approfondimento su Spector', '2017-04-09', 'https://news.it/25', 25),
-(26, 'Approfondimento su Simpson', '1970-01-22', 'https://news.it/26', 26),
-(27, 'Approfondimento su Prato', '1994-07-05', 'https://news.it/27', 27),
-(28, 'Approfondimento su Impagnatiello', '2004-10-03', 'https://news.it/28', 28),
-(29, 'Approfondimento su Watts', '1983-11-22', 'https://news.it/29', 29),
-(30, 'Approfondimento su Laundrie', '2018-02-09', 'https://news.it/30', 30),
-(31, 'Approfondimento su Cunanan', '2007-02-03', 'https://news.it/31', 31),
-(32, 'Approfondimento su Manson', '1984-05-12', 'https://news.it/32', 32),
-(33, 'Approfondimento su Chapman', '2006-08-03', 'https://news.it/33', 33),
-(34, 'Approfondimento su Anderson', '2018-06-18', 'https://news.it/34', 34),
-(35, 'Approfondimento su Killer', '1996-11-19', 'https://news.it/35', 35),
-(36, 'Approfondimento su Gay Sr.', '1973-10-05', 'https://news.it/36', 36),
-(37, 'Approfondimento su Saldivar', '2015-09-03', 'https://news.it/37', 37),
-(38, 'Approfondimento su Gale', '2006-02-26', 'https://news.it/38', 38),
-(39, 'Approfondimento su Loibl', '1977-03-27', 'https://news.it/39', 39),
-(40, 'Approfondimento su Ceraulo', '2011-09-13', 'https://news.it/40', 40),
-(41, 'Approfondimento su Gay', '2003-01-15', 'https://news.it/3', 2);
+(1, 'Jeffrey Dahmer, storia del serial killer cannibale di Milwaukee', '2022-10-15', 'https://www.ilpost.it/2022/10/15/jeffrey-dahmer-serial-killer/', 1),
+(2, 'Chi era Jeffrey Dahmer, il mostro di Milwaukee', '2022-09-28', 'https://www.corriere.it/esteri/22_settembre_28/chi-era-jeffrey-dahmer-mostro-milwaukee', 1),
+(3, 'John Wayne Gacy, il clown killer che uccise 33 ragazzi', '2021-05-10', 'https://www.fanpage.it/cultura/john-wayne-gacy-il-clown-killer/', 2),
+(4, 'La storia di John Wayne Gacy, il killer clown', '2019-04-05', 'https://www.ilpost.it/2019/04/05/john-wayne-gacy/', 2),
+(5, 'Ted Bundy, il serial killer delle studentesse', '2019-01-26', 'https://www.corriere.it/esteri/19_gennaio_26/ted-bundy-serial-killer-studentesse', 3),
+(6, 'Chi era Ted Bundy, il serial killer carismatico', '2019-05-03', 'https://www.ilpost.it/2019/05/03/ted-bundy/', 3),
+(7, 'Andrej Chikatilo, il macellaio di Rostov', '2020-02-14', 'https://www.fanpage.it/cultura/andrej-chikatilo-macellaio-rostov/', 4),
+(8, 'Richard Ramirez, la storia del Night Stalker', '2021-01-14', 'https://www.ilpost.it/2021/01/14/richard-ramirez-night-stalker/', 5),
+(9, 'Il Mostro di Firenze, un caso ancora irrisolto', '2023-06-15', 'https://www.corriere.it/cronache/mostro-di-firenze/', 6),
+(10, 'Mostro di Firenze: storia, vittime e misteri', '2022-09-08', 'https://www.repubblica.it/cronaca/mostro-firenze/', 6),
+(11, 'Pacciani e i compagni di merende', '2018-02-21', 'https://www.ilpost.it/2018/02/21/mostro-firenze-pacciani/', 6),
+(12, 'Donato Bilancia, il serial killer dei treni', '2020-12-17', 'https://www.repubblica.it/cronaca/donato-bilancia-morto/', 7),
+(13, 'Morto Donato Bilancia, il serial killer più prolifico d\'Italia', '2020-12-17', 'https://www.corriere.it/cronache/bilancia-morto/', 7),
+(14, 'Jack lo Squartatore, il mistero irrisolto di Whitechapel', '2018-11-09', 'https://www.ilpost.it/2018/11/09/jack-lo-squartatore/', 8),
+(15, 'Zodiac Killer, decifrato il codice dopo 51 anni', '2020-12-12', 'https://www.ansa.it/sito/notizie/mondo/2020/12/12/zodiac-killer-decifrato-codice/', 9),
+(16, 'Chi era lo Zodiac Killer', '2021-10-06', 'https://www.ilpost.it/2021/10/06/zodiac-killer/', 9),
+(17, 'Ed Gein, il killer che ispirò Psycho', '2019-08-26', 'https://www.fanpage.it/cultura/ed-gein-killer-psycho/', 10),
+(18, 'Delitto di Cogne, la storia del caso Franzoni', '2018-05-26', 'https://www.corriere.it/cronache/cogne-franzoni/', 11),
+(19, 'Annamaria Franzoni torna libera dopo 16 anni', '2018-03-21', 'https://www.repubblica.it/cronaca/franzoni-libera/', 11),
+(20, 'Delitto di Avetrana, la storia di Sarah Scazzi', '2017-02-21', 'https://www.corriere.it/cronache/avetrana-sarah-scazzi/', 12),
+(21, 'Sabrina e Cosima condannate: ergastolo definitivo', '2017-02-21', 'https://www.repubblica.it/cronaca/avetrana-ergastolo/', 12),
+(22, 'Omicidio Yara, Bossetti condannato all\'ergastolo', '2016-07-01', 'https://www.corriere.it/cronache/yara-bossetti-ergastolo/', 13),
+(23, 'Il DNA di Ignoto 1 e la caccia a Bossetti', '2018-10-12', 'https://www.ilpost.it/2018/10/12/yara-gambirasio-bossetti/', 13),
+(24, 'Omicidio Meredith Kercher, storia del delitto di Perugia', '2015-03-27', 'https://www.corriere.it/cronache/meredith-kercher-perugia/', 14),
+(25, 'Amanda Knox e Raffaele Sollecito assolti in via definitiva', '2015-03-27', 'https://www.repubblica.it/cronaca/amanda-knox-assolta/', 14),
+(26, 'Strage di Erba, Olindo e Rosa condannati all\'ergastolo', '2011-04-26', 'https://www.corriere.it/cronache/erba-ergastolo/', 15),
+(27, 'La richiesta di revisione per la strage di Erba', '2024-04-10', 'https://www.ilpost.it/2024/04/10/strage-erba-revisione/', 15),
+(28, 'È morto O.J. Simpson, assolto nel processo del secolo', '2024-04-11', 'https://www.corriere.it/esteri/oj-simpson-morto/', 16),
+(29, 'O.J. Simpson, storia del processo che divise l\'America', '2024-04-11', 'https://www.ilpost.it/2024/04/11/oj-simpson/', 16),
+(30, 'L\'omicidio di Gianni Versace, 25 anni dopo', '2022-07-15', 'https://www.corriere.it/moda/versace-omicidio-anniversario/', 17),
+(31, 'Andrew Cunanan, il killer di Gianni Versace', '2018-01-17', 'https://www.ilpost.it/2018/01/17/andrew-cunanan-versace/', 17),
+(32, 'L\'omicidio di John Lennon, 8 dicembre 1980', '2020-12-08', 'https://www.corriere.it/cultura/lennon-omicidio/', 18),
+(33, 'Mark David Chapman, l\'assassino di John Lennon', '2022-08-31', 'https://www.ilpost.it/2022/08/31/mark-chapman-lennon/', 18),
+(34, 'Sharon Tate e la Manson Family, 50 anni dopo', '2019-08-09', 'https://www.corriere.it/cultura/sharon-tate-manson/', 19),
+(35, 'Chi era Charles Manson e la sua famiglia', '2017-11-20', 'https://www.ilpost.it/2017/11/20/charles-manson/', 19),
+(36, 'Oscar Pistorius scarcerato dopo 10 anni', '2024-01-05', 'https://www.corriere.it/esteri/pistorius-scarcerato/', 20),
+(37, 'Il caso Pistorius, dalla gloria olimpica al carcere', '2024-01-05', 'https://www.repubblica.it/esteri/pistorius-storia/', 20),
+(38, 'Omicidio Varani, Manuel Foffo condannato a 30 anni', '2017-07-05', 'https://www.corriere.it/roma/varani-foffo-condanna/', 21),
+(39, 'Marco Prato suicida in carcere', '2017-06-20', 'https://www.repubblica.it/cronaca/prato-suicidio/', 21),
+(40, 'Femminicidio Tramontano, Impagnatiello condannato all\'ergastolo', '2024-11-25', 'https://www.corriere.it/milano/tramontano-ergastolo/', 22),
+(41, 'Alessandro Impagnatiello, la doppia vita del killer', '2023-06-01', 'https://www.repubblica.it/cronaca/impagnatiello-doppia-vita/', 22),
+(42, 'Gabby Petito, ritrovato il corpo della blogger', '2021-09-21', 'https://www.corriere.it/esteri/gabby-petito-corpo/', 23),
+(43, 'Brian Laundrie trovato morto, confessa in un taccuino', '2022-01-21', 'https://www.ilpost.it/2022/01/21/brian-laundrie-confessione/', 23),
+(44, 'Chris Watts, l\'uomo che uccise moglie e figlie per l\'amante', '2020-09-30', 'https://www.fanpage.it/esteri/chris-watts-storia/', 24),
+(45, 'Il caso Watts, documentario Netflix sulla strage familiare', '2020-09-15', 'https://www.ilpost.it/2020/09/15/chris-watts-netflix/', 24),
+(46, 'Jodi Arias, il processo che divise l\'America', '2015-03-05', 'https://www.fanpage.it/esteri/jodi-arias-processo/', 25),
+(47, 'Jodi Arias condannata all\'ergastolo', '2015-04-13', 'https://www.corriere.it/esteri/jodi-arias-ergastolo/', 25);
 
 -- --------------------------------------------------------
 
@@ -89,19 +95,19 @@ INSERT INTO `articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
 --
 
 CREATE TABLE `caso` (
-  `N_Caso` int(11) NOT NULL,
-  `Titolo` varchar(100) NOT NULL,
-  `Slug` varchar(255) DEFAULT NULL,
+  `N_Caso` int NOT NULL,
+  `Titolo` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `Slug` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `Data` date NOT NULL,
-  `Luogo` varchar(100) NOT NULL,
-  `Descrizione` text NOT NULL,
-  `Storia` text NOT NULL,
-  `Tipologia` varchar(50) DEFAULT NULL,
-  `Immagine` varchar(255) DEFAULT NULL,
-  `Approvato` tinyint(1) DEFAULT 0,
-  `Visualizzazioni` int(11) DEFAULT 0,
-  `Data_Inserimento` timestamp NULL DEFAULT current_timestamp(),
-  `Autore` varchar(50) NOT NULL
+  `Luogo` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `Descrizione` text COLLATE utf8mb4_general_ci NOT NULL,
+  `Storia` text COLLATE utf8mb4_general_ci NOT NULL,
+  `Tipologia` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `Immagine` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `Approvato` tinyint(1) DEFAULT '0',
+  `Visualizzazioni` int DEFAULT '0',
+  `Data_Inserimento` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `Autore` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -109,57 +115,31 @@ CREATE TABLE `caso` (
 --
 
 INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
-(1, 'Il mostro di Milwaukee', 'il-mostro-di-milwaukee', '2001-05-19', 'Milwaukee, USA', 'Jeffrey Dahmer ha ucciso e smembrato 17 uomini tra il 1978 e il 1991.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(2, 'Il Clown Killer', 'il-clown-killer', '2003-01-15', 'Chicago, USA', 'John Wayne Gacy, vestito da clown, ha ucciso 33 adolescenti.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(3, 'Ted Bundy', 'ted-bundy', '2002-02-11', 'Florida, USA', 'Uno dei serial killer più famosi, ha confessato 30 omicidi.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(4, 'Il Macellaio di Rostov', 'il-macellaio-di-rostov', '1987-08-06', 'Rostov, Russia', 'Andrei Chikatilo ha mutilato e ucciso oltre 50 donne e bambini.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(5, 'Night Stalker', 'night-stalker', '2015-12-17', 'Los Angeles, USA', 'Richard Ramirez terrorizzò LA con omicidi satanici.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(6, 'Il figlio di Sam', 'il-figlio-di-sam', '1994-09-07', 'New York, USA', 'David Berkowitz sparava alle coppe appartate in auto.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(7, 'Zodiac Killer', 'zodiac-killer', '1982-02-14', 'California, USA', 'Il killer mai identificato che mandava codici ai giornali.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(8, 'Green River Killer', 'green-river-killer', '1970-05-22', 'Washington, USA', 'Gary Ridgway ha ucciso 49 donne confermate.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(9, 'Jack lo Squartatore', 'jack-lo-squartatore', '2022-10-14', 'Londra, UK', 'Il primo serial killer mediatico della storia a Whitechapel.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(10, 'Ed Gein', 'ed-gein', '1990-01-21', 'Wisconsin, USA', 'Il killer che ispirò Psycho, creava oggetti con pelle umana.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(11, 'Delitto di Cogne', 'delitto-di-cogne', '2019-05-25', 'Cogne', 'La madre Annamaria Franzoni accusata dell\'omicidio del figlio.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(12, 'Delitto di Avetrana', 'delitto-di-avetrana', '1972-01-04', 'Avetrana', 'L\'omicidio della giovane Sarah Scazzi e il coinvolgimento della famiglia.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(13, 'Omicidio di Yara', 'omicidio-di-yara', '1975-02-25', 'Brembate', 'Il caso risolto grazie al DNA di Ignoto 1.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(14, 'Delitto di Perugia', 'delitto-di-perugia', '2006-10-05', 'Perugia', 'L\'omicidio di Meredith Kercher che coinvolse studenti internazionali.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(15, 'Il Mostro di Firenze', 'il-mostro-di-firenze', '1980-02-26', 'Firenze', 'Serie di duplici omicidi avvenuti tra il 1968 e il 1985.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(16, 'Strage di Erba', 'strage-di-erba', '2014-10-02', 'Erba', 'Olindo e Rosa uccidono 4 persone in un condominio.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(17, 'Delitto di Garlasco', 'delitto-di-garlasco', '2012-10-03', 'Garlasco', 'L\'omicidio di Chiara Poggi nella sua villetta.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(18, 'Caso Melania Rea', 'caso-melania-rea', '2000-03-15', 'Teramo', 'Salvatore Parolisi uccide la moglie in un bosco.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(19, 'Erika e Omar', 'erika-e-omar', '2017-05-07', 'Novi Ligure', 'Due fidanzatini uccidono madre e fratellino di lei.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(20, 'Marco Vannini', 'marco-vannini', '1992-03-28', 'Ladispoli', 'La morte del giovane Marco in casa della fidanzata Ciontoli.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 1, 0, '2026-01-08 10:38:13', ''),
-(21, 'Sid e Nancy', 'sid-e-nancy', '1985-02-07', 'New York', 'Il bassista dei Sex Pistols uccide la fidanzata.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(22, 'Il caso Pistorius', 'il-caso-pistorius', '1975-07-04', 'Pretoria', 'L\'atleta paralimpico spara alla fidanzata credendola un ladro.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(23, 'Bertrand Cantat', 'bertrand-cantat', '2019-11-01', 'Vilnius', 'Il cantante dei Noir Desir picchia a morte l\'attrice Marie Trintignant.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(24, 'Jodi Arias', 'jodi-arias', '1998-02-05', 'Arizona, USA', 'Uccide l\'ex fidanzato Travis Alexander per gelosia morbosa.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(25, 'Phil Spector', 'phil-spector', '2017-04-09', 'California', 'Il produttore musicale uccide l\'attrice Lana Clarkson.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(26, 'Caso O.J. Simpson', 'caso-o.j.-simpson', '1970-01-22', 'Los Angeles', 'L\'ex campione accusato di aver ucciso l\'ex moglie.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(27, 'Luca Varani', 'luca-varani', '1994-07-05', 'Roma', 'Ucciso durante un festino a base di droghe e follia.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(28, 'Femminicidio Tramontano', 'femminicidio-tramontano', '2004-10-03', 'Milano', 'Giulia uccisa al settimo mese di gravidanza dal compagno.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(29, 'Shannan Watts', 'shannan-watts', '1983-11-22', 'Colorado', 'Chris Watts uccide moglie incinta e figlie per l\'amante.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(30, 'Gabby Petito', 'gabby-petito', '2018-02-09', 'Wyoming', 'Strangolata dal fidanzato durante un viaggio in van.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 1, 0, '2026-01-08 10:38:13', ''),
-(31, 'Gianni Versace', 'gianni-versace', '2007-02-03', 'Miami', 'Lo stilista ucciso sugli scalini di casa.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(32, 'Sharon Tate', 'sharon-tate', '1984-05-12', 'Los Angeles', 'L\'attrice uccisa dalla Manson Family.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(33, 'John Lennon', 'john-lennon', '2006-08-03', 'New York', 'L\'ex Beatle ucciso da un fan ossessionato.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', '');
-INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
-(34, 'Tupac Shakur', 'tupac-shakur', '2018-06-18', 'Las Vegas', 'Il rapper ucciso in una sparatoria tra gang.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(35, 'Notorious B.I.G.', 'notorious-b.i.g.', '1996-11-19', 'Los Angeles', 'Ucciso pochi mesi dopo Tupac.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(36, 'Marvin Gaye', 'marvin-gaye', '1973-10-05', 'Los Angeles', 'Il cantante ucciso dal proprio padre dopo una lite.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(37, 'Selena', 'selena', '2015-09-03', 'Texas', 'La regina della musica tejano uccisa dalla presidente del fan club.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(38, 'Dimebag Darrell', 'dimebag-darrell', '2006-02-26', 'Ohio', 'Il chitarrista dei Pantera ucciso sul palco.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(39, 'Christina Grimmie', 'christina-grimmie', '1977-03-27', 'Orlando', 'La cantante di The Voice uccisa mentre firmava autografi.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(40, 'Maurizio Gucci', 'maurizio-gucci', '2011-09-13', 'Milano', 'L\'erede della moda fatto uccidere dall\'ex moglie.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 1, 0, '2026-01-08 10:38:13', ''),
-(41, 'Morte nel Vicolo', 'morte-nel-vicolo', '2025-12-17', 'Torino', 'Un caso irrisolto degli anni 90 riaperto oggi.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 0, 0, '2026-01-08 10:38:13', ''),
-(42, 'Il veleno del caffè', 'il-veleno-del-caffe', '2025-12-17', 'Napoli', 'Avvelenamento seriale in una casa di cura.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 1, 0, '2026-01-08 10:38:13', ''),
-(43, 'Scomparsa sul Lago', 'scomparsa-sul-lago', '2025-12-17', 'Como', 'Una turista svanita nel nulla, si sospetta il marito.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 0, 0, '2026-01-08 10:38:13', ''),
-(44, 'Il segreto del prete', 'il-segreto-del-prete', '2025-12-17', 'Potenza', 'Ritrovamento osseo in una chiesa antica.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 0, 0, '2026-01-08 10:38:13', ''),
-(45, 'Gelosia fatale', 'gelosia-fatale', '2025-12-17', 'Bologna', 'Due amanti, un coltello e una notte di follia.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 0, 0, '2026-01-08 10:38:13', ''),
-(46, 'Tradimento online', 'tradimento-online', '2025-12-17', 'Milano', 'Adesca la moglie su internet per ucciderla.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Amore tossico', '', 0, 0, '2026-01-08 10:38:13', ''),
-(47, 'Lo stalker della TV', 'lo-stalker-della-tv', '2025-12-17', 'Roma', 'Conduttore perseguitato da una fan.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 0, 0, '2026-01-08 10:38:13', ''),
-(48, 'Rapimento Lampo', 'rapimento-lampo', '2025-12-17', 'Venezia', 'Influencer rapita per riscatto finito male.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Celebrity', '', 0, 0, '2026-01-08 10:38:13', ''),
-(49, 'Il mostro del Po', 'il-mostro-del-po', '2025-12-17', 'Rovigo', 'Pescatore trova resti umani.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Serial killer', '', 0, 0, '2026-01-08 10:38:13', ''),
-(50, 'Delitto di Pasqua', 'delitto-di-pasqua', '2025-12-17', 'Bari', 'Lite in famiglia finisce in tragedia.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', 'Casi mediatici italiani', '', 0, 0, '2026-01-08 10:38:13', '');
+(1, 'Il Mostro di Milwaukee', 'il-mostro-di-milwaukee', '1991-07-22', 'Milwaukee, Wisconsin, USA', 'Jeffrey Dahmer, il \"Mostro di Milwaukee\", ha ucciso e smembrato 17 giovani uomini tra il 1978 e il 1991, compiendo atti di cannibalismo e necrofilia.', 'Jeffrey Lionel Dahmer, noto come il \"Mostro di Milwaukee\" o il \"Cannibale di Milwaukee\", rappresenta uno dei casi più disturbanti nella storia della criminologia americana. Nato il 21 maggio 1960 a Milwaukee, Wisconsin, Dahmer crebbe in una famiglia apparentemente normale ma segnata da tensioni tra i genitori e da un crescente isolamento sociale del giovane Jeffrey.\n\nI primi segnali di un disturbo profondo emersero durante l\'adolescenza, quando Dahmer sviluppò una morbosa fascinazione per gli animali morti. Il suo primo omicidio avvenne nel 1978. Dopo la cattura avvenuta il 22 luglio 1991, furono scoperte fotografie polaroid dei corpi smembrati e resti umani nel suo appartamento.', 'Serial killer', '', 1, 2, '2026-01-16 09:03:21', ''),
+(2, 'Il Clown Killer', 'il-clown-killer', '1978-12-11', 'Chicago, Illinois, USA', 'John Wayne Gacy, noto come \"Il Clown Killer\", ha violentato e ucciso almeno 33 adolescenti e giovani uomini, seppellendone la maggior parte sotto la sua casa.', 'John Wayne Gacy Jr., passato alla storia come \"Il Clown Killer\", rappresenta uno dei serial killer più prolifici della storia americana. Dietro la facciata di rispettabilità e il lavoro come clown per feste di bambini, si nascondeva un predatore sessuale. Tra il 1972 e il 1978, Gacy violentò e uccise almeno 33 giovani uomini, seppellendoli nel vespaio sotto la sua abitazione.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(3, 'Ted Bundy - Il Killer delle Studentesse', 'ted-bundy', '1989-01-24', 'Florida, USA', 'Ted Bundy, assassino seriale carismatico e intelligente, ha confessato 30 omicidi di giovani donne in sette stati americani tra il 1974 e il 1978.', 'Theodore Robert Bundy, conosciuto come Ted Bundy, è considerato uno dei serial killer più famosi e studiati. Uomo di bell\'aspetto, intelligente e carismatico, usava il suo fascino per attirare le vittime. La sua scia di morte attraversò almeno sette stati americani. Fu giustiziato sulla sedia elettrica il 24 gennaio 1989.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(4, 'Il Macellaio di Rostov', 'il-macellaio-di-rostov', '1990-11-20', 'Rostov sul Don, Russia', 'Andrej Romanovic Chikatilo, il \"Macellaio di Rostov\", ha ucciso e mutilato almeno 52 donne e bambini nell\'Unione Sovietica tra il 1978 e il 1990.', 'Andrej Romanovic Chikatilo è stato il serial killer più prolifico della storia sovietica. Adescava le sue vittime nelle stazioni ferroviarie e degli autobus. Fu condannato a morte e giustiziato con un colpo di pistola il 14 febbraio 1994.', 'Serial killer', '', 1, 1, '2026-01-16 09:03:21', ''),
+(5, 'Night Stalker - Il Predatore della Notte', 'night-stalker', '1985-08-31', 'Los Angeles, California, USA', 'Richard Ramirez, il \"Night Stalker\", terrorizzò Los Angeles e San Francisco nel 1984-1985 con una serie di omicidi, violenze sessuali e rapine.', 'Richard Ramirez seminò il terrore nell\'area di Los Angeles entrando nelle case di notte attraverso finestre aperte. A differenza di molti serial killer, non aveva un tipo specifico di vittima. Fu catturato il 31 agosto 1985 dopo essere stato riconosciuto dai cittadini.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(6, 'Il Mostro di Firenze', 'il-mostro-di-firenze', '1985-09-08', 'Firenze e provincia, Italia', 'Il Mostro di Firenze è il nome dato all\'autore di una serie di 16 omicidi di coppie appartate avvenuti nelle campagne toscane tra il 1968 e il 1985.', 'Il caso del Mostro di Firenze rappresenta uno dei misteri criminali più inquietanti della storia italiana. Il killer colpiva coppie appartate in auto, uccidendo l\'uomo e mutilando la donna. Nonostante le condanne dei \"Compagni di merende\" (Pacciani, Vanni, Lotti), molti aspetti della vicenda rimangono oscuri.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(7, 'Donato Bilancia - Il Serial Killer dei Treni', 'donato-bilancia', '1998-04-21', 'Liguria, Italia', 'Donato Bilancia uccise 17 persone in Liguria tra il 1997 e il 1998, diventando uno dei serial killer più prolifici della storia italiana.', 'Donato Bilancia è stato responsabile di 17 omicidi in poco più di sei mesi. La fase più terrificante iniziò quando cominciò a uccidere casualmente sui treni in Liguria. Fu condannato a 13 ergastoli e morì in carcere per COVID-19 nel 2020.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(8, 'Jack lo Squartatore', 'jack-lo-squartatore', '1888-11-09', 'Whitechapel, Londra, Regno Unito', 'Jack lo Squartatore è il serial killer mai identificato che uccise almeno cinque prostitute nel quartiere di Whitechapel a Londra nel 1888.', 'Jack lo Squartatore è il serial killer più famoso della storia, mai identificato. Nell\'autunno del 1888 uccise e mutilò brutalmente almeno cinque donne nel quartiere di Whitechapel. Il caso rimane il più grande mistero irrisolto della criminologia.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(9, 'Zodiac Killer', 'zodiac-killer', '1969-10-11', 'California, USA', 'Lo Zodiac Killer è un serial killer mai identificato che uccise almeno 5 persone nella California del Nord tra il 1968 e il 1969.', 'Lo Zodiac Killer operò nella California del Nord inviando lettere criptate ai giornali per sfidare la polizia. Nonostante decenni di indagini e la decifrazione dei suoi codici, la sua identità rimane sconosciuta.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(10, 'Ed Gein - Il Macellaio di Plainfield', 'ed-gein', '1957-11-16', 'Plainfield, Wisconsin, USA', 'Ed Gein uccise due donne e dissotterrò decine di cadaveri per creare macabri oggetti con pelle e ossa umane.', 'Ed Gein è uno dei criminali più disturbanti della storia. Le sue attività di profanazione di tombe e la creazione di oggetti con pelle umana hanno ispirato film come Psycho, Non aprite quella porta e Il silenzio degli innocenti.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
+(11, 'Il Delitto di Cogne', 'delitto-di-cogne', '2002-01-30', 'Cogne, Valle d\'Aosta, Italia', 'Il caso dell\'omicidio del piccolo Samuele Lorenzi, 3 anni, per il quale fu condannata la madre Annamaria Franzoni.', 'Il 30 gennaio 2002, il piccolo Samuele Lorenzi fu trovato morto nel suo letto. Il caso divise l\'opinione pubblica italiana. La madre, Annamaria Franzoni, fu condannata a 16 anni di carcere.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
+(12, 'Il Delitto di Avetrana', 'delitto-di-avetrana', '2010-08-26', 'Avetrana, Puglia, Italia', 'L\'omicidio di Sarah Scazzi, 15 anni, uccisa dalla zia Cosima Serrano e dalla cugina Sabrina Misseri.', 'Sarah Scazzi scomparve il 26 agosto 2010. Il ritrovamento del corpo in un pozzo e la confessione dello zio Michele Misseri in diretta TV sconvolsero l\'Italia. Furono condannate all\'ergastolo la cugina Sabrina e la zia Cosima.', 'Casi mediatici italiani', '', 1, 1, '2026-01-16 09:03:21', ''),
+(13, 'Omicidio di Yara Gambirasio', 'omicidio-yara-gambirasio', '2010-11-26', 'Brembate di Sopra, Bergamo, Italia', 'Il caso di Yara Gambirasio, 13 anni, risolto grazie a un\'innovativa indagine genetica che identificò Massimo Bossetti.', 'La tredicenne Yara scomparve il 26 novembre 2010. Un\'indagine scientifica senza precedenti portò all\'identificazione di \"Ignoto 1\" nel muratore Massimo Bossetti, condannato all\'ergastolo grazie alla prova del DNA.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
+(14, 'Delitto di Perugia - Meredith Kercher', 'delitto-perugia-meredith-kercher', '2007-11-01', 'Perugia, Umbria, Italia', 'L\'omicidio della studentessa britannica Meredith Kercher, con un iter giudiziario che coinvolse Amanda Knox e Raffaele Sollecito.', 'Meredith Kercher fu uccisa a Perugia nel 2007. Il caso divenne mediatico a livello mondiale. L\'unico condannato in via definitiva è Rudy Guede, mentre Amanda Knox e Raffaele Sollecito furono assolti dopo un lungo iter giudiziario.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
+(15, 'La Strage di Erba', 'strage-di-erba', '2006-12-11', 'Erba, Como, Italia', 'La strage in cui Olindo Romano e Rosa Bazzi uccisero quattro persone, caso oggi oggetto di forti discussioni.', 'L\'11 dicembre 2006, Olindo Romano e Rosa Bazzi uccisero quattro vicini di casa, tra cui un bambino di due anni. Condannati all\'ergastolo, continuano a proclamarsi innocenti supportati da nuove teorie difensive.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
+(16, 'Il Caso O.J. Simpson', 'caso-oj-simpson', '1994-06-12', 'Los Angeles, California, USA', 'Il processo del secolo: l\'ex campione O.J. Simpson accusato dell\'omicidio dell\'ex moglie Nicole Brown e di Ron Goldman.', 'O.J. Simpson fu accusato di aver ucciso l\'ex moglie e un amico nel 1994. Il processo, seguito da milioni di persone, si concluse con un\'assoluzione penale molto controversa, sebbene fu poi ritenuto responsabile in sede civile.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
+(17, 'L\'Omicidio di Gianni Versace', 'omicidio-gianni-versace', '1997-07-15', 'Miami Beach, Florida, USA', 'L\'assassinio dello stilista italiano Gianni Versace, ucciso da Andrew Cunanan sulla scalinata della sua villa.', 'Gianni Versace fu ucciso il 15 luglio 1997 davanti alla sua villa di Miami dal serial killer Andrew Cunanan, che si suicidò pochi giorni dopo. Il movente rimane un mistero.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
+(18, 'L\'Omicidio di John Lennon', 'omicidio-john-lennon', '1980-12-08', 'New York City, USA', 'L\'assassinio dell\'ex Beatle John Lennon, ucciso a colpi di pistola da Mark David Chapman davanti al Dakota Building.', 'L\'8 dicembre 1980, Mark David Chapman sparò a John Lennon, uccidendo un\'icona della musica mondiale. Chapman attese la polizia leggendo \"Il giovane Holden\".', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
+(19, 'Sharon Tate e la Manson Family', 'sharon-tate-manson-family', '1969-08-09', 'Los Angeles, California, USA', 'L\'atroce omicidio dell\'attrice Sharon Tate e di altre quattro persone per mano della setta di Charles Manson.', 'Nell\'agosto 1969, i seguaci di Charles Manson massacrarono l\'attrice Sharon Tate (incinta all\'ottavo mese) e i suoi ospiti nella villa di Cielo Drive, in un tentativo delirante di scatenare una guerra razziale.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
+(20, 'Il Caso Oscar Pistorius', 'caso-oscar-pistorius', '2013-02-14', 'Pretoria, Sudafrica', 'L\'atleta paralimpico Oscar Pistorius condannato per l\'omicidio della fidanzata Reeva Steenkamp.', 'La notte di San Valentino 2013, Pistorius sparò alla fidanzata Reeva attraverso la porta del bagno, sostenendo di averla scambiata per un intruso. È stato condannato per omicidio.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
+(21, 'L\'Omicidio di Luca Varani', 'omicidio-luca-varani', '2016-03-05', 'Roma, Italia', 'L\'omicidio del giovane Luca Varani, torturato e ucciso da Marco Prato e Manuel Foffo durante un festino a base di droga.', 'Un crimine senza movente apparente se non la crudeltà. Varani fu attirato in una trappola e torturato per ore da Foffo e Prato al termine di un festino di più giorni.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
+(22, 'Il Femminicidio di Giulia Tramontano', 'femminicidio-giulia-tramontano', '2023-05-27', 'Senago, Milano, Italia', 'L\'omicidio di Giulia Tramontano, incinta al settimo mese, uccisa dal compagno Alessandro Impagnatiello.', 'Giulia Tramontano fu uccisa con 37 coltellate dal compagno che conduceva una doppia vita. Impagnatiello tentò poi di bruciare il corpo. È stato condannato all\'ergastolo.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
+(23, 'Il Caso Gabby Petito', 'caso-gabby-petito', '2021-08-27', 'Wyoming, USA', 'L\'omicidio della travel blogger Gabby Petito, strangolata dal fidanzato Brian Laundrie durante un viaggio in van.', 'Il viaggio on the road di due giovani fidanzati si trasformò in tragedia. Il caso esplose sui social media portando al ritrovamento del corpo di Gabby e, successivamente, a quello di Brian, morto suicida.', 'Amore tossico', '', 1, 1, '2026-01-16 09:03:21', ''),
+(24, 'Il Caso Chris Watts', 'caso-chris-watts', '2018-08-13', 'Frederick, Colorado, USA', 'Chris Watts uccise la moglie incinta Shanann e le figlie Bella e Celeste per iniziare una nuova vita con l\'amante.', 'Chris Watts sterminò la sua intera famiglia per stare con l\'amante, fingendo poi preoccupazione in TV per la loro scomparsa. Ha confessato ed è stato condannato all\'ergastolo.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
+(25, 'Il Caso Jodi Arias', 'caso-jodi-arias', '2008-06-04', 'Mesa, Arizona, USA', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con brutale ferocia in un caso simbolo dell\'ossessione amorosa.', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con 27 coltellate e un colpo di pistola. Il processo ha rivelato una relazione tossica e ossessiva.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', '');
 
 -- --------------------------------------------------------
 
@@ -168,8 +148,8 @@ INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, 
 --
 
 CREATE TABLE `colpa` (
-  `Colpevole` int(11) NOT NULL,
-  `Caso` int(11) NOT NULL
+  `Colpevole` int NOT NULL,
+  `Caso` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -183,50 +163,35 @@ INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
 (4, 4),
 (5, 5),
 (6, 6),
+(33, 6),
+(34, 6),
+(35, 6),
 (7, 7),
 (8, 8),
 (9, 9),
 (10, 10),
 (11, 11),
 (12, 12),
-(13, 13),
-(14, 14),
-(15, 15),
-(16, 16),
-(17, 17),
-(18, 18),
-(19, 19),
-(20, 20),
-(21, 21),
-(22, 22),
-(23, 23),
-(24, 24),
-(25, 25),
-(26, 26),
-(27, 27),
-(28, 28),
-(29, 29),
-(30, 30),
-(31, 31),
-(32, 32),
-(33, 33),
-(34, 34),
-(35, 35),
-(36, 36),
-(37, 37),
-(38, 38),
-(39, 39),
-(40, 40),
-(41, 41),
-(42, 42),
-(43, 43),
-(44, 44),
-(45, 45),
-(46, 46),
-(47, 47),
-(48, 48),
-(49, 49),
-(50, 50);
+(13, 12),
+(14, 12),
+(15, 13),
+(16, 14),
+(17, 15),
+(18, 15),
+(19, 16),
+(20, 17),
+(21, 18),
+(22, 19),
+(23, 19),
+(24, 19),
+(25, 19),
+(26, 20),
+(27, 21),
+(28, 21),
+(29, 22),
+(30, 23),
+(31, 24),
+(32, 25);
 
 -- --------------------------------------------------------
 
@@ -235,12 +200,12 @@ INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
 --
 
 CREATE TABLE `colpevole` (
-  `ID_Colpevole` int(11) NOT NULL,
-  `Nome` varchar(50) NOT NULL,
-  `Cognome` varchar(50) NOT NULL,
-  `LuogoNascita` varchar(100) NOT NULL,
+  `ID_Colpevole` int NOT NULL,
+  `Nome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `Cognome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `LuogoNascita` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `DataNascita` date NOT NULL,
-  `Immagine` varchar(255) NOT NULL
+  `Immagine` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -248,56 +213,41 @@ CREATE TABLE `colpevole` (
 --
 
 INSERT INTO `colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `Immagine`) VALUES
-(1, 'Jeffrey', 'Dahmer', 'Ignoto', '1970-01-01', ''),
-(2, 'John', 'Gacy', 'Ignoto', '1970-01-01', ''),
-(3, 'Ted', 'Bundy', 'Ignoto', '1970-01-01', ''),
-(4, 'Andrei', 'Chikatilo', 'Ignoto', '1970-01-01', ''),
-(5, 'Richard', 'Ramirez', 'Ignoto', '1970-01-01', ''),
-(6, 'David', 'Berkowitz', 'Ignoto', '1970-01-01', ''),
-(7, 'Ignoto', 'Zodiac', 'Ignoto', '1970-01-01', ''),
-(8, 'Gary', 'Ridgway', 'Ignoto', '1970-01-01', ''),
-(9, 'Ignoto', 'Jack', 'Ignoto', '1970-01-01', ''),
-(10, 'Ed', 'Gein', 'Ignoto', '1970-01-01', ''),
-(11, 'Annamaria', 'Franzoni', 'Ignoto', '1970-01-01', ''),
-(12, 'Sabrina', 'Misseri', 'Ignoto', '1970-01-01', ''),
-(13, 'Massimo', 'Bossetti', 'Ignoto', '1970-01-01', ''),
-(14, 'Rudy', 'Guede', 'Ignoto', '1970-01-01', ''),
-(15, 'Pietro', 'Pacciani', 'Ignoto', '1970-01-01', ''),
-(16, 'Olindo', 'Romano', 'Ignoto', '1970-01-01', ''),
-(17, 'Alberto', 'Stasi', 'Ignoto', '1970-01-01', ''),
-(18, 'Salvatore', 'Parolisi', 'Ignoto', '1970-01-01', ''),
-(19, 'Erika', 'De Nardo', 'Ignoto', '1970-01-01', ''),
-(20, 'Antonio', 'Ciontoli', 'Ignoto', '1970-01-01', ''),
-(21, 'Sid', 'Vicious', 'Ignoto', '1970-01-01', ''),
-(22, 'Oscar', 'Pistorius', 'Ignoto', '1970-01-01', ''),
-(23, 'Bertrand', 'Cantat', 'Ignoto', '1970-01-01', ''),
-(24, 'Jodi', 'Arias', 'Ignoto', '1970-01-01', ''),
-(25, 'Phil', 'Spector', 'Ignoto', '1970-01-01', ''),
-(26, 'O.J.', 'Simpson', 'Ignoto', '1970-01-01', ''),
-(27, 'Marco', 'Prato', 'Ignoto', '1970-01-01', ''),
-(28, 'Alessandro', 'Impagnatiello', 'Ignoto', '1970-01-01', ''),
-(29, 'Chris', 'Watts', 'Ignoto', '1970-01-01', ''),
-(30, 'Brian', 'Laundrie', 'Ignoto', '1970-01-01', ''),
-(31, 'Andrew', 'Cunanan', 'Ignoto', '1970-01-01', ''),
-(32, 'Charles', 'Manson', 'Ignoto', '1970-01-01', ''),
-(33, 'Mark', 'Chapman', 'Ignoto', '1970-01-01', ''),
-(34, 'Orlando', 'Anderson', 'Ignoto', '1970-01-01', ''),
-(35, 'Ignoto', 'Killer', 'Ignoto', '1970-01-01', ''),
-(36, 'Marvin', 'Gay Sr.', 'Ignoto', '1970-01-01', ''),
-(37, 'Yolanda', 'Saldivar', 'Ignoto', '1970-01-01', ''),
-(38, 'Nathan', 'Gale', 'Ignoto', '1970-01-01', ''),
-(39, 'Kevin', 'Loibl', 'Ignoto', '1970-01-01', ''),
-(40, 'Benedetto', 'Ceraulo', 'Ignoto', '1970-01-01', ''),
-(41, 'Ignoto', 'X', 'N/A', '1990-01-01', ''),
-(42, 'Luisa', 'Bianchi', 'N/A', '1990-01-01', ''),
-(43, 'Hans', 'Muller', 'N/A', '1990-01-01', ''),
-(44, 'Don', 'Giulio', 'N/A', '1990-01-01', ''),
-(45, 'Luca', 'Neri', 'N/A', '1990-01-01', ''),
-(46, 'Marco', 'Viola', 'N/A', '1990-01-01', ''),
-(47, 'Carla', 'Bruni', 'N/A', '1990-01-01', ''),
-(48, 'Bandito', 'Uno', 'N/A', '1990-01-01', ''),
-(49, 'Ignoto', 'Y', 'N/A', '1990-01-01', ''),
-(50, 'Zio', 'Peppe', 'N/A', '1990-01-01', '');
+(1, 'Jeffrey', 'Dahmer', 'Milwaukee, Wisconsin, USA', '1960-05-21', ''),
+(2, 'John Wayne', 'Gacy', 'Chicago, Illinois, USA', '1942-03-17', ''),
+(3, 'Ted', 'Bundy', 'Burlington, Vermont, USA', '1946-11-24', ''),
+(4, 'Andrej', 'Chikatilo', 'Yabluchne, Ucraina', '1936-10-16', ''),
+(5, 'Richard', 'Ramirez', 'El Paso, Texas, USA', '1960-02-29', ''),
+(6, 'Ignoto', 'Mostro di Firenze', 'Sconosciuto', '1940-01-01', ''),
+(7, 'Donato', 'Bilancia', 'Potenza, Italia', '1951-07-10', ''),
+(8, 'Ignoto', 'Jack lo Squartatore', 'Sconosciuto', '1850-01-01', ''),
+(9, 'Ignoto', 'Zodiac Killer', 'Sconosciuto', '1940-01-01', ''),
+(10, 'Edward', 'Gein', 'La Crosse, Wisconsin, USA', '1906-08-27', ''),
+(11, 'Annamaria', 'Franzoni', 'Bologna, Italia', '1971-01-04', ''),
+(12, 'Cosima', 'Serrano', 'Avetrana, Italia', '1960-06-25', ''),
+(13, 'Sabrina', 'Misseri', 'Avetrana, Italia', '1987-07-04', ''),
+(14, 'Michele', 'Misseri', 'Avetrana, Italia', '1953-01-06', ''),
+(15, 'Massimo Giuseppe', 'Bossetti', 'Clusone, Bergamo, Italia', '1970-10-30', ''),
+(16, 'Rudy', 'Guede', 'Abidjan, Costa d\'Avorio', '1986-12-26', ''),
+(17, 'Olindo', 'Romano', 'Erba, Como, Italia', '1962-05-10', ''),
+(18, 'Rosa', 'Bazzi', 'Erba, Como, Italia', '1964-02-08', ''),
+(19, 'Orenthal James', 'Simpson', 'San Francisco, California, USA', '1947-07-09', ''),
+(20, 'Andrew', 'Cunanan', 'San Diego, California, USA', '1969-08-31', ''),
+(21, 'Mark David', 'Chapman', 'Fort Worth, Texas, USA', '1955-05-10', ''),
+(22, 'Charles', 'Manson', 'Cincinnati, Ohio, USA', '1934-11-12', ''),
+(23, 'Charles Tex', 'Watson', 'Farmersville, Texas, USA', '1945-12-02', ''),
+(24, 'Susan', 'Atkins', 'San Gabriel, California, USA', '1948-05-07', ''),
+(25, 'Patricia', 'Krenwinkel', 'Los Angeles, California, USA', '1947-12-03', ''),
+(26, 'Oscar', 'Pistorius', 'Johannesburg, Sudafrica', '1986-11-22', ''),
+(27, 'Marco', 'Prato', 'Roma, Italia', '1986-03-10', ''),
+(28, 'Manuel', 'Foffo', 'Roma, Italia', '1987-06-18', ''),
+(29, 'Alessandro', 'Impagnatiello', 'Milano, Italia', '1991-08-30', ''),
+(30, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(31, 'Chris', 'Watts', 'Spring Lake, North Carolina, USA', '1985-05-16', ''),
+(32, 'Jodi', 'Arias', 'Salinas, California, USA', '1980-07-09', ''),
+(33, 'Pietro', 'Pacciani', 'Vicchio, Firenze, Italia', '1925-01-07', ''),
+(34, 'Mario', 'Vanni', 'San Casciano, Firenze, Italia', '1927-08-02', ''),
+(35, 'Giancarlo', 'Lotti', 'San Casciano, Firenze, Italia', '1941-03-28', '');
 
 -- --------------------------------------------------------
 
@@ -306,22 +256,12 @@ INSERT INTO `colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `Dat
 --
 
 CREATE TABLE `commento` (
-  `ID_Commento` int(11) NOT NULL,
-  `Commento` text NOT NULL,
-  `Email_Utente` varchar(50) NOT NULL,
-  `ID_Caso` int(11) NOT NULL,
-  `Data` datetime DEFAULT current_timestamp()
+  `ID_Commento` int NOT NULL,
+  `Commento` text COLLATE utf8mb4_general_ci NOT NULL,
+  `Email_Utente` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `ID_Caso` int NOT NULL,
+  `Data` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dump dei dati per la tabella `commento`
---
-
-INSERT INTO `commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `Data`) VALUES
-(2, 'Napoleone Suca', 'lore.grolla04@gmail.com', 9, '2026-01-09 01:55:05'),
-(6, 'sono l\'admin e sto mbriacoo', 'admin@test.it', 9, '2026-01-09 18:31:02'),
-(7, 'prova penna 123', 'admin@test.it', 9, '2026-01-09 18:32:11'),
-(8, 'mangiami la renga perozzo', 'admin@test.it', 9, '2026-01-09 19:44:57');
 
 -- --------------------------------------------------------
 
@@ -330,11 +270,11 @@ INSERT INTO `commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `D
 --
 
 CREATE TABLE `utente` (
-  `Email` varchar(50) NOT NULL,
-  `Username` varchar(50) NOT NULL,
-  `Password` varchar(255) NOT NULL,
+  `Email` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `Username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `Password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `Is_Admin` tinyint(1) DEFAULT NULL,
-  `Is_Newsletter` tinyint(1) DEFAULT 0
+  `Is_Newsletter` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -354,14 +294,14 @@ INSERT INTO `utente` (`Email`, `Username`, `Password`, `Is_Admin`, `Is_Newslette
 --
 
 CREATE TABLE `vittima` (
-  `ID_Vittima` int(11) NOT NULL,
-  `Nome` varchar(50) NOT NULL,
-  `Cognome` varchar(50) NOT NULL,
-  `LuogoNascita` varchar(100) NOT NULL,
+  `ID_Vittima` int NOT NULL,
+  `Nome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `Cognome` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `LuogoNascita` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `DataNascita` date NOT NULL,
   `DataDecesso` date DEFAULT NULL,
-  `Caso` int(11) NOT NULL,
-  `Immagine` varchar(255) NOT NULL
+  `Caso` int NOT NULL,
+  `Immagine` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -369,57 +309,85 @@ CREATE TABLE `vittima` (
 --
 
 INSERT INTO `vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `DataDecesso`, `Caso`, `Immagine`) VALUES
-(1, 'Mario', 'Rossi', 'N/A', '1995-01-01', '2025-12-17', 41, ''),
-(2, 'Anna', 'Verdi', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
-(3, 'Anna', 'Violetta', 'N/A', '1995-01-01', '2025-12-17', 42, ''),
-(4, 'Greta', 'Schmidt', 'N/A', '1995-01-01', '2025-12-17', 43, ''),
-(5, 'Elisa', 'Claps', 'N/A', '1995-01-01', '2025-12-17', 44, ''),
-(6, 'Sara', 'Gialli', 'N/A', '1995-01-01', '2025-12-17', 45, ''),
-(7, 'Lisa', 'Rosa', 'N/A', '1995-01-01', '2025-12-17', 46, ''),
-(8, 'Pippo', 'Baudo', 'N/A', '1995-01-01', '2025-12-17', 47, ''),
-(9, 'Chiara', 'Nasti', 'N/A', '1995-01-01', '2025-12-17', 48, ''),
-(10, 'Luigi', 'B.', 'N/A', '1995-01-01', '2025-12-17', 49, ''),
-(11, 'Nipote', 'Franco', 'N/A', '1995-01-01', '2025-12-17', 50, ''),
-(12, 'Steven', 'Hicks', 'Milwaukee, USA', '1980-01-01', '2001-05-19', 1, ''),
-(13, 'Timothy', 'McCoy', 'Chicago, USA', '1980-01-01', '2003-01-15', 2, ''),
-(14, 'Kimberly', 'Leach', 'Florida, USA', '1980-01-01', '2002-02-11', 3, ''),
-(15, 'Yelena', 'Zakotnova', 'Rostov, Russia', '1980-01-01', '1987-08-06', 4, ''),
-(16, 'Mei', 'Leung', 'Los Angeles, USA', '1980-01-01', '2015-12-17', 5, ''),
-(17, 'Donna', 'Lauria', 'New York, USA', '1980-01-01', '1994-09-07', 6, ''),
-(18, 'David', 'Faraday', 'California, USA', '1980-01-01', '1982-02-14', 7, ''),
-(19, 'Wendy', 'Coffield', 'Washington, USA', '1980-01-01', '1970-05-22', 8, ''),
-(20, 'Mary', 'Nichols', 'Londra, UK', '1980-01-01', '2022-10-14', 9, ''),
-(21, 'Bernice', 'Worden', 'Wisconsin, USA', '1980-01-01', '1990-01-21', 10, ''),
-(22, 'Samuele', 'Lorenzi', 'Cogne', '1980-01-01', '2019-05-25', 11, ''),
-(23, 'Sarah', 'Scazzi', 'Avetrana', '1980-01-01', '1972-01-04', 12, ''),
-(24, 'Yara', 'Gambirasio', 'Brembate', '1980-01-01', '1975-02-25', 13, ''),
-(25, 'Meredith', 'Kercher', 'Perugia', '1980-01-01', '2006-10-05', 14, ''),
-(26, 'Stefania', 'Pettini', 'Firenze', '1980-01-01', '1980-02-26', 15, ''),
-(27, 'Raffaella', 'Castagna', 'Erba', '1980-01-01', '2014-10-02', 16, ''),
-(28, 'Chiara', 'Poggi', 'Garlasco', '1980-01-01', '2012-10-03', 17, ''),
-(29, 'Melania', 'Rea', 'Teramo', '1980-01-01', '2000-03-15', 18, ''),
-(30, 'Susy', 'Cassini', 'Novi Ligure', '1980-01-01', '2017-05-07', 19, ''),
-(31, 'Marco', 'Vannini', 'Ladispoli', '1980-01-01', '1992-03-28', 20, ''),
-(32, 'Nancy', 'Spungen', 'New York', '1980-01-01', '1985-02-07', 21, ''),
-(33, 'Reeva', 'Steenkamp', 'Pretoria', '1980-01-01', '1975-07-04', 22, ''),
-(34, 'Marie', 'Trintignant', 'Vilnius', '1980-01-01', '2019-11-01', 23, ''),
-(35, 'Travis', 'Alexander', 'Arizona, USA', '1980-01-01', '1998-02-05', 24, ''),
-(36, 'Lana', 'Clarkson', 'California', '1980-01-01', '2017-04-09', 25, ''),
-(37, 'Nicole', 'Brown', 'Los Angeles', '1980-01-01', '1970-01-22', 26, ''),
-(38, 'Luca', 'Varani', 'Roma', '1980-01-01', '1994-07-05', 27, ''),
-(39, 'Giulia', 'Tramontano', 'Milano', '1980-01-01', '2004-10-03', 28, ''),
-(40, 'Shannan', 'Watts', 'Colorado', '1980-01-01', '1983-11-22', 29, ''),
-(41, 'Gabby', 'Petito', 'Wyoming', '1980-01-01', '2018-02-09', 30, ''),
-(42, 'Gianni', 'Versace', 'Miami', '1980-01-01', '2007-02-03', 31, ''),
-(43, 'Sharon', 'Tate', 'Los Angeles', '1980-01-01', '1984-05-12', 32, ''),
-(44, 'John', 'Lennon', 'New York', '1980-01-01', '2006-08-03', 33, ''),
-(45, 'Tupac', 'Shakur', 'Las Vegas', '1980-01-01', '2018-06-18', 34, ''),
-(46, 'C.', 'Wallace', 'Los Angeles', '1980-01-01', '1996-11-19', 35, ''),
-(47, 'Marvin', 'Gaye', 'Los Angeles', '1980-01-01', '1973-10-05', 36, ''),
-(48, 'Selena', 'Quintanilla', 'Texas', '1980-01-01', '2015-09-03', 37, ''),
-(49, 'Darrell', 'Abbott', 'Ohio', '1980-01-01', '2006-02-26', 38, ''),
-(50, 'Christina', 'Grimmie', 'Orlando', '1980-01-01', '1977-03-27', 39, ''),
-(51, 'Maurizio', 'Gucci', 'Milano', '1980-01-01', '2011-09-13', 40, '');
+(1, 'Steven', 'Hicks', 'Coventry Township, Ohio, USA', '1959-06-22', '1978-06-18', 1, ''),
+(2, 'Steven', 'Tuomi', 'Ontonagon, Michigan, USA', '1962-01-01', '1987-09-15', 1, ''),
+(3, 'James', 'Doxtator', 'Milwaukee, Wisconsin, USA', '1973-03-01', '1988-01-16', 1, ''),
+(4, 'Richard', 'Guerrero', 'Milwaukee, Wisconsin, USA', '1967-01-01', '1988-03-24', 1, ''),
+(5, 'Konerak', 'Sinthasomphone', 'Laos', '1976-12-02', '1991-05-27', 1, ''),
+(6, 'Tony', 'Hughes', 'Madison, Wisconsin, USA', '1959-08-26', '1991-05-24', 1, ''),
+(7, 'Robert', 'Piest', 'Des Plaines, Illinois, USA', '1963-03-11', '1978-12-11', 2, ''),
+(8, 'John', 'Butkovich', 'Chicago, Illinois, USA', '1955-01-01', '1975-07-31', 2, ''),
+(9, 'Gregory', 'Godzik', 'Chicago, Illinois, USA', '1959-01-01', '1976-12-12', 2, ''),
+(10, 'John', 'Szyc', 'Chicago, Illinois, USA', '1958-01-01', '1977-01-20', 2, ''),
+(11, 'Randall', 'Reffett', 'Chicago, Illinois, USA', '1963-05-16', '1977-05-14', 2, ''),
+(12, 'Michael', 'Bonnin', 'Houston, Texas, USA', '1960-05-03', '1977-06-03', 2, ''),
+(13, 'Lynda Ann', 'Healy', 'Seattle, Washington, USA', '1953-01-31', '1974-01-31', 3, ''),
+(14, 'Donna Gail', 'Manson', 'Seattle, Washington, USA', '1955-07-29', '1974-03-12', 3, ''),
+(15, 'Susan', 'Rancourt', 'LaGrande, Oregon, USA', '1956-01-01', '1974-04-17', 3, ''),
+(16, 'Caryn', 'Campbell', 'Detroit, Michigan, USA', '1951-01-01', '1975-01-12', 3, ''),
+(17, 'Lisa', 'Levy', 'St. Petersburg, Florida, USA', '1958-08-08', '1978-01-15', 3, ''),
+(18, 'Kimberly', 'Leach', 'Lake City, Florida, USA', '1965-10-22', '1978-02-09', 3, ''),
+(19, 'Yelena', 'Zakotnova', 'Rostov, Russia', '1969-01-01', '1978-12-22', 4, ''),
+(20, 'Larisa', 'Tkachenko', 'Rostov, Russia', '1962-01-01', '1981-09-03', 4, ''),
+(21, 'Lyubov', 'Biryuk', 'Rostov, Russia', '1968-01-01', '1982-06-12', 4, ''),
+(22, 'Olga', 'Stalmachenok', 'Rostov, Russia', '1972-01-01', '1982-12-11', 4, ''),
+(23, 'Laura', 'Sarkisyan', 'Rostov, Russia', '1968-01-01', '1983-06-18', 4, ''),
+(24, 'Dmitry', 'Ptashnikov', 'Rostov, Russia', '1973-01-01', '1984-03-27', 4, ''),
+(25, 'Jennie', 'Vincow', 'Los Angeles, California, USA', '1905-01-01', '1984-06-28', 5, ''),
+(26, 'Dayle', 'Okazaki', 'Los Angeles, California, USA', '1951-01-01', '1985-03-17', 5, ''),
+(27, 'Vincent', 'Zazzara', 'Los Angeles, California, USA', '1921-01-01', '1985-03-27', 5, ''),
+(28, 'Maxine', 'Zazzara', 'Los Angeles, California, USA', '1936-01-01', '1985-03-27', 5, ''),
+(29, 'William', 'Doi', 'Los Angeles, California, USA', '1921-01-01', '1985-05-14', 5, ''),
+(30, 'Mabel', 'Bell', 'Los Angeles, California, USA', '1921-01-01', '1985-06-01', 5, ''),
+(31, 'Antonio', 'Lo Bianco', 'Firenze, Italia', '1943-01-01', '1968-08-21', 6, ''),
+(32, 'Barbara', 'Locci', 'Firenze, Italia', '1942-01-01', '1968-08-21', 6, ''),
+(33, 'Stefania', 'Pettini', 'Firenze, Italia', '1956-01-01', '1974-09-14', 6, ''),
+(34, 'Pasquale', 'Gentilcore', 'Firenze, Italia', '1955-01-01', '1974-09-14', 6, ''),
+(35, 'Nadine', 'Mauriot', 'Montbéliard, Francia', '1950-01-01', '1985-09-08', 6, ''),
+(36, 'Jean Michel', 'Kraveichvili', 'Francia', '1960-01-01', '1985-09-08', 6, ''),
+(37, 'Giorgio', 'Centenaro', 'Genova, Italia', '1942-01-01', '1997-10-16', 7, ''),
+(38, 'Maurizia', 'Catena', 'Genova, Italia', '1945-01-01', '1997-10-16', 7, ''),
+(39, 'Bruno', 'Solari', 'Genova, Italia', '1935-01-01', '1997-10-24', 7, ''),
+(40, 'Maria Luigia', 'Pitto', 'Genova, Italia', '1938-01-01', '1997-10-24', 7, ''),
+(41, 'Elisabetta', 'Zoppetti', 'Genova, Italia', '1966-01-01', '1998-03-12', 7, ''),
+(42, 'Maria Angela', 'Rubino', 'Genova, Italia', '1969-01-01', '1998-03-14', 7, ''),
+(43, 'Mary Ann', 'Nichols', 'Londra, Regno Unito', '1845-08-26', '1888-08-31', 8, ''),
+(44, 'Annie', 'Chapman', 'Londra, Regno Unito', '1841-09-01', '1888-09-08', 8, ''),
+(45, 'Elizabeth', 'Stride', 'Svezia', '1843-11-27', '1888-09-30', 8, ''),
+(46, 'Catherine', 'Eddowes', 'Wolverhampton, Regno Unito', '1842-04-14', '1888-09-30', 8, ''),
+(47, 'Mary Jane', 'Kelly', 'Irlanda', '1863-01-01', '1888-11-09', 8, ''),
+(48, 'David', 'Faraday', 'Vallejo, California, USA', '1951-10-21', '1968-12-20', 9, ''),
+(49, 'Betty Lou', 'Jensen', 'Vallejo, California, USA', '1952-02-21', '1968-12-20', 9, ''),
+(50, 'Darlene', 'Ferrin', 'Mill Valley, California, USA', '1947-03-17', '1969-07-04', 9, ''),
+(51, 'Cecelia', 'Shepard', 'Riverside, California, USA', '1947-01-01', '1969-09-29', 9, ''),
+(52, 'Paul', 'Stine', 'Camarillo, California, USA', '1940-12-18', '1969-10-11', 9, ''),
+(53, 'Mary', 'Hogan', 'Plainfield, Wisconsin, USA', '1900-01-01', '1954-12-08', 10, ''),
+(54, 'Bernice', 'Worden', 'Plainfield, Wisconsin, USA', '1899-01-01', '1957-11-16', 10, ''),
+(55, 'Samuele', 'Lorenzi', 'Cogne, Italia', '1999-01-21', '2002-01-30', 11, ''),
+(56, 'Sarah', 'Scazzi', 'Avetrana, Italia', '1995-05-27', '2010-08-26', 12, ''),
+(57, 'Yara', 'Gambirasio', 'Brembate di Sopra, Italia', '1997-07-09', '2010-11-26', 13, ''),
+(58, 'Meredith', 'Kercher', 'Coulsdon, Londra, Regno Unito', '1985-12-28', '2007-11-01', 14, ''),
+(59, 'Raffaella', 'Castagna', 'Erba, Italia', '1976-01-01', '2006-12-11', 15, ''),
+(60, 'Youssef', 'Marzouk', 'Erba, Italia', '2004-01-01', '2006-12-11', 15, ''),
+(61, 'Paola', 'Galli', 'Erba, Italia', '1946-01-01', '2006-12-11', 15, ''),
+(62, 'Valeria', 'Cherubini', 'Erba, Italia', '1951-01-01', '2006-12-11', 15, ''),
+(63, 'Nicole', 'Brown Simpson', 'Francoforte, Germania', '1959-05-19', '1994-06-12', 16, ''),
+(64, 'Ron', 'Goldman', 'Chicago, Illinois, USA', '1968-07-02', '1994-06-12', 16, ''),
+(65, 'Gianni', 'Versace', 'Reggio Calabria, Italia', '1946-12-02', '1997-07-15', 17, ''),
+(66, 'John', 'Lennon', 'Liverpool, Regno Unito', '1940-10-09', '1980-12-08', 18, ''),
+(67, 'Sharon', 'Tate', 'Dallas, Texas, USA', '1943-01-24', '1969-08-09', 19, ''),
+(68, 'Jay', 'Sebring', 'Birmingham, Alabama, USA', '1933-10-10', '1969-08-09', 19, ''),
+(69, 'Abigail', 'Folger', 'San Francisco, California, USA', '1943-08-11', '1969-08-09', 19, ''),
+(70, 'Wojciech', 'Frykowski', 'Lodz, Polonia', '1936-12-22', '1969-08-09', 19, ''),
+(71, 'Steven', 'Parent', 'Los Angeles, California, USA', '1951-07-26', '1969-08-09', 19, ''),
+(72, 'Reeva', 'Steenkamp', 'Città del Capo, Sudafrica', '1983-08-19', '2013-02-14', 20, ''),
+(73, 'Luca', 'Varani', 'Roma, Italia', '1992-07-19', '2016-03-05', 21, ''),
+(74, 'Giulia', 'Tramontano', 'Sant Antimo, Napoli, Italia', '1994-02-09', '2023-05-27', 22, ''),
+(75, 'Gabby', 'Petito', 'Blue Point, New York, USA', '1999-03-19', '2021-08-27', 23, ''),
+(76, 'Shanann', 'Watts', 'Passaic, New Jersey, USA', '1984-01-10', '2018-08-13', 24, ''),
+(77, 'Bella', 'Watts', 'Frederick, Colorado, USA', '2013-12-17', '2018-08-13', 24, ''),
+(78, 'Celeste', 'Watts', 'Frederick, Colorado, USA', '2015-07-17', '2018-08-13', 24, ''),
+(79, 'Travis', 'Alexander', 'Riverside, California, USA', '1977-07-28', '2008-06-04', 25, '');
 
 --
 -- Indici per le tabelle scaricate
@@ -485,31 +453,31 @@ ALTER TABLE `vittima`
 -- AUTO_INCREMENT per la tabella `articolo`
 --
 ALTER TABLE `articolo`
-  MODIFY `ID_Articolo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `ID_Articolo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT per la tabella `caso`
 --
 ALTER TABLE `caso`
-  MODIFY `N_Caso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `N_Caso` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT per la tabella `colpevole`
 --
 ALTER TABLE `colpevole`
-  MODIFY `ID_Colpevole` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `ID_Colpevole` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT per la tabella `commento`
 --
 ALTER TABLE `commento`
-  MODIFY `ID_Commento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `vittima`
 --
 ALTER TABLE `vittima`
-  MODIFY `ID_Vittima` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `ID_Vittima` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- Limiti per le tabelle scaricate
@@ -525,8 +493,8 @@ ALTER TABLE `articolo`
 -- Limiti per la tabella `colpa`
 --
 ALTER TABLE `colpa`
-  ADD CONSTRAINT `Colpa_ibfk_2` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `colpevole` (`ID_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `colpevole` (`ID_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Colpa_ibfk_2` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `commento`
