@@ -128,20 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // ========================================
 // GESTIONE RIMOZIONE IMMAGINE CASO (singola)
 // ========================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'rimuovi_immagine') {
-    $tipoImg = $_POST['tipo_immagine'] ?? '';
-    $idEntita = intval($_POST['id_entita'] ?? 0);
-    
-    if ($tipoImg === 'caso' && $idEntita === $casoId) {
-        if (!empty($caso['Immagine'])) {
-            $imageHandler->eliminaImmagine($caso['Immagine']);
-            $dbFunctions->aggiornaImmagineCaso($casoId, '');
-            $caso['Immagine'] = '';
-        }
-    }
-    
-    $messaggioFeedback = '<div class="alert alert-success">✅ Immagine rimossa con successo</div>';
-}
+// RIMOSSA: Ora la rimozione immagine caso avviene tramite campo hidden come vittime/colpevoli
 
 // ========================================
 // GESTIONE FORM POST - MODIFICA
@@ -155,6 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $descrizione_breve = trim($_POST['descrizione_breve'] ?? '');
     $storia = trim($_POST['storia'] ?? '');
     $tipologia = trim($_POST['tipologia'] ?? '');
+
+    // Recupero immagine caso esistente (può essere vuota se rimossa via JS)
+    $casoImmagineEsistente = $_POST['caso_immagine_esistente'] ?? '';
 
     // Recupero checkbox per rimozione immagini (non più usate, ma manteniamo compatibilità)
     // Ora la rimozione avviene svuotando il campo hidden vittima_immagine_esistente
@@ -276,23 +266,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $riApprova = $isAutore && !$isAdmin;
             $tipologiaFinal = !empty($tipologia) ? $tipologia : null;
             
-            // Gestione immagine caso
+            // Gestione immagine caso (come vittime/colpevoli)
             $nuovaImmagineCaso = null;
-            if (isset($_FILES['immagine_caso']) && 
-                isset($_FILES['immagine_caso']['error']) && 
+
+            // Prima controlla se c'è una nuova immagine caricata
+            if (isset($_FILES['immagine_caso']) &&
+                isset($_FILES['immagine_caso']['error']) &&
                 $_FILES['immagine_caso']['error'] !== UPLOAD_ERR_NO_FILE &&
                 $_FILES['immagine_caso']['error'] === UPLOAD_ERR_OK) {
-                
+
+                // Se c'era un'immagine esistente, eliminala
+                if (!empty($caso['Immagine'])) {
+                    $imageHandler->eliminaImmagine($caso['Immagine']);
+                }
+
                 $resultImg = $imageHandler->caricaImmagine($_FILES['immagine_caso'], 'caso', $caso['Slug']);
                 if ($resultImg['success'] && $resultImg['path']) {
-                    // Elimina vecchia immagine
-                    if (!empty($caso['Immagine'])) {
-                        $imageHandler->eliminaImmagine($caso['Immagine']);
-                    }
                     $nuovaImmagineCaso = $resultImg['path'];
                 } elseif (!$resultImg['success'] && $resultImg['message'] !== 'Nessuna immagine caricata') {
                     $errori[] = "Errore immagine caso: " . $resultImg['message'];
                 }
+            } else {
+                // Usa l'immagine esistente se presente (sarà vuota se rimossa via JS)
+                $nuovaImmagineCaso = !empty($casoImmagineEsistente) ? $casoImmagineEsistente : null;
+            }
+
+            // Se l'immagine è stata rimossa (campo hidden vuoto) ma ce n'era una, eliminala
+            if (empty($casoImmagineEsistente) && !empty($caso['Immagine'])) {
+                $imageHandler->eliminaImmagine($caso['Immagine']);
             }
             
             if (empty($errori)) {
@@ -527,19 +528,21 @@ if ($isAutore && !$isAdmin) {
     </div>';
 }
 
-// Anteprima immagine caso esistente
+// Anteprima immagine caso esistente (come vittime/colpevoli)
 $anteprimaImmagineCaso = '';
+$hiddenCasoImmagine = '<input type="hidden" name="caso_immagine_esistente" id="caso-img-hidden" value="' . htmlspecialchars($caso['Immagine']) . '">';
+
 if (!empty($caso['Immagine']) && $imageHandler->immagineEsiste($caso['Immagine'])) {
     $altCaso = ImageHandler::generaAlt('caso', ['titolo' => $caso['Titolo']]);
     $anteprimaImmagineCaso = '
-    <div class="image-preview-existing">
+    <div class="image-preview-existing" id="caso-img-preview">
         <img src="' . $prefix . '/' . htmlspecialchars($caso['Immagine']) . '" alt="' . $altCaso . '" class="preview-image">
-        <form method="POST" class="inline-form">
-            <input type="hidden" name="action" value="rimuovi_immagine">
-            <input type="hidden" name="tipo_immagine" value="caso">
-            <input type="hidden" name="id_entita" value="' . $casoId . '">
-            <button type="submit" class="btn-remove-preview" onclick="return confirm(\'Rimuovere questa immagine?\')">✕ Rimuovi immagine</button>
-        </form>
+        <span class="img-label">Immagine attuale</span>
+        <button type="button" class="btn-remove-img" onclick="marcaRimozioneImmagine(\'caso\', 0, \'' . htmlspecialchars($caso['Immagine'], ENT_QUOTES) . '\')">✕ Rimuovi</button>
+    </div>
+    <div class="image-removed-notice" id="caso-img-removed" style="display:none;">
+        <span>🗑️ Immagine sarà rimossa al salvataggio</span>
+        <button type="button" class="btn-undo-remove" onclick="annullaRimozioneImmagine(\'caso\', 0, \'' . htmlspecialchars($caso['Immagine'], ENT_QUOTES) . '\')">↩ Annulla</button>
     </div>';
 }
 
@@ -557,6 +560,7 @@ $contenuto = str_replace('<!-- value_descrizione -->', htmlspecialchars($caso['D
 $contenuto = str_replace('<!-- value_storia -->', htmlspecialchars($caso['Storia']), $contenuto);
 
 $contenuto = str_replace('<!-- opzioni_tipologia -->', $opzioniTipologia, $contenuto);
+$contenuto = str_replace('<!-- hidden_caso_immagine -->', $hiddenCasoImmagine, $contenuto);
 $contenuto = str_replace('<!-- anteprima_immagine_caso -->', $anteprimaImmagineCaso, $contenuto);
 $contenuto = str_replace('<!-- vittime_html -->', $htmlVittime, $contenuto);
 $contenuto = str_replace('<!-- colpevoli_html -->', $htmlColpevoli, $contenuto);

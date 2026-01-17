@@ -12,7 +12,8 @@
 
     <form method="POST" enctype="multipart/form-data" class="form-segnala" id="form-modifica-caso">
         <input type="hidden" name="action" value="modifica_caso">
-        
+        <!-- hidden_caso_immagine -->
+
         <!-- SEZIONE: Informazioni Caso -->
         <fieldset class="form-section">
             <legend>📋 Informazioni Generali</legend>
@@ -63,19 +64,14 @@
 
             <!-- IMMAGINE CASO -->
             <div class="form-group">
-                <label for="immagine_caso">Immagine del Caso (opzionale)</label>
+                <label for="immagine_caso">Immagine del Caso (carica per sostituire)</label>
                 <!-- anteprima_immagine_caso -->
-                <div class="file-upload-wrapper">
-                    <input type="file" 
-                        id="immagine_caso" 
-                        name="immagine_caso" 
-                        accept="image/jpeg,image/png,image/webp"
-                        aria-describedby="immagine-caso-hint"
-                        onchange="mostraAnteprimaImmagine(this, 'preview-caso-new')"
-                    />
-                    <small id="immagine-caso-hint" class="form-hint">Formati: JPG, PNG, WebP. Max 5MB.</small>
-                </div>
-                <div id="preview-caso-new" class="image-preview" aria-live="polite"></div>
+                <input type="file"
+                    id="immagine_caso"
+                    name="immagine_caso"
+                    accept="image/jpeg,image/png,image/webp"
+                />
+                <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
             </div>
         </fieldset>
 
@@ -148,69 +144,45 @@ let articoliCount = document.querySelectorAll('.articolo-entry').length;
 
 // Funzione per marcare l'immagine come da rimuovere
 function marcaRimozioneImmagine(tipo, index, originalPath) {
+    // ID speciali per il caso (senza indice)
+    const previewId = tipo === 'caso' ? 'caso-img-preview' : tipo + '-img-preview-' + index;
+    const noticeId = tipo === 'caso' ? 'caso-img-removed' : tipo + '-img-removed-' + index;
+    const hiddenId = tipo === 'caso' ? 'caso-img-hidden' : tipo + '-img-hidden-' + index;
+
     // Nascondi anteprima
-    const preview = document.getElementById(tipo + '-img-preview-' + index);
+    const preview = document.getElementById(previewId);
     if (preview) preview.style.display = 'none';
-    
+
     // Mostra avviso rimozione
-    const notice = document.getElementById(tipo + '-img-removed-' + index);
+    const notice = document.getElementById(noticeId);
     if (notice) notice.style.display = 'flex';
-    
+
     // Svuota il campo hidden (questo causa la rimozione al salvataggio)
-    const hidden = document.getElementById(tipo + '-img-hidden-' + index);
+    const hidden = document.getElementById(hiddenId);
     if (hidden) hidden.value = '';
 }
 
 // Funzione per annullare la rimozione
 function annullaRimozioneImmagine(tipo, index, originalPath) {
+    // ID speciali per il caso (senza indice)
+    const previewId = tipo === 'caso' ? 'caso-img-preview' : tipo + '-img-preview-' + index;
+    const noticeId = tipo === 'caso' ? 'caso-img-removed' : tipo + '-img-removed-' + index;
+    const hiddenId = tipo === 'caso' ? 'caso-img-hidden' : tipo + '-img-hidden-' + index;
+
     // Mostra anteprima
-    const preview = document.getElementById(tipo + '-img-preview-' + index);
+    const preview = document.getElementById(previewId);
     if (preview) preview.style.display = 'block';
-    
+
     // Nascondi avviso rimozione
-    const notice = document.getElementById(tipo + '-img-removed-' + index);
+    const notice = document.getElementById(noticeId);
     if (notice) notice.style.display = 'none';
-    
+
     // Ripristina il campo hidden
-    const hidden = document.getElementById(tipo + '-img-hidden-' + index);
+    const hidden = document.getElementById(hiddenId);
     if (hidden) hidden.value = originalPath;
 }
 
-function mostraAnteprimaImmagine(input, previewId) {
-    const preview = document.getElementById(previewId);
-    if (!preview) return;
-    preview.innerHTML = '';
-    
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        
-        if (!validTypes.includes(file.type)) {
-            preview.innerHTML = '<p class="error-text" role="alert">⚠️ Formato non supportato.</p>';
-            input.value = '';
-            return;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-            preview.innerHTML = '<p class="error-text" role="alert">⚠️ File troppo grande (max 5MB).</p>';
-            input.value = '';
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = `
-                <img src="${e.target.result}" alt="Anteprima nuova immagine" class="preview-image">
-                <button type="button" class="btn-remove-preview" onclick="rimuoviAnteprima('${input.id}', '${previewId}')">✕ Rimuovi</button>
-            `;
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-function rimuoviAnteprima(inputId, previewId) {
-    document.getElementById(inputId).value = '';
-    document.getElementById(previewId).innerHTML = '';
-}
+// Funzione mostraAnteprimaImmagine e rimuoviAnteprima rimosse - non più necessarie
 
 function aggiungiVittima() {
     const container = document.getElementById('vittime-container');
@@ -231,8 +203,7 @@ function aggiungiVittima() {
             </div>
             <div class="form-group">
                 <label>Foto (opzionale)</label>
-                <input type="file" id="vittima_img_${idx}" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp" onchange="mostraAnteprimaImmagine(this, 'pv_${idx}')">
-                <div id="pv_${idx}" class="image-preview image-preview-small"></div>
+                <input type="file" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp">
             </div>
         </div>
     `);
@@ -256,8 +227,7 @@ function aggiungiColpevole() {
             </div>
             <div class="form-group">
                 <label>Foto (opzionale)</label>
-                <input type="file" id="colp_img_${idx}" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp" onchange="mostraAnteprimaImmagine(this, 'pc_${idx}')">
-                <div id="pc_${idx}" class="image-preview image-preview-small"></div>
+                <input type="file" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp">
             </div>
         </div>
     `);
