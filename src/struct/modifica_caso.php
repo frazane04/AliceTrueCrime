@@ -268,6 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             
             // Gestione immagine caso (come vittime/colpevoli)
             $nuovaImmagineCaso = null;
+            $aggiornaImmagineCaso = false;
 
             // Prima controlla se c'è una nuova immagine caricata
             if (isset($_FILES['immagine_caso']) &&
@@ -283,17 +284,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $resultImg = $imageHandler->caricaImmagine($_FILES['immagine_caso'], 'caso', $caso['Slug']);
                 if ($resultImg['success'] && $resultImg['path']) {
                     $nuovaImmagineCaso = $resultImg['path'];
+                    $aggiornaImmagineCaso = true;
                 } elseif (!$resultImg['success'] && $resultImg['message'] !== 'Nessuna immagine caricata') {
                     $errori[] = "Errore immagine caso: " . $resultImg['message'];
                 }
             } else {
-                // Usa l'immagine esistente se presente (sarà vuota se rimossa via JS)
-                $nuovaImmagineCaso = !empty($casoImmagineEsistente) ? $casoImmagineEsistente : null;
-            }
-
-            // Se l'immagine è stata rimossa (campo hidden vuoto) ma ce n'era una, eliminala
-            if (empty($casoImmagineEsistente) && !empty($caso['Immagine'])) {
-                $imageHandler->eliminaImmagine($caso['Immagine']);
+                // Se il campo hidden è vuoto ma c'era un'immagine, la rimuoviamo
+                if (empty($casoImmagineEsistente) && !empty($caso['Immagine'])) {
+                    $imageHandler->eliminaImmagine($caso['Immagine']);
+                    $nuovaImmagineCaso = ''; // Stringa vuota per rimuovere dal DB
+                    $aggiornaImmagineCaso = true;
+                } elseif (!empty($casoImmagineEsistente)) {
+                    // Mantieni l'immagine esistente (non aggiornare nel DB)
+                    $nuovaImmagineCaso = null;
+                }
             }
             
             if (empty($errori)) {

@@ -79,6 +79,8 @@ a:hover {
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
 .btn:focus-visible {
     outline: 3px solid var(--primary);
     outline-offset: 2px;
@@ -2832,4 +2834,17 @@ input[type="file"]:focus-visible {
 
 .btn-undo-remove:hover {
     background: #5a6268;
+}
+
+/* Classe utility per nascondere visivamente ma mantenere accessibile agli screen reader */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }

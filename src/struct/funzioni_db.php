@@ -1104,15 +1104,31 @@ class FunzioniDB {
                 $this->db->chiudiConnessione();
                 return ['success' => false, 'message' => 'Tutti i campi obbligatori devono essere compilati'];
             }
-            
-            // Aggiorna sempre il campo immagine (può essere un percorso o null)
-            if ($riApprova) {
-                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ?, Approvato = 0 WHERE N_Caso = ?";
+
+            // Costruisci la query in base ai parametri
+            // Nota: $immagine può essere null (non aggiornare), stringa vuota '' (rimuovi), o path (aggiorna)
+            if ($immagine !== null) {
+                // Aggiorna anche l'immagine (può essere '' per rimuovere o un path per aggiornare)
+                // Se è stringa vuota, impostiamo NULL nel database
+                $immagineValue = ($immagine === '') ? null : $immagine;
+
+                if ($riApprova) {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ?, Approvato = 0 WHERE N_Caso = ?";
+                } else {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ? WHERE N_Caso = ?";
+                }
+                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagineValue, $nCaso];
+                $types = "sssssssi";
             } else {
-                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ? WHERE N_Caso = ?";
+                // Non aggiornare l'immagine
+                if ($riApprova) {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Approvato = 0 WHERE N_Caso = ?";
+                } else {
+                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ? WHERE N_Caso = ?";
+                }
+                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $nCaso];
+                $types = "ssssssi";
             }
-            $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagine, $nCaso];
-            $types = "sssssssi";
             
             $result = $this->db->query($query, $params, $types);
             
