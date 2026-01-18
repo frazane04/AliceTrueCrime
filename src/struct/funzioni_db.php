@@ -1106,14 +1106,18 @@ class FunzioniDB {
             }
             
             // Costruisci la query in base ai parametri
+            // Nota: $immagine può essere null (non aggiornare), stringa vuota '' (rimuovi), o path (aggiorna)
             if ($immagine !== null) {
-                // Aggiorna anche l'immagine
+                // Aggiorna anche l'immagine (può essere '' per rimuovere o un path per aggiornare)
+                // Se è stringa vuota, impostiamo NULL nel database
+                $immagineValue = ($immagine === '') ? null : $immagine;
+
                 if ($riApprova) {
                     $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ?, Approvato = 0 WHERE N_Caso = ?";
                 } else {
                     $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ? WHERE N_Caso = ?";
                 }
-                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagine, $nCaso];
+                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagineValue, $nCaso];
                 $types = "sssssssi";
             } else {
                 // Non toccare l'immagine
