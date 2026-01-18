@@ -5,30 +5,37 @@
             <p>Bentornato, Detective! Continua le tue indagini.</p>
         </div>
         <!-- PLACEHOLDER_MESSAGGI -->
-        <form class="auth-form" method="POST" action="{{PATH_PREFIX}}/accedi">
-            
+        <div id="form-errors" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;"></div>
+        <form class="auth-form" method="POST" action="{{PATH_PREFIX}}/accedi" novalidate>
+
             <div class="form-group">
                 <label for="email">Email o Username</label>
-                <input 
-                    type="text" 
-                    id="email" 
-                    name="email" 
-                    required 
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    required
                     placeholder="email@example.com o AdolfoBallan"
                     autocomplete="username"
+                    aria-describedby="email-error"
+                    aria-invalid="false"
                 />
+                <span id="email-error" class="error-message" style="display: none;"></span>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
                     placeholder="••••••••"
                     autocomplete="current-password"
+                    aria-describedby="password-error"
+                    aria-invalid="false"
                 />
+                <span id="password-error" class="error-message" style="display: none;"></span>
             </div>
 
             <div class="form-options">
@@ -56,3 +63,76 @@
         </div>
     </div>
 </div>
+
+<script>
+// Validazione form accessibile per screen reader
+(function() {
+    const form = document.querySelector('.auth-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    function showError(input, message) {
+        const errorId = input.id + '-error';
+        const errorSpan = document.getElementById(errorId);
+
+        input.setAttribute('aria-invalid', 'true');
+        errorSpan.textContent = message;
+        errorSpan.style.display = 'block';
+    }
+
+    function clearError(input) {
+        const errorId = input.id + '-error';
+        const errorSpan = document.getElementById(errorId);
+
+        input.setAttribute('aria-invalid', 'false');
+        errorSpan.textContent = '';
+        errorSpan.style.display = 'none';
+    }
+
+    // Validazione real-time su blur
+    emailInput.addEventListener('blur', function() {
+        if (!this.value.trim()) {
+            showError(this, 'Email o username richiesto');
+        } else {
+            clearError(this);
+        }
+    });
+
+    passwordInput.addEventListener('blur', function() {
+        if (!this.value) {
+            showError(this, 'Password richiesta');
+        } else {
+            clearError(this);
+        }
+    });
+
+    // Validazione submit
+    form.addEventListener('submit', function(e) {
+        let hasErrors = false;
+
+        if (!emailInput.value.trim()) {
+            showError(emailInput, 'Email o username richiesto');
+            hasErrors = true;
+        }
+
+        if (!passwordInput.value) {
+            showError(passwordInput, 'Password richiesta');
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
+            e.preventDefault();
+            const formErrors = document.getElementById('form-errors');
+            formErrors.textContent = 'Correggi gli errori nel form prima di procedere';
+            formErrors.style.display = 'block';
+
+            // Focus sul primo campo con errore
+            if (emailInput.getAttribute('aria-invalid') === 'true') {
+                emailInput.focus();
+            } else if (passwordInput.getAttribute('aria-invalid') === 'true') {
+                passwordInput.focus();
+            }
+        }
+    });
+})();
+</script>

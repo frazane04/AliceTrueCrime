@@ -193,17 +193,17 @@ function aggiungiVittima() {
             <input type="hidden" name="vittima_id[]" value="0">
             <input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-${idx}" value="">
             <div class="form-row">
-                <div class="form-group"><label>Nome *</label><input type="text" name="vittima_nome[]" required placeholder="Nome"></div>
-                <div class="form-group"><label>Cognome *</label><input type="text" name="vittima_cognome[]" required placeholder="Cognome"></div>
+                <div class="form-group"><label for="vittima-nome-${idx}">Nome *</label><input type="text" id="vittima-nome-${idx}" name="vittima_nome[]" required placeholder="Nome"></div>
+                <div class="form-group"><label for="vittima-cognome-${idx}">Cognome *</label><input type="text" id="vittima-cognome-${idx}" name="vittima_cognome[]" required placeholder="Cognome"></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>Luogo Nascita</label><input type="text" name="vittima_luogo_nascita[]" placeholder="Luogo"></div>
-                <div class="form-group"><label>Data Nascita *</label><input type="date" name="vittima_data_nascita[]" required></div>
-                <div class="form-group"><label>Data Decesso</label><input type="date" name="vittima_data_decesso[]"></div>
+                <div class="form-group"><label for="vittima-luogo-${idx}">Luogo Nascita</label><input type="text" id="vittima-luogo-${idx}" name="vittima_luogo_nascita[]" placeholder="Luogo"></div>
+                <div class="form-group"><label for="vittima-data-nascita-${idx}">Data Nascita *</label><input type="date" id="vittima-data-nascita-${idx}" name="vittima_data_nascita[]" required></div>
+                <div class="form-group"><label for="vittima-data-decesso-${idx}">Data Decesso</label><input type="date" id="vittima-data-decesso-${idx}" name="vittima_data_decesso[]"></div>
             </div>
             <div class="form-group">
-                <label>Foto (opzionale)</label>
-                <input type="file" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp">
+                <label for="vittima-immagine-${idx}">Foto (opzionale)</label>
+                <input type="file" id="vittima-immagine-${idx}" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp">
             </div>
         </div>
     `);
@@ -218,16 +218,16 @@ function aggiungiColpevole() {
             <input type="hidden" name="colpevole_id[]" value="0">
             <input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-${idx}" value="">
             <div class="form-row">
-                <div class="form-group"><label>Nome *</label><input type="text" name="colpevole_nome[]" required placeholder="Nome"></div>
-                <div class="form-group"><label>Cognome *</label><input type="text" name="colpevole_cognome[]" required placeholder="Cognome"></div>
+                <div class="form-group"><label for="colpevole-nome-${idx}">Nome *</label><input type="text" id="colpevole-nome-${idx}" name="colpevole_nome[]" required placeholder="Nome"></div>
+                <div class="form-group"><label for="colpevole-cognome-${idx}">Cognome *</label><input type="text" id="colpevole-cognome-${idx}" name="colpevole_cognome[]" required placeholder="Cognome"></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>Luogo Nascita</label><input type="text" name="colpevole_luogo_nascita[]" placeholder="Luogo"></div>
-                <div class="form-group"><label>Data Nascita *</label><input type="date" name="colpevole_data_nascita[]" required></div>
+                <div class="form-group"><label for="colpevole-luogo-${idx}">Luogo Nascita</label><input type="text" id="colpevole-luogo-${idx}" name="colpevole_luogo_nascita[]" placeholder="Luogo"></div>
+                <div class="form-group"><label for="colpevole-data-nascita-${idx}">Data Nascita *</label><input type="date" id="colpevole-data-nascita-${idx}" name="colpevole_data_nascita[]" required></div>
             </div>
             <div class="form-group">
-                <label>Foto (opzionale)</label>
-                <input type="file" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp">
+                <label for="colpevole-immagine-${idx}">Foto (opzionale)</label>
+                <input type="file" id="colpevole-immagine-${idx}" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp">
             </div>
         </div>
     `);
