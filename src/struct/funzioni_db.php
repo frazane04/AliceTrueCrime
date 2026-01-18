@@ -1129,7 +1129,6 @@ class FunzioniDB {
                 $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $nCaso];
                 $types = "ssssssi";
             }
-            
             $result = $this->db->query($query, $params, $types);
             
             $this->db->chiudiConnessione();
