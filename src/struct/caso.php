@@ -360,10 +360,12 @@ if ($isApprovato) {
                 $messaggioCommento = '<div class="alert alert-error">Il commento non può essere vuoto.</div>';
             } else {
                 $resultCommento = $dbFunctions->inserisciCommento($emailUtente, $casoId, $testoCommento);
-                
+
                 if ($resultCommento['success']) {
                     $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultCommento['message']) . '</div>';
-                    header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
+                    // Redirect sicuro usando lo slug del caso invece di REQUEST_URI (previene CRLF injection)
+                    $redirectUrl = $prefix . '/caso/' . urlencode($caso['Slug']) . '#commenti';
+                    header("Location: " . $redirectUrl);
                     exit;
                 } else {
                     $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultCommento['message']) . '</div>';
@@ -384,10 +386,12 @@ if ($isApprovato) {
             
             if ($idCommento > 0) {
                 $resultEliminazione = $dbFunctions->eliminaCommento($idCommento, $emailUtente, $isAdminComment);
-                
+
                 if ($resultEliminazione['success']) {
                     $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
-                    header("Location: " . $_SERVER['REQUEST_URI'] . "#commenti");
+                    // Redirect sicuro usando lo slug del caso invece di REQUEST_URI (previene CRLF injection)
+                    $redirectUrl = $prefix . '/caso/' . urlencode($caso['Slug']) . '#commenti';
+                    header("Location: " . $redirectUrl);
                     exit;
                 } else {
                     $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
