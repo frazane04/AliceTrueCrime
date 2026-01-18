@@ -1105,26 +1105,14 @@ class FunzioniDB {
                 return ['success' => false, 'message' => 'Tutti i campi obbligatori devono essere compilati'];
             }
             
-            // Costruisci la query in base ai parametri
-            if ($immagine !== null) {
-                // Aggiorna anche l'immagine
-                if ($riApprova) {
-                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ?, Approvato = 0 WHERE N_Caso = ?";
-                } else {
-                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ? WHERE N_Caso = ?";
-                }
-                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagine, $nCaso];
-                $types = "sssssssi";
+            // Aggiorna sempre il campo immagine (può essere un percorso o null)
+            if ($riApprova) {
+                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ?, Approvato = 0 WHERE N_Caso = ?";
             } else {
-                // Non toccare l'immagine
-                if ($riApprova) {
-                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Approvato = 0 WHERE N_Caso = ?";
-                } else {
-                    $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ? WHERE N_Caso = ?";
-                }
-                $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $nCaso];
-                $types = "ssssssi";
+                $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Immagine = ? WHERE N_Caso = ?";
             }
+            $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagine, $nCaso];
+            $types = "sssssssi";
             
             $result = $this->db->query($query, $params, $types);
             

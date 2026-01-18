@@ -530,7 +530,7 @@ if ($isAutore && !$isAdmin) {
 
 // Anteprima immagine caso esistente (come vittime/colpevoli)
 $anteprimaImmagineCaso = '';
-$hiddenCasoImmagine = '<input type="hidden" name="caso_immagine_esistente" id="caso-img-hidden" value="' . htmlspecialchars($caso['Immagine']) . '">';
+$hiddenCasoImmagine = '<input type="hidden" name="caso_immagine_esistente" id="caso-img-hidden" value="' . htmlspecialchars($caso['Immagine'] ?? '') . '">';
 
 if (!empty($caso['Immagine']) && $imageHandler->immagineEsiste($caso['Immagine'])) {
     $altCaso = ImageHandler::generaAlt('caso', ['titolo' => $caso['Titolo']]);
@@ -585,7 +585,7 @@ function generaHtmlVittima($dati = null, $prefix = '', $index = 0) {
     $immagine = $dati['Immagine'] ?? '';
     
     // Campo hidden per preservare l'immagine esistente
-    $hiddenImmagine = '<input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine) . '">';
+    $hiddenImmagine = '<input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine ?? '') . '">';
     
     // Anteprima immagine esistente
     $anteprimaImg = '';
@@ -654,7 +654,7 @@ function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
     $immagine = $dati['Immagine'] ?? '';
     
     // Campo hidden per preservare l'immagine esistente
-    $hiddenImmagine = '<input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine) . '">';
+    $hiddenImmagine = '<input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine ?? '') . '">';
     
     // Anteprima immagine esistente
     $anteprimaImg = '';
