@@ -432,7 +432,7 @@ if ($isApprovato) {
             $htmlCommenti .= '
             <article class="commento-card">
                 <div class="commento-header">
-                    <img src="' . $avatarUrl . '" alt="" class="commento-avatar" />
+                    <img src="' . $avatarUrl . '" alt="Avatar di ' . $usernameCommento . '" class="commento-avatar" />
                     <div class="commento-info">
                         <strong class="commento-autore">' . $usernameCommento . '</strong>
                         <time class="commento-data" datetime="' . $commento['Data'] . '">' . $dataCommento . '</time>
@@ -456,14 +456,14 @@ if ($isApprovato) {
         $htmlFormCommento = '
         <div class="form-commento-container">
             <h3>Scrivi un commento</h3>
-            
+
             ' . $messaggioCommento . '
-            
+
             <form method="POST" class="form-commento" action="#commenti">
                 <input type="hidden" name="action" value="aggiungi_commento" />
-                
+
                 <div class="form-commento-header">
-                    <img src="' . $avatarLoggato . '" alt="" class="commento-avatar" />
+                    <img src="' . $avatarLoggato . '" alt="Avatar di ' . $usernameLoggato . '" class="commento-avatar" />
                     <strong>' . $usernameLoggato . '</strong>
                 </div>
                 
