@@ -27,10 +27,15 @@ function getTemplatePage(string $title, string $content): string {
 
     $header = getHeaderSection($_SERVER['REQUEST_URI']);
     $footer = getFooterSection($_SERVER['REQUEST_URI']);
+    
+    // --- AGGIUNTA LOGICA BREADCRUMBS ---
+    $breadcrumbs = getBreadcrumbs($_SERVER['REQUEST_URI']);
+    // Inseriamo le breadcrumbs all'inizio del contenuto
+    $fullContent = $breadcrumbs . $content;
 
     $page = str_replace('{{TITOLO_PAGINA}}', $title, $page);
     $page = str_replace('{{HEADER}}', $header, $page);
-    $page = str_replace('{{CONTENT}}', $content, $page);
+    $page = str_replace('{{CONTENT}}', $fullContent, $page); // Usiamo fullContent
     $page = str_replace('{{FOOTER}}', $footer, $page);
     $page = str_replace('{{PATH_PREFIX}}', getPrefix(), $page);
 
@@ -149,4 +154,37 @@ function generateLiList($links, $currentPath): string {
     }
     return $html;
 }
+
+/**
+ * Genera le breadcrumbs in base al percorso attuale.
+ */
+function getBreadcrumbs($currentPath): string {
+    $prefix = getPrefix();
+    $path = trim(parse_url($currentPath, PHP_URL_PATH), '/');
+    $parts = explode('/', $path);
+    
+    // Inizio sempre dalla Home
+    $breadcrumbs = ['<a href="' . $prefix . '/">Home</a>'];
+    $accumulatedPath = $prefix;
+
+    foreach ($parts as $part) {
+        if (empty($part)) continue;
+        
+        $accumulatedPath .= '/' . $part;
+        // Trasformiamo lo slug (es. segnala-caso) in testo leggibile (es. Segnala Caso)
+        $name = ucwords(str_replace(['-', '_'], ' ', $part));
+        
+        // Se è l'ultima parte, non mettiamo il link
+        if ($part === end($parts)) {
+            $breadcrumbs[] = '<span>' . $name . '</span>';
+        } else {
+            $breadcrumbs[] = '<a href="' . $accumulatedPath . '">' . $name . '</a>';
+        }
+    }
+
+    return '<nav aria-label="Breadcrumb" class="breadcrumbs">' . 
+           implode(' <span class="separator">/</span> ', $breadcrumbs) . 
+           '</nav>';
+}
+
 ?>

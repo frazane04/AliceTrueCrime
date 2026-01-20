@@ -2848,3 +2848,108 @@ input[type="file"]:focus-visible {
     white-space: nowrap;
     border: 0;
 }
+
+/* ============================================
+   PULSANTE TORNA SU (BACK TO TOP) - ACCESSIBILE
+   ============================================ */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary);
+    color: var(--text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    text-decoration: none;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 2px solid transparent; /* Preparazione per il focus */
+    cursor: pointer;
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+
+.back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Miglioramento Accessibilità: Focus visibile per navigazione da tastiera */
+.back-to-top:focus {
+    outline: none; /* Rimuoviamo l'outline di default per uno personalizzato */
+}
+
+.back-to-top:focus-visible {
+    outline: 3px solid var(--accent-blue); /* Colore ad alto contrasto */
+    outline-offset: 4px;
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-5px);
+    color: var(--text-light);
+}
+
+/* Rispetto delle preferenze utente: nessuna animazione se richiesto dal sistema */
+@media (prefers-reduced-motion: reduce) {
+    .back-to-top {
+        transition: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px; /* Leggermente più grande per facilitare il tocco (Touch Target) */
+        height: 45px;
+    }
+}
+
+/* ============================================
+   BREADCRUMBS
+   ============================================ */
+.breadcrumbs {
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.breadcrumbs a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+    color: var(--primary-dark);
+}
+
+.breadcrumbs .separator {
+    margin: 0 0.5rem;
+    color: var(--border-light);
+}
+
+.breadcrumbs span {
+    color: var(--accent-text);
+    font-weight: bold;
+}
+
+/* Dark Theme support */
+body.dark-theme .breadcrumbs {
+    color: var(--text-light);
+}
+body.dark-theme .breadcrumbs a {
+    color: var(--border-light);
+}
