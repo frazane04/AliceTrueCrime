@@ -284,28 +284,29 @@ if ($isApprovato && !$isAdminPreview) {
 // ========================================
 $htmlAdminBar = '';
 
+// ✅ MODIFICA 1 e 2: Sostituiti confirm() con chiamate modal accessibile
 if ($isAdmin && !$isApprovato) {
     $htmlAdminBar = '
     <div class="admin-action-bar">
         <div class="admin-bar-content">
             <span class="admin-bar-label">Pannello Admin - Caso in attesa di approvazione</span>
-            
+
             ' . $messaggioAdmin . '
-            
+
             <div class="admin-bar-actions">
-                <form method="POST">
+                <form method="POST" id="form-approva-caso">
                     <input type="hidden" name="action" value="approva_caso">
-                    <button type="submit" class="btn btn-success" onclick="return confirm(\'Confermi l\\\'approvazione di questo caso?\')">
+                    <button type="button" class="btn btn-success" onclick="confermaApprovaCaso()">
                         Approva Caso
                     </button>
                 </form>
-                
-                <form method="POST">
+
+                <form method="POST" id="form-rifiuta-caso">
                     <input type="hidden" name="action" value="rifiuta_caso">
-                    <button type="submit" class="btn btn-danger" onclick="return confirm(\'⚠️ ATTENZIONE: Questa azione eliminerà definitivamente il caso. Continuare?\')">
+                    <button type="button" class="btn btn-danger" onclick="confermaRifiutaCaso()">
                         Rifiuta ed Elimina
                     </button>
-                </form>                
+                </form>
             </div>
         </div>
     </div>';
@@ -414,17 +415,18 @@ if ($isApprovato) {
             
             $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($usernameCommento) . "&background=0D8ABC&color=fff&size=48";
             
+            // ✅ MODIFICA 3: Sostituito confirm() con chiamata modal accessibile
             $pulsanteElimina = '';
             if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                 $emailLoggata = $_SESSION['user_email'];
                 $isAdminComment = $_SESSION['is_admin'] ?? false;
-                
+
                 if ($commento['Email'] === $emailLoggata || $isAdminComment) {
                     $pulsanteElimina = '
-                    <form method="POST" style="display: inline;" onsubmit="return confirm(\'Sei sicuro di voler eliminare questo commento?\');">
+                    <form method="POST" id="form-elimina-' . $idCommento . '" style="display: inline;">
                         <input type="hidden" name="action" value="elimina_commento" />
                         <input type="hidden" name="id_commento" value="' . $idCommento . '" />
-                        <button type="submit" class="btn-elimina-commento" aria-label="Elimina commento">🗑️ Elimina</button>
+                        <button type="button" class="btn-elimina-commento" aria-label="Elimina commento" onclick="confermaEliminaCommento(' . $idCommento . ')">🗑️ Elimina</button>
                     </form>';
                 }
             }
@@ -501,7 +503,64 @@ $contenuto = str_replace('<!-- caso_form_commento -->', $htmlFormCommento, $cont
 $contenuto = str_replace('<!-- caso_lista_commenti -->', $htmlCommenti, $contenuto);
 $contenuto = str_replace('<!-- caso_azioni_utente -->', $htmlAzioniUtente, $contenuto);
 
+// ========================================
+// ✅ MODIFICA 4: Script JavaScript per conferme accessibili
+// ========================================
+$scriptConfermeCaso = '
+<script>
+/**
+ * Conferma approvazione caso admin
+ * Apre modal accessibile con messaggio informativo
+ */
+async function confermaApprovaCaso() {
+    const confirmed = await showConfirmModal({
+        title: "Approva Caso",
+        message: "Confermi l\'approvazione di questo caso? Sarà visibile pubblicamente a tutti gli utenti.",
+        confirmText: "Approva",
+        confirmClass: "btn-success"
+    });
+    
+    if (confirmed) {
+        document.getElementById("form-approva-caso").submit();
+    }
+}
+
+/**
+ * Conferma rifiuto/eliminazione caso admin
+ * Apre modal accessibile con avviso forte (azione irreversibile)
+ */
+async function confermaRifiutaCaso() {
+    const confirmed = await showConfirmModal({
+        title: "Rifiuta ed Elimina Caso",
+        message: "⚠️ ATTENZIONE: Questa azione eliminerà definitivamente il caso e tutti i dati associati (vittime, colpevoli, articoli, commenti). L\'operazione non può essere annullata.",
+        confirmText: "Elimina Definitivamente",
+        confirmClass: "btn-danger"
+    });
+    
+    if (confirmed) {
+        document.getElementById("form-rifiuta-caso").submit();
+    }
+}
+
+/**
+ * Conferma eliminazione commento
+ * @param {number} idCommento - ID del commento da eliminare
+ */
+async function confermaEliminaCommento(idCommento) {
+    const confirmed = await showConfirmModal({
+        title: "Elimina Commento",
+        message: "Sei sicuro di voler eliminare questo commento? L\'operazione non può essere annullata.",
+        confirmText: "Elimina",
+        confirmClass: "btn-danger"
+    });
+    
+    if (confirmed) {
+        document.getElementById("form-elimina-" + idCommento).submit();
+    }
+}
+</script>';
+
 // Output finale
 $titoloPagina = $titolo . " - AliceTrueCrime";
-echo getTemplatePage($titoloPagina, $contenuto);
+echo getTemplatePage($titoloPagina, $contenuto . $scriptConfermeCaso);
 ?>

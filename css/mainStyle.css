@@ -2953,3 +2953,116 @@ body.dark-theme .breadcrumbs {
 body.dark-theme .breadcrumbs a {
     color: var(--border-light);
 }
+
+/* Modal Overlay  da controllareee*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal Content */
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    margin-bottom: 1.5rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.modal-actions .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-actions .btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.modal-actions .btn-secondary:hover {
+    background: #5a6268;
+}
+
+.modal-actions .btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.modal-actions .btn-primary:hover {
+    background: #0056b3;
+}
+
+.modal-actions .btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.modal-actions .btn-danger:hover {
+    background: #c82333;
+}
+
+.modal-actions .btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.modal-actions .btn-success:hover {
+    background: #218838;
+}
+
+/* Focus visible per accessibilità */
+.modal-actions .btn:focus-visible {
+    outline: 3px solid #80bdff;
+    outline-offset: 2px;
+}

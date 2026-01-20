@@ -28,19 +28,20 @@ function getTemplatePage(string $title, string $content): string {
     $header = getHeaderSection($_SERVER['REQUEST_URI']);
     $footer = getFooterSection($_SERVER['REQUEST_URI']);
     
-    // --- AGGIUNTA LOGICA BREADCRUMBS ---
-    $breadcrumbs = getBreadcrumbs($_SERVER['REQUEST_URI']);
-    // Inseriamo le breadcrumbs all'inizio del contenuto
-    $fullContent = $breadcrumbs . $content;
+    // Carica modal HTML
+    $modalPath = __DIR__ . '/../template/modal.html';
+    $modal = file_exists($modalPath) ? file_get_contents($modalPath) : '';
 
     $page = str_replace('{{TITOLO_PAGINA}}', $title, $page);
     $page = str_replace('{{HEADER}}', $header, $page);
-    $page = str_replace('{{CONTENT}}', $fullContent, $page); // Usiamo fullContent
+    $page = str_replace('{{CONTENT}}', $content, $page);
     $page = str_replace('{{FOOTER}}', $footer, $page);
+    $page = str_replace('{{MODAL}}', $modal, $page);
     $page = str_replace('{{PATH_PREFIX}}', getPrefix(), $page);
 
     return $page;
 }
+
 
 function getHeaderSection($currentPath): string {
     $headerPath = __DIR__ . '/../template/header.html';
