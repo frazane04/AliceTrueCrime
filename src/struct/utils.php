@@ -284,9 +284,6 @@ function getHeaderButtons(): string {
         
         return <<<HTML
             <div class="user-menu">
-                <a href="$prefix/notifiche" class="icon-btn" aria-label="Notifiche">
-                    <img src="$prefix/assets/imgs/bell.svg" alt="Icona notifiche" width="20" />
-                </a>
 
                 <a href="$prefix/profilo" class="button-layout profile-btn" aria-label="Il tuo profilo" title="$email">
                     <img src="$imgProfile" alt="Avatar di $username" width="24" style="border-radius:50%; vertical-align:middle; margin-right:5px;" />

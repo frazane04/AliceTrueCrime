@@ -1,7 +1,6 @@
 <?php
 // src/struct/modifica_caso.php
 // Gestione modifica casi - Con supporto upload immagini
-// VERSIONE CORRETTA: Preserva immagini esistenti + Rimozione immagini vittime/colpevoli
 
 require_once __DIR__ . '/funzioni_db.php';
 require_once __DIR__ . '/ImageHandler.php';

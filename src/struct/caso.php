@@ -238,7 +238,6 @@ if ($isApprovato && !$isAdminPreview) {
 // ========================================
 $htmlAdminBar = '';
 
-// ✅ MODIFICA 1 e 2: Sostituiti confirm() con chiamate modal accessibile
 if ($isAdmin && !$isApprovato) {
     $htmlAdminBar = '
     <div class="admin-action-bar">
