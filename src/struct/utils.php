@@ -34,6 +34,7 @@ function getTemplatePage(string $title, string $content): string {
 
     $page = str_replace('{{TITOLO_PAGINA}}', $title, $page);
     $page = str_replace('{{HEADER}}', $header, $page);
+    $page = str_replace('{{BREADCRUMBS}}', getBreadcrumbs($_SERVER['REQUEST_URI']), $page);
     $page = str_replace('{{CONTENT}}', $content, $page);
     $page = str_replace('{{FOOTER}}', $footer, $page);
     $page = str_replace('{{MODAL}}', $modal, $page);

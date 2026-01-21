@@ -40,14 +40,40 @@
                 // Imposta stile bottone conferma
                 confirmBtn.className = 'btn ' + (config.confirmClass || 'btn-primary');
 
+                // Mostra/nascondi bottone annulla (per modal solo informative)
+                if (config.hideCancel) {
+                    cancelBtn.style.display = 'none';
+                } else {
+                    cancelBtn.style.display = '';
+                }
+
                 // Mostra modal
                 modal.style.display = 'flex';
 
                 // Focus trap setup
                 updateFocusableElements();
 
-                // Focus sul bottone annulla per sicurezza
-                cancelBtn.focus();
+                // Focus sul bottone appropriato
+                if (config.hideCancel) {
+                    confirmBtn.focus();
+                } else {
+                    cancelBtn.focus();
+                }
+            });
+        };
+
+        /**
+         * Mostra un modal informativo (solo OK, nessun annulla)
+         * @param {Object} config - Configurazione del modal
+         * @returns {Promise<void>}
+         */
+        window.showInfoModal = function(config) {
+            return showConfirmModal({
+                title: config.title || 'Informazione',
+                message: config.message,
+                confirmText: config.confirmText || 'OK',
+                confirmClass: config.confirmClass || 'btn-primary',
+                hideCancel: true
             });
         };
 

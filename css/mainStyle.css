@@ -2919,10 +2919,11 @@ input[type="file"]:focus-visible {
    BREADCRUMBS
    ============================================ */
 .breadcrumbs {
-    padding: 1rem 0;
+    padding: 1rem 1.5rem;
     font-size: 0.9rem;
     color: var(--text-dark);
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem;
+    max-width: 1200px;
 }
 
 .breadcrumbs a {
@@ -2954,14 +2955,14 @@ body.dark-theme .breadcrumbs a {
     color: var(--border-light);
 }
 
-/* Modal Overlay  da controllareee*/
+/* Modal Overlay */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(37, 17, 1, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2976,12 +2977,13 @@ body.dark-theme .breadcrumbs a {
 
 /* Modal Content */
 .modal-content {
-    background: white;
+    background: var(--white);
     padding: 2rem;
     border-radius: 8px;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(91, 24, 101, 0.3);
+    border-top: 4px solid var(--primary);
     animation: slideIn 0.3s ease-out;
 }
 
@@ -2999,13 +3001,13 @@ body.dark-theme .breadcrumbs a {
 .modal-content h2 {
     margin-top: 0;
     margin-bottom: 1rem;
-    color: #333;
+    color: var(--primary);
     font-size: 1.5rem;
 }
 
 .modal-content p {
     margin-bottom: 1.5rem;
-    color: #666;
+    color: var(--text-dark);
     line-height: 1.6;
 }
 
@@ -3026,43 +3028,44 @@ body.dark-theme .breadcrumbs a {
 }
 
 .modal-actions .btn-secondary {
-    background: #6c757d;
-    color: white;
+    background: var(--border-light);
+    color: var(--text-dark);
 }
 
 .modal-actions .btn-secondary:hover {
-    background: #5a6268;
+    background: var(--accent-text);
+    color: var(--text-light);
 }
 
 .modal-actions .btn-primary {
-    background: #007bff;
-    color: white;
+    background: var(--primary);
+    color: var(--text-light);
 }
 
 .modal-actions .btn-primary:hover {
-    background: #0056b3;
+    background: var(--primary-dark);
 }
 
 .modal-actions .btn-danger {
-    background: #dc3545;
-    color: white;
+    background: #a82039;
+    color: var(--text-light);
 }
 
 .modal-actions .btn-danger:hover {
-    background: #c82333;
+    background: #8a1a2f;
 }
 
 .modal-actions .btn-success {
-    background: #28a745;
-    color: white;
+    background: var(--accent-blue);
+    color: var(--text-light);
 }
 
 .modal-actions .btn-success:hover {
-    background: #218838;
+    background: #1e4060;
 }
 
 /* Focus visible per accessibilità */
 .modal-actions .btn:focus-visible {
-    outline: 3px solid #80bdff;
+    outline: 3px solid var(--primary);
     outline-offset: 2px;
 }
