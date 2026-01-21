@@ -254,3 +254,25 @@ document.getElementById('btn-add-articolo').addEventListener('click', () => arti
         }
     });
 })();
+
+// ========================================
+// CONFERMA RESET FORM (accessibile)
+// ========================================
+function confermaResetForm() {
+    openConfirmModal(
+        'Conferma cancellazione',
+        'Sei sicuro di voler cancellare tutti i dati inseriti?',
+        function() {
+            const form = document.getElementById('form-segnalazione');
+            if (form) {
+                form.reset();
+                // Rimuovi entry aggiuntive (mantieni solo la prima)
+                document.querySelectorAll('.vittima-entry:not(:first-child)').forEach(el => el.remove());
+                document.querySelectorAll('.colpevole-entry:not(:first-child)').forEach(el => el.remove());
+                document.querySelectorAll('.articolo-entry:not(:first-child)').forEach(el => el.remove());
+                // Rimuovi anteprime immagini
+                document.querySelectorAll('.image-preview').forEach(el => el.innerHTML = '');
+            }
+        }
+    );
+}

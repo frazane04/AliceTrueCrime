@@ -1,0 +1,17 @@
+<div class="form-commento-container">
+    <h3>Scrivi un commento</h3>
+    {{MESSAGGIO}}
+    <form method="POST" class="form-commento" action="#commenti">
+        <input type="hidden" name="action" value="aggiungi_commento" />
+        <div class="form-commento-header">
+            <img src="{{AVATAR_URL}}" alt="Avatar di {{USERNAME}}" class="commento-avatar" />
+            <strong>{{USERNAME}}</strong>
+        </div>
+        <div class="form-group">
+            <label for="commento" class="sr-only">Il tuo commento</label>
+            <textarea id="commento" name="commento" rows="4" placeholder="Condividi la tua opinione su questo caso..." required maxlength="2000"></textarea>
+            <small class="form-hint">Massimo 2000 caratteri</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Pubblica Commento</button>
+    </form>
+</div>

@@ -17,43 +17,20 @@ function generaHtmlCards($listaCasi) {
     if (empty($listaCasi)) {
         return '<p class="no-results">Nessun caso trovato in questa categoria.</p>';
     }
-    
-    $html = '';
-    $prefix = getPrefix();
-    
-    foreach ($listaCasi as $caso) {
-        // Gestione immagine
-        $imgSrc = !empty($caso['Immagine']) 
-            ? $prefix . '/' . htmlspecialchars($caso['Immagine'])
-            : $prefix . '/assets/img/caso-placeholder.jpeg';
-        
-        // Sanitizzazione dati
-        $titolo = htmlspecialchars($caso['Titolo']);
-        $descrizione = htmlspecialchars(substr($caso['Descrizione'], 0, 120)) . '...';
-        $tipologia = htmlspecialchars($caso['Tipologia']);
 
-        $slug = !empty($caso['Slug']) 
-            ? $caso['Slug'] 
-            : strtolower(str_replace(' ', '-', $caso['Titolo']));
-        
-        $linkCaso = $prefix . '/caso/' . urlencode($slug);
-        
-        $html .= <<<HTML
-        <article class="case-card" data-categoria="{$tipologia}">
-            <div class="card-image">
-                <img src="{$imgSrc}" alt="Copertina caso {$titolo}" loading="lazy" />
-            </div>
-            <div class="card-content">
-                <h3>{$titolo}</h3>
-                <p>{$descrizione}</p>
-                <a href="{$linkCaso}" class="btn-card" aria-label="Leggi approfondimento su {$titolo}">
-                    Leggi Caso
-                </a>
-            </div>
-        </article>
-    HTML;
+    $html = '';
+    foreach ($listaCasi as $caso) {
+        $descrizione = htmlspecialchars(substr($caso['Descrizione'] ?? '', 0, 120)) . '...';
+
+        $html .= renderComponent('card-caso-esplora', [
+            'IMMAGINE'    => getImageUrl($caso['Immagine'] ?? null),
+            'TITOLO'      => htmlspecialchars($caso['Titolo']),
+            'DESCRIZIONE' => $descrizione,
+            'TIPOLOGIA'   => htmlspecialchars($caso['Tipologia'] ?? ''),
+            'LINK'        => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso))
+        ]);
     }
-    
+
     return $html;
 }
 

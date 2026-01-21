@@ -336,12 +336,13 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn-submit">📤 Invia Segnalazione Completa</button>
-                <button type="reset" class="btn-reset" onclick="return confirm('Sei sicuro di voler cancellare tutti i dati inseriti?');">↺ Cancella Tutto</button>
+                <button type="button" class="btn-reset" onclick="confermaResetForm()">Cancella Tutto</button>
             </div>
 
         </form>
     </div>
 </section>
 
+<script src="{{PATH_PREFIX}}/js/confirmModal.js"></script>
 <script src="{{PATH_PREFIX}}/js/form-caso.js"></script>
 <script src="{{PATH_PREFIX}}/js/segnala-caso.js"></script>

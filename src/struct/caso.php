@@ -356,41 +356,32 @@ if ($isApprovato) {
     // Genera HTML commenti
     if (!empty($commenti)) {
         foreach ($commenti as $commento) {
-            $usernameCommento = htmlspecialchars($commento['Username']);
-            $dataCommento = formatData($commento['Data'], 'd/m/Y H:i');
-            $testoCommento = nl2br(htmlspecialchars($commento['Commento']));
             $idCommento = (int)$commento['ID_Commento'];
-            $avatarUrl = getAvatarUrl($usernameCommento, 48);
+            $usernameCommento = htmlspecialchars($commento['Username']);
 
+            // Pulsante elimina (solo per autore o admin)
             $pulsanteElimina = '';
             if (isLoggedIn()) {
                 $emailLoggata = $_SESSION['user_email'];
                 $isAdminComment = $_SESSION['is_admin'] ?? false;
 
                 if ($commento['Email'] === $emailLoggata || $isAdminComment) {
-                    $pulsanteElimina = '
-                    <form method="POST" id="form-elimina-' . $idCommento . '" style="display: inline;">
-                        <input type="hidden" name="action" value="elimina_commento" />
-                        <input type="hidden" name="id_commento" value="' . $idCommento . '" />
-                        <button type="button" class="btn-elimina-commento" aria-label="Elimina commento" onclick="confermaEliminaCommento(' . $idCommento . ')">🗑️ Elimina</button>
-                    </form>';
+                    $pulsanteElimina = '<form method="POST" id="form-elimina-' . $idCommento . '" style="display:inline;">'
+                        . '<input type="hidden" name="action" value="elimina_commento" />'
+                        . '<input type="hidden" name="id_commento" value="' . $idCommento . '" />'
+                        . '<button type="button" class="btn-elimina-commento" aria-label="Elimina commento" onclick="confermaEliminaCommento(' . $idCommento . ')">Elimina</button>'
+                        . '</form>';
                 }
             }
-            
-            $htmlCommenti .= '
-            <article class="commento-card">
-                <div class="commento-header">
-                    <img src="' . $avatarUrl . '" alt="Avatar di ' . $usernameCommento . '" class="commento-avatar" />
-                    <div class="commento-info">
-                        <strong class="commento-autore">' . $usernameCommento . '</strong>
-                        <time class="commento-data" datetime="' . $commento['Data'] . '">' . $dataCommento . '</time>
-                    </div>
-                    ' . $pulsanteElimina . '
-                </div>
-                <div class="commento-contenuto">
-                    <p>' . $testoCommento . '</p>
-                </div>
-            </article>';
+
+            $htmlCommenti .= renderComponent('card-commento', [
+                'AVATAR_URL'       => getAvatarUrl($usernameCommento, 48),
+                'USERNAME'         => $usernameCommento,
+                'DATA_ISO'         => $commento['Data'] ?? '',
+                'DATA'             => formatData($commento['Data'] ?? null, 'd/m/Y H:i'),
+                'TESTO'            => nl2br(htmlspecialchars($commento['Commento'])),
+                'PULSANTE_ELIMINA' => $pulsanteElimina
+            ]);
         }
     } else {
         $htmlCommenti = '<p class="no-commenti">Nessun commento ancora. Sii il primo a commentare!</p>';
@@ -399,44 +390,16 @@ if ($isApprovato) {
     // Form commento
     if (isLoggedIn()) {
         $usernameLoggato = htmlspecialchars($_SESSION['user']);
-        $avatarLoggato = getAvatarUrl($usernameLoggato, 48);
-        
-        $htmlFormCommento = '
-        <div class="form-commento-container">
-            <h3>Scrivi un commento</h3>
-
-            ' . $messaggioCommento . '
-
-            <form method="POST" class="form-commento" action="#commenti">
-                <input type="hidden" name="action" value="aggiungi_commento" />
-
-                <div class="form-commento-header">
-                    <img src="' . $avatarLoggato . '" alt="Avatar di ' . $usernameLoggato . '" class="commento-avatar" />
-                    <strong>' . $usernameLoggato . '</strong>
-                </div>
-                
-                <div class="form-group">
-                    <label for="commento" class="sr-only">Il tuo commento</label>
-                    <textarea 
-                        id="commento" 
-                        name="commento" 
-                        rows="4" 
-                        placeholder="Condividi la tua opinione su questo caso..."
-                        required
-                        maxlength="2000"
-                    ></textarea>
-                    <small class="form-hint">Massimo 2000 caratteri</small>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">💬 Pubblica Commento</button>
-            </form>
-        </div>';
+        $htmlFormCommento = renderComponent('form-commento', [
+            'AVATAR_URL' => getAvatarUrl($usernameLoggato, 48),
+            'USERNAME'   => $usernameLoggato,
+            'MESSAGGIO'  => $messaggioCommento
+        ]);
     } else {
-        $htmlFormCommento = '
-        <div class="login-prompt">
-            <p>Per commentare devi essere registrato.</p>
-            <a href="' . $prefix . '/accedi" class="btn btn-primary">Accedi per Commentare</a>
-        </div>';
+        $htmlFormCommento = '<div class="login-prompt">'
+            . '<p>Per commentare devi essere registrato.</p>'
+            . '<a href="' . $prefix . '/accedi" class="btn btn-primary">Accedi per Commentare</a>'
+            . '</div>';
     }
 } else {
     // Caso non approvato - niente commenti
