@@ -5,20 +5,7 @@
 require_once __DIR__ . '/connessione.php';
 
 // 1. Carica il template HTML
-$templatePath = __DIR__ . '/../template/index.html';
-
-if (!file_exists($templatePath)) {
-    $contenuto = "
-        <div style='padding: 2rem; text-align: center; color: red;'>
-            <h1>Errore Critico</h1>
-            <p>Template non trovato: <code>$templatePath</code></p>
-        </div>
-    ";
-    echo getTemplatePage("Errore - AliceTrueCrime", $contenuto);
-    exit;
-}
-
-$contenuto = file_get_contents($templatePath);
+$contenuto = loadTemplate('index');
 
 // 2. Connessione Database
 $db = new ConnessioneDB();

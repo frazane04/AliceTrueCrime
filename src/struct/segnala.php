@@ -8,26 +8,20 @@ require_once __DIR__ . '/ImageHandler.php';
 // ========================================
 // CONTROLLO SESSIONE
 // ========================================
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    $prefix = getPrefix();
-    $titoloPagina = "Accesso Negato - AliceTrueCrime";
-    $contenuto = "
-        <div class='access-denied-container' style='text-align: center; padding: 3rem;'>
-            <h1>🔒 Area Riservata agli Investigatori</h1>
-            <p>Per inviare una segnalazione devi essere registrato e autenticato.</p>
-            <a href='$prefix/accedi' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
-                Accedi o Registrati
-            </a>
-        </div>
-    ";
-    echo getTemplatePage($titoloPagina, $contenuto);
-    exit;
-}
+$prefix = getPrefix();
+requireAuth(false, "
+    <div class='access-denied-container' style='text-align: center; padding: 3rem;'>
+        <h1>Area Riservata agli Investigatori</h1>
+        <p>Per inviare una segnalazione devi essere registrato e autenticato.</p>
+        <a href='{$prefix}/accedi' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+            Accedi o Registrati
+        </a>
+    </div>
+");
 
 // ========================================
 // INIZIALIZZAZIONE VARIABILI
 // ========================================
-$templatePath = __DIR__ . '/../template/segnala_caso.html';
 $messaggioFeedback = "";
 $titolo = $data = $luogo = $descrizione_breve = $storia = $tipologia = '';
 $vittime = [];
@@ -299,11 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ========================================
 // CARICAMENTO TEMPLATE
 // ========================================
-if (file_exists($templatePath)) {
-    $contenuto = file_get_contents($templatePath);
-} else {
-    $contenuto = "<div class='error'><h1>Errore</h1><p>Template mancante</p></div>";
-}
+$contenuto = loadTemplate('segnala_caso');
 
 // Iniezione feedback
 $contenuto = str_replace(

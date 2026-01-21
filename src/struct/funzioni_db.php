@@ -82,25 +82,30 @@ class FunzioniDB {
     }
     
     /**
-     * Effettua il login verificando email e password
+     * Effettua il login verificando email/username e password.
+     * Rileva automaticamente se l'input è un'email o uno username.
+     *
+     * @param string $identificativo Email o username
+     * @param string $password Password
+     * @return array Risultato con success, message e user
      */
-    public function loginUtenteEmail($email, $password) {
+    public function loginUtente($identificativo, $password) {
         try {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
-            
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $this->db->chiudiConnessione();
-                return ['success' => false, 'message' => 'Email non valida', 'user' => null];
-            }
-            
-            $query = "SELECT Email, Username, Password, Is_Admin FROM Utente WHERE Email = ?";
-            $result = $this->db->query($query, [$email], "s");
-            
+
+            // Determina se è email o username
+            $isEmail = filter_var($identificativo, FILTER_VALIDATE_EMAIL);
+            $campo = $isEmail ? 'Email' : 'Username';
+            $erroreNonTrovato = $isEmail ? 'Email non trovata' : 'Username non trovato';
+
+            $query = "SELECT Email, Username, Password, Is_Admin FROM Utente WHERE {$campo} = ?";
+            $result = $this->db->query($query, [$identificativo], "s");
+
             if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
                 $user = mysqli_fetch_assoc($result);
-                
+
                 if (password_verify($password, $user['Password'])) {
                     $this->db->chiudiConnessione();
                     return [
@@ -118,54 +123,27 @@ class FunzioniDB {
                 }
             } else {
                 $this->db->chiudiConnessione();
-                return ['success' => false, 'message' => 'Email non trovata', 'user' => null];
+                return ['success' => false, 'message' => $erroreNonTrovato, 'user' => null];
             }
-            
+
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
             return ['success' => false, 'message' => 'Errore durante il login.', 'user' => null];
         }
     }
-    
+
     /**
-     * Effettua il login verificando username e password
+     * @deprecated Usa loginUtente() invece
+     */
+    public function loginUtenteEmail($email, $password) {
+        return $this->loginUtente($email, $password);
+    }
+
+    /**
+     * @deprecated Usa loginUtente() invece
      */
     public function loginUtenteUsername($username, $password) {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-            
-            $query = "SELECT Email, Username, Password, Is_Admin FROM Utente WHERE Username = ?";
-            $result = $this->db->query($query, [$username], "s");
-            
-            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
-                $user = mysqli_fetch_assoc($result);
-                
-                if (password_verify($password, $user['Password'])) {
-                    $this->db->chiudiConnessione();
-                    return [
-                        'success' => true,
-                        'message' => 'Login effettuato con successo',
-                        'user' => [
-                            'email' => $user['Email'],
-                            'username' => $user['Username'],
-                            'is_admin' => (bool)$user['Is_Admin']
-                        ]
-                    ];
-                } else {
-                    $this->db->chiudiConnessione();
-                    return ['success' => false, 'message' => 'Password non corretta', 'user' => null];
-                }
-            } else {
-                $this->db->chiudiConnessione();
-                return ['success' => false, 'message' => 'Username non trovato', 'user' => null];
-            }
-            
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            return ['success' => false, 'message' => 'Errore durante il login.', 'user' => null];
-        }
+        return $this->loginUtente($username, $password);
     }
     
     /**

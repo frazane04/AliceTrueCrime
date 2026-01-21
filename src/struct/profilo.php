@@ -2,10 +2,7 @@
 require_once __DIR__ . '/utils.php';
 require_once __DIR__ . '/funzioni_db.php';
 
-if (!isset($_SESSION['logged_in'])) {
-    header('Location: ' . getPrefix() . '/accedi');
-    exit;
-}
+requireAuth();
 
 $db = new FunzioniDB();
 $email = $_SESSION['user_email'];
@@ -89,8 +86,7 @@ if ($is_admin) {
 }
 
 // Caricamento Template
-$templatePath = __DIR__ . '/../template/pagineutente.html';
-$html = file_get_contents($templatePath);
+$html = loadTemplate('pagineutente');
 
 $html = str_replace('{{USERNAME}}', htmlspecialchars($utente['Username']), $html);
 $html = str_replace('{{EMAIL}}', htmlspecialchars($utente['Email']), $html);

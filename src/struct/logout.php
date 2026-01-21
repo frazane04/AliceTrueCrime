@@ -30,6 +30,5 @@ if (isset($_COOKIE['remember_token'])) {
 session_destroy();
 
 // Redirect alla home
-header('Location: ' . getPrefix() . '/');
-exit;
+redirect('/');
 ?>

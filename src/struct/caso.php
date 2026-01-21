@@ -43,7 +43,6 @@ elseif (isset($_GET['id']) && !empty($_GET['id'])) {
 }
 
 // Inizializzo variabili
-$templatePath = __DIR__ . '/../template/caso.html';
 $prefix = getPrefix();
 
 // Verifico che l'ID sia valido
@@ -148,11 +147,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
 }
 
 // Carico il template HTML
-if (!file_exists($templatePath)) {
-    die("Errore: Template caso.html non trovato in $templatePath");
-}
-
-$contenuto = file_get_contents($templatePath);
+$contenuto = loadTemplate('caso');
 
 // ========================================
 // GENERAZIONE HTML COLPEVOLI

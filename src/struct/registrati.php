@@ -63,23 +63,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Carica il template HTML
-$templatePath = __DIR__ . '/../template/registrati.html';
-
-if (!file_exists($templatePath)) {
-    die("Errore: Template registrati.html non trovato in $templatePath");
-}
-
-$contenuto = file_get_contents($templatePath);
+$contenuto = loadTemplate('registrati');
 
 // Mostra eventuali messaggi di errore/successo
 if (!empty($errorMessage)) {
-    $alert = '<div class="alert alert-error" role="alert">' . htmlspecialchars($errorMessage) . '</div>';
-    $contenuto = str_replace('<form class="auth-form"', $alert . '<form class="auth-form"', $contenuto);
+    $contenuto = str_replace('<form class="auth-form"', alertHtml('error', $errorMessage) . '<form class="auth-form"', $contenuto);
 }
 
 if (!empty($successMessage)) {
-    $alert = '<div class="alert alert-success" role="alert">' . htmlspecialchars($successMessage) . '</div>';
-    $contenuto = str_replace('<form class="auth-form"', $alert . '<form class="auth-form"', $contenuto);
+    $contenuto = str_replace('<form class="auth-form"', alertHtml('success', $successMessage) . '<form class="auth-form"', $contenuto);
 }
 
 // Output finale

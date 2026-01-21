@@ -10,7 +10,116 @@ if (session_status() === PHP_SESSION_NONE) {
  * Gestisce il prefisso del percorso per installazioni in sottocartelle.
  */
 function getPrefix(): string {
-    return ''; 
+    return '';
+}
+
+/**
+ * Esegue un redirect con il prefix automatico.
+ *
+ * @param string $path Percorso relativo (es. '/profilo', '/accedi')
+ */
+function redirect(string $path): void {
+    $prefix = getPrefix();
+    header("Location: {$prefix}{$path}");
+    exit;
+}
+
+/**
+ * Genera l'HTML per un messaggio di alert.
+ *
+ * @param string $tipo Tipo di alert ('error', 'success', 'warning', 'info')
+ * @param string $messaggio Messaggio da mostrare
+ * @return string HTML dell'alert
+ */
+function alertHtml(string $tipo, string $messaggio): string {
+    $classi = [
+        'error'   => 'alert-error',
+        'success' => 'alert-success',
+        'warning' => 'alert-warning',
+        'info'    => 'alert-info',
+    ];
+
+    $classe = $classi[$tipo] ?? 'alert-info';
+    $messaggioSafe = htmlspecialchars($messaggio);
+
+    return "<div class=\"alert {$classe}\" role=\"alert\">{$messaggioSafe}</div>";
+}
+
+/**
+ * Carica un template HTML dalla cartella template.
+ *
+ * @param string $nome Nome del template (senza .html)
+ * @return string Contenuto del template
+ */
+function loadTemplate(string $nome): string {
+    $templatePath = __DIR__ . '/../template/' . $nome . '.html';
+
+    if (!file_exists($templatePath)) {
+        die("Errore: Template {$nome}.html non trovato in {$templatePath}");
+    }
+
+    return file_get_contents($templatePath);
+}
+
+/**
+ * Verifica che l'utente sia autenticato.
+ * Se non lo è, reindirizza alla pagina di login o mostra un messaggio.
+ *
+ * @param bool $redirect Se true reindirizza, se false mostra messaggio e termina
+ * @param string|null $messaggio Messaggio personalizzato (solo se $redirect = false)
+ * @return void
+ */
+function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void {
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        return; // Utente autenticato, continua
+    }
+
+    if ($doRedirect) {
+        redirect('/accedi');
+    }
+
+    $prefix = getPrefix();
+
+    // Mostra messaggio di accesso negato
+    $titolo = "Accesso Negato - AliceTrueCrime";
+    $contenuto = $messaggio ?? "
+        <div class='access-denied-container' style='text-align: center; padding: 3rem;'>
+            <h1>Area Riservata</h1>
+            <p>Devi essere autenticato per accedere a questa pagina.</p>
+            <a href='{$prefix}/accedi' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+                Accedi o Registrati
+            </a>
+        </div>
+    ";
+    echo getTemplatePage($titolo, $contenuto);
+    exit;
+}
+
+/**
+ * Mostra una pagina di errore HTTP.
+ *
+ * @param int $codice Codice HTTP (403, 404, 500, 503)
+ */
+function renderErrorPage(int $codice): void {
+    $errori = [
+        403 => ['titolo' => 'Accesso Negato', 'template' => '403'],
+        404 => ['titolo' => 'Caso Archiviato', 'template' => '404'],
+        500 => ['titolo' => 'Errore Server', 'template' => '500'],
+        503 => ['titolo' => 'Servizio Non Disponibile', 'template' => '503'],
+    ];
+
+    if (!isset($errori[$codice])) {
+        $codice = 500;
+    }
+
+    http_response_code($codice);
+
+    $config = $errori[$codice];
+    $contenuto = loadTemplate($config['template']);
+    $contenuto = str_replace('{{PREFIX}}', getPrefix(), $contenuto);
+
+    echo getTemplatePage("{$codice} - {$config['titolo']} | AliceTrueCrime", $contenuto);
+    exit;
 }
 
 /**
@@ -27,17 +136,12 @@ function getTemplatePage(string $title, string $content): string {
 
     $header = getHeaderSection($_SERVER['REQUEST_URI']);
     $footer = getFooterSection($_SERVER['REQUEST_URI']);
-    
-    // Carica modal HTML
-    $modalPath = __DIR__ . '/../template/modal.html';
-    $modal = file_exists($modalPath) ? file_get_contents($modalPath) : '';
 
     $page = str_replace('{{TITOLO_PAGINA}}', $title, $page);
     $page = str_replace('{{HEADER}}', $header, $page);
     $page = str_replace('{{BREADCRUMBS}}', getBreadcrumbs($_SERVER['REQUEST_URI']), $page);
     $page = str_replace('{{CONTENT}}', $content, $page);
     $page = str_replace('{{FOOTER}}', $footer, $page);
-    $page = str_replace('{{MODAL}}', $modal, $page);
     $page = str_replace('{{PATH_PREFIX}}', getPrefix(), $page);
 
     return $page;

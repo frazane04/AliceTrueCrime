@@ -2,10 +2,7 @@
 require_once __DIR__ . '/utils.php';
 require_once __DIR__ . '/funzioni_db.php';
 
-if (!isset($_SESSION['logged_in'])) {
-    header('Location: ' . getPrefix() . '/accedi');
-    exit;
-}
+requireAuth();
 
 $db = new FunzioniDB();
 $utente = $db->getUtenteByEmail($_SESSION['user_email']);
@@ -18,7 +15,7 @@ if (!$utente || !isset($utente['Is_Newsletter']) || $utente['Is_Newsletter'] == 
             Attiva la newsletter nel tuo <a href='".getPrefix()."/profilo'>profilo</a> per accedere.</p>
         </div>";
 } else {
-    $template = file_get_contents(__DIR__ . '/../template/newsletter.html');
+    $template = loadTemplate('newsletter');
 
     // Recupera i dati (assicurati che la funzione getContenutiNewsletter selezioni anche la colonna 'Slug')
     $casi = $db->getContenutiNewsletter(6);

@@ -1,14 +1,7 @@
 <?php
 require_once __DIR__ . '/funzioni_db.php';
 
-// Carica il template HTML di base
-$templatePath = __DIR__ . '/../template/esplora.html';
-
-if (!file_exists($templatePath)) {
-    die("Errore: Template esplora.html non trovato in $templatePath");
-}
-
-$contenuto = file_get_contents($templatePath);
+$contenuto = loadTemplate('esplora');
 
 // Recupero dati dal Database
 $dbFunctions = new FunzioniDB();

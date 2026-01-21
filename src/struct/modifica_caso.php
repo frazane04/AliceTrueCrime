@@ -9,11 +9,7 @@ require_once __DIR__ . '/ImageHandler.php';
 // ========================================
 // CONTROLLO SESSIONE
 // ========================================
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    $prefix = getPrefix();
-    header("Location: $prefix/accedi");
-    exit;
-}
+requireAuth();
 
 // ========================================
 // INIZIALIZZAZIONE
@@ -21,7 +17,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 $prefix = getPrefix();
 $dbFunctions = new FunzioniDB();
 $imageHandler = new ImageHandler();
-$templatePath = __DIR__ . '/../template/modifica_caso.html';
 
 $emailUtente = $_SESSION['user_email'];
 $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
@@ -477,11 +472,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // ========================================
 // CARICAMENTO TEMPLATE
 // ========================================
-if (!file_exists($templatePath)) {
-    die("Errore: Template modifica_caso.html non trovato");
-}
-
-$contenuto = file_get_contents($templatePath);
+$contenuto = loadTemplate('modifica_caso');
 
 // ========================================
 // GENERAZIONE HTML DINAMICO
