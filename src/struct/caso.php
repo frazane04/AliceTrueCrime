@@ -127,7 +127,7 @@ if (!$caso) {
 $puoModificare = false;
 $htmlAzioniUtente = '';
 
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+if (isLoggedIn()) {
     $emailUtente = $_SESSION['user_email'];
     $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
     
@@ -156,27 +156,14 @@ $html_colpevoli = "";
 
 if (!empty($colpevoli)) {
     foreach ($colpevoli as $colpevole) {
-        $nome_colpevole = htmlspecialchars($colpevole['Nome']);
-        $cognome_colpevole = htmlspecialchars($colpevole['Cognome']);
-        $luogoNascita_colpevole = htmlspecialchars($colpevole['LuogoNascita']);
-        $dataNascita_colpevole = !empty($colpevole['DataNascita']) 
-            ? date('d/m/Y', strtotime($colpevole['DataNascita'])) 
-            : 'Sconosciuta';    
-        $imgColpevole = !empty($colpevole['Immagine']) 
-            ? $prefix . '/' . htmlspecialchars($colpevole['Immagine'])
-            : $prefix . '/assets/img/caso-placeholder.jpeg';
-
-        $html_colpevoli .= '
-        <article class="carousel-card">
-            <div class="card-foto">
-                <img src="' . $imgColpevole . '" alt="' . $nome_colpevole . " " . $cognome_colpevole . '">
-            </div>
-            <div class="card-info">
-                <h4>' . $nome_colpevole . " " . $cognome_colpevole . '</h4>
-                <p><strong>Nato a:</strong> ' . $luogoNascita_colpevole . '</p>
-                <p><strong>Il:</strong> ' . $dataNascita_colpevole . '</p>
-            </div>
-        </article>';
+        $nomeCompleto = htmlspecialchars($colpevole['Nome'] . ' ' . $colpevole['Cognome']);
+        $html_colpevoli .= renderComponent('card-persona', [
+            'IMMAGINE'      => getImageUrl($colpevole['Immagine'] ?? null),
+            'NOME_COMPLETO' => $nomeCompleto,
+            'LUOGO_NASCITA' => htmlspecialchars($colpevole['LuogoNascita'] ?? 'Sconosciuto'),
+            'DATA_NASCITA'  => formatData($colpevole['DataNascita'] ?? null),
+            'EXTRA_INFO'    => ''
+        ]);
     }
 } else {
     $html_colpevoli = '<p>Nessun colpevole registrato.</p>';
@@ -189,31 +176,14 @@ $html_vittime = "";
 
 if (!empty($vittime)) {
     foreach ($vittime as $vittima) {
-        $nome_vittima = htmlspecialchars($vittima['Nome']);
-        $cognome_vittima = htmlspecialchars($vittima['Cognome']);
-        $luogoNascita_vittima = htmlspecialchars($vittima['LuogoNascita']);
-        $dataNascita_vittima = !empty($vittima['DataNascita']) 
-            ? date('d/m/Y', strtotime($vittima['DataNascita'])) 
-            : 'Sconosciuta';
-        $dataDecesso_vittima = !empty($vittima['DataDecesso']) 
-            ? date('d/m/Y', strtotime($vittima['DataDecesso'])) 
-            : 'Sconosciuta';
-        $imgVittima = !empty($vittima['Immagine']) 
-            ? $prefix . '/' . htmlspecialchars($vittima['Immagine'])
-            : $prefix . '/assets/img/caso-placeholder.jpeg';
-
-        $html_vittime .= '
-        <article class="carousel-card">
-            <div class="card-foto">
-                <img src="' . $imgVittima . '" alt="' . $nome_vittima . " " . $cognome_vittima . '">
-            </div>
-            <div class="card-info">
-                <h4>' . $nome_vittima . " " . $cognome_vittima . '</h4>
-                <p><strong>Nato a:</strong> ' . $luogoNascita_vittima . '</p>
-                <p><strong>Il:</strong> ' . $dataNascita_vittima . '</p>
-                <p><strong>Decesso:</strong> ' . $dataDecesso_vittima . '</p>
-            </div>
-        </article>';
+        $nomeCompleto = htmlspecialchars($vittima['Nome'] . ' ' . $vittima['Cognome']);
+        $html_vittime .= renderComponent('card-persona', [
+            'IMMAGINE'      => getImageUrl($vittima['Immagine'] ?? null),
+            'NOME_COMPLETO' => $nomeCompleto,
+            'LUOGO_NASCITA' => htmlspecialchars($vittima['LuogoNascita'] ?? 'Sconosciuto'),
+            'DATA_NASCITA'  => formatData($vittima['DataNascita'] ?? null),
+            'EXTRA_INFO'    => '<p><strong>Decesso:</strong> ' . formatData($vittima['DataDecesso'] ?? null) . '</p>'
+        ]);
     }
 } else {
     $html_vittime = '<p>Nessuna vittima registrata.</p>';
@@ -227,18 +197,11 @@ $html_articoli = "";
 if (!empty($articoli)) {
     foreach ($articoli as $articolo) {
         $art_Titolo = htmlspecialchars($articolo['Titolo']);
-        $art_data = !empty($articolo['Data']) 
-            ? date('d/m/Y', strtotime($articolo['Data'])) 
-            : 'Sconosciuta';
         $art_link = htmlspecialchars($articolo['Link']);
-
-        $html_articoli .= '
-        <li class="approfondimento">
-            <p class="approfondimento-fonte">
-                <a href="' . $art_link . '" target="_blank" rel="noopener noreferrer">' . $art_Titolo . '</a>
-                <time class="approfondimento-data" datetime="d/m/Y">' . $art_data . '</time>
-            </p>
-        </li>';
+        $html_articoli .= '<li class="approfondimento"><p class="approfondimento-fonte">';
+        $html_articoli .= '<a href="' . $art_link . '" target="_blank" rel="noopener noreferrer">' . $art_Titolo . '</a>';
+        $html_articoli .= '<time class="approfondimento-data">' . formatData($articolo['Data']) . '</time>';
+        $html_articoli .= '</p></li>';
     }
 } else {
     $html_articoli = '<li>Nessuna fonte disponibile.</li>';
@@ -248,18 +211,14 @@ if (!empty($articoli)) {
 // PREPARO DATI PER VISUALIZZAZIONE
 // ========================================
 $titolo = htmlspecialchars($caso['Titolo']);
-$descrizione= htmlspecialchars($caso['Descrizione']);
+$descrizione = htmlspecialchars($caso['Descrizione']);
 $storia = nl2br(htmlspecialchars($caso['Storia']));
-$data = date('d/m/Y', strtotime($caso['Data']));
+$data = formatData($caso['Data']);
 $luogo = htmlspecialchars($caso['Luogo']);
 $tipologia = htmlspecialchars($caso['Tipologia'] ?? 'Non specificata');
 $isApprovato = (bool)$caso['Approvato'];
 $autore = htmlspecialchars($caso['Autore'] ?? 'Anonimo');
-
-// Gestione immagine
-$immagine = !empty($caso['Immagine']) 
-    ? $prefix . '/' . htmlspecialchars($caso['Immagine'])
-    : $prefix . '/assets/img/caso-placeholder.jpeg';
+$immagine = getImageUrl($caso['Immagine']);
 
 // Badge status
 $statusClass = $isApprovato ? 'status-approved' : 'status-pending';
@@ -310,29 +269,24 @@ if ($isAdmin && !$isApprovato) {
 // ========================================
 // SOSTITUZIONI PLACEHOLDER
 // ========================================
-
-// Admin bar in alto
-$contenuto = str_replace('<!-- admin_bar -->', $htmlAdminBar, $contenuto);
-
 $htmlImmagine = '<img alt="Evidenza principale del caso ' . $titolo . '" src="' . $immagine . '" class="img-evidence" width="300" />';
-$contenuto = str_replace('<!-- caso_immagine -->', $htmlImmagine, $contenuto);
 
-$contenuto = str_replace('{{caso_status}}', $statusClass, $contenuto);
-
-$contenuto = str_replace('<!-- caso_status_text -->', $statusText, $contenuto);
-
-$contenuto = str_replace('<!-- caso_titolo -->', $titolo, $contenuto);
-
-$contenuto = str_replace('<!-- caso_tipologia -->', $tipologia, $contenuto);
-
-$contenuto = str_replace('<!-- caso_storia -->', $storia, $contenuto);
-$contenuto = str_replace('<!-- caso_descrizione -->', $descrizione, $contenuto);
-$contenuto = str_replace('<!-- caso_autore -->', $autore, $contenuto);
-$contenuto = str_replace('<!-- caso_data -->', $data, $contenuto);
-$contenuto = str_replace('<!-- caso_luogo -->', $luogo, $contenuto);
-$contenuto = str_replace('<!-- caso_vittime -->', $html_vittime, $contenuto);
-$contenuto = str_replace('<!-- caso_colpevoli -->', $html_colpevoli, $contenuto);
-$contenuto = str_replace('<!-- caso_articoli -->', $html_articoli, $contenuto);
+$contenuto = strtr($contenuto, [
+    '<!-- admin_bar -->'        => $htmlAdminBar,
+    '<!-- caso_immagine -->'    => $htmlImmagine,
+    '{{caso_status}}'           => $statusClass,
+    '<!-- caso_status_text -->' => $statusText,
+    '<!-- caso_titolo -->'      => $titolo,
+    '<!-- caso_tipologia -->'   => $tipologia,
+    '<!-- caso_storia -->'      => $storia,
+    '<!-- caso_descrizione -->' => $descrizione,
+    '<!-- caso_autore -->'      => $autore,
+    '<!-- caso_data -->'        => $data,
+    '<!-- caso_luogo -->'       => $luogo,
+    '<!-- caso_vittime -->'     => $html_vittime,
+    '<!-- caso_colpevoli -->'   => $html_colpevoli,
+    '<!-- caso_articoli -->'    => $html_articoli,
+]);
 
 // ========================================
 // GESTIONE COMMENTI (solo per casi approvati)
@@ -345,26 +299,26 @@ $numeroCommenti = 0;
 if ($isApprovato) {
     // Gestione POST per nuovo commento
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'aggiungi_commento') {
-        
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login per commentare.</div>';
+
+        if (!isLoggedIn()) {
+            $messaggioCommento = alertHtml('error', 'Devi effettuare il login per commentare.');
         } else {
             $testoCommento = trim($_POST['commento'] ?? '');
             $emailUtente = $_SESSION['user_email'];
             
             if (empty($testoCommento)) {
-                $messaggioCommento = '<div class="alert alert-error">Il commento non può essere vuoto.</div>';
+                $messaggioCommento = alertHtml('error', 'Il commento non può essere vuoto.');
             } else {
                 $resultCommento = $dbFunctions->inserisciCommento($emailUtente, $casoId, $testoCommento);
 
                 if ($resultCommento['success']) {
-                    $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultCommento['message']) . '</div>';
+                    $messaggioCommento = alertHtml('success', $resultCommento['message']);
                     // Redirect sicuro usando lo slug del caso invece di REQUEST_URI (previene CRLF injection)
                     $redirectUrl = $prefix . '/caso/' . urlencode($caso['Slug']) . '#commenti';
                     header("Location: " . $redirectUrl);
                     exit;
                 } else {
-                    $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultCommento['message']) . '</div>';
+                    $messaggioCommento = alertHtml('error', $resultCommento['message']);
                 }
             }
         }
@@ -372,9 +326,9 @@ if ($isApprovato) {
 
     // Gestione eliminazione commento
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'elimina_commento') {
-        
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $messaggioCommento = '<div class="alert alert-error">Devi effettuare il login.</div>';
+
+        if (!isLoggedIn()) {
+            $messaggioCommento = alertHtml('error', 'Devi effettuare il login.');
         } else {
             $idCommento = intval($_POST['id_commento'] ?? 0);
             $emailUtente = $_SESSION['user_email'];
@@ -384,13 +338,13 @@ if ($isApprovato) {
                 $resultEliminazione = $dbFunctions->eliminaCommento($idCommento, $emailUtente, $isAdminComment);
 
                 if ($resultEliminazione['success']) {
-                    $messaggioCommento = '<div class="alert alert-success">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
+                    $messaggioCommento = alertHtml('success', $resultEliminazione['message']);
                     // Redirect sicuro usando lo slug del caso invece di REQUEST_URI (previene CRLF injection)
                     $redirectUrl = $prefix . '/caso/' . urlencode($caso['Slug']) . '#commenti';
                     header("Location: " . $redirectUrl);
                     exit;
                 } else {
-                    $messaggioCommento = '<div class="alert alert-error">' . htmlspecialchars($resultEliminazione['message']) . '</div>';
+                    $messaggioCommento = alertHtml('error', $resultEliminazione['message']);
                 }
             }
         }
@@ -404,15 +358,13 @@ if ($isApprovato) {
     if (!empty($commenti)) {
         foreach ($commenti as $commento) {
             $usernameCommento = htmlspecialchars($commento['Username']);
-            $dataCommento = date('d/m/Y H:i', strtotime($commento['Data']));
+            $dataCommento = formatData($commento['Data'], 'd/m/Y H:i');
             $testoCommento = nl2br(htmlspecialchars($commento['Commento']));
             $idCommento = (int)$commento['ID_Commento'];
-            
-            $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($usernameCommento) . "&background=0D8ABC&color=fff&size=48";
-            
-            // ✅ MODIFICA 3: Sostituito confirm() con chiamata modal accessibile
+            $avatarUrl = getAvatarUrl($usernameCommento, 48);
+
             $pulsanteElimina = '';
-            if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            if (isLoggedIn()) {
                 $emailLoggata = $_SESSION['user_email'];
                 $isAdminComment = $_SESSION['is_admin'] ?? false;
 
@@ -446,9 +398,9 @@ if ($isApprovato) {
     }
 
     // Form commento
-    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    if (isLoggedIn()) {
         $usernameLoggato = htmlspecialchars($_SESSION['user']);
-        $avatarLoggato = "https://ui-avatars.com/api/?name=" . urlencode($usernameLoggato) . "&background=0D8ABC&color=fff&size=48";
+        $avatarLoggato = getAvatarUrl($usernameLoggato, 48);
         
         $htmlFormCommento = '
         <div class="form-commento-container">
@@ -493,10 +445,12 @@ if ($isApprovato) {
     $htmlFormCommento = '';
 }
 
-$contenuto = str_replace('<!-- caso_numero_commenti -->', $numeroCommenti, $contenuto);
-$contenuto = str_replace('<!-- caso_form_commento -->', $htmlFormCommento, $contenuto);
-$contenuto = str_replace('<!-- caso_lista_commenti -->', $htmlCommenti, $contenuto);
-$contenuto = str_replace('<!-- caso_azioni_utente -->', $htmlAzioniUtente, $contenuto);
+$contenuto = strtr($contenuto, [
+    '<!-- caso_numero_commenti -->' => $numeroCommenti,
+    '<!-- caso_form_commento -->'   => $htmlFormCommento,
+    '<!-- caso_lista_commenti -->'  => $htmlCommenti,
+    '<!-- caso_azioni_utente -->'   => $htmlAzioniUtente,
+]);
 
 // Output finale
 $titoloPagina = $titolo . " - AliceTrueCrime";

@@ -36,35 +36,18 @@ if (!empty($casiInEvidenzaIDs)) {
     if ($resultEvidenza && mysqli_num_rows($resultEvidenza) > 0) {
         while ($caso = mysqli_fetch_assoc($resultEvidenza)) {
             $titolo = htmlspecialchars($caso['Titolo']);
-            $data = date('d/m/Y', strtotime($caso['Data']));
-            
-            // Descrizione breve
             $descrizione = htmlspecialchars($caso['Descrizione']);
-            $sinossi = (strlen($descrizione) > 100) 
-                ? substr($descrizione, 0, 100) . '...' 
-                : $descrizione;
-            
-            // Slug per URL
-            $slug = $caso['Slug'] ?? strtolower(str_replace(' ', '-', $caso['Titolo']));
-            $linkCaso = getPrefix() . '/caso/' . urlencode($slug);
-            
-            // Immagine (usa placeholder se non esiste)
-            $immagine = $caso['Immagine'] 
-                ? getPrefix() . '/' . htmlspecialchars($caso['Immagine'])
-                : getPrefix() . '/assets/imgs/copertina-placeholder.jpg';
-            
-            $htmlCasiEvidenza .= "
-            <article class='carousel-card'>
-                <img src='{$immagine}' alt='Copertina: {$titolo}' />
-                <h3>{$titolo}</h3>
-                <p>{$data}</p>
-                <p class='caso-sinossi'>{$sinossi}</p>
-                <a href='{$linkCaso}' class='btn btn-primary btn-small' 
-                   aria-label='Leggi il caso: {$titolo}'>
-                    Scopri il Caso
-                </a>
-            </article>
-            ";
+            $sinossi = (strlen($descrizione) > 100) ? substr($descrizione, 0, 100) . '...' : $descrizione;
+
+            $htmlCasiEvidenza .= renderComponent('card-caso', [
+                'CARD_CLASS'    => 'carousel-card',
+                'IMMAGINE'      => getImageUrl($caso['Immagine'] ?? null),
+                'TITOLO'        => $titolo,
+                'DATA'          => formatData($caso['Data'] ?? null),
+                'SINOSSI'       => $sinossi,
+                'LINK'          => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
+                'TESTO_BOTTONE' => 'Scopri il Caso'
+            ]);
         }
     } else {
         $htmlCasiEvidenza = "<p>Nessun caso in evidenza al momento.</p>";
@@ -91,28 +74,17 @@ $resultInchieste = $db->query($queryUltimeInchieste);
 if ($resultInchieste && mysqli_num_rows($resultInchieste) > 0) {
     while ($caso = mysqli_fetch_assoc($resultInchieste)) {
         $titolo = htmlspecialchars($caso['Titolo']);
-        $data = date('d/m/Y', strtotime($caso['Data']));
-        
         $descrizione = htmlspecialchars($caso['Descrizione']);
-        $sinossi = (strlen($descrizione) > 150) 
-            ? substr($descrizione, 0, 150) . '...' 
-            : $descrizione;
-        
-        $slug = $caso['Slug'] ?? strtolower(str_replace(' ', '-', $caso['Titolo']));
-        $linkCaso = getPrefix() . '/caso/' . urlencode($slug);
-        
-        
-        $htmlUltimeInchieste .= "
-        <article class='investigazione-card'>
-            <h3>{$titolo}</h3>
-            <p class='data-caso'>{$data}</p>
-            <p>{$sinossi}</p>
-            <a href='{$linkCaso}' class='btn btn-primary btn-small' 
-               aria-label='Leggi il caso: {$titolo}'>
-                Leggi l'Inchiesta
-            </a>
-        </article>
-        ";
+        $sinossi = (strlen($descrizione) > 150) ? substr($descrizione, 0, 150) . '...' : $descrizione;
+
+        $htmlUltimeInchieste .= renderComponent('card-caso-text', [
+            'CARD_CLASS'    => 'investigazione-card',
+            'TITOLO'        => $titolo,
+            'DATA'          => formatData($caso['Data'] ?? null),
+            'SINOSSI'       => $sinossi,
+            'LINK'          => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
+            'TESTO_BOTTONE' => "Leggi l'Inchiesta"
+        ]);
     }
 } else {
     $htmlUltimeInchieste = "<p>Nessun caso disponibile al momento.</p>";
@@ -138,16 +110,8 @@ if ($resultPopolari && mysqli_num_rows($resultPopolari) > 0) {
     $htmlArticoliPopolari .= "<ul>";
     while ($articolo = mysqli_fetch_assoc($resultPopolari)) {
         $titolo = htmlspecialchars($articolo['Titolo']);
-        $slug = $articolo['Slug'] ?? strtolower(str_replace(' ', '-', $articolo['Titolo']));
-        $linkArticolo = getPrefix() . '/caso/' . urlencode($slug);
-        
-        $htmlArticoliPopolari .= "
-            <li>
-                <a href='{$linkArticolo}' aria-label='Leggi: {$titolo}'>
-                    {$titolo}
-                </a>
-            </li>
-        ";
+        $linkArticolo = getPrefix() . '/caso/' . urlencode(getSlugFromCaso($articolo));
+        $htmlArticoliPopolari .= "<li><a href='{$linkArticolo}' aria-label='Leggi: {$titolo}'>{$titolo}</a></li>";
     }
     $htmlArticoliPopolari .= "</ul>";
 } else {

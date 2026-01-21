@@ -62,6 +62,71 @@ function loadTemplate(string $nome): string {
 }
 
 /**
+ * Carica un template componente e sostituisce i placeholder.
+ *
+ * @param string $nome Nome del componente (es. 'card-caso')
+ * @param array $dati Array associativo chiave => valore per i placeholder
+ * @return string HTML con placeholder sostituiti
+ */
+function renderComponent(string $nome, array $dati): string {
+    $templatePath = __DIR__ . '/../template/components/' . $nome . '.html';
+
+    if (!file_exists($templatePath)) {
+        return "<!-- Componente {$nome} non trovato -->";
+    }
+
+    $html = file_get_contents($templatePath);
+
+    foreach ($dati as $chiave => $valore) {
+        $html = str_replace('{{' . $chiave . '}}', $valore, $html);
+    }
+
+    return $html;
+}
+
+/**
+ * Genera lo slug da un caso (fallback se non presente).
+ */
+function getSlugFromCaso(array $caso): string {
+    return $caso['Slug'] ?? strtolower(str_replace(' ', '-', $caso['Titolo']));
+}
+
+/**
+ * Formatta una data nel formato italiano.
+ */
+function formatData(?string $data, string $formato = 'd/m/Y'): string {
+    if (empty($data)) {
+        return 'Sconosciuta';
+    }
+    return date($formato, strtotime($data));
+}
+
+/**
+ * Restituisce l'URL dell'immagine o un placeholder.
+ */
+function getImageUrl(?string $immagine): string {
+    $prefix = getPrefix();
+    if (!empty($immagine)) {
+        return $prefix . '/' . htmlspecialchars($immagine);
+    }
+    return $prefix . '/assets/img/placeholder.jpeg';
+}
+
+/**
+ * Genera l'URL dell'avatar UI Avatars.
+ */
+function getAvatarUrl(string $nome, int $size = 24): string {
+    return "https://ui-avatars.com/api/?name=" . urlencode($nome) . "&background=0D8ABC&color=fff&size=" . $size;
+}
+
+/**
+ * Verifica se l'utente è loggato.
+ */
+function isLoggedIn(): bool {
+    return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
+}
+
+/**
  * Verifica che l'utente sia autenticato.
  * Se non lo è, reindirizza alla pagina di login o mostra un messaggio.
  *
