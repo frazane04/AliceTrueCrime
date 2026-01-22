@@ -15,7 +15,7 @@ function showError(input, message) {
     input.setAttribute('aria-invalid', 'true');
     if (errorSpan) {
         errorSpan.textContent = message;
-        errorSpan.style.display = 'block';
+        errorSpan.classList.remove('hidden');
     }
 }
 
@@ -30,7 +30,7 @@ function clearError(input) {
     input.setAttribute('aria-invalid', 'false');
     if (errorSpan) {
         errorSpan.textContent = '';
-        errorSpan.style.display = 'none';
+        errorSpan.classList.add('hidden');
     }
 }
 
@@ -52,7 +52,7 @@ function showFormErrors(message) {
     const formErrors = document.getElementById('form-errors');
     if (formErrors) {
         formErrors.textContent = message;
-        formErrors.style.display = 'block';
+        formErrors.classList.remove('hidden');
     }
 }
 
@@ -63,7 +63,7 @@ function clearFormErrors() {
     const formErrors = document.getElementById('form-errors');
     if (formErrors) {
         formErrors.textContent = '';
-        formErrors.style.display = 'none';
+        formErrors.classList.add('hidden');
     }
 }
 

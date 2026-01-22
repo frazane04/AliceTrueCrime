@@ -84,7 +84,7 @@
                 <!-- vittime_html -->
             </div>
             
-            <button type="button" class="btn btn-secondary btn-add" onclick="aggiungiVittima()">
+            <button type="button" class="btn btn-secondary btn-add" id="btn-add-vittima">
                 + Aggiungi Vittima
             </button>
         </fieldset>
@@ -98,7 +98,7 @@
                 <!-- colpevoli_html -->
             </div>
             
-            <button type="button" class="btn btn-secondary btn-add" onclick="aggiungiColpevole()">
+            <button type="button" class="btn btn-secondary btn-add" id="btn-add-colpevole">
                 + Aggiungi Colpevole
             </button>
         </fieldset>
@@ -112,7 +112,7 @@
                 <!-- articoli_html -->
             </div>
             
-            <button type="button" class="btn btn-secondary btn-add" onclick="aggiungiArticolo()">
+            <button type="button" class="btn btn-secondary btn-add" id="btn-add-articolo">
                 + Aggiungi Fonte
             </button>
         </fieldset>
@@ -131,7 +131,7 @@
         
         <form method="POST" id="form-elimina-caso">
             <input type="hidden" name="action" value="elimina_caso">
-            <button type="button" class="btn btn-danger" onclick="confermaEliminaCaso()">Elimina Caso Definitivamente</button>
+            <button type="button" class="btn btn-danger" id="btn-elimina-caso">Elimina Caso Definitivamente</button>
         </form>
     </div>
 </main>

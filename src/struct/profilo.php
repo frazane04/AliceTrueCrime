@@ -40,7 +40,7 @@ $newsletterHtml = "
             <input type='hidden' name='action' value='toggle_newsletter'>
             <input type='hidden' name='current_status' value='$is_iscritti'>
             <p>Ricevi aggiornamenti esclusivi direttamente nella tua email.</p>
-            <button type='submit' class='btn btn-pill $btnClass' style='border:none; cursor:pointer;'>$testoBottone</button>
+            <button type='submit' class='btn btn-pill $btnClass'>$testoBottone</button>
         </form>
     </section>";
 

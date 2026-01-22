@@ -11,7 +11,7 @@ const templates = {
     <div class="persona-entry vittima-entry" data-index="${index}">
         <div class="entry-header">
             <h4>Vittima #${index + 1}</h4>
-            <button type="button" class="btn-remove-entry" onclick="vittimeManager.remove(this)" aria-label="Rimuovi vittima">Rimuovi</button>
+            <button type="button" class="btn-remove-entry" aria-label="Rimuovi vittima">Rimuovi</button>
         </div>
 
         <div class="form-row">
@@ -43,7 +43,7 @@ const templates = {
             </div>
             <div class="form-group half">
                 <label for="vittima_immagine_${index}">Foto (opzionale)</label>
-                <input type="file" id="vittima_immagine_${index}" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp" onchange="mostraAnteprimaImmagine(this, 'preview-vittima-${index}')"/>
+                <input type="file" id="vittima_immagine_${index}" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp" data-preview-target="preview-vittima-${index}"/>
             </div>
         </div>
         <div id="preview-vittima-${index}" class="image-preview image-preview-small" aria-live="polite"></div>
@@ -54,7 +54,7 @@ const templates = {
     <div class="persona-entry colpevole-entry" data-index="${index}">
         <div class="entry-header">
             <h4>Colpevole #${index + 1}</h4>
-            <button type="button" class="btn-remove-entry" onclick="colpevoliManager.remove(this)" aria-label="Rimuovi colpevole">Rimuovi</button>
+            <button type="button" class="btn-remove-entry" aria-label="Rimuovi colpevole">Rimuovi</button>
         </div>
 
         <div class="form-row">
@@ -81,7 +81,7 @@ const templates = {
 
         <div class="form-group">
             <label for="colpevole_immagine_${index}">Foto (opzionale)</label>
-            <input type="file" id="colpevole_immagine_${index}" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp" onchange="mostraAnteprimaImmagine(this, 'preview-colpevole-${index}')"/>
+            <input type="file" id="colpevole_immagine_${index}" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp" data-preview-target="preview-colpevole-${index}"/>
         </div>
         <div id="preview-colpevole-${index}" class="image-preview image-preview-small" aria-live="polite"></div>
     </div>
@@ -91,7 +91,7 @@ const templates = {
     <div class="articolo-entry" data-index="${index}">
         <div class="entry-header">
             <h4>Fonte #${index + 1}</h4>
-            <button type="button" class="btn-remove-entry" onclick="articoliManager.remove(this)" aria-label="Rimuovi fonte">Rimuovi</button>
+            <button type="button" class="btn-remove-entry" aria-label="Rimuovi fonte">Rimuovi</button>
         </div>
 
         <div class="form-group">
@@ -146,6 +146,12 @@ const articoliManager = createEntryManager({
 document.getElementById('btn-add-vittima').addEventListener('click', () => vittimeManager.add());
 document.getElementById('btn-add-colpevole').addEventListener('click', () => colpevoliManager.add());
 document.getElementById('btn-add-articolo').addEventListener('click', () => articoliManager.add());
+
+// Event listener per il bottone reset form
+const btnResetForm = document.getElementById('btn-reset-form');
+if (btnResetForm) {
+    btnResetForm.addEventListener('click', confermaResetForm);
+}
 
 // ========================================
 // VALIDAZIONE FORM (sincronizzata con server PHP)

@@ -9,7 +9,7 @@
 const templates = {
     vittima: (idx) => `
         <div class="entry-card vittima-entry">
-            <button type="button" class="btn-remove" onclick="vittimeManager.remove(this)" aria-label="Rimuovi vittima">×</button>
+            <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi vittima">×</button>
             <input type="hidden" name="vittima_id[]" value="0">
             <input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-${idx}" value="">
             <div class="form-row">
@@ -30,7 +30,7 @@ const templates = {
 
     colpevole: (idx) => `
         <div class="entry-card colpevole-entry">
-            <button type="button" class="btn-remove" onclick="colpevoliManager.remove(this)" aria-label="Rimuovi colpevole">×</button>
+            <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi colpevole">×</button>
             <input type="hidden" name="colpevole_id[]" value="0">
             <input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-${idx}" value="">
             <div class="form-row">
@@ -50,7 +50,7 @@ const templates = {
 
     articolo: () => `
         <div class="entry-card articolo-entry">
-            <button type="button" class="btn-remove" onclick="articoliManager.remove(this)" aria-label="Rimuovi articolo">×</button>
+            <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi articolo">×</button>
             <input type="hidden" name="articolo_id[]" value="0">
             <div class="form-row">
                 <div class="form-group"><label>Titolo Fonte</label><input type="text" name="articolo_titolo[]" placeholder="Titolo"></div>
@@ -90,34 +90,37 @@ const articoliManager = createEntryManager({
 });
 
 // ========================================
-// FUNZIONI GLOBALI (chiamate dall'HTML)
+// EVENT LISTENERS
 // ========================================
-function aggiungiVittima() {
-    vittimeManager.add();
+const btnAddVittima = document.getElementById('btn-add-vittima');
+if (btnAddVittima) {
+    btnAddVittima.addEventListener('click', () => vittimeManager.add());
 }
 
-function aggiungiColpevole() {
-    colpevoliManager.add();
+const btnAddColpevole = document.getElementById('btn-add-colpevole');
+if (btnAddColpevole) {
+    btnAddColpevole.addEventListener('click', () => colpevoliManager.add());
 }
 
-function aggiungiArticolo() {
-    articoliManager.add();
+const btnAddArticolo = document.getElementById('btn-add-articolo');
+if (btnAddArticolo) {
+    btnAddArticolo.addEventListener('click', () => articoliManager.add());
 }
 
-/**
- * Conferma eliminazione caso con modal accessibile
- */
-async function confermaEliminaCaso() {
-    const confirmed = await showConfirmModal({
-        title: "Elimina Caso",
-        message: "ATTENZIONE: Stai per eliminare definitivamente questo caso e tutte le immagini associate. L'operazione non può essere annullata.",
-        confirmText: "Elimina Definitivamente",
-        confirmClass: "btn-danger"
+const btnEliminaCaso = document.getElementById('btn-elimina-caso');
+if (btnEliminaCaso) {
+    btnEliminaCaso.addEventListener('click', async function() {
+        const confirmed = await showConfirmModal({
+            title: "Elimina Caso",
+            message: "ATTENZIONE: Stai per eliminare definitivamente questo caso e tutte le immagini associate. L'operazione non può essere annullata.",
+            confirmText: "Elimina Definitivamente",
+            confirmClass: "btn-danger"
+        });
+
+        if (confirmed) {
+            document.getElementById("form-elimina-caso").submit();
+        }
     });
-
-    if (confirmed) {
-        document.getElementById("form-elimina-caso").submit();
-    }
 }
 
 // ========================================

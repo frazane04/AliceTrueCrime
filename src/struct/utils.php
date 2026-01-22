@@ -148,10 +148,10 @@ function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void {
     // Mostra messaggio di accesso negato
     $titolo = "Accesso Negato - AliceTrueCrime";
     $contenuto = $messaggio ?? "
-        <div class='access-denied-container' style='text-align: center; padding: 3rem;'>
+        <div class='access-denied-container text-center'>
             <h1>Area Riservata</h1>
             <p>Devi essere autenticato per accedere a questa pagina.</p>
-            <a href='{$prefix}/accedi' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+            <a href='{$prefix}/accedi' class='btn btn-primary inline-block mt-1'>
                 Accedi o Registrati
             </a>
         </div>
@@ -286,7 +286,7 @@ function getHeaderButtons(): string {
             <div class="user-menu">
 
                 <a href="$prefix/profilo" class="button-layout profile-btn" aria-label="Il tuo profilo" title="$email">
-                    <img src="$imgProfile" alt="Avatar di $username" width="24" style="border-radius:50%; vertical-align:middle; margin-right:5px;" />
+                    <img src="$imgProfile" alt="Avatar di $username" width="24" class="avatar-small" />
                     $username
                 </a>
                 <a href="$prefix/logout" class="button-layout btn-logout">Esci</a>

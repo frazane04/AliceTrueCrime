@@ -25,10 +25,10 @@ if (isset($_GET['slug']) && !empty($_GET['slug'])) {
         http_response_code(404);
         $prefix = getPrefix();
         $contenuto = "
-            <div class='error-container' style='text-align: center; padding: 3rem;'>
+            <div class='error-container text-center'>
                 <h1>🔍 Caso Non Trovato</h1>
                 <p>Il caso richiesto (<strong>" . htmlspecialchars($slug) . "</strong>) non esiste.</p>
-                <a href='$prefix/esplora' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+                <a href='$prefix/esplora' class='btn btn-primary inline-block mt-1'>
                     Esplora tutti i Casi
                 </a>
             </div>
@@ -50,10 +50,10 @@ if ($casoId <= 0) {
     http_response_code(400);
     
     $contenuto = "
-        <div class='error-container' style='text-align: center; padding: 3rem;'>
+        <div class='error-container text-center'>
             <h1>⚠️ ID Caso Non Valido</h1>
             <p>Il caso richiesto non è stato specificato correttamente.</p>
-            <a href='$prefix/esplora' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+            <a href='$prefix/esplora' class='btn btn-primary inline-block mt-1'>
                 Esplora tutti i Casi
             </a>
         </div>
@@ -111,10 +111,10 @@ if (!$caso) {
     http_response_code(404);
     
     $contenuto = "
-        <div class='error-container' style='text-align: center; padding: 3rem;'>
+        <div class='error-container text-center'>
             <h1>🔍 Caso Non Trovato</h1>
             <p>Il caso richiesto non esiste o non è stato ancora approvato.</p>
-            <a href='$prefix/esplora' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+            <a href='$prefix/esplora' class='btn btn-primary inline-block mt-1'>
                 Esplora tutti i Casi
             </a>
         </div>";
@@ -249,14 +249,14 @@ if ($isAdmin && !$isApprovato) {
             <div class="admin-bar-actions">
                 <form method="POST" id="form-approva-caso">
                     <input type="hidden" name="action" value="approva_caso">
-                    <button type="button" class="btn btn-success" onclick="confermaApprovaCaso()">
+                    <button type="button" class="btn btn-success" id="btn-approva-caso">
                         Approva Caso
                     </button>
                 </form>
 
                 <form method="POST" id="form-rifiuta-caso">
                     <input type="hidden" name="action" value="rifiuta_caso">
-                    <button type="button" class="btn btn-danger" onclick="confermaRifiutaCaso()">
+                    <button type="button" class="btn btn-danger" id="btn-rifiuta-caso">
                         Rifiuta ed Elimina
                     </button>
                 </form>
@@ -366,10 +366,10 @@ if ($isApprovato) {
                 $isAdminComment = $_SESSION['is_admin'] ?? false;
 
                 if ($commento['Email'] === $emailLoggata || $isAdminComment) {
-                    $pulsanteElimina = '<form method="POST" id="form-elimina-' . $idCommento . '" style="display:inline;">'
+                    $pulsanteElimina = '<form method="POST" id="form-elimina-' . $idCommento . '" class="inline">'
                         . '<input type="hidden" name="action" value="elimina_commento" />'
                         . '<input type="hidden" name="id_commento" value="' . $idCommento . '" />'
-                        . '<button type="button" class="btn-elimina-commento" aria-label="Elimina commento" onclick="confermaEliminaCommento(' . $idCommento . ')">Elimina</button>'
+                        . '<button type="button" class="btn-elimina-commento" aria-label="Elimina commento" data-commento-id="' . $idCommento . '">Elimina</button>'
                         . '</form>';
                 }
             }

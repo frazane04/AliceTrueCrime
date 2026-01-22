@@ -131,10 +131,10 @@ function marcaRimozioneImmagine(tipo, index, originalPath) {
     const hiddenId = tipo === 'caso' ? 'caso-img-hidden' : tipo + '-img-hidden-' + index;
 
     const preview = document.getElementById(previewId);
-    if (preview) preview.style.display = 'none';
+    if (preview) preview.classList.add('hidden');
 
     const notice = document.getElementById(noticeId);
-    if (notice) notice.style.display = 'flex';
+    if (notice) notice.classList.remove('hidden');
 
     const hidden = document.getElementById(hiddenId);
     if (hidden) hidden.value = '';
@@ -146,11 +146,54 @@ function annullaRimozioneImmagine(tipo, index, originalPath) {
     const hiddenId = tipo === 'caso' ? 'caso-img-hidden' : tipo + '-img-hidden-' + index;
 
     const preview = document.getElementById(previewId);
-    if (preview) preview.style.display = 'block';
+    if (preview) preview.classList.remove('hidden');
 
     const notice = document.getElementById(noticeId);
-    if (notice) notice.style.display = 'none';
+    if (notice) notice.classList.add('hidden');
 
     const hidden = document.getElementById(hiddenId);
     if (hidden) hidden.value = originalPath;
 }
+
+// ========================================
+// EVENT DELEGATION: Gestione immagini e entry
+// ========================================
+document.addEventListener('click', function(e) {
+    // Gestione rimozione immagine
+    const btnRemoveImg = e.target.closest('[data-img-action="remove"]');
+    if (btnRemoveImg) {
+        const tipo = btnRemoveImg.dataset.imgType;
+        const index = btnRemoveImg.dataset.imgIndex;
+        const path = btnRemoveImg.dataset.imgPath;
+        marcaRimozioneImmagine(tipo, index, path);
+        return;
+    }
+
+    // Gestione annulla rimozione immagine
+    const btnUndoImg = e.target.closest('[data-img-action="undo"]');
+    if (btnUndoImg) {
+        const tipo = btnUndoImg.dataset.imgType;
+        const index = btnUndoImg.dataset.imgIndex;
+        const path = btnUndoImg.dataset.imgPath;
+        annullaRimozioneImmagine(tipo, index, path);
+        return;
+    }
+
+    // Gestione rimozione entry (vittime, colpevoli, articoli)
+    const btnRemoveEntry = e.target.closest('.btn-remove-entry');
+    if (btnRemoveEntry) {
+        const entry = btnRemoveEntry.closest('.entry-card, .persona-entry, .articolo-entry');
+        if (entry) {
+            entry.remove();
+        }
+        return;
+    }
+});
+
+// Event delegation per anteprima immagini (onchange)
+document.addEventListener('change', function(e) {
+    const input = e.target;
+    if (input.type === 'file' && input.dataset.previewTarget) {
+        mostraAnteprimaImmagine(input, input.dataset.previewTarget);
+    }
+});

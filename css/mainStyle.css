@@ -200,6 +200,38 @@ textarea:focus-visible,
     border: 0;
 }
 
+/* Utility: nasconde elementi (usato da JS) */
+.hidden {
+    display: none;
+}
+
+/* Utility: elementi inline */
+.inline {
+    display: inline;
+}
+
+/* Utility: centratura testo */
+.text-center {
+    text-align: center;
+}
+
+/* Utility: margine superiore */
+.mt-1 {
+    margin-top: 1rem;
+}
+
+/* Utility: display inline-block */
+.inline-block {
+    display: inline-block;
+}
+
+/* Utility: avatar piccolo */
+.avatar-small {
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
 /* ============================================
    HEADER E NAVIGAZIONE
    ============================================ */

@@ -35,7 +35,7 @@ if (isset($_GET['slug']) && !empty($_GET['slug'])) {
 // Verifica esistenza caso
 if ($casoId <= 0) {
     $contenuto = "
-        <div class='error-container' style='text-align: center; padding: 3rem;'>
+        <div class='error-container text-center'>
             <h1>⚠️ Caso Non Specificato</h1>
             <p>Nessun caso selezionato per la modifica.</p>
             <a href='$prefix/esplora' class='btn btn-primary'>Torna all'Esplorazione</a>
@@ -51,7 +51,7 @@ if ($casoId <= 0) {
 if (!$dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin)) {
     http_response_code(403);
     $contenuto = "
-        <div class='error-container' style='text-align: center; padding: 3rem;'>
+        <div class='error-container text-center'>
             <h1>🔒 Accesso Negato</h1>
             <p>Non hai i permessi per modificare questo caso.</p>
             <a href='$prefix/esplora' class='btn btn-primary'>Torna all'Esplorazione</a>
@@ -72,7 +72,7 @@ $articoliEsistenti = $dbFunctions->getArticoliByCaso($casoId);
 if (!$caso) {
     http_response_code(404);
     $contenuto = "
-        <div class='error-container' style='text-align: center; padding: 3rem;'>
+        <div class='error-container text-center'>
             <h1>🔍 Caso Non Trovato</h1>
             <p>Il caso richiesto non esiste.</p>
             <a href='$prefix/esplora' class='btn btn-primary'>Torna all'Esplorazione</a>
@@ -532,11 +532,11 @@ if (!empty($caso['Immagine']) && $imageHandler->immagineEsiste($caso['Immagine']
     <div class="image-preview-existing" id="caso-img-preview">
         <img src="' . $prefix . '/' . htmlspecialchars($caso['Immagine']) . '" alt="' . $altCaso . '" class="preview-image">
         <span class="img-label">Immagine attuale</span>
-        <button type="button" class="btn-remove-img" onclick="marcaRimozioneImmagine(\'caso\', 0, \'' . htmlspecialchars($caso['Immagine'], ENT_QUOTES) . '\')">✕ Rimuovi</button>
+        <button type="button" class="btn-remove-img" data-img-action="remove" data-img-type="caso" data-img-index="0" data-img-path="' . htmlspecialchars($caso['Immagine'], ENT_QUOTES) . '">✕ Rimuovi</button>
     </div>
-    <div class="image-removed-notice" id="caso-img-removed" style="display:none;">
+    <div class="image-removed-notice hidden" id="caso-img-removed">
         <span>🗑️ Immagine sarà rimossa al salvataggio</span>
-        <button type="button" class="btn-undo-remove" onclick="annullaRimozioneImmagine(\'caso\', 0, \'' . htmlspecialchars($caso['Immagine'], ENT_QUOTES) . '\')">↩ Annulla</button>
+        <button type="button" class="btn-undo-remove" data-img-action="undo" data-img-type="caso" data-img-index="0" data-img-path="' . htmlspecialchars($caso['Immagine'], ENT_QUOTES) . '">↩ Annulla</button>
     </div>';
 }
 
@@ -589,17 +589,17 @@ function generaHtmlVittima($dati = null, $prefix = '', $index = 0) {
         <div class="image-preview-existing" id="vittima-img-preview-' . $index . '">
             <img src="' . $prefix . '/' . htmlspecialchars($immagine) . '" alt="' . $altVittima . '" class="preview-image preview-image-small">
             <span class="img-label">Immagine attuale</span>
-            <button type="button" class="btn-remove-img" onclick="marcaRimozioneImmagine(\'vittima\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">✕ Rimuovi</button>
+            <button type="button" class="btn-remove-img" data-img-action="remove" data-img-type="vittima" data-img-index="' . $index . '" data-img-path="' . htmlspecialchars($immagine, ENT_QUOTES) . '">✕ Rimuovi</button>
         </div>
-        <div class="image-removed-notice" id="vittima-img-removed-' . $index . '" style="display:none;">
+        <div class="image-removed-notice hidden" id="vittima-img-removed-' . $index . '">
             <span>🗑️ Immagine sarà rimossa al salvataggio</span>
-            <button type="button" class="btn-undo-remove" onclick="annullaRimozioneImmagine(\'vittima\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">↩ Annulla</button>
+            <button type="button" class="btn-undo-remove" data-img-action="undo" data-img-type="vittima" data-img-index="' . $index . '" data-img-path="' . htmlspecialchars($immagine, ENT_QUOTES) . '">↩ Annulla</button>
         </div>';
     }
-    
+
     return <<<HTML
     <div class="entry-card vittima-entry">
-        <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi vittima">×</button>
+        <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi vittima">×</button>
         <input type="hidden" name="vittima_id[]" value="$id">
         <input type="hidden" name="vittima_index[]" value="$index">
         $hiddenImmagine
@@ -658,17 +658,17 @@ function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
         <div class="image-preview-existing" id="colpevole-img-preview-' . $index . '">
             <img src="' . $prefix . '/' . htmlspecialchars($immagine) . '" alt="' . $altColpevole . '" class="preview-image preview-image-small">
             <span class="img-label">Immagine attuale</span>
-            <button type="button" class="btn-remove-img" onclick="marcaRimozioneImmagine(\'colpevole\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">✕ Rimuovi</button>
+            <button type="button" class="btn-remove-img" data-img-action="remove" data-img-type="colpevole" data-img-index="' . $index . '" data-img-path="' . htmlspecialchars($immagine, ENT_QUOTES) . '">✕ Rimuovi</button>
         </div>
-        <div class="image-removed-notice" id="colpevole-img-removed-' . $index . '" style="display:none;">
+        <div class="image-removed-notice hidden" id="colpevole-img-removed-' . $index . '">
             <span>🗑️ Immagine sarà rimossa al salvataggio</span>
-            <button type="button" class="btn-undo-remove" onclick="annullaRimozioneImmagine(\'colpevole\', ' . $index . ', \'' . htmlspecialchars($immagine, ENT_QUOTES) . '\')">↩ Annulla</button>
+            <button type="button" class="btn-undo-remove" data-img-action="undo" data-img-type="colpevole" data-img-index="' . $index . '" data-img-path="' . htmlspecialchars($immagine, ENT_QUOTES) . '">↩ Annulla</button>
         </div>';
     }
-    
+
     return <<<HTML
     <div class="entry-card colpevole-entry">
-        <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi colpevole">×</button>
+        <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi colpevole">×</button>
         <input type="hidden" name="colpevole_id[]" value="$id">
         <input type="hidden" name="colpevole_index[]" value="$index">
         $hiddenImmagine
@@ -712,7 +712,7 @@ function generaHtmlArticolo($dati = null) {
     
     return <<<HTML
     <div class="entry-card articolo-entry">
-        <button type="button" class="btn-remove" onclick="rimuoviEntry(this)" aria-label="Rimuovi articolo">×</button>
+        <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi articolo">×</button>
         <input type="hidden" name="articolo_id[]" value="$id">
         <div class="form-row">
             <div class="form-group">

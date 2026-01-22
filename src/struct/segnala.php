@@ -10,10 +10,10 @@ require_once __DIR__ . '/ImageHandler.php';
 // ========================================
 $prefix = getPrefix();
 requireAuth(false, "
-    <div class='access-denied-container' style='text-align: center; padding: 3rem;'>
+    <div class='access-denied-container text-center'>
         <h1>Area Riservata agli Investigatori</h1>
         <p>Per inviare una segnalazione devi essere registrato e autenticato.</p>
-        <a href='{$prefix}/accedi' class='btn btn-primary' style='display: inline-block; margin-top: 1rem;'>
+        <a href='{$prefix}/accedi' class='btn btn-primary inline-block mt-1'>
             Accedi o Registrati
         </a>
     </div>

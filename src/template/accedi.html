@@ -5,7 +5,7 @@
             <p>Bentornato, Detective! Continua le tue indagini.</p>
         </div>
         <!-- PLACEHOLDER_MESSAGGI -->
-        <div id="form-errors" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;"></div>
+        <div id="form-errors" class="hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
         <form class="auth-form" method="POST" action="{{PATH_PREFIX}}/accedi" novalidate>
 
             <div class="form-group">
@@ -20,7 +20,7 @@
                     aria-describedby="email-error"
                     aria-invalid="false"
                 />
-                <span id="email-error" class="error-message" style="display: none;"></span>
+                <span id="email-error" class="error-message hidden"></span>
             </div>
 
             <div class="form-group">
@@ -35,7 +35,7 @@
                     aria-describedby="password-error"
                     aria-invalid="false"
                 />
-                <span id="password-error" class="error-message" style="display: none;"></span>
+                <span id="password-error" class="error-message hidden"></span>
             </div>
 
             <div class="form-options">
