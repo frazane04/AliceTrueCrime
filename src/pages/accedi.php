@@ -2,7 +2,7 @@
 // src/struct/accedi.php
 // Gestione Login
 
-require_once __DIR__ . '/funzioni_db.php';
+require_once __DIR__ . '/../db/funzioni_db.php';
 
 // Se l'utente è già loggato, redirect al profilo
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {

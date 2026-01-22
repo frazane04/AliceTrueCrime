@@ -2,7 +2,7 @@
 // src/struct/logout.php
 
 // Include utils.php per session_start e getPrefix()
-require_once __DIR__ . '/utils.php';
+require_once __DIR__ . '/../helpers/utils.php';
 
 // Distruggi tutte le variabili di sessione
 $_SESSION = [];

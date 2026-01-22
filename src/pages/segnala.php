@@ -2,9 +2,9 @@
 // src/struct/segnala.php
 // Gestione segnalazione casi - Versione refactored con FormCasoHelper
 
-require_once __DIR__ . '/funzioni_db.php';
-require_once __DIR__ . '/ImageHandler.php';
-require_once __DIR__ . '/FormCasoHelper.php';
+require_once __DIR__ . '/../db/funzioni_db.php';
+require_once __DIR__ . '/../helpers/ImageHandler.php';
+require_once __DIR__ . '/../helpers/FormCasoHelper.php';
 
 // ========================================
 // CONTROLLO SESSIONE

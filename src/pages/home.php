@@ -2,7 +2,7 @@
 // src/struct/home.php
 // Gestione della Home Page con dati dinamici
 
-require_once __DIR__ . '/connessione.php';
+require_once __DIR__ . '/../db/connessione.php';
 
 // 1. Carica il template HTML
 $contenuto = loadTemplate('index');

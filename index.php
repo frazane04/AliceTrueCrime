@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'src/struct/utils.php';
+require_once 'src/helpers/utils.php';
 
 //Analisi URL
 $request = $_SERVER['REQUEST_URI'];
@@ -25,7 +25,7 @@ if (preg_match('#^/caso/([a-z0-9\-]+)$#i', $path, $matches)) {
     // Cattura lo slug dall'URL
     $_GET['slug'] = $matches[1];
     
-    $fileToLoad = __DIR__ . '/src/struct/caso.php';
+    $fileToLoad = __DIR__ . '/src/pages/caso.php';
     
     if (file_exists($fileToLoad)) {
         require $fileToLoad;
@@ -56,7 +56,7 @@ $routes = [
 
 //CONTROLLO E REINDIRIZZAMENTO
 if (array_key_exists($path, $routes)) {
-    $fileToLoad = __DIR__ . '/src/struct/' . $routes[$path];
+    $fileToLoad = __DIR__ . '/src/pages/' . $routes[$path];
 
     if (file_exists($fileToLoad)) {
         require $fileToLoad;

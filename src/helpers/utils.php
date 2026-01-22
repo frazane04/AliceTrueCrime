@@ -76,7 +76,7 @@ function renderErrorPageAndExit(string $icona, string $titolo, string $messaggio
  * @return string Contenuto del template
  */
 function loadTemplate(string $nome): string {
-    $templatePath = __DIR__ . '/../template/' . $nome . '.html';
+    $templatePath = __DIR__ . '/../template/pages/' . $nome . '.html';
 
     if (!file_exists($templatePath)) {
         die("Errore: Template {$nome}.html non trovato in {$templatePath}");
@@ -250,7 +250,8 @@ function renderErrorPage(int $codice): void {
     http_response_code($codice);
 
     $config = $errori[$codice];
-    $contenuto = loadTemplate($config['template']);
+    $errorPath = __DIR__ . '/../template/errors/' . $config['template'] . '.html';
+    $contenuto = file_get_contents($errorPath);
     $contenuto = str_replace('{{PREFIX}}', getPrefix(), $contenuto);
 
     echo getTemplatePage("{$codice} - {$config['titolo']} | AliceTrueCrime", $contenuto);
@@ -261,7 +262,7 @@ function renderErrorPage(int $codice): void {
  * Funzione Core: Assembla i pezzi del template.
  */
 function getTemplatePage(string $title, string $content): string {
-    $templatePath = __DIR__ . '/../template/pagestructure.html';
+    $templatePath = __DIR__ . '/../template/layouts/pagestructure.html';
     
     if (!file_exists($templatePath)) {
         die("ERRORE CRITICO: Template mancante in $templatePath");
@@ -284,7 +285,7 @@ function getTemplatePage(string $title, string $content): string {
 
 
 function getHeaderSection($currentPath): string {
-    $headerPath = __DIR__ . '/../template/header.html';
+    $headerPath = __DIR__ . '/../template/layouts/header.html';
     if (!file_exists($headerPath)) return "<p>Errore: header.html mancante</p>";
     
     $headerHtml = file_get_contents($headerPath);
@@ -300,7 +301,7 @@ function getHeaderSection($currentPath): string {
 }
 
 function getFooterSection($currentPath): string {
-    $footerPath = __DIR__ . '/../template/footer.html';
+    $footerPath = __DIR__ . '/../template/layouts/footer.html';
     if (!file_exists($footerPath)) return "<p>Errore: footer.html mancante</p>";
 
     $footerHtml = file_get_contents($footerPath);
@@ -325,7 +326,7 @@ function getNavBarLi($currentPath): string {
 
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
         // RISOLUZIONE ERRORE: Carichiamo la classe FunzioniDB
-        require_once __DIR__ . '/funzioni_db.php';
+        require_once __DIR__ . '/../db/funzioni_db.php';
         $db_nav = new FunzioniDB();
         $utente = $db_nav->getUtenteByEmail($_SESSION['user_email']);
         

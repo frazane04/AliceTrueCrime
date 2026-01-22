@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/utils.php';
-require_once __DIR__ . '/funzioni_db.php';
+require_once __DIR__ . '/../helpers/utils.php';
+require_once __DIR__ . '/../db/funzioni_db.php';
 
 requireAuth();
 
