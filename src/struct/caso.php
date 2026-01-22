@@ -8,8 +8,8 @@ require_once __DIR__ . '/funzioni_db.php';
 // ========================================
 $casoId = 0;
 $dbFunctions = new FunzioniDB();
-$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
-$isAdminPreview = isset($_GET['preview']) && $_GET['preview'] === 'admin' && $isAdmin;
+$isAdmin = $_SESSION['is_admin'] ?? false;
+$isAdminPreview = ($_GET['preview'] ?? '') === 'admin' && $isAdmin;
 
 // Determina se filtrare solo approvati (default true, false se admin in preview)
 $soloApprovati = !$isAdminPreview;
@@ -21,20 +21,7 @@ if (isset($_GET['slug']) && !empty($_GET['slug'])) {
     $casoId = $dbFunctions->getCasoIdBySlug($slug, $soloApprovati);
     
     if ($casoId === null) {
-        // Slug non trovato
-        http_response_code(404);
-        $prefix = getPrefix();
-        $contenuto = "
-            <div class='error-container text-center'>
-                <h1>🔍 Caso Non Trovato</h1>
-                <p>Il caso richiesto (<strong>" . htmlspecialchars($slug) . "</strong>) non esiste.</p>
-                <a href='$prefix/esplora' class='btn btn-primary inline-block mt-1'>
-                    Esplora tutti i Casi
-                </a>
-            </div>
-        ";
-        echo getTemplatePage("Caso Non Trovato - AliceTrueCrime", $contenuto);
-        exit;
+        renderErrorPageAndExit('🔍', 'Caso Non Trovato', 'Il caso richiesto (<strong>' . htmlspecialchars($slug) . '</strong>) non esiste.', 404);
     }
 }
 // Fallback: supporta ancora il vecchio formato ?id=1 per compatibilità
@@ -47,20 +34,7 @@ $prefix = getPrefix();
 
 // Verifico che l'ID sia valido
 if ($casoId <= 0) {
-    http_response_code(400);
-    
-    $contenuto = "
-        <div class='error-container text-center'>
-            <h1>⚠️ ID Caso Non Valido</h1>
-            <p>Il caso richiesto non è stato specificato correttamente.</p>
-            <a href='$prefix/esplora' class='btn btn-primary inline-block mt-1'>
-                Esplora tutti i Casi
-            </a>
-        </div>
-    ";
-    
-    echo getTemplatePage("Caso Non Trovato - AliceTrueCrime", $contenuto);
-    exit;
+    renderErrorPageAndExit('⚠️', 'ID Caso Non Valido', 'Il caso richiesto non è stato specificato correttamente.', 400);
 }
 
 // ========================================
@@ -69,29 +43,24 @@ if ($casoId <= 0) {
 $messaggioAdmin = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
-    
-    // Approva Caso
-    if (isset($_POST['action']) && $_POST['action'] === 'approva_caso') {
+    $action = $_POST['action'] ?? '';
+
+    if ($action === 'approva_caso') {
         $result = $dbFunctions->approvaCaso($casoId);
         if ($result['success']) {
-            // Redirect alla pagina del caso approvato (senza preview)
             header("Location: $prefix/caso/" . $slug);
             exit;
-        } else {
-            $messaggioAdmin = '<div class="alert alert-error">❌ ' . htmlspecialchars($result['message']) . '</div>';
         }
+        $messaggioAdmin = alertHtml('error', '❌ ' . $result['message']);
     }
-    
-    // Rifiuta Caso
-    if (isset($_POST['action']) && $_POST['action'] === 'rifiuta_caso') {
+
+    if ($action === 'rifiuta_caso') {
         $result = $dbFunctions->rifiutaCaso($casoId);
         if ($result['success']) {
-            // Redirect al profilo
             header("Location: $prefix/profilo");
             exit;
-        } else {
-            $messaggioAdmin = '<div class="alert alert-error">❌ ' . htmlspecialchars($result['message']) . '</div>';
         }
+        $messaggioAdmin = alertHtml('error', '❌ ' . $result['message']);
     }
 }
 
@@ -108,19 +77,7 @@ $articoli = $dbFunctions->getArticoliByCaso($casoId);
 
 // Verifico se il caso esiste
 if (!$caso) {
-    http_response_code(404);
-    
-    $contenuto = "
-        <div class='error-container text-center'>
-            <h1>🔍 Caso Non Trovato</h1>
-            <p>Il caso richiesto non esiste o non è stato ancora approvato.</p>
-            <a href='$prefix/esplora' class='btn btn-primary inline-block mt-1'>
-                Esplora tutti i Casi
-            </a>
-        </div>";
-    
-    echo getTemplatePage("Caso Non Trovato - AliceTrueCrime", $contenuto);
-    exit;
+    renderErrorPageAndExit('🔍', 'Caso Non Trovato', 'Il caso richiesto non esiste o non è stato ancora approvato.', 404);
 }
 
 // Verifica se l'utente può modificare questo caso
@@ -129,20 +86,14 @@ $htmlAzioniUtente = '';
 
 if (isLoggedIn()) {
     $emailUtente = $_SESSION['user_email'];
-    $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
-    
-    // Usa il metodo puoModificareCaso per verificare i permessi
     $puoModificare = $dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin);
     
     if ($puoModificare) {
-        $linkModifica = $prefix . '/modifica-caso?id=' . $casoId;
-        
-        $htmlAzioniUtente = '
-        <div class="caso-azioni-utente">
-            <a href="' . $linkModifica . '" class="btn btn-secondary">
-                ✏️ Modifica Caso
-            </a>
-        </div>';
+        $htmlAzioniUtente = renderComponent('btn-azione-caso', [
+            'LINK_HREF' => $prefix . '/modifica-caso?id=' . $casoId,
+            'ICONA' => '✏️',
+            'TESTO' => 'Modifica Caso'
+        ]);
     }
 }
 
@@ -196,12 +147,11 @@ $html_articoli = "";
 
 if (!empty($articoli)) {
     foreach ($articoli as $articolo) {
-        $art_Titolo = htmlspecialchars($articolo['Titolo']);
-        $art_link = htmlspecialchars($articolo['Link']);
-        $html_articoli .= '<li class="approfondimento"><p class="approfondimento-fonte">';
-        $html_articoli .= '<a href="' . $art_link . '" target="_blank" rel="noopener noreferrer">' . $art_Titolo . '</a>';
-        $html_articoli .= '<time class="approfondimento-data">' . formatData($articolo['Data']) . '</time>';
-        $html_articoli .= '</p></li>';
+        $html_articoli .= renderComponent('articolo-link', [
+            'TITOLO' => htmlspecialchars($articolo['Titolo']),
+            'LINK' => htmlspecialchars($articolo['Link']),
+            'DATA' => formatData($articolo['Data'])
+        ]);
     }
 } else {
     $html_articoli = '<li>Nessuna fonte disponibile.</li>';
@@ -341,11 +291,7 @@ if ($isApprovato) {
                 $isAdminComment = $_SESSION['is_admin'] ?? false;
 
                 if ($commento['Email'] === $emailLoggata || $isAdminComment) {
-                    $pulsanteElimina = '<form method="POST" id="form-elimina-' . $idCommento . '" class="inline">'
-                        . '<input type="hidden" name="action" value="elimina_commento" />'
-                        . '<input type="hidden" name="id_commento" value="' . $idCommento . '" />'
-                        . '<button type="button" class="btn-elimina-commento" aria-label="Elimina commento" data-commento-id="' . $idCommento . '">Elimina</button>'
-                        . '</form>';
+                    $pulsanteElimina = renderComponent('btn-elimina-commento', ['ID_COMMENTO' => $idCommento]);
                 }
             }
 
@@ -371,10 +317,11 @@ if ($isApprovato) {
             'MESSAGGIO'  => $messaggioCommento
         ]);
     } else {
-        $htmlFormCommento = '<div class="login-prompt">'
-            . '<p>Per commentare devi essere registrato.</p>'
-            . '<a href="' . $prefix . '/accedi" class="btn btn-primary">Accedi per Commentare</a>'
-            . '</div>';
+        $htmlFormCommento = renderComponent('login-prompt', [
+            'MESSAGGIO' => 'Per commentare devi essere registrato.',
+            'LINK_HREF' => $prefix . '/accedi',
+            'LINK_TESTO' => 'Accedi per Commentare'
+        ]);
     }
 } else {
     // Caso non approvato - niente commenti

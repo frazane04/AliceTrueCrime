@@ -20,7 +20,7 @@ $imageHandler = new ImageHandler();
 $formHelper = new FormCasoHelper($imageHandler);
 
 $emailUtente = $_SESSION['user_email'];
-$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+$isAdmin = $_SESSION['is_admin'] ?? false;
 
 // ========================================
 // RECUPERO ID CASO
@@ -36,31 +36,14 @@ if (isset($_GET['slug']) && !empty($_GET['slug'])) {
 
 // Verifica esistenza caso
 if ($casoId <= 0) {
-    $contenuto = "
-        <div class='error-container text-center'>
-            <h1>⚠️ Caso Non Specificato</h1>
-            <p>Nessun caso selezionato per la modifica.</p>
-            <a href='$prefix/esplora' class='btn btn-primary'>Torna all'Esplorazione</a>
-        </div>
-    ";
-    echo getTemplatePage("Errore - AliceTrueCrime", $contenuto);
-    exit;
+    renderErrorPageAndExit('⚠️', 'Caso Non Specificato', 'Nessun caso selezionato per la modifica.', 400);
 }
 
 // ========================================
 // VERIFICA PERMESSI
 // ========================================
 if (!$dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin)) {
-    http_response_code(403);
-    $contenuto = "
-        <div class='error-container text-center'>
-            <h1>🔒 Accesso Negato</h1>
-            <p>Non hai i permessi per modificare questo caso.</p>
-            <a href='$prefix/esplora' class='btn btn-primary'>Torna all'Esplorazione</a>
-        </div>
-    ";
-    echo getTemplatePage("Accesso Negato - AliceTrueCrime", $contenuto);
-    exit;
+    renderErrorPageAndExit('🔒', 'Accesso Negato', 'Non hai i permessi per modificare questo caso.', 403);
 }
 
 // ========================================
@@ -72,16 +55,7 @@ $colpevoliEsistenti = $dbFunctions->getColpevoliByCaso($casoId, false);
 $articoliEsistenti = $dbFunctions->getArticoliByCaso($casoId);
 
 if (!$caso) {
-    http_response_code(404);
-    $contenuto = "
-        <div class='error-container text-center'>
-            <h1>🔍 Caso Non Trovato</h1>
-            <p>Il caso richiesto non esiste.</p>
-            <a href='$prefix/esplora' class='btn btn-primary'>Torna all'Esplorazione</a>
-        </div>
-    ";
-    echo getTemplatePage("Caso Non Trovato - AliceTrueCrime", $contenuto);
-    exit;
+    renderErrorPageAndExit('🔍', 'Caso Non Trovato', 'Il caso richiesto non esiste.', 404);
 }
 
 $autoreOriginale = $dbFunctions->getAutoreCaso($casoId);
@@ -95,21 +69,9 @@ $messaggioFeedback = "";
 // ========================================
 // GESTIONE ELIMINAZIONE CASO
 // ========================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'elimina_caso') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'elimina_caso') {
     // Elimina le immagini associate
-    if (!empty($caso['Immagine'])) {
-        $imageHandler->eliminaImmagine($caso['Immagine']);
-    }
-    foreach ($vittimeEsistenti as $v) {
-        if (!empty($v['Immagine'])) {
-            $imageHandler->eliminaImmagine($v['Immagine']);
-        }
-    }
-    foreach ($colpevoliEsistenti as $c) {
-        if (!empty($c['Immagine'])) {
-            $imageHandler->eliminaImmagine($c['Immagine']);
-        }
-    }
+    $formHelper->eliminaTutteImmaginiCaso($caso, $vittimeEsistenti, $colpevoliEsistenti);
 
     $result = $dbFunctions->eliminaCaso($casoId, $emailUtente, $isAdmin);
 
@@ -117,14 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         header("Location: $prefix/profilo?msg=caso_eliminato");
         exit;
     } else {
-        $messaggioFeedback = '<div class="alert alert-error">❌ ' . htmlspecialchars($result['message']) . '</div>';
+        $messaggioFeedback = alertHtml('error', '❌ ' . $result['message']);
     }
 }
 
 // ========================================
 // GESTIONE FORM POST - MODIFICA
 // ========================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'modifica_caso') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modifica_caso') {
 
     // Recupero dati dal form
     $titolo = trim($_POST['titolo'] ?? '');
@@ -311,13 +273,9 @@ $opzioniTipologia = $formHelper->generaOpzioniTipologia($caso['Tipologia']);
 $immagineCasoData = $formHelper->generaAnteprimaImmagineCaso($caso);
 
 // Avviso ri-approvazione
-$avvisoRiApprovazione = '';
-if ($isAutore && !$isAdmin) {
-    $avvisoRiApprovazione = '
-    <div class="alert alert-warning">
-        <strong>⚠️ Attenzione:</strong> Modificando questo caso, verrà rimesso in attesa di approvazione.
-    </div>';
-}
+$avvisoRiApprovazione = ($isAutore && !$isAdmin)
+    ? alertHtml('warning', '⚠️ Attenzione: Modificando questo caso, verrà rimesso in attesa di approvazione.')
+    : '';
 
 // ========================================
 // SOSTITUZIONI TEMPLATE

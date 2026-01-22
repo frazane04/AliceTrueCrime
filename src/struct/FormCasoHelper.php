@@ -203,6 +203,25 @@ class FormCasoHelper {
     }
 
     /**
+     * Elimina tutte le immagini associate a un caso (caso + vittime + colpevoli)
+     */
+    public function eliminaTutteImmaginiCaso(array $caso, array $vittime, array $colpevoli): void {
+        if (!empty($caso['Immagine'])) {
+            $this->imageHandler->eliminaImmagine($caso['Immagine']);
+        }
+        foreach ($vittime as $v) {
+            if (!empty($v['Immagine'])) {
+                $this->imageHandler->eliminaImmagine($v['Immagine']);
+            }
+        }
+        foreach ($colpevoli as $c) {
+            if (!empty($c['Immagine'])) {
+                $this->imageHandler->eliminaImmagine($c['Immagine']);
+            }
+        }
+    }
+
+    /**
      * Pulisce immagini orfane (non più associate) per modifica caso
      *
      * @param array $personeNuove Array persone dal form (con 'immagine_esistente')
