@@ -72,9 +72,6 @@ $colpevoli = $dbFunctions->getColpevoliByCaso($casoId, $soloApprovati);
 $vittime = $dbFunctions->getVittimeByCaso($casoId, $soloApprovati);
 $articoli = $dbFunctions->getArticoliByCaso($casoId);
 
-
-
-
 // Verifico se il caso esiste
 if (!$caso) {
     renderErrorPageAndExit('🔍', 'Caso Non Trovato', 'Il caso richiesto non esiste o non è stato ancora approvato.', 404);
@@ -101,61 +98,11 @@ if (isLoggedIn()) {
 $contenuto = loadTemplate('caso');
 
 // ========================================
-// GENERAZIONE HTML COLPEVOLI
+// GENERAZIONE HTML PERSONE E ARTICOLI
 // ========================================
-$html_colpevoli = "";
-
-if (!empty($colpevoli)) {
-    foreach ($colpevoli as $colpevole) {
-        $nomeCompleto = htmlspecialchars($colpevole['Nome'] . ' ' . $colpevole['Cognome']);
-        $html_colpevoli .= renderComponent('card-persona', [
-            'IMMAGINE'      => getImageUrl($colpevole['Immagine'] ?? null),
-            'NOME_COMPLETO' => $nomeCompleto,
-            'LUOGO_NASCITA' => htmlspecialchars($colpevole['LuogoNascita'] ?? 'Sconosciuto'),
-            'DATA_NASCITA'  => formatData($colpevole['DataNascita'] ?? null),
-            'EXTRA_INFO'    => ''
-        ]);
-    }
-} else {
-    $html_colpevoli = '<p>Nessun colpevole registrato.</p>';
-}
-
-// ========================================
-// GENERAZIONE HTML VITTIME
-// ========================================
-$html_vittime = "";
-
-if (!empty($vittime)) {
-    foreach ($vittime as $vittima) {
-        $nomeCompleto = htmlspecialchars($vittima['Nome'] . ' ' . $vittima['Cognome']);
-        $html_vittime .= renderComponent('card-persona', [
-            'IMMAGINE'      => getImageUrl($vittima['Immagine'] ?? null),
-            'NOME_COMPLETO' => $nomeCompleto,
-            'LUOGO_NASCITA' => htmlspecialchars($vittima['LuogoNascita'] ?? 'Sconosciuto'),
-            'DATA_NASCITA'  => formatData($vittima['DataNascita'] ?? null),
-            'EXTRA_INFO'    => '<p><strong>Decesso:</strong> ' . formatData($vittima['DataDecesso'] ?? null) . '</p>'
-        ]);
-    }
-} else {
-    $html_vittime = '<p>Nessuna vittima registrata.</p>';
-}
-
-// ========================================
-// GENERAZIONE HTML ARTICOLI
-// ========================================
-$html_articoli = "";
-
-if (!empty($articoli)) {
-    foreach ($articoli as $articolo) {
-        $html_articoli .= renderComponent('articolo-link', [
-            'TITOLO' => htmlspecialchars($articolo['Titolo']),
-            'LINK' => htmlspecialchars($articolo['Link']),
-            'DATA' => formatData($articolo['Data'])
-        ]);
-    }
-} else {
-    $html_articoli = '<li>Nessuna fonte disponibile.</li>';
-}
+$htmlColpevoli = generaHtmlPersone($colpevoli, 'colpevole');
+$htmlVittime = generaHtmlPersone($vittime, 'vittima');
+$htmlArticoli = generaHtmlArticoli($articoli);
 
 // ========================================
 // PREPARO DATI PER VISUALIZZAZIONE
@@ -174,25 +121,18 @@ $immagine = getImageUrl($caso['Immagine']);
 $statusClass = $isApprovato ? 'status-approved' : 'status-pending';
 $statusText = $isApprovato ? '✓ Caso Verificato' : '⏳ In Revisione';
 
-// ========================================
-// INCREMENTO VISUALIZZAZIONI
-// ========================================
 // Incrementa il contatore delle visualizzazioni solo per casi approvati
 // Non incrementa in modalità preview admin
 if ($isApprovato && !$isAdminPreview) {
     $dbFunctions->incrementaVisualizzazioni($casoId);
 }
 
-// ========================================
 // BARRA ADMIN (se admin e caso non approvato)
-// ========================================
 $htmlAdminBar = ($isAdmin && !$isApprovato)
     ? renderComponent('admin-bar-caso', ['MESSAGGIO_ADMIN' => $messaggioAdmin])
     : '';
 
-// ========================================
 // SOSTITUZIONI PLACEHOLDER
-// ========================================
 $htmlImmagine = '<img alt="Evidenza principale del caso ' . $titolo . '" src="' . $immagine . '" class="img-evidence" width="300" />';
 
 $contenuto = strtr($contenuto, [
@@ -207,9 +147,9 @@ $contenuto = strtr($contenuto, [
     '<!-- caso_autore -->'      => $autore,
     '<!-- caso_data -->'        => $data,
     '<!-- caso_luogo -->'       => $luogo,
-    '<!-- caso_vittime -->'     => $html_vittime,
-    '<!-- caso_colpevoli -->'   => $html_colpevoli,
-    '<!-- caso_articoli -->'    => $html_articoli,
+    '<!-- caso_vittime -->'     => $htmlVittime,
+    '<!-- caso_colpevoli -->'   => $htmlColpevoli,
+    '<!-- caso_articoli -->'    => $htmlArticoli,
 ]);
 
 // ========================================

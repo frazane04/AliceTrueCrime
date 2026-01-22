@@ -137,6 +137,52 @@ function getImageUrl(?string $immagine): string {
 }
 
 /**
+ * Genera HTML per lista persone (vittime o colpevoli) usando card-persona.
+ */
+function generaHtmlPersone(array $persone, string $tipo): string {
+    if (empty($persone)) {
+        return $tipo === 'vittima'
+            ? '<p>Nessuna vittima registrata.</p>'
+            : '<p>Nessun colpevole registrato.</p>';
+    }
+
+    $html = '';
+    foreach ($persone as $p) {
+        $extraInfo = ($tipo === 'vittima')
+            ? '<p><strong>Decesso:</strong> ' . formatData($p['DataDecesso'] ?? null) . '</p>'
+            : '';
+
+        $html .= renderComponent('card-persona', [
+            'IMMAGINE'      => getImageUrl($p['Immagine'] ?? null),
+            'NOME_COMPLETO' => htmlspecialchars($p['Nome'] . ' ' . $p['Cognome']),
+            'LUOGO_NASCITA' => htmlspecialchars($p['LuogoNascita'] ?? 'Sconosciuto'),
+            'DATA_NASCITA'  => formatData($p['DataNascita'] ?? null),
+            'EXTRA_INFO'    => $extraInfo
+        ]);
+    }
+    return $html;
+}
+
+/**
+ * Genera HTML per lista articoli/fonti usando articolo-link.
+ */
+function generaHtmlArticoli(array $articoli): string {
+    if (empty($articoli)) {
+        return '<li>Nessuna fonte disponibile.</li>';
+    }
+
+    $html = '';
+    foreach ($articoli as $a) {
+        $html .= renderComponent('articolo-link', [
+            'TITOLO' => htmlspecialchars($a['Titolo']),
+            'LINK'   => htmlspecialchars($a['Link']),
+            'DATA'   => formatData($a['Data'] ?? null)
+        ]);
+    }
+    return $html;
+}
+
+/**
  * Genera l'URL dell'avatar UI Avatars.
  */
 function getAvatarUrl(string $nome, int $size = 24): string {
