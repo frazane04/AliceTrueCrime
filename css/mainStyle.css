@@ -202,7 +202,7 @@ textarea:focus-visible,
 
 /* Utility: nasconde elementi (usato da JS) */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* Utility: elementi inline */
