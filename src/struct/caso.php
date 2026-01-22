@@ -236,34 +236,9 @@ if ($isApprovato && !$isAdminPreview) {
 // ========================================
 // BARRA ADMIN (se admin e caso non approvato)
 // ========================================
-$htmlAdminBar = '';
-
-if ($isAdmin && !$isApprovato) {
-    $htmlAdminBar = '
-    <div class="admin-action-bar">
-        <div class="admin-bar-content">
-            <span class="admin-bar-label">Pannello Admin - Caso in attesa di approvazione</span>
-
-            ' . $messaggioAdmin . '
-
-            <div class="admin-bar-actions">
-                <form method="POST" id="form-approva-caso">
-                    <input type="hidden" name="action" value="approva_caso">
-                    <button type="button" class="btn btn-success" id="btn-approva-caso">
-                        Approva Caso
-                    </button>
-                </form>
-
-                <form method="POST" id="form-rifiuta-caso">
-                    <input type="hidden" name="action" value="rifiuta_caso">
-                    <button type="button" class="btn btn-danger" id="btn-rifiuta-caso">
-                        Rifiuta ed Elimina
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>';
-}
+$htmlAdminBar = ($isAdmin && !$isApprovato)
+    ? renderComponent('admin-bar-caso', ['MESSAGGIO_ADMIN' => $messaggioAdmin])
+    : '';
 
 // ========================================
 // SOSTITUZIONI PLACEHOLDER

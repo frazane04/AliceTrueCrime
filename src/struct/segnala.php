@@ -1,9 +1,10 @@
 <?php
 // src/struct/segnala.php
-// Gestione segnalazione casi completa - VERSIONE CON UPLOAD IMMAGINI
+// Gestione segnalazione casi - Versione refactored con FormCasoHelper
 
 require_once __DIR__ . '/funzioni_db.php';
 require_once __DIR__ . '/ImageHandler.php';
+require_once __DIR__ . '/FormCasoHelper.php';
 
 // ========================================
 // CONTROLLO SESSIONE
@@ -32,7 +33,11 @@ $articoli = [];
 // GESTIONE FORM POST
 // ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
+
+    $dbFunctions = new FunzioniDB();
+    $imageHandler = new ImageHandler();
+    $formHelper = new FormCasoHelper($imageHandler);
+
     // Recupero dati generali caso
     $titolo = trim($_POST['titolo'] ?? '');
     $data = $_POST['data_crimine'] ?? '';
@@ -42,61 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipologia = trim($_POST['tipologia'] ?? '');
     $autoreEmail = $_SESSION['user_email'];
 
-    // Recupero vittime
-    $vittime_nomi = $_POST['vittima_nome'] ?? [];
-    $vittime_cognomi = $_POST['vittima_cognome'] ?? [];
-    $vittime_luoghi_nascita = $_POST['vittima_luogo_nascita'] ?? [];
-    $vittime_date_nascita = $_POST['vittima_data_nascita'] ?? [];
-    $vittime_date_decesso = $_POST['vittima_data_decesso'] ?? [];
-    
-    $vittime = [];
-    for ($i = 0; $i < count($vittime_nomi); $i++) {
-        if (!empty($vittime_nomi[$i]) && !empty($vittime_cognomi[$i])) {
-            $vittime[] = [
-                'nome' => trim($vittime_nomi[$i]),
-                'cognome' => trim($vittime_cognomi[$i]),
-                'luogo_nascita' => !empty($vittime_luoghi_nascita[$i]) ? trim($vittime_luoghi_nascita[$i]) : 'N/A',
-                'data_nascita' => !empty($vittime_date_nascita[$i]) ? $vittime_date_nascita[$i] : null,
-                'data_decesso' => !empty($vittime_date_decesso[$i]) ? $vittime_date_decesso[$i] : null,
-                'file_index' => $i
-            ];
-        }
-    }
-
-    // Recupero colpevoli
-    $colpevoli_nomi = $_POST['colpevole_nome'] ?? [];
-    $colpevoli_cognomi = $_POST['colpevole_cognome'] ?? [];
-    $colpevoli_luoghi_nascita = $_POST['colpevole_luogo_nascita'] ?? [];
-    $colpevoli_date_nascita = $_POST['colpevole_data_nascita'] ?? [];
-    
-    $colpevoli = [];
-    for ($i = 0; $i < count($colpevoli_nomi); $i++) {
-        if (!empty($colpevoli_nomi[$i]) && !empty($colpevoli_cognomi[$i])) {
-            $colpevoli[] = [
-                'nome' => trim($colpevoli_nomi[$i]),
-                'cognome' => trim($colpevoli_cognomi[$i]),
-                'luogo_nascita' => !empty($colpevoli_luoghi_nascita[$i]) ? trim($colpevoli_luoghi_nascita[$i]) : 'N/A',
-                'data_nascita' => !empty($colpevoli_date_nascita[$i]) ? $colpevoli_date_nascita[$i] : null,
-                'file_index' => $i
-            ];
-        }
-    }
-
-    // Recupero articoli
-    $articoli_titoli = $_POST['articolo_titolo'] ?? [];
-    $articoli_date = $_POST['articolo_data'] ?? [];
-    $articoli_link = $_POST['articolo_link'] ?? [];
-    
-    $articoli = [];
-    for ($i = 0; $i < count($articoli_titoli); $i++) {
-        if (!empty($articoli_titoli[$i]) || !empty($articoli_link[$i])) {
-            $articoli[] = [
-                'titolo' => !empty($articoli_titoli[$i]) ? trim($articoli_titoli[$i]) : 'Fonte senza titolo',
-                'data' => !empty($articoli_date[$i]) ? $articoli_date[$i] : null,
-                'link' => !empty($articoli_link[$i]) ? trim($articoli_link[$i]) : ''
-            ];
-        }
-    }
+    // Parsing dati con helper
+    $vittime = $formHelper->parseVittimeFromPost($_POST);
+    $colpevoli = $formHelper->parseColpevoliFromPost($_POST);
+    $articoli = $formHelper->parseArticoliFromPost($_POST);
 
     // ========================================
     // VALIDAZIONE
@@ -124,15 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($colpevoli)) {
         $errori[] = "Devi inserire almeno un colpevole (o 'Ignoto' se sconosciuto)";
     }
-    // Validazione vittime
     foreach ($vittime as $v) {
         if (empty($v['data_nascita'])) {
             $errori[] = "La data di nascita è obbligatoria per tutte le vittime";
             break;
         }
     }
-
-    // Validazione colpevoli
     foreach ($colpevoli as $c) {
         if (empty($c['data_nascita'])) {
             $errori[] = "La data di nascita è obbligatoria per tutti i colpevoli";
@@ -140,18 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-
     // ========================================
     // INSERIMENTO NEL DATABASE
     // ========================================
     if (empty($errori)) {
         try {
-            $dbFunctions = new FunzioniDB();
-            $imageHandler = new ImageHandler();
-            
             $tipologiaFinal = !empty($tipologia) ? $tipologia : null;
             $slugCaso = $dbFunctions->generaSlugUnico($titolo);
-            
+
             // Gestione immagine caso
             $immagineCaso = null;
             if (isset($_FILES['immagine_caso']) && $_FILES['immagine_caso']['error'] !== UPLOAD_ERR_NO_FILE) {
@@ -162,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $errori[] = "Errore immagine caso: " . $resultImg['message'];
                 }
             }
-            
+
             if (empty($errori)) {
                 // 1. Inserimento caso
                 $resultCaso = $dbFunctions->inserisciCaso(
@@ -172,31 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($resultCaso['success']) {
                     $casoId = $resultCaso['caso_id'];
-                    
+
                     // 2. Inserimento vittime con immagini
                     foreach ($vittime as $vittima) {
-                        $immagineVittima = null;
-                        $idx = $vittima['file_index'];
-                        
-                        if (isset($_FILES['vittima_immagine']['name'][$idx]) && 
-                            $_FILES['vittima_immagine']['error'][$idx] !== UPLOAD_ERR_NO_FILE) {
-                            
-                            $fileVittima = [
-                                'name' => $_FILES['vittima_immagine']['name'][$idx],
-                                'type' => $_FILES['vittima_immagine']['type'][$idx],
-                                'tmp_name' => $_FILES['vittima_immagine']['tmp_name'][$idx],
-                                'error' => $_FILES['vittima_immagine']['error'][$idx],
-                                'size' => $_FILES['vittima_immagine']['size'][$idx]
-                            ];
-                            
-                            $slugV = $imageHandler->generaSlugPersona($vittima['nome'], $vittima['cognome']);
-                            $resultImgV = $imageHandler->caricaImmagine($fileVittima, 'vittime', $slugV);
-                            
-                            if ($resultImgV['success'] && $resultImgV['path']) {
-                                $immagineVittima = $resultImgV['path'];
-                            }
-                        }
-                        
+                        $immagineVittima = $formHelper->gestisciImmaginePersona(
+                            $_FILES, 'vittima', $vittima['file_index'],
+                            $vittima['nome'], $vittima['cognome']
+                        );
+
                         $dbFunctions->inserisciVittima(
                             $casoId, $vittima['nome'], $vittima['cognome'],
                             $vittima['luogo_nascita'], $vittima['data_nascita'],
@@ -206,34 +136,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     // 3. Inserimento colpevoli con immagini
                     foreach ($colpevoli as $colpevole) {
-                        $immagineColpevole = null;
-                        $idx = $colpevole['file_index'];
-                        
-                        if (isset($_FILES['colpevole_immagine']['name'][$idx]) && 
-                            $_FILES['colpevole_immagine']['error'][$idx] !== UPLOAD_ERR_NO_FILE) {
-                            
-                            $fileColpevole = [
-                                'name' => $_FILES['colpevole_immagine']['name'][$idx],
-                                'type' => $_FILES['colpevole_immagine']['type'][$idx],
-                                'tmp_name' => $_FILES['colpevole_immagine']['tmp_name'][$idx],
-                                'error' => $_FILES['colpevole_immagine']['error'][$idx],
-                                'size' => $_FILES['colpevole_immagine']['size'][$idx]
-                            ];
-                            
-                            $slugC = $imageHandler->generaSlugPersona($colpevole['nome'], $colpevole['cognome']);
-                            $resultImgC = $imageHandler->caricaImmagine($fileColpevole, 'colpevoli', $slugC);
-                            
-                            if ($resultImgC['success'] && $resultImgC['path']) {
-                                $immagineColpevole = $resultImgC['path'];
-                            }
-                        }
-                        
+                        $immagineColpevole = $formHelper->gestisciImmaginePersona(
+                            $_FILES, 'colpevole', $colpevole['file_index'],
+                            $colpevole['nome'], $colpevole['cognome']
+                        );
+
                         $colpevoleId = $dbFunctions->inserisciColpevole(
                             $colpevole['nome'], $colpevole['cognome'],
                             $colpevole['luogo_nascita'], $colpevole['data_nascita'],
                             $immagineColpevole
                         );
-                        
+
                         if ($colpevoleId) {
                             $dbFunctions->collegaColpevoleACaso($colpevoleId, $casoId);
                         }
@@ -248,20 +161,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     // Success
-                    $messaggioFeedback = "
-                        <div class='alert alert-success'>
-                            <strong>✅ Segnalazione inviata con successo!</strong><br>
-                            Il caso è stato inoltrato per la revisione.<br><br>
-                            <small>
-                                <strong>Riepilogo:</strong><br>
-                                • Caso ID: {$casoId}<br>
-                                • Vittime: " . count($vittime) . "<br>
-                                • Colpevoli: " . count($colpevoli) . "<br>
-                                • Fonti: " . count($articoli) . "<br>
-                                • Segnalato da: {$_SESSION['user']}
-                            </small>
-                        </div>
-                    ";
+                    $messaggioFeedback = FormCasoHelper::generaMessaggioSuccessoSegnalazione(
+                        $casoId,
+                        count($vittime),
+                        count($colpevoli),
+                        count($articoli),
+                        $_SESSION['user']
+                    );
 
                     // Reset campi
                     $titolo = $data = $luogo = $descrizione_breve = $storia = $tipologia = '';
@@ -282,11 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Messaggio errori
     if (!empty($errori)) {
-        $messaggioFeedback = "<div class='alert alert-error'><strong>⚠️ Errori:</strong><ul>";
-        foreach ($errori as $errore) {
-            $messaggioFeedback .= "<li>" . htmlspecialchars($errore) . "</li>";
-        }
-        $messaggioFeedback .= "</ul></div>";
+        $messaggioFeedback = FormCasoHelper::generaMessaggioErrori($errori);
     }
 }
 
