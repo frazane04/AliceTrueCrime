@@ -577,10 +577,10 @@ function generaHtmlVittima($dati = null, $prefix = '', $index = 0) {
     $dataNascita = $dati['DataNascita'] ?? '';
     $dataDecesso = $dati['DataDecesso'] ?? '';
     $immagine = $dati['Immagine'] ?? '';
-    
+
     // Campo hidden per preservare l'immagine esistente
     $hiddenImmagine = '<input type="hidden" name="vittima_immagine_esistente[]" id="vittima-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine ?? '') . '">';
-    
+
     // Anteprima immagine esistente
     $anteprimaImg = '';
     if (!empty($immagine)) {
@@ -597,46 +597,17 @@ function generaHtmlVittima($dati = null, $prefix = '', $index = 0) {
         </div>';
     }
 
-    return <<<HTML
-    <div class="entry-card vittima-entry">
-        <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi vittima">×</button>
-        <input type="hidden" name="vittima_id[]" value="$id">
-        <input type="hidden" name="vittima_index[]" value="$index">
-        $hiddenImmagine
-        <div class="form-row">
-            <div class="form-group">
-                <label>Nome *</label>
-                <input type="text" name="vittima_nome[]" required placeholder="Nome" value="$nome">
-            </div>
-            <div class="form-group">
-                <label>Cognome *</label>
-                <input type="text" name="vittima_cognome[]" required placeholder="Cognome" value="$cognome">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Luogo di Nascita</label>
-                <input type="text" name="vittima_luogo_nascita[]" placeholder="Luogo" value="$luogo">
-            </div>
-            <div class="form-group">
-                <label>Data di Nascita *</label>
-                <input type="date" name="vittima_data_nascita[]" required value="$dataNascita">
-            </div>
-            <div class="form-group">
-                <label>Data Decesso</label>
-                <input type="date" name="vittima_data_decesso[]" value="$dataDecesso">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Foto (carica per sostituire)</label>
-                $anteprimaImg
-                <input type="file" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp">
-                <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
-            </div>
-        </div>
-    </div>
-HTML;
+    return renderComponent('vittima-form-entry', [
+        'ID' => $id,
+        'INDEX' => $index,
+        'HIDDEN_IMMAGINE' => $hiddenImmagine,
+        'NOME' => $nome,
+        'COGNOME' => $cognome,
+        'LUOGO' => $luogo,
+        'DATA_NASCITA' => $dataNascita,
+        'DATA_DECESSO' => $dataDecesso,
+        'ANTEPRIMA_IMMAGINE' => $anteprimaImg
+    ]);
 }
 
 function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
@@ -646,10 +617,10 @@ function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
     $luogo = htmlspecialchars($dati['LuogoNascita'] ?? '');
     $dataNascita = $dati['DataNascita'] ?? '';
     $immagine = $dati['Immagine'] ?? '';
-    
+
     // Campo hidden per preservare l'immagine esistente
     $hiddenImmagine = '<input type="hidden" name="colpevole_immagine_esistente[]" id="colpevole-img-hidden-' . $index . '" value="' . htmlspecialchars($immagine ?? '') . '">';
-    
+
     // Anteprima immagine esistente
     $anteprimaImg = '';
     if (!empty($immagine)) {
@@ -666,42 +637,16 @@ function generaHtmlColpevole($dati = null, $prefix = '', $index = 0) {
         </div>';
     }
 
-    return <<<HTML
-    <div class="entry-card colpevole-entry">
-        <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi colpevole">×</button>
-        <input type="hidden" name="colpevole_id[]" value="$id">
-        <input type="hidden" name="colpevole_index[]" value="$index">
-        $hiddenImmagine
-        <div class="form-row">
-            <div class="form-group">
-                <label>Nome *</label>
-                <input type="text" name="colpevole_nome[]" required placeholder="Nome (o 'Ignoto')" value="$nome">
-            </div>
-            <div class="form-group">
-                <label>Cognome *</label>
-                <input type="text" name="colpevole_cognome[]" required placeholder="Cognome" value="$cognome">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Luogo di Nascita</label>
-                <input type="text" name="colpevole_luogo_nascita[]" placeholder="Luogo" value="$luogo">
-            </div>
-            <div class="form-group">
-                <label>Data di Nascita *</label>
-                <input type="date" name="colpevole_data_nascita[]" required value="$dataNascita">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Foto (carica per sostituire)</label>
-                $anteprimaImg
-                <input type="file" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp">
-                <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
-            </div>
-        </div>
-    </div>
-HTML;
+    return renderComponent('colpevole-form-entry', [
+        'ID' => $id,
+        'INDEX' => $index,
+        'HIDDEN_IMMAGINE' => $hiddenImmagine,
+        'NOME' => $nome,
+        'COGNOME' => $cognome,
+        'LUOGO' => $luogo,
+        'DATA_NASCITA' => $dataNascita,
+        'ANTEPRIMA_IMMAGINE' => $anteprimaImg
+    ]);
 }
 
 function generaHtmlArticolo($dati = null) {
@@ -709,26 +654,12 @@ function generaHtmlArticolo($dati = null) {
     $titolo = htmlspecialchars($dati['Titolo'] ?? '');
     $dataArt = $dati['Data'] ?? '';
     $link = htmlspecialchars($dati['Link'] ?? '');
-    
-    return <<<HTML
-    <div class="entry-card articolo-entry">
-        <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi articolo">×</button>
-        <input type="hidden" name="articolo_id[]" value="$id">
-        <div class="form-row">
-            <div class="form-group">
-                <label>Titolo Fonte</label>
-                <input type="text" name="articolo_titolo[]" placeholder="Es: Articolo Repubblica" value="$titolo">
-            </div>
-            <div class="form-group">
-                <label>Data Pubblicazione</label>
-                <input type="date" name="articolo_data[]" value="$dataArt">
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Link</label>
-            <input type="url" name="articolo_link[]" placeholder="https://..." value="$link">
-        </div>
-    </div>
-HTML;
+
+    return renderComponent('articolo-form-entry', [
+        'ID' => $id,
+        'TITOLO' => $titolo,
+        'DATA' => $dataArt,
+        'LINK' => $link
+    ]);
 }
 ?>

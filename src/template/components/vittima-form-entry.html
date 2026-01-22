@@ -1,0 +1,38 @@
+<div class="entry-card vittima-entry">
+    <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi vittima">×</button>
+    <input type="hidden" name="vittima_id[]" value="{{ID}}">
+    <input type="hidden" name="vittima_index[]" value="{{INDEX}}">
+    {{HIDDEN_IMMAGINE}}
+    <div class="form-row">
+        <div class="form-group">
+            <label>Nome *</label>
+            <input type="text" name="vittima_nome[]" required placeholder="Nome" value="{{NOME}}">
+        </div>
+        <div class="form-group">
+            <label>Cognome *</label>
+            <input type="text" name="vittima_cognome[]" required placeholder="Cognome" value="{{COGNOME}}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label>Luogo di Nascita</label>
+            <input type="text" name="vittima_luogo_nascita[]" placeholder="Luogo" value="{{LUOGO}}">
+        </div>
+        <div class="form-group">
+            <label>Data di Nascita *</label>
+            <input type="date" name="vittima_data_nascita[]" required value="{{DATA_NASCITA}}">
+        </div>
+        <div class="form-group">
+            <label>Data Decesso</label>
+            <input type="date" name="vittima_data_decesso[]" value="{{DATA_DECESSO}}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label>Foto (carica per sostituire)</label>
+            {{ANTEPRIMA_IMMAGINE}}
+            <input type="file" name="vittima_immagine[]" accept="image/jpeg,image/png,image/webp">
+            <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
+        </div>
+    </div>
+</div>

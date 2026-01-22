@@ -1,0 +1,18 @@
+<div class="entry-card articolo-entry">
+    <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi articolo">×</button>
+    <input type="hidden" name="articolo_id[]" value="{{ID}}">
+    <div class="form-row">
+        <div class="form-group">
+            <label>Titolo Fonte</label>
+            <input type="text" name="articolo_titolo[]" placeholder="Es: Articolo Repubblica" value="{{TITOLO}}">
+        </div>
+        <div class="form-group">
+            <label>Data Pubblicazione</label>
+            <input type="date" name="articolo_data[]" value="{{DATA}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Link</label>
+        <input type="url" name="articolo_link[]" placeholder="https://..." value="{{LINK}}">
+    </div>
+</div>

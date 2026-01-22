@@ -1,0 +1,34 @@
+<div class="entry-card colpevole-entry">
+    <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi colpevole">×</button>
+    <input type="hidden" name="colpevole_id[]" value="{{ID}}">
+    <input type="hidden" name="colpevole_index[]" value="{{INDEX}}">
+    {{HIDDEN_IMMAGINE}}
+    <div class="form-row">
+        <div class="form-group">
+            <label>Nome *</label>
+            <input type="text" name="colpevole_nome[]" required placeholder="Nome (o 'Ignoto')" value="{{NOME}}">
+        </div>
+        <div class="form-group">
+            <label>Cognome *</label>
+            <input type="text" name="colpevole_cognome[]" required placeholder="Cognome" value="{{COGNOME}}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label>Luogo di Nascita</label>
+            <input type="text" name="colpevole_luogo_nascita[]" placeholder="Luogo" value="{{LUOGO}}">
+        </div>
+        <div class="form-group">
+            <label>Data di Nascita *</label>
+            <input type="date" name="colpevole_data_nascita[]" required value="{{DATA_NASCITA}}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label>Foto (carica per sostituire)</label>
+            {{ANTEPRIMA_IMMAGINE}}
+            <input type="file" name="colpevole_immagine[]" accept="image/jpeg,image/png,image/webp">
+            <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
+        </div>
+    </div>
+</div>
