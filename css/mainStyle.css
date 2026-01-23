@@ -3614,6 +3614,7 @@ body.dark-theme .breadcrumbs a {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 
 /* ============================================
@@ -3646,6 +3647,8 @@ body.dark-theme .breadcrumbs a {
 #results-container {
     transition: opacity 0.2s ease;
     min-height: 200px;
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 }
