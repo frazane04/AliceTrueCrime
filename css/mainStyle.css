@@ -16,15 +16,15 @@
     /* Testi */
     --text-dark: #251101;
     --text-light: #F5F5F5;
-    
+
     /* Colori primari */
     --primary: #5b1865;
     --primary-dark: #470024;
-    
+
     /* Accenti */
     --accent-blue: #2c5784;
     --accent-text: #3d5a7d;
-    
+
     /* Neutri */
     --white: #FFFFFF;
     --white-alpha: #ffffffcc;
@@ -50,7 +50,9 @@ body {
     max-width: 1200px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     color: var(--text-dark);
     line-height: 1.2;
 }
@@ -416,12 +418,12 @@ textarea:focus-visible,
    GRIGLIA CONTENUTI
    ============================================ */
 
-.content-grid { 
+.content-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr; 
+    grid-template-columns: 2fr 1fr;
     gap: 32px;
     padding-top: 3.5em;
-    padding-bottom: 3.5em; 
+    padding-bottom: 3.5em;
 }
 
 /* Investigazioni recenti */
@@ -738,7 +740,7 @@ textarea:focus-visible,
 
 .explore-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
     gap: 1.5rem;
 }
 
@@ -1347,44 +1349,44 @@ textarea:focus-visible,
     body {
         padding: 0 0.5rem;
     }
-    
+
     .main-header {
         margin: 0.5rem;
     }
-    
+
     /* Menu hamburger visibile */
     .menu-toggle {
         display: block;
         order: 2;
         margin-left: auto;
     }
-    
+
     .header-container {
         flex-wrap: nowrap;
         position: relative;
         padding: 0.5rem;
         justify-content: space-between;
     }
-    
+
     .logo-area {
         order: 1;
         flex: 1;
     }
-    
+
     .logo-area span {
         display: none;
     }
-    
+
     .logo-area img {
         height: 50px;
         padding: 0.5rem;
     }
-    
+
     .header-actions {
         order: 3;
         margin-left: 1rem;
     }
-    
+
     /* Menu overlay full screen */
     .main-nav {
         display: none;
@@ -1402,7 +1404,7 @@ textarea:focus-visible,
         overflow-y: auto;
         padding: 2rem;
     }
-    
+
     .main-nav.is-open {
         display: flex;
         align-items: center;
@@ -1412,7 +1414,7 @@ textarea:focus-visible,
         visibility: visible;
         transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s 0s;
     }
-    
+
     .main-nav ul {
         flex-direction: column;
         gap: 2rem;
@@ -1420,7 +1422,7 @@ textarea:focus-visible,
         max-width: 300px;
         text-align: center;
     }
-    
+
     .main-nav a {
         display: block;
         padding: 1rem;
@@ -1429,64 +1431,64 @@ textarea:focus-visible,
         border-bottom: 2px solid transparent;
         transition: all 0.2s;
     }
-    
+
     .main-nav a:hover {
         border-bottom-color: var(--primary);
     }
-    
+
     .activePage a {
         background-color: var(--bg-lightest);
         border-radius: 8px;
     }
-    
+
     body.menu-open {
         overflow: hidden;
     }
-    
+
     /* Altri elementi responsive */
     .cta-area {
         padding: 3rem 1rem;
     }
-    
+
     .cta-area h2 {
         font-size: clamp(1.5rem, 5vw, 2rem);
     }
-    
+
     .footer-content {
         flex-direction: column;
         gap: 2rem;
         text-align: center;
     }
-    
+
     .footer-logo-area {
         justify-content: center;
     }
-    
+
     #carousel-casi h2 {
         font-size: clamp(1.5rem, 4vw, 2.3rem);
     }
-    
+
     .error-code {
         font-size: 3em;
     }
-    
+
     .error-title {
         font-size: 2em;
     }
-    
+
     .error-description p {
         font-size: 1em;
     }
-    
+
     .error-actions {
         flex-direction: column;
         gap: 1em;
     }
-    
+
     .error-actions .btn {
         width: 100%;
     }
-    
+
     .evidence-box {
         padding: 1.5em;
     }
@@ -1496,34 +1498,34 @@ textarea:focus-visible,
     .explore-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .explore-header h1 {
         font-size: 1.75rem;
     }
-    
+
     .section-top {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
     }
-    
+
     .profile-hero {
         padding: 2em 1em;
     }
-    
+
     .profile-name {
         font-size: 1.8em;
     }
-    
+
     .data-row {
         flex-direction: column;
         gap: 0.2rem;
     }
-    
+
     .data-row .label {
         width: 100%;
     }
-    
+
     .profile-actions .btn {
         width: 100%;
     }
@@ -1537,29 +1539,29 @@ textarea:focus-visible,
     .auth-card {
         padding: 2rem 1.5rem;
     }
-    
+
     .btn-xl {
         padding: 0.9rem 2rem;
         font-size: 1rem;
     }
-    
+
     .investigazione-card {
         padding: 1rem;
     }
-    
+
     .detective-photo {
         width: 100px;
         height: 100px;
     }
-    
+
     .detective-card {
         max-width: 100px;
     }
-    
+
     body {
         font-size: 1rem;
     }
-    
+
     .investigazione-card .data-caso,
     .footer-bottom {
         font-size: 0.9rem;
@@ -1580,15 +1582,15 @@ textarea:focus-visible,
     .error-container {
         padding: 2em 1em;
     }
-    
+
     .error-badge {
         padding: 1em 2em;
     }
-    
+
     .error-code {
         font-size: 2.5em;
     }
-    
+
     .error-title {
         font-size: 1.8em;
     }
@@ -1599,6 +1601,7 @@ textarea:focus-visible,
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -1607,13 +1610,14 @@ textarea:focus-visible,
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-} 
+}
 
 /* ============================================
    MEDIA QUERIES - SCHERMI GRANDI
    ============================================ */
 
 @media (min-width: 1400px) {
+
     body,
     .header-container,
     .sezione-stretta {
@@ -2565,8 +2569,9 @@ textarea:focus-visible,
 .news-card {
     background: #fff;
     padding: 25px;
-    border-left: 5px solid #0D8ABC; /* Il colore del tuo brand */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-left: 5px solid #0D8ABC;
+    /* Il colore del tuo brand */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
@@ -2597,9 +2602,7 @@ textarea:focus-visible,
     padding: 100px 20px;
 }
 
-Modifica caso · CSS
-Copia
-
+Modifica caso · CSS Copia
 /* ===========================================
    STILI PER PAGINA MODIFICA CASO FATTO DA GROLLA QUINDI DA RIVEDERE :)
    Estende mainStyle.css - Solo stili aggiuntivi
@@ -2834,27 +2837,27 @@ Copia
     .page-modifica-caso {
         padding: 1rem;
     }
-    
+
     .form-section {
         padding: 1rem;
     }
-    
+
     .form-row {
         flex-direction: column;
     }
-    
+
     .form-row .form-group {
         min-width: 100%;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .form-actions .btn {
         width: 100%;
     }
-    
+
     .caso-azioni-utente {
         flex-direction: column;
     }
@@ -2989,13 +2992,13 @@ input[type="file"]:focus-visible {
         max-width: 150px;
         max-height: 120px;
     }
-    
+
     .image-preview-small .preview-image,
     .preview-image-small {
         max-width: 80px;
         max-height: 80px;
     }
-    
+
     .image-preview-existing {
         flex-direction: column;
         align-items: flex-start;
@@ -3007,6 +3010,7 @@ input[type="file"]:focus-visible {
     border-color: var(--accent-color, #8b0000);
     background: rgba(139, 0, 0, 0.05);
 }
+
 /* Stile per pulsante rimozione immagine */
 .btn-remove-img {
     display: inline-block;
@@ -3088,9 +3092,10 @@ input[type="file"]:focus-visible {
     text-decoration: none;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    border: 2px solid transparent; /* Preparazione per il focus */
+    border: 2px solid transparent;
+    /* Preparazione per il focus */
     cursor: pointer;
-    
+
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
@@ -3103,11 +3108,13 @@ input[type="file"]:focus-visible {
 
 /* Miglioramento Accessibilità: Focus visibile per navigazione da tastiera */
 .back-to-top:focus {
-    outline: none; /* Rimuoviamo l'outline di default per uno personalizzato */
+    outline: none;
+    /* Rimuoviamo l'outline di default per uno personalizzato */
 }
 
 .back-to-top:focus-visible {
-    outline: 3px solid var(--accent-blue); /* Colore ad alto contrasto */
+    outline: 3px solid var(--accent-blue);
+    /* Colore ad alto contrasto */
     outline-offset: 4px;
     opacity: 1;
     visibility: visible;
@@ -3130,7 +3137,8 @@ input[type="file"]:focus-visible {
     .back-to-top {
         bottom: 20px;
         right: 20px;
-        width: 45px; /* Leggermente più grande per facilitare il tocco (Touch Target) */
+        width: 45px;
+        /* Leggermente più grande per facilitare il tocco (Touch Target) */
         height: 45px;
     }
 }
@@ -3171,6 +3179,7 @@ input[type="file"]:focus-visible {
 body.dark-theme .breadcrumbs {
     color: var(--text-light);
 }
+
 body.dark-theme .breadcrumbs a {
     color: var(--border-light);
 }
@@ -3191,8 +3200,13 @@ body.dark-theme .breadcrumbs a {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Modal Content */
@@ -3212,6 +3226,7 @@ body.dark-theme .breadcrumbs a {
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -3598,4 +3613,36 @@ body.dark-theme .breadcrumbs a {
 .view-all-link:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
+}
+
+/* ============================================
+   LOADING SPINNER
+   ============================================ */
+
+#search-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    gap: 1rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(91, 24, 101, 0.1);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#results-container {
+    transition: opacity 0.2s ease;
+    min-height: 200px;
 }

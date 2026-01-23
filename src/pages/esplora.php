@@ -10,65 +10,56 @@ $dbFunctions = new FunzioniDB();
 $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
 $categoriaFiltro = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';
 $annoFiltro = isset($_GET['anno']) ? trim($_GET['anno']) : '';
+$view = isset($_GET['view']) ? trim($_GET['view']) : '';
 
-// Verifica se ci sono filtri attivi
-$filtriAttivi = !empty($searchQuery) || !empty($categoriaFiltro) || !empty($annoFiltro);
+// Verifica se ci sono filtri attivi o se siamo in vista "all"
+$filtriAttivi = !empty($searchQuery) || !empty($categoriaFiltro) || !empty($annoFiltro) || $view === 'all';
 
-// Recupero categorie e anni per i select dei filtri
-$categorie = $dbFunctions->getCategorie();
-$anni = $dbFunctions->getAnniDisponibili();
+// Componente Barra di Ricerca
+$searchBarHtml = '';
 
-// Genera le opzioni per il select delle categorie
-$optionsCategorie = '';
-foreach ($categorie as $cat) {
-    $selected = ($categoriaFiltro === $cat['Tipologia']) ? 'selected' : '';
-    $optionsCategorie .= '<option value="' . htmlspecialchars($cat['Tipologia']) . '" ' . $selected . '>'
-                       . htmlspecialchars($cat['Tipologia']) . ' (' . $cat['conteggio'] . ')</option>';
-}
-
-// Genera le opzioni per il select degli anni
-$optionsAnni = '';
-foreach ($anni as $anno) {
-    $selected = ($annoFiltro == $anno) ? 'selected' : '';
-    $optionsAnni .= '<option value="' . $anno . '" ' . $selected . '>' . $anno . '</option>';
-}
-
-// Funzione Helper per generare l'HTML delle Card
-function generaHtmlCards($listaCasi) {
-    if (empty($listaCasi)) {
-        return '<p class="no-results">Nessun caso trovato in questa categoria.</p>';
-    }
-
-    $html = '';
-    foreach ($listaCasi as $caso) {
-        $descrizione = htmlspecialchars(substr($caso['Descrizione'] ?? '', 0, 120)) . '...';
-
-        // Genera metadata (data e/o luogo)
-        $metaParts = [];
-        if (!empty($caso['Data'])) {
-            $dataFormattata = date('Y', strtotime($caso['Data']));
-            $metaParts[] = '<span class="card-meta-item card-meta-year">' . $dataFormattata . '</span>';
-        }
-        if (!empty($caso['Luogo'])) {
-            $metaParts[] = '<span class="card-meta-item card-meta-location">' . htmlspecialchars($caso['Luogo']) . '</span>';
-        }
-        $cardMeta = implode('<span class="card-meta-separator"></span>', $metaParts);
-
-        $html .= renderComponent('card-caso-esplora', [
-            'IMMAGINE'    => getImageUrl($caso['Immagine'] ?? null),
-            'TITOLO'      => htmlspecialchars($caso['Titolo']),
-            'DESCRIZIONE' => $descrizione,
-            'TIPOLOGIA'   => htmlspecialchars($caso['Tipologia'] ?? ''),
-            'CARD_META'   => $cardMeta,
-            'LINK'        => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso))
-        ]);
-    }
-
-    return $html;
-}
-
-// Se ci sono filtri attivi, mostra i risultati della ricerca
 if ($filtriAttivi) {
+    // === VISTA RICERCA / TUTTI ===
+
+    // Carica componente search bar
+    $searchBarHtml = loadTemplate('../components/search_bar');
+
+    // Popola placeholder search bar
+    $categorie = $dbFunctions->getCategorie();
+    $anni = $dbFunctions->getAnniDisponibili();
+
+    $optionsCategorie = '';
+    foreach ($categorie as $cat) {
+        $selected = ($categoriaFiltro === $cat['Tipologia']) ? 'selected' : '';
+        $optionsCategorie .= '<option value="' . htmlspecialchars($cat['Tipologia']) . '" ' . $selected . '>'
+            . htmlspecialchars($cat['Tipologia']) . ' (' . $cat['conteggio'] . ')</option>';
+    }
+
+    $optionsAnni = '';
+    foreach ($anni as $anno) {
+        $selected = ($annoFiltro == $anno) ? 'selected' : '';
+        $optionsAnni .= '<option value="' . $anno . '" ' . $selected . '>' . $anno . '</option>';
+    }
+
+    $searchBarHtml = str_replace('{{SEARCH_VALUE}}', htmlspecialchars($searchQuery), $searchBarHtml);
+    $searchBarHtml = str_replace('{{OPTIONS_CATEGORIE}}', $optionsCategorie, $searchBarHtml);
+    $searchBarHtml = str_replace('{{OPTIONS_ANNI}}', $optionsAnni, $searchBarHtml);
+    $searchBarHtml = str_replace('{{PREFIX}}', getPrefix(), $searchBarHtml);
+
+    // Genera filtri attivi HTML
+    $filtriAttiviHtml = '';
+    if (!empty($searchQuery) || !empty($categoriaFiltro) || !empty($annoFiltro)) {
+        $filtriAttiviHtml = '<div class="filtri-attivi"><span class="filtri-label">Filtri attivi:</span>';
+        if (!empty($searchQuery))
+            $filtriAttiviHtml .= '<span class="filtro-tag">Ricerca: "' . htmlspecialchars($searchQuery) . '"</span>';
+        if (!empty($categoriaFiltro))
+            $filtriAttiviHtml .= '<span class="filtro-tag">Categoria: ' . htmlspecialchars($categoriaFiltro) . '</span>';
+        if (!empty($annoFiltro))
+            $filtriAttiviHtml .= '<span class="filtro-tag">Anno: ' . htmlspecialchars($annoFiltro) . '</span>';
+        $filtriAttiviHtml .= '</div>';
+    }
+    $searchBarHtml = str_replace('{{FILTRI_ATTIVI}}', $filtriAttiviHtml, $searchBarHtml);
+    // === VISTA RISULTATI RICERCA ===
     $filtri = [
         'q' => $searchQuery,
         'categoria' => $categoriaFiltro,
@@ -79,93 +70,114 @@ if ($filtriAttivi) {
     $htmlRisultati = generaHtmlCards($risultatiRicerca);
     $numRisultati = count($risultatiRicerca);
 
-    // Titolo dinamico in base al filtro
-    $titoloRicerca = 'Risultati della ricerca';
-    if (!empty($categoriaFiltro) && empty($searchQuery) && empty($annoFiltro)) {
-        $titoloRicerca = htmlspecialchars($categoriaFiltro);
-    }
+    $titoloSezione = 'Esplora tutti i casi';
+    if (!empty($categoriaFiltro))
+        $titoloSezione = $categoriaFiltro;
+    if (!empty($searchQuery))
+        $titoloSezione = 'Risultati ricerca: "' . htmlspecialchars($searchQuery) . '"';
 
-    // Genera la sezione risultati
-    $sezioneRisultati = '<section class="explore-section search-results-section">
+    $mainContentHtml = '<section class="explore-section search-results-section">
         <div class="section-top">
-            <h2>' . $titoloRicerca . '</h2>
-            <span class="results-count">' . $numRisultati . ' caso/i trovato/i</span>
+            <h2>' . $titoloSezione . '</h2>
+            <span class="results-count">' . $numRisultati . ' risultati</span>
         </div>
         <div class="explore-grid">
             ' . $htmlRisultati . '
         </div>
     </section>';
 
-    // Genera i tag dei filtri attivi
-    $filtriAttiviHtml = '<div class="filtri-attivi">';
-    $filtriAttiviHtml .= '<span class="filtri-label">Filtri attivi:</span>';
-
-    if (!empty($searchQuery)) {
-        $filtriAttiviHtml .= '<span class="filtro-tag">Ricerca: "' . htmlspecialchars($searchQuery) . '"</span>';
-    }
-    if (!empty($categoriaFiltro)) {
-        $filtriAttiviHtml .= '<span class="filtro-tag">Categoria: ' . htmlspecialchars($categoriaFiltro) . '</span>';
-    }
-    if (!empty($annoFiltro)) {
-        $filtriAttiviHtml .= '<span class="filtro-tag">Anno: ' . htmlspecialchars($annoFiltro) . '</span>';
-    }
-
-    $filtriAttiviHtml .= '</div>';
-
-    // Sostituisci i placeholder per la modalità filtri attivi
-    $contenuto = str_replace('{{SEZIONE_RISULTATI}}', $sezioneRisultati, $contenuto);
-    $contenuto = str_replace('{{FILTRI_ATTIVI}}', $filtriAttiviHtml, $contenuto);
-
-    // Rimuovi completamente le sezioni di default (tutto tra i marker)
-    $contenuto = preg_replace('/\{\{SEZIONI_DEFAULT\}\}.*?\{\{\/SEZIONI_DEFAULT\}\}/s', '', $contenuto);
-
 } else {
-    // Nessun filtro attivo - mostra le sezioni di default
-    $casiPiuLetti = $dbFunctions->getCasiPiuLetti(3);
-    $serialKillers = $dbFunctions->getCasiPerCategoria('Serial killer', 6);
-    $amoreTossico = $dbFunctions->getCasiPerCategoria('Amore tossico', 6);
-    $celebrity = $dbFunctions->getCasiPerCategoria('Celebrity', 6);
-    $casiItaliani = $dbFunctions->getCasiPerCategoria('Casi mediatici italiani', 6);
+    // === VISTA DASHBOARD ESTESA ===
+    // Sezione 1: "Esplora tutti i casi" - Mostra gli ultimi 4 inseriti (o ordine per data)
+    $casiMain = $dbFunctions->getCasiRecenti(4);
 
-    // Conteggi per i link "Mostra tutti"
-    $countSerialKiller = $dbFunctions->contaCasiPerCategoria('Serial killer');
-    $countAmoreTossico = $dbFunctions->contaCasiPerCategoria('Amore tossico');
-    $countCelebrity = $dbFunctions->contaCasiPerCategoria('Celebrity');
-    $countCasiItaliani = $dbFunctions->contaCasiPerCategoria('Casi mediatici italiani');
+    $casiPiuLetti = $dbFunctions->getCasiPiuLetti(4);
+    $casiRecenti = $dbFunctions->getCasiRecenti(4);
 
-    // Generazione dell'HTML per ogni sezione
-    $htmlPiuLetti     = generaHtmlCards($casiPiuLetti);
-    $htmlSerialKiller = generaHtmlCards($serialKillers);
-    $htmlAmoreTossico = generaHtmlCards($amoreTossico);
-    $htmlCelebrity    = generaHtmlCards($celebrity);
-    $htmlCasiItaliani = generaHtmlCards($casiItaliani);
+    $htmlMain = generaHtmlCards($casiMain);
+    $htmlPiuLetti = generaHtmlCards($casiPiuLetti);
+    $htmlRecenti = generaHtmlCards($casiRecenti);
 
-    // Sostituzione dei Placeholder nel template
-    $contenuto = str_replace('{{GRID_PIU_LETTI}}', $htmlPiuLetti, $contenuto);
-    $contenuto = str_replace('{{GRID_SERIAL_KILLER}}', $htmlSerialKiller, $contenuto);
-    $contenuto = str_replace('{{GRID_AMORE_TOSSICO}}', $htmlAmoreTossico, $contenuto);
-    $contenuto = str_replace('{{GRID_CELEBRITY}}', $htmlCelebrity, $contenuto);
-    $contenuto = str_replace('{{GRID_CASI_ITALIANI}}', $htmlCasiItaliani, $contenuto);
+    $mainContentHtml = '
+    <section class="explore-section">
+        <div class="section-top">
+            <h2>Esplora tutti i casi</h2>
+            <a href="' . getPrefix() . '/esplora?view=all" class="view-all-link">Mostra archivio completo</a>
+        </div>
+        <div class="explore-grid">
+            ' . $htmlMain . '
+        </div>
+    </section>
 
-    // Sostituzione conteggi
-    $contenuto = str_replace('{{COUNT_SERIAL_KILLER}}', $countSerialKiller, $contenuto);
-    $contenuto = str_replace('{{COUNT_AMORE_TOSSICO}}', $countAmoreTossico, $contenuto);
-    $contenuto = str_replace('{{COUNT_CELEBRITY}}', $countCelebrity, $contenuto);
-    $contenuto = str_replace('{{COUNT_CASI_ITALIANI}}', $countCasiItaliani, $contenuto);
-
-    // Rimuovi placeholder vuoti e marker delle sezioni default
-    $contenuto = str_replace('{{SEZIONE_RISULTATI}}', '', $contenuto);
-    $contenuto = str_replace('{{FILTRI_ATTIVI}}', '', $contenuto);
-    $contenuto = str_replace('{{SEZIONI_DEFAULT}}', '', $contenuto);
-    $contenuto = str_replace('{{/SEZIONI_DEFAULT}}', '', $contenuto);
+    <section class="explore-section">
+        <div class="section-top">
+            <h2>Casi più letti</h2>
+            <span class="section-badge">Popolari</span>
+        </div>
+        <div class="explore-grid">
+            ' . $htmlPiuLetti . '
+        </div>
+    </section>
+    
+     <section class="explore-section">
+        <div class="section-top">
+            <h2>Nuovi arrivi</h2>
+             <span class="section-badge">Recenti</span>
+        </div>
+        <div class="explore-grid">
+            ' . $htmlRecenti . '
+        </div>
+    </section>
+    ';
 }
 
-// Sostituzioni comuni
-$contenuto = str_replace('{{SEARCH_VALUE}}', htmlspecialchars($searchQuery), $contenuto);
-$contenuto = str_replace('{{OPTIONS_CATEGORIE}}', $optionsCategorie, $contenuto);
-$contenuto = str_replace('{{OPTIONS_ANNI}}', $optionsAnni, $contenuto);
+// Helper Cards
+function generaHtmlCards($listaCasi)
+{
+    if (empty($listaCasi))
+        return '<p class="no-results">Nessun caso trovato.</p>';
+    $html = '';
+    foreach ($listaCasi as $caso) {
+        $descrizione = htmlspecialchars(substr($caso['Descrizione'] ?? '', 0, 100)) . '...';
+
+        $metaParts = [];
+        if (!empty($caso['Data']))
+            $metaParts[] = '<span class="card-meta-item">' . date('Y', strtotime($caso['Data'])) . '</span>';
+        if (!empty($caso['Luogo']))
+            $metaParts[] = '<span class="card-meta-item">' . htmlspecialchars($caso['Luogo']) . '</span>';
+        $cardMeta = implode('<span class="card-meta-separator"></span>', $metaParts);
+
+        $html .= renderComponent('card-caso-esplora', [
+            'IMMAGINE' => getImageUrl($caso['Immagine'] ?? null),
+            'TITOLO' => htmlspecialchars($caso['Titolo']),
+            'DESCRIZIONE' => $descrizione,
+            'TIPOLOGIA' => htmlspecialchars($caso['Tipologia'] ?? ''),
+            'CARD_META' => $cardMeta,
+            'LINK' => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso))
+        ]);
+    }
+    return $html;
+}
+
+// Replace Placeholders
+$contenuto = str_replace('{{SEARCH_BAR}}', $searchBarHtml, $contenuto);
+$contenuto = str_replace('{{CONTENT}}', $mainContentHtml, $contenuto);
 $contenuto = str_replace('{{PREFIX}}', getPrefix(), $contenuto);
 
-// Output finale tramite utils.php
+
+// Output JSON per AJAX
+if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
+    header('Content-Type: application/json');
+    // Se siamo qui è probabile che siamo nella vista ricerca
+    echo json_encode([
+        'html_risultati' => $htmlRisultati ?? '',
+        'num_risultati' => $numRisultati ?? 0,
+        'titolo_ricerca' => $titoloSezione ?? 'Risultati',
+    ]);
+    exit;
+}
+
+$contenuto .= '<script src="' . getPrefix() . '/js/esplora.js"></script>';
+
 echo getTemplatePage("Esplora - AliceTrueCrime", $contenuto);
 ?>

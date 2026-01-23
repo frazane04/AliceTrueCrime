@@ -2,121 +2,16 @@
   <section class="explore-header">
     <h1>Esplora tutti i Casi</h1>
     <p>
-        Entra nell'archivio del crimine: esplora i casi di cronaca nera più <strong>significativi</strong>, storici e attuali.
-        Scegli il tuo percorso tra indagini concluse e verità dettate dalla giustizia.
+      Entra nell'archivio del crimine: esplora i casi di cronaca nera più <strong>significativi</strong>, storici e
+      attuali.
+      Scegli il tuo percorso tra indagini concluse e verità dettate dalla giustizia.
     </p>
   </section>
 
-  <!-- Barra di Ricerca e Filtri -->
-  <section class="search-filter-section" aria-label="Ricerca e filtri casi">
-    <form class="search-filter-form" method="GET" action="{{PREFIX}}/esplora" role="search">
+  {{SEARCH_BAR}}
 
-      <!-- Barra di Ricerca -->
-      <div class="search-box">
-        <label for="search-input" class="sr-only">Cerca casi</label>
-        <input
-          type="search"
-          id="search-input"
-          name="q"
-          placeholder="Cerca per nome, luogo o parola chiave..."
-          value="{{SEARCH_VALUE}}"
-          aria-label="Cerca casi di cronaca nera"
-        >
-        <button type="submit" class="btn-search" aria-label="Avvia ricerca">
-          <span aria-hidden="true">🔍</span> Cerca
-        </button>
-      </div>
-
-      <!-- Filtri -->
-      <div class="filters-row">
-        <div class="filter-group">
-          <label for="filter-categoria">Categoria</label>
-          <select id="filter-categoria" name="categoria">
-            <option value="">Tutte le categorie</option>
-            {{OPTIONS_CATEGORIE}}
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="filter-anno">Anno</label>
-          <select id="filter-anno" name="anno">
-            <option value="">Tutti gli anni</option>
-            {{OPTIONS_ANNI}}
-          </select>
-        </div>
-
-        <div class="filter-actions">
-          <button type="submit" class="btn btn-primary btn-small">Applica filtri</button>
-          <a href="{{PREFIX}}/esplora" class="btn btn-outline btn-small">Reset</a>
-        </div>
-      </div>
-    </form>
-
-    <!-- Filtri attivi -->
-    {{FILTRI_ATTIVI}}
-  </section>
-
-  <!-- Sezione Risultati Ricerca (visibile solo quando ci sono filtri) -->
-  {{SEZIONE_RISULTATI}}
-
-  <!-- Sezioni standard (rimosse quando ci sono filtri attivi) -->
-  {{SEZIONI_DEFAULT}}
-  <section class="explore-section explore-section-featured">
-    <div class="section-top">
-      <h2>Articoli più letti</h2>
-      <span class="section-badge">Top 3</span>
-    </div>
-    <div class="explore-grid">
-      {{GRID_PIU_LETTI}}
-    </div>
-  </section>
-
-  <section class="explore-section">
-    <div class="section-top">
-      <h2><span lang="en">Serial Killer</span></h2>
-      <a href="{{PREFIX}}/esplora?categoria=Serial+killer" class="view-all-link" aria-label="Vedi tutti i casi di Serial Killer">
-        Mostra tutti ({{COUNT_SERIAL_KILLER}})
-      </a>
-    </div>
-    <div class="explore-grid">
-      {{GRID_SERIAL_KILLER}}
-    </div>
-  </section>
-
-  <section class="explore-section">
-    <div class="section-top">
-      <h2>Amore Tossico</h2>
-      <a href="{{PREFIX}}/esplora?categoria=Amore+tossico" class="view-all-link" aria-label="Vedi tutti i casi di Amore Tossico">
-        Mostra tutti ({{COUNT_AMORE_TOSSICO}})
-      </a>
-    </div>
-    <div class="explore-grid">
-      {{GRID_AMORE_TOSSICO}}
-    </div>
-  </section>
-
-  <section class="explore-section">
-    <div class="section-top">
-      <h2><span lang="en">Celebrity</span></h2>
-      <a href="{{PREFIX}}/esplora?categoria=Celebrity" class="view-all-link" aria-label="Vedi tutti i casi Celebrity">
-        Mostra tutti ({{COUNT_CELEBRITY}})
-      </a>
-    </div>
-    <div class="explore-grid">
-      {{GRID_CELEBRITY}}
-    </div>
-  </section>
-
-  <section class="explore-section">
-    <div class="section-top">
-      <h2>Casi mediatici italiani</h2>
-      <a href="{{PREFIX}}/esplora?categoria=Casi+mediatici+italiani" class="view-all-link" aria-label="Vedi tutti i casi mediatici italiani">
-        Mostra tutti ({{COUNT_CASI_ITALIANI}})
-      </a>
-    </div>
-    <div class="explore-grid">
-      {{GRID_CASI_ITALIANI}}
-    </div>
-  </section>
-  {{/SEZIONI_DEFAULT}}
+  <!-- Container per contenuti dinamici (Dashboard o Risultati) -->
+  <div id="esplora-content">
+    {{CONTENT}}
+  </div>
 </div>
