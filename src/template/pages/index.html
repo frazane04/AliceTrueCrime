@@ -1,79 +1,81 @@
-<main role="main" id="main-content" tabindex="-1">
+<section class="hero-section" aria-label="Introduzione">
+    {{BREADCRUMBS_HERO}}
+    <div class="hero-content">
+        <h1>La Verità Attende di Essere Svelata</h1>
+        <p class="hero-subtitle">Indagini approfondite sui più grandi misteri e casi di cronaca nera, analizzati con
+            rigore e rispetto per le fonti.</p>
 
-    <section class="hero-section sezione-stretta">
-        <p class="hero-subtitle">Benvenuti nel portale di riferimento per l'approfondimento di casi di cronaca nera,
-            misteri irrisolti e indagini giudiziarie, analizzati con rigore e rispetto per le fonti.</p>
-    </section>
+    </div>
+    <div class="hero-overlay"></div>
+</section>
 
-    <section id="carousel-casi" class="sezione-stretta" aria-labelledby="casi-evidenza-title">
-        <h2 id="casi-evidenza-title">Casi in Evidenza</h2>
+<section id="carousel-casi" aria-labelledby="casi-evidenza-title">
+    <h2 id="casi-evidenza-title">Casi in Evidenza</h2>
 
-        <div class="scrolling-container"> <!-- Alice modifica questo una volta modificato nel css -->
-            {{CASI_EVIDENZA}}
+    <div class="popular-container">
+        {{CASI_EVIDENZA}}
+    </div>
+</section>
+
+<section id="sezioni-principali" class="content-grid sezione-stretta">
+
+    <div class="investigazioni-recenti" aria-labelledby="ultime-inchieste-title">
+        <h2 id="ultime-inchieste-title">Ultime Inchieste</h2>
+
+        <div id="ultime-inchieste-container">
+            {{ULTIME_INCHIESTE}}
         </div>
-    </section>
+    </div>
 
-    <section id="sezioni-principali" class="content-grid sezione-stretta">
+    <aside class="articoli-popolari" aria-labelledby="articoli-popolari-title">
+        <h3 id="articoli-popolari-title">Articoli più Letti</h3>
 
-        <div class="investigazioni-recenti" aria-labelledby="ultime-inchieste-title">
-            <h2 id="ultime-inchieste-title">Ultime Inchieste</h2>
-
-            <div id="ultime-inchieste-container">
-                {{ULTIME_INCHIESTE}}
-            </div>
-        </div>
-
-        <aside class="articoli-popolari" aria-labelledby="articoli-popolari-title">
-            <h3 id="articoli-popolari-title">Articoli più Letti</h3>
-
-            <div id="articoli-popolari-container">
-                {{ARTICOLI_POPOLARI}}
-            </div>
-
-            <a href="{{PATH_PREFIX}}/esplora" class="btn btn-primary btn-full-width"
-                aria-label="Esplora tutti i casi disponibili">
-                Esplora Tutti i Casi
-            </a>
-        </aside>
-    </section>
-
-    <section id="i-detective" class="sezione-stretta text-center" aria-labelledby="detective-title">
-        <h2 id="detective-title">I Detective di AliceTrueCrime</h2>
-        <div class="detective-container" role="list">
-
-            <div class="detective-card" role="listitem">
-                <img src="{{PATH_PREFIX}}/assets/img/zanella.svg" alt="Foto Detective Francesco Zanella"
-                    class="detective-photo" />
-            </div>
-            <div class="detective-card" role="listitem">
-                <img src="{{PATH_PREFIX}}/assets/img/grolla.svg" alt="Foto Detective Lorenzo Grolla"
-                    class="detective-photo" />
-            </div>
-            <div class="detective-card" role="listitem">
-                <img src="{{PATH_PREFIX}}/assets/img/perozzo.svg" alt="Foto Detective Samuele Perozzo"
-                    class="detective-photo" />
-            </div>
-            <div class="detective-card" role="listitem">
-                <img src="{{PATH_PREFIX}}/assets/img/zago.svg" alt="Foto Detective Alice Zago"
-                    class="detective-photo" />
-            </div>
+        <div id="articoli-popolari-container">
+            {{ARTICOLI_POPOLARI}}
         </div>
 
-        <div class="mt-2">
-            <a href="{{PATH_PREFIX}}/chi-siamo" class="btn btn-primary" aria-label="Scopri chi siamo">
-                Scopri il Team
-            </a>
-        </div>
-    </section>
+        <a href="{{PATH_PREFIX}}/esplora" class="btn btn-primary btn-full-width"
+            aria-label="Esplora tutti i casi disponibili">
+            Esplora Tutti i Casi
+        </a>
+    </aside>
+</section>
 
-    <section id="cta-detective" class="cta-area" aria-labelledby="cta-title">
-        <div class="cta-content sezione-stretta text-center">
-            <h2 id="cta-title">Resta Aggiornato sui Nuovi Casi</h2>
-            <p>Iscriviti alla newsletter per ricevere le ultime inchieste direttamente nella tua casella di posta.</p>
-            <a href="{{PATH_PREFIX}}/newsletter" class="btn btn-primary btn-xl"
-                aria-label="Iscriviti alla newsletter di AliceTrueCrime">
-                Iscriviti alla Newsletter
-            </a>
+<section id="i-detective" class="sezione-stretta text-center" aria-labelledby="detective-title">
+    <h2 id="detective-title">I Detective di AliceTrueCrime</h2>
+    <div class="detective-container" role="list">
+
+        <div class="detective-card" role="listitem">
+            <img src="{{PATH_PREFIX}}/assets/img/zanella.svg" alt="Foto Detective Francesco Zanella"
+                class="detective-photo" />
         </div>
-    </section>
-</main>
+        <div class="detective-card" role="listitem">
+            <img src="{{PATH_PREFIX}}/assets/img/grolla.svg" alt="Foto Detective Lorenzo Grolla"
+                class="detective-photo" />
+        </div>
+        <div class="detective-card" role="listitem">
+            <img src="{{PATH_PREFIX}}/assets/img/perozzo.svg" alt="Foto Detective Samuele Perozzo"
+                class="detective-photo" />
+        </div>
+        <div class="detective-card" role="listitem">
+            <img src="{{PATH_PREFIX}}/assets/img/zago.svg" alt="Foto Detective Alice Zago" class="detective-photo" />
+        </div>
+    </div>
+
+    <div class="mt-2">
+        <a href="{{PATH_PREFIX}}/chi-siamo" class="btn btn-primary" aria-label="Scopri chi siamo">
+            Scopri il Team
+        </a>
+    </div>
+</section>
+
+<section id="cta-detective" class="cta-area" aria-labelledby="cta-title">
+    <div class="cta-content sezione-stretta text-center">
+        <h2 id="cta-title">Resta Aggiornato sui Nuovi Casi</h2>
+        <p>Iscriviti alla newsletter per ricevere le ultime inchieste direttamente nella tua casella di posta.</p>
+        <a href="{{PATH_PREFIX}}/newsletter" class="btn btn-primary btn-xl"
+            aria-label="Iscriviti alla newsletter di AliceTrueCrime">
+            Iscriviti alla Newsletter
+        </a>
+    </div>
+</section>

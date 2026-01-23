@@ -291,7 +291,15 @@ function getTemplatePage(string $title, string $content): string
 
     $page = str_replace('{{TITOLO_PAGINA}}', $title, $page);
     $page = str_replace('{{HEADER}}', $header, $page);
-    $page = str_replace('{{BREADCRUMBS}}', getBreadcrumbs($_SERVER['REQUEST_URI']), $page);
+
+    // Breadcrumbs Logic: If Home, hide global breadcrumbs (injected manually in Hero)
+    $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+    if (empty($path) || $path === 'home.php' || $path === 'home') {
+        $page = str_replace('{{BREADCRUMBS}}', '', $page);
+    } else {
+        $page = str_replace('{{BREADCRUMBS}}', getBreadcrumbs($_SERVER['REQUEST_URI']), $page);
+    }
+
     $page = str_replace('{{CONTENT}}', $content, $page);
     $page = str_replace('{{FOOTER}}', $footer, $page);
     $page = str_replace('{{PATH_PREFIX}}', getPrefix(), $page);

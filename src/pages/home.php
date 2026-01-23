@@ -16,23 +16,23 @@ if (!$db->apriConnessione()) {
 // ========================================
 // 3. CASI IN EVIDENZA (scelti manualmente)
 // ========================================
-$casiInEvidenzaIDs = [1, 5, 12, 8]; 
+$casiInEvidenzaIDs = [1, 5, 12, 8];
 
 $htmlCasiEvidenza = '';
 
 if (!empty($casiInEvidenzaIDs)) {
     // Crea la stringa per IN clause (es: "1,5,12,8")
     $idsString = implode(',', array_map('intval', $casiInEvidenzaIDs));
-    
+
     $queryCasiEvidenza = "
         SELECT N_Caso, Titolo, Data, Descrizione, Slug, Immagine
         FROM Caso 
         WHERE N_Caso IN ($idsString)
         AND Approvato = 1
     ";
-    
+
     $resultEvidenza = $db->query($queryCasiEvidenza);
-    
+
     if ($resultEvidenza && mysqli_num_rows($resultEvidenza) > 0) {
         while ($caso = mysqli_fetch_assoc($resultEvidenza)) {
             $titolo = htmlspecialchars($caso['Titolo']);
@@ -40,12 +40,12 @@ if (!empty($casiInEvidenzaIDs)) {
             $sinossi = (strlen($descrizione) > 100) ? substr($descrizione, 0, 100) . '...' : $descrizione;
 
             $htmlCasiEvidenza .= renderComponent('card-caso', [
-                'CARD_CLASS'    => 'carousel-card',
-                'IMMAGINE'      => getImageUrl($caso['Immagine'] ?? null),
-                'TITOLO'        => $titolo,
-                'DATA'          => formatData($caso['Data'] ?? null),
-                'SINOSSI'       => $sinossi,
-                'LINK'          => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
+                'CARD_CLASS' => 'carousel-card',
+                'IMMAGINE' => getImageUrl($caso['Immagine'] ?? null),
+                'TITOLO' => $titolo,
+                'DATA' => formatData($caso['Data'] ?? null),
+                'SINOSSI' => $sinossi,
+                'LINK' => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
                 'TESTO_BOTTONE' => 'Scopri il Caso'
             ]);
         }
@@ -78,11 +78,11 @@ if ($resultInchieste && mysqli_num_rows($resultInchieste) > 0) {
         $sinossi = (strlen($descrizione) > 150) ? substr($descrizione, 0, 150) . '...' : $descrizione;
 
         $htmlUltimeInchieste .= renderComponent('card-caso-text', [
-            'CARD_CLASS'    => 'investigazione-card',
-            'TITOLO'        => $titolo,
-            'DATA'          => formatData($caso['Data'] ?? null),
-            'SINOSSI'       => $sinossi,
-            'LINK'          => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
+            'CARD_CLASS' => 'investigazione-card',
+            'TITOLO' => $titolo,
+            'DATA' => formatData($caso['Data'] ?? null),
+            'SINOSSI' => $sinossi,
+            'LINK' => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
             'TESTO_BOTTONE' => "Leggi l'Inchiesta"
         ]);
     }
@@ -127,6 +127,9 @@ $db->chiudiConnessione();
 $contenuto = str_replace('{{CASI_EVIDENZA}}', $htmlCasiEvidenza, $contenuto);
 $contenuto = str_replace('{{ULTIME_INCHIESTE}}', $htmlUltimeInchieste, $contenuto);
 $contenuto = str_replace('{{ARTICOLI_POPOLARI}}', $htmlArticoliPopolari, $contenuto);
+
+// Inject Breadcrumbs inside Hero for Home Page
+$contenuto = str_replace('{{BREADCRUMBS_HERO}}', getBreadcrumbs('/'), $contenuto);
 
 // ========================================
 // 7. OUTPUT FINALE

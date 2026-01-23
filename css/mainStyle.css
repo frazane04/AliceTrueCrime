@@ -19,7 +19,7 @@
     --white-alpha: #ffffffcc;
     --bg-lightest: #F5F3F8;
     --border-light: #b0a6c7;
-    
+
     /* Font sizes responsive con fallback */
     --font-sm: 0.8rem;
     --font-base: 1rem;
@@ -54,16 +54,30 @@ body {
     line-height: 1.6;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     color: var(--text-dark);
     line-height: 1.5;
     text-wrap: balance;
 }
 
-h1 { font-size: var(--font-xxl); }
-h2 { font-size: var(--font-lg); }
-h3 { font-size: var(--font-md); }
-h4 { font-size: var(--font-base); }
+h1 {
+    font-size: var(--font-xxl);
+}
+
+h2 {
+    font-size: var(--font-lg);
+}
+
+h3 {
+    font-size: var(--font-md);
+}
+
+h4 {
+    font-size: var(--font-base);
+}
 
 img {
     max-width: 100%;
@@ -238,6 +252,10 @@ textarea:focus-visible,
     margin-top: 1rem;
 }
 
+.mt-2 {
+    margin-top: 3rem;
+}
+
 .inline-block {
     display: inline-block;
 }
@@ -373,6 +391,25 @@ textarea:focus-visible,
     max-width: 1200px;
 }
 
+/* Specifico per Home Page dentro Hero */
+.hero-section .breadcrumbs {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: var(--white-alpha);
+    backdrop-filter: blur(5px);
+    padding: 0.5rem 1.5rem;
+    border-radius: 2em;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    max-width: 90%;
+    text-align: center;
+    margin: 0;
+}
+
 .breadcrumbs a {
     color: var(--primary);
     text-decoration: none;
@@ -398,21 +435,66 @@ textarea:focus-visible,
 /* HERO SECTION */
 
 .hero-section {
-    padding: 2.5em 0 3em;
+    position: relative;
+    width: auto;
+    min-height: 80vh;
+    margin: 0 1em 0 1em;
+    border-radius: 1.2em;
+    background-image: url('../assets/img/hero-bg.svg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2em;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(37, 17, 1, 0.4), rgba(37, 17, 1, 0.8));
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+    animation: fadeIn 1.5s ease-out;
 }
 
 .hero-section h1 {
-    font-size: var(--font-xl);
-    margin-bottom: 0 auto;
-    color: var(--primary);
-    text-align: center;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    margin-bottom: 0.5em;
+    color: var(--white);
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    line-height: 1.1;
 }
 
 .hero-section p {
-    font-size: var(--font-base);
-    margin: 0 auto;
-    color: var(--text-dark);
-    text-align: center;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    margin: 0 auto 2em;
+    color: #e0e0e0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* CAROUSEL CASI IN EVIDENZA */
@@ -420,7 +502,8 @@ textarea:focus-visible,
 #carousel-casi {
     padding: 2em 1.5em;
     background-color: var(--accent-blue);
-    margin: auto;
+    margin: 4em 1em 2em 1em;
+    width: auto;
     border-radius: 1em;
 }
 
@@ -431,7 +514,7 @@ textarea:focus-visible,
     text-align: center;
 }
 
-.scrolling-container {
+.popular-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5em;
@@ -2393,7 +2476,7 @@ textarea:focus-visible,
 /* ============================================
    UPLOAD E ANTEPRIMA IMMAGINI
    ============================================ */
-   
+
 .file-upload-wrapper {
     margin-bottom: 0.5rem;
 }
@@ -3286,4 +3369,3 @@ textarea:focus-visible,
         transform: rotate(360deg);
     }
 }
-
