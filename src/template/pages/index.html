@@ -1,73 +1,77 @@
 <main role="main" id="main-content" tabindex="-1">
-    
-    <!-- Hero Section -->
-    <section class="hero-section sezione-stretta" aria-labelledby="hero-title">
-        <h1 id="hero-title">AliceTrueCrime</h1>
-        <p class="hero-subtitle">Indagini, misteri e cronaca nera raccontati con rigore investigativo</p>
+
+    <section class="hero-section sezione-stretta">
+        <p class="hero-subtitle">Benvenuti nel portale di riferimento per l'approfondimento di casi di cronaca nera,
+            misteri irrisolti e indagini giudiziarie, analizzati con rigore e rispetto per le fonti.</p>
     </section>
 
-    <!-- Casi in Evidenza (FISSI - scelti manualmente) -->
     <section id="carousel-casi" class="sezione-stretta" aria-labelledby="casi-evidenza-title">
         <h2 id="casi-evidenza-title">Casi in Evidenza</h2>
-        
+
         <div class="scrolling-container"> <!-- Alice modifica questo una volta modificato nel css -->
-            <!-- PLACEHOLDER: Popolato da home.php con casi scelti manualmente -->
             {{CASI_EVIDENZA}}
         </div>
     </section>
 
-    <!-- Sezioni Principali -->
     <section id="sezioni-principali" class="content-grid sezione-stretta">
-        
-        <!-- Ultime Inchieste (ultimi 3 per ID) -->
+
         <div class="investigazioni-recenti" aria-labelledby="ultime-inchieste-title">
             <h2 id="ultime-inchieste-title">Ultime Inchieste</h2>
-            
+
             <div id="ultime-inchieste-container">
                 {{ULTIME_INCHIESTE}}
             </div>
         </div>
-        
-        <!-- Articoli più Letti (top 3 per visualizzazioni) -->
+
         <aside class="articoli-popolari" aria-labelledby="articoli-popolari-title">
             <h3 id="articoli-popolari-title">Articoli più Letti</h3>
-            
+
             <div id="articoli-popolari-container">
                 {{ARTICOLI_POPOLARI}}
             </div>
-            
-            <a href="{{PATH_PREFIX}}/esplora" class="btn btn-primary btn-full-width" 
-               aria-label="Esplora tutti i casi disponibili">
+
+            <a href="{{PATH_PREFIX}}/esplora" class="btn btn-primary btn-full-width"
+                aria-label="Esplora tutti i casi disponibili">
                 Esplora Tutti i Casi
             </a>
         </aside>
     </section>
 
-    <!-- I Detective -->
     <section id="i-detective" class="sezione-stretta text-center" aria-labelledby="detective-title">
         <h2 id="detective-title">I Detective di AliceTrueCrime</h2>
         <div class="detective-container" role="list">
-            
+
             <div class="detective-card" role="listitem">
-                <img src="{{PATH_PREFIX}}/assets/imgs/detective1.jpg" 
-                     alt="Foto Detective A" class="detective-photo" />
-                <p>Nome Detective A</p>
+                <img src="{{PATH_PREFIX}}/assets/img/zanella.svg" alt="Foto Detective Francesco Zanella"
+                    class="detective-photo" />
             </div>
             <div class="detective-card" role="listitem">
-                <img src="{{PATH_PREFIX}}/assets/imgs/detective2.jpg" 
-                     alt="Foto Detective B" class="detective-photo" />
-                <p>Nome Detective B</p>
+                <img src="{{PATH_PREFIX}}/assets/img/grolla.svg" alt="Foto Detective Lorenzo Grolla"
+                    class="detective-photo" />
             </div>
+            <div class="detective-card" role="listitem">
+                <img src="{{PATH_PREFIX}}/assets/img/perozzo.svg" alt="Foto Detective Samuele Perozzo"
+                    class="detective-photo" />
+            </div>
+            <div class="detective-card" role="listitem">
+                <img src="{{PATH_PREFIX}}/assets/img/zago.svg" alt="Foto Detective Alice Zago"
+                    class="detective-photo" />
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <a href="{{PATH_PREFIX}}/chi-siamo" class="btn btn-primary" aria-label="Scopri chi siamo">
+                Scopri il Team
+            </a>
         </div>
     </section>
 
-    <!-- Newsletter CTA ho utilizzato lo stesso id di cta-detective per mantenere lo stile uguale-->
     <section id="cta-detective" class="cta-area" aria-labelledby="cta-title">
         <div class="cta-content sezione-stretta text-center">
             <h2 id="cta-title">Resta Aggiornato sui Nuovi Casi</h2>
             <p>Iscriviti alla newsletter per ricevere le ultime inchieste direttamente nella tua casella di posta.</p>
-            <a href="{{PATH_PREFIX}}/newsletter" class="btn btn-primary btn-xl" 
-               aria-label="Iscriviti alla newsletter di AliceTrueCrime">
+            <a href="{{PATH_PREFIX}}/newsletter" class="btn btn-primary btn-xl"
+                aria-label="Iscriviti alla newsletter di AliceTrueCrime">
                 Iscriviti alla Newsletter
             </a>
         </div>

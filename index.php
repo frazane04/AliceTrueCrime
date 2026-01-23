@@ -24,9 +24,9 @@ if (empty($path)) {
 if (preg_match('#^/caso/([a-z0-9\-]+)$#i', $path, $matches)) {
     // Cattura lo slug dall'URL
     $_GET['slug'] = $matches[1];
-    
+
     $fileToLoad = __DIR__ . '/src/pages/caso.php';
-    
+
     if (file_exists($fileToLoad)) {
         require $fileToLoad;
         exit;
@@ -38,20 +38,22 @@ if (preg_match('#^/caso/([a-z0-9\-]+)$#i', $path, $matches)) {
 
 // ROTTE STATICHE
 $routes = [
-    '/'              => 'home.php',
-    '/index.php'     => 'home.php',
-    '/home'          => 'home.php',
+    '/' => 'home.php',
+    '/index.php' => 'home.php',
+    '/home' => 'home.php',
 
-    '/esplora'       => 'esplora.php',
-    '/caso'          => 'caso.php',
-    '/segnala-caso'  => 'segnala.php',
+    '/esplora' => 'esplora.php',
+    '/caso' => 'caso.php',
+    '/segnala-caso' => 'segnala.php',
     '/modifica-caso' => 'modifica_caso.php',
-    '/newsletter'    => 'newsletter.php',
+    '/newsletter' => 'newsletter.php',
+    '/chi-siamo' => 'chi_siamo.php',
+    '/privacy' => 'privacy.php',
 
-    '/accedi'        => 'accedi.php',
-    '/registrati'    => 'registrati.php',
-    '/profilo'       => 'profilo.php',
-    '/logout'        => 'logout.php',
+    '/accedi' => 'accedi.php',
+    '/registrati' => 'registrati.php',
+    '/profilo' => 'profilo.php',
+    '/logout' => 'logout.php',
 ];
 
 //CONTROLLO E REINDIRIZZAMENTO

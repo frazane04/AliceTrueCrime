@@ -9,7 +9,8 @@ if (session_status() === PHP_SESSION_NONE) {
 /**
  * Gestisce il prefisso del percorso per installazioni in sottocartelle.
  */
-function getPrefix(): string {
+function getPrefix(): string
+{
     return '';
 }
 
@@ -18,7 +19,8 @@ function getPrefix(): string {
  *
  * @param string $path Percorso relativo (es. '/profilo', '/accedi')
  */
-function redirect(string $path): void {
+function redirect(string $path): void
+{
     $prefix = getPrefix();
     header("Location: {$prefix}{$path}");
     exit;
@@ -31,12 +33,13 @@ function redirect(string $path): void {
  * @param string $messaggio Messaggio da mostrare
  * @return string HTML dell'alert
  */
-function alertHtml(string $tipo, string $messaggio): string {
+function alertHtml(string $tipo, string $messaggio): string
+{
     $classi = [
-        'error'   => 'alert-error',
+        'error' => 'alert-error',
         'success' => 'alert-success',
         'warning' => 'alert-warning',
-        'info'    => 'alert-info',
+        'info' => 'alert-info',
     ];
 
     $classe = $classi[$tipo] ?? 'alert-info';
@@ -53,7 +56,8 @@ function alertHtml(string $tipo, string $messaggio): string {
  * @param string $messaggio Messaggio descrittivo
  * @param int $httpCode Codice HTTP (default 404)
  */
-function renderErrorPageAndExit(string $icona, string $titolo, string $messaggio, int $httpCode = 404): void {
+function renderErrorPageAndExit(string $icona, string $titolo, string $messaggio, int $httpCode = 404): void
+{
     $prefix = getPrefix();
     http_response_code($httpCode);
 
@@ -75,7 +79,8 @@ function renderErrorPageAndExit(string $icona, string $titolo, string $messaggio
  * @param string $nome Nome del template (senza .html)
  * @return string Contenuto del template
  */
-function loadTemplate(string $nome): string {
+function loadTemplate(string $nome): string
+{
     $templatePath = __DIR__ . '/../template/pages/' . $nome . '.html';
 
     if (!file_exists($templatePath)) {
@@ -92,7 +97,8 @@ function loadTemplate(string $nome): string {
  * @param array $dati Array associativo chiave => valore per i placeholder
  * @return string HTML con placeholder sostituiti
  */
-function renderComponent(string $nome, array $dati): string {
+function renderComponent(string $nome, array $dati): string
+{
     $templatePath = __DIR__ . '/../template/components/' . $nome . '.html';
 
     if (!file_exists($templatePath)) {
@@ -111,14 +117,16 @@ function renderComponent(string $nome, array $dati): string {
 /**
  * Genera lo slug da un caso (fallback se non presente).
  */
-function getSlugFromCaso(array $caso): string {
+function getSlugFromCaso(array $caso): string
+{
     return $caso['Slug'] ?? strtolower(str_replace(' ', '-', $caso['Titolo']));
 }
 
 /**
  * Formatta una data nel formato italiano.
  */
-function formatData(?string $data, string $formato = 'd/m/Y'): string {
+function formatData(?string $data, string $formato = 'd/m/Y'): string
+{
     if (empty($data)) {
         return 'Sconosciuta';
     }
@@ -128,7 +136,8 @@ function formatData(?string $data, string $formato = 'd/m/Y'): string {
 /**
  * Restituisce l'URL dell'immagine o un placeholder.
  */
-function getImageUrl(?string $immagine): string {
+function getImageUrl(?string $immagine): string
+{
     $prefix = getPrefix();
     if (!empty($immagine)) {
         return $prefix . '/' . htmlspecialchars($immagine);
@@ -139,7 +148,8 @@ function getImageUrl(?string $immagine): string {
 /**
  * Genera HTML per lista persone (vittime o colpevoli) usando card-persona.
  */
-function generaHtmlPersone(array $persone, string $tipo): string {
+function generaHtmlPersone(array $persone, string $tipo): string
+{
     if (empty($persone)) {
         return $tipo === 'vittima'
             ? '<p>Nessuna vittima registrata.</p>'
@@ -153,11 +163,11 @@ function generaHtmlPersone(array $persone, string $tipo): string {
             : '';
 
         $html .= renderComponent('card-persona', [
-            'IMMAGINE'      => getImageUrl($p['Immagine'] ?? null),
+            'IMMAGINE' => getImageUrl($p['Immagine'] ?? null),
             'NOME_COMPLETO' => htmlspecialchars($p['Nome'] . ' ' . $p['Cognome']),
             'LUOGO_NASCITA' => htmlspecialchars($p['LuogoNascita'] ?? 'Sconosciuto'),
-            'DATA_NASCITA'  => formatData($p['DataNascita'] ?? null),
-            'EXTRA_INFO'    => $extraInfo
+            'DATA_NASCITA' => formatData($p['DataNascita'] ?? null),
+            'EXTRA_INFO' => $extraInfo
         ]);
     }
     return $html;
@@ -166,7 +176,8 @@ function generaHtmlPersone(array $persone, string $tipo): string {
 /**
  * Genera HTML per lista articoli/fonti usando articolo-link.
  */
-function generaHtmlArticoli(array $articoli): string {
+function generaHtmlArticoli(array $articoli): string
+{
     if (empty($articoli)) {
         return '<li>Nessuna fonte disponibile.</li>';
     }
@@ -175,8 +186,8 @@ function generaHtmlArticoli(array $articoli): string {
     foreach ($articoli as $a) {
         $html .= renderComponent('articolo-link', [
             'TITOLO' => htmlspecialchars($a['Titolo']),
-            'LINK'   => htmlspecialchars($a['Link']),
-            'DATA'   => formatData($a['Data'] ?? null)
+            'LINK' => htmlspecialchars($a['Link']),
+            'DATA' => formatData($a['Data'] ?? null)
         ]);
     }
     return $html;
@@ -185,14 +196,16 @@ function generaHtmlArticoli(array $articoli): string {
 /**
  * Genera l'URL dell'avatar UI Avatars.
  */
-function getAvatarUrl(string $nome, int $size = 24): string {
+function getAvatarUrl(string $nome, int $size = 24): string
+{
     return "https://ui-avatars.com/api/?name=" . urlencode($nome) . "&background=0D8ABC&color=fff&size=" . $size;
 }
 
 /**
  * Verifica se l'utente è loggato.
  */
-function isLoggedIn(): bool {
+function isLoggedIn(): bool
+{
     return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 }
 
@@ -204,7 +217,8 @@ function isLoggedIn(): bool {
  * @param string|null $messaggio Messaggio personalizzato (solo se $redirect = false)
  * @return void
  */
-function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void {
+function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void
+{
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
         return; // Utente autenticato, continua
     }
@@ -235,7 +249,8 @@ function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void {
  *
  * @param int $codice Codice HTTP (403, 404, 500, 503)
  */
-function renderErrorPage(int $codice): void {
+function renderErrorPage(int $codice): void
+{
     $errori = [
         403 => ['titolo' => 'Accesso Negato', 'template' => '403'],
         404 => ['titolo' => 'Caso Archiviato', 'template' => '404'],
@@ -261,13 +276,14 @@ function renderErrorPage(int $codice): void {
 /**
  * Funzione Core: Assembla i pezzi del template.
  */
-function getTemplatePage(string $title, string $content): string {
+function getTemplatePage(string $title, string $content): string
+{
     $templatePath = __DIR__ . '/../template/layouts/pagestructure.html';
-    
+
     if (!file_exists($templatePath)) {
         die("ERRORE CRITICO: Template mancante in $templatePath");
     }
-    
+
     $page = file_get_contents($templatePath);
 
     $header = getHeaderSection($_SERVER['REQUEST_URI']);
@@ -284,12 +300,14 @@ function getTemplatePage(string $title, string $content): string {
 }
 
 
-function getHeaderSection($currentPath): string {
+function getHeaderSection($currentPath): string
+{
     $headerPath = __DIR__ . '/../template/layouts/header.html';
-    if (!file_exists($headerPath)) return "<p>Errore: header.html mancante</p>";
-    
+    if (!file_exists($headerPath))
+        return "<p>Errore: header.html mancante</p>";
+
     $headerHtml = file_get_contents($headerPath);
-    
+
     $navBar = getNavBarLi($currentPath);
     $buttons = getHeaderButtons();
 
@@ -300,13 +318,15 @@ function getHeaderSection($currentPath): string {
     return $headerHtml;
 }
 
-function getFooterSection($currentPath): string {
+function getFooterSection($currentPath): string
+{
     $footerPath = __DIR__ . '/../template/layouts/footer.html';
-    if (!file_exists($footerPath)) return "<p>Errore: footer.html mancante</p>";
+    if (!file_exists($footerPath))
+        return "<p>Errore: footer.html mancante</p>";
 
     $footerHtml = file_get_contents($footerPath);
     $navigaLinks = getFooterNavigaLi($currentPath);
-    
+
     $footerHtml = str_replace('{{LINK_NAVIGA}}', $navigaLinks, $footerHtml);
     $footerHtml = str_replace('{{PATH_PREFIX}}', getPrefix(), $footerHtml);
 
@@ -316,7 +336,8 @@ function getFooterSection($currentPath): string {
 /**
  * Genera i link della navbar.
  */
-function getNavBarLi($currentPath): string {
+function getNavBarLi($currentPath): string
+{
     $prefix = getPrefix();
     $links = [
         $prefix . '/' => 'Home',
@@ -329,7 +350,7 @@ function getNavBarLi($currentPath): string {
         require_once __DIR__ . '/../db/funzioni_db.php';
         $db_nav = new FunzioniDB();
         $utente = $db_nav->getUtenteByEmail($_SESSION['user_email']);
-        
+
         // Se è iscritto, mostra il link
         if ($utente && isset($utente['Is_Newsletter']) && $utente['Is_Newsletter'] == 1) {
             $links[$prefix . '/newsletter'] = 'Newsletter';
@@ -343,16 +364,17 @@ function getNavBarLi($currentPath): string {
  * Gestisce i bottoni di Login/Registrazione o Profilo Utente.
  * AGGIORNATO: Usa email dalla sessione
  */
-function getHeaderButtons(): string {
+function getHeaderButtons(): string
+{
     $prefix = getPrefix();
-    
+
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
         $username = htmlspecialchars($_SESSION['user'] ?? 'Utente');
         $email = htmlspecialchars($_SESSION['user_email'] ?? '');
-        
+
         // Immagine profilo basata sullo username
-        $imgProfile = "https://ui-avatars.com/api/?name=" . urlencode($username) . "&background=0D8ABC&color=fff"; 
-        
+        $imgProfile = "https://ui-avatars.com/api/?name=" . urlencode($username) . "&background=0D8ABC&color=fff";
+
         return <<<HTML
             <div class="user-menu">
 
@@ -371,7 +393,8 @@ function getHeaderButtons(): string {
     }
 }
 
-function getFooterNavigaLi($currentPath): string {
+function getFooterNavigaLi($currentPath): string
+{
     $prefix = getPrefix();
     $links = [
         $prefix . '/' => 'Home',
@@ -385,7 +408,8 @@ function getFooterNavigaLi($currentPath): string {
 /**
  * Helper per generare liste <li> con classe 'activePage'.
  */
-function generateLiList($links, $currentPath): string {
+function generateLiList($links, $currentPath): string
+{
     $html = '';
     foreach ($links as $url => $label) {
         $isActive = ($currentPath == $url) ? 'class="activePage" aria-current="page"' : '';
@@ -397,33 +421,43 @@ function generateLiList($links, $currentPath): string {
 /**
  * Genera le breadcrumbs in base al percorso attuale.
  */
-function getBreadcrumbs($currentPath): string {
+function getBreadcrumbs($currentPath): string
+{
     $prefix = getPrefix();
     $path = trim(parse_url($currentPath, PHP_URL_PATH), '/');
-    $parts = explode('/', $path);
-    
-    // Inizio sempre dalla Home
-    $breadcrumbs = ['<a href="' . $prefix . '/">Home</a>'];
-    $accumulatedPath = $prefix;
 
-    foreach ($parts as $part) {
-        if (empty($part)) continue;
-        
+    // Se siamo nella Home Page (nessun percorso oltre al prefisso)
+    if (empty($path)) {
+        return '<nav aria-label="Breadcrumb" class="breadcrumbs"><span aria-current="page">Home</span></nav>';
+    }
+
+    // Iniziamo con Home come link perché non siamo nella home
+    $breadcrumbs = ['<a href="' . $prefix . '/">Home</a>'];
+
+    $parts = explode('/', $path);
+    $accumulatedPath = $prefix;
+    $totalParts = count($parts);
+
+    // Usiamo $index per identificare con certezza l'ultimo elemento
+    foreach ($parts as $index => $part) {
+        if ($part === '')
+            continue;
+
         $accumulatedPath .= '/' . $part;
         // Trasformiamo lo slug (es. segnala-caso) in testo leggibile (es. Segnala Caso)
         $name = ucwords(str_replace(['-', '_'], ' ', $part));
-        
-        // Se è l'ultima parte, non mettiamo il link
-        if ($part === end($parts)) {
-            $breadcrumbs[] = '<span>' . $name . '</span>';
+
+        // Se è l'ultimo elemento dell'array, è la pagina corrente
+        if ($index === $totalParts - 1) {
+            $breadcrumbs[] = '<span aria-current="page">' . $name . '</span>';
         } else {
             $breadcrumbs[] = '<a href="' . $accumulatedPath . '">' . $name . '</a>';
         }
     }
 
-    return '<nav aria-label="Breadcrumb" class="breadcrumbs">' . 
-           implode(' <span class="separator">/</span> ', $breadcrumbs) . 
-           '</nav>';
+    return '<nav aria-label="Breadcrumb" class="breadcrumbs">' .
+        implode(' <span class="separator">/</span> ', $breadcrumbs) .
+        '</nav>';
 }
 
 ?>
