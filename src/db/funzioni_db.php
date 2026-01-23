@@ -500,7 +500,7 @@ class FunzioniDB {
 
     /**
      * Cerca casi per titolo o descrizione
-     * 
+     *
      * @param string $query Termine di ricerca
      * @param int $limite Numero massimo risultati
      * @param bool $soloApprovati Se true (default), filtra solo approvati
@@ -510,33 +510,225 @@ class FunzioniDB {
             if (!$this->db->apriConnessione()) {
                 throw new Exception("Impossibile connettersi al database");
             }
-            
+
             $searchTerm = "%{$query}%";
-            $sql = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
-                    FROM Caso 
+            $sql = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo
+                    FROM Caso
                     WHERE (Titolo LIKE ? OR Descrizione LIKE ?)";
-            
+
             if ($soloApprovati) {
                 $sql .= " AND Approvato = 1";
             }
-            
+
             $sql .= " ORDER BY Data DESC LIMIT ?";
-            
+
             $result = $this->db->query($sql, [$searchTerm, $searchTerm, $limite], "ssi");
-            
+
             $casi = [];
             if ($result && is_object($result)) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     $casi[] = $row;
                 }
             }
-            
+
             $this->db->chiudiConnessione();
             return $casi;
-            
+
         } catch (Exception $e) {
             $this->db->chiudiConnessione();
             return [];
+        }
+    }
+
+    /**
+     * Cerca casi con filtri avanzati
+     *
+     * @param array $filtri Array associativo con i filtri:
+     *   - 'q' => termine di ricerca (titolo/descrizione)
+     *   - 'categoria' => tipologia del caso
+     *   - 'anno' => anno del caso
+     * @param int $limite Numero massimo risultati
+     * @param bool $soloApprovati Se true (default), filtra solo approvati
+     * @return array Lista dei casi trovati
+     */
+    public function cercaCasiConFiltri($filtri = [], $limite = 50, $soloApprovati = true) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+
+            $sql = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo
+                    FROM Caso
+                    WHERE 1=1";
+
+            $params = [];
+            $types = "";
+
+            // Filtro approvazione
+            if ($soloApprovati) {
+                $sql .= " AND Approvato = 1";
+            }
+
+            // Filtro ricerca testuale
+            if (!empty($filtri['q'])) {
+                $searchTerm = "%" . $filtri['q'] . "%";
+                $sql .= " AND (Titolo LIKE ? OR Descrizione LIKE ?)";
+                $params[] = $searchTerm;
+                $params[] = $searchTerm;
+                $types .= "ss";
+            }
+
+            // Filtro categoria
+            if (!empty($filtri['categoria'])) {
+                $sql .= " AND Tipologia = ?";
+                $params[] = $filtri['categoria'];
+                $types .= "s";
+            }
+
+            // Filtro anno
+            if (!empty($filtri['anno'])) {
+                $sql .= " AND YEAR(Data) = ?";
+                $params[] = (int)$filtri['anno'];
+                $types .= "i";
+            }
+
+            $sql .= " ORDER BY Data DESC LIMIT ?";
+            $params[] = $limite;
+            $types .= "i";
+
+            $result = $this->db->query($sql, $params, $types);
+
+            $casi = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $casi[] = $row;
+                }
+            }
+
+            $this->db->chiudiConnessione();
+            return $casi;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return [];
+        }
+    }
+
+    /**
+     * Recupera tutte le categorie (tipologie) disponibili
+     *
+     * @param bool $soloApprovati Se true (default), conta solo casi approvati
+     * @return array Lista delle categorie con conteggio
+     */
+    public function getCategorie($soloApprovati = true) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+
+            $sql = "SELECT Tipologia, COUNT(*) as conteggio
+                    FROM Caso
+                    WHERE Tipologia IS NOT NULL AND Tipologia != ''";
+
+            if ($soloApprovati) {
+                $sql .= " AND Approvato = 1";
+            }
+
+            $sql .= " GROUP BY Tipologia ORDER BY Tipologia ASC";
+
+            $result = $this->db->query($sql, [], "");
+
+            $categorie = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $categorie[] = $row;
+                }
+            }
+
+            $this->db->chiudiConnessione();
+            return $categorie;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return [];
+        }
+    }
+
+    /**
+     * Recupera tutti gli anni disponibili nei casi
+     *
+     * @param bool $soloApprovati Se true (default), conta solo casi approvati
+     * @return array Lista degli anni disponibili
+     */
+    public function getAnniDisponibili($soloApprovati = true) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+
+            $sql = "SELECT DISTINCT YEAR(Data) as anno
+                    FROM Caso
+                    WHERE Data IS NOT NULL";
+
+            if ($soloApprovati) {
+                $sql .= " AND Approvato = 1";
+            }
+
+            $sql .= " ORDER BY anno DESC";
+
+            $result = $this->db->query($sql, [], "");
+
+            $anni = [];
+            if ($result && is_object($result)) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    if ($row['anno']) {
+                        $anni[] = $row['anno'];
+                    }
+                }
+            }
+
+            $this->db->chiudiConnessione();
+            return $anni;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return [];
+        }
+    }
+
+    /**
+     * Conta i casi per una specifica categoria
+     *
+     * @param string $tipologia La categoria da contare
+     * @param bool $soloApprovati Se true (default), conta solo casi approvati
+     * @return int Numero di casi nella categoria
+     */
+    public function contaCasiPerCategoria($tipologia, $soloApprovati = true) {
+        try {
+            if (!$this->db->apriConnessione()) {
+                throw new Exception("Impossibile connettersi al database");
+            }
+
+            $sql = "SELECT COUNT(*) as totale FROM Caso WHERE Tipologia = ?";
+
+            if ($soloApprovati) {
+                $sql .= " AND Approvato = 1";
+            }
+
+            $result = $this->db->query($sql, [$tipologia], "s");
+
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $this->db->chiudiConnessione();
+                return (int)$row['totale'];
+            }
+
+            $this->db->chiudiConnessione();
+            return 0;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return 0;
         }
     }
     

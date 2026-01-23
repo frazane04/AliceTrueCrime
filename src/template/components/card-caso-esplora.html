@@ -1,10 +1,14 @@
 <article class="case-card" data-categoria="{{TIPOLOGIA}}">
     <div class="card-image">
         <img src="{{IMMAGINE}}" alt="Copertina caso {{TITOLO}}" loading="lazy" />
+        <span class="card-category-badge">{{TIPOLOGIA}}</span>
     </div>
     <div class="card-content">
         <h3>{{TITOLO}}</h3>
         <p>{{DESCRIZIONE}}</p>
+        <div class="card-meta">
+            {{CARD_META}}
+        </div>
         <a href="{{LINK}}" class="btn-card" aria-label="Leggi approfondimento su {{TITOLO}}">Leggi Caso</a>
     </div>
 </article>
