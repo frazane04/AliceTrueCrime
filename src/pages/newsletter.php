@@ -35,7 +35,7 @@ if (!$utente || !isset($utente['Is_Newsletter']) || $utente['Is_Newsletter'] == 
                     <span class='news-date'>$dataFmt</span>
                     <h3>" . htmlspecialchars($caso['Titolo']) . "</h3>
                     <p>$descrizioneBreve</p>
-                    <a href='".getPrefix()."/caso/$slug' class='btn-link'>Esamina indizi &rarr;</a>
+                    <a href='".getPrefix()."/esplora/$slug' class='btn-link'>Esamina indizi &rarr;</a>
                 </article>";
         }
     } else {

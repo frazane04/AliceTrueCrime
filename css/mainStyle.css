@@ -315,12 +315,6 @@ textarea:focus-visible,
     /* Contesto per posizionamento assoluto desktop */
 }
 
-@media (max-width: 768px) {
-    .header-container {
-        position: relative;
-    }
-}
-
 .logo-area {
     font-weight: bold;
     font-size: 1.5em;

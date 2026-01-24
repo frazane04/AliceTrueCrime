@@ -454,7 +454,7 @@ HTML;
      */
     public static function generaMessaggioSuccessoModifica(bool $riApprova, string $prefix, string $slug, bool $isAdmin): string {
         $msgRiApprova = $riApprova ? '<br><strong>⚠️ Il caso è stato rimesso in attesa di approvazione.</strong>' : '';
-        $btnVisualizza = $isAdmin ? "<br><br><a href='$prefix/caso/$slug' class='btn btn-primary'>Visualizza Caso</a>" : '';
+        $btnVisualizza = $isAdmin ? "<br><br><a href='$prefix/esplora/$slug' class='btn btn-primary'>Visualizza Caso</a>" : '';
 
         return <<<HTML
         <div class='alert alert-success'>

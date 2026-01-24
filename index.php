@@ -20,8 +20,8 @@ if (empty($path)) {
     $path = '/';
 }
 
-//ROTTE DINAMICHE 
-if (preg_match('#^/caso/([a-z0-9\-]+)$#i', $path, $matches)) {
+//ROTTE DINAMICHE
+if (preg_match('#^/esplora/([a-z0-9\-]+)$#i', $path, $matches)) {
     // Cattura lo slug dall'URL
     $_GET['slug'] = $matches[1];
 
@@ -43,7 +43,6 @@ $routes = [
     '/home' => 'home.php',
 
     '/esplora' => 'esplora.php',
-    '/caso' => 'caso.php',
     '/segnala-caso' => 'segnala.php',
     '/modifica-caso' => 'modifica_caso.php',
     '/newsletter' => 'newsletter.php',

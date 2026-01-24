@@ -295,7 +295,7 @@ $contenuto = strtr($contenuto, [
     '<!-- vittime_html -->'         => $htmlVittime,
     '<!-- colpevoli_html -->'       => $htmlColpevoli,
     '<!-- articoli_html -->'        => $htmlArticoli,
-    '<!-- link_annulla -->'         => $prefix . '/caso/' . $caso['Slug'],
+    '<!-- link_annulla -->'         => $prefix . '/esplora/' . $caso['Slug'],
 ]);
 
 // ========================================

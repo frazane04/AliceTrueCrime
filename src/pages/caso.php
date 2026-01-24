@@ -14,7 +14,7 @@ $isAdminPreview = ($_GET['preview'] ?? '') === 'admin' && $isAdmin;
 // Determina se filtrare solo approvati (default true, false se admin in preview)
 $soloApprovati = !$isAdminPreview;
 
-// Controlla se c'è uno slug nell'URL (es: /caso/il-mostro-di-milwaukee)
+// Controlla se c'è uno slug nell'URL (es: /esplora/il-mostro-di-milwaukee)
 if (isset($_GET['slug']) && !empty($_GET['slug'])) {
     $slug = trim($_GET['slug']);
     
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
     if ($action === 'approva_caso') {
         $result = $dbFunctions->approvaCaso($casoId);
         if ($result['success']) {
-            header("Location: $prefix/caso/" . $slug);
+            header("Location: $prefix/esplora/" . $slug);
             exit;
         }
         $messaggioAdmin = alertHtml('error', '❌ ' . $result['message']);
@@ -178,7 +178,7 @@ if ($isApprovato) {
                 if ($resultCommento['success']) {
                     $messaggioCommento = alertHtml('success', $resultCommento['message']);
                     // Redirect sicuro usando lo slug del caso invece di REQUEST_URI (previene CRLF injection)
-                    $redirectUrl = $prefix . '/caso/' . urlencode($caso['Slug']) . '#commenti';
+                    $redirectUrl = $prefix . '/esplora/' . urlencode($caso['Slug']) . '#commenti';
                     header("Location: " . $redirectUrl);
                     exit;
                 } else {
@@ -204,7 +204,7 @@ if ($isApprovato) {
                 if ($resultEliminazione['success']) {
                     $messaggioCommento = alertHtml('success', $resultEliminazione['message']);
                     // Redirect sicuro usando lo slug del caso invece di REQUEST_URI (previene CRLF injection)
-                    $redirectUrl = $prefix . '/caso/' . urlencode($caso['Slug']) . '#commenti';
+                    $redirectUrl = $prefix . '/esplora/' . urlencode($caso['Slug']) . '#commenti';
                     header("Location: " . $redirectUrl);
                     exit;
                 } else {

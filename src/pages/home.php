@@ -45,7 +45,7 @@ if (!empty($casiInEvidenzaIDs)) {
                 'TITOLO' => $titolo,
                 'DATA' => formatData($caso['Data'] ?? null),
                 'SINOSSI' => $sinossi,
-                'LINK' => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
+                'LINK' => getPrefix() . '/esplora/' . urlencode(getSlugFromCaso($caso)),
                 'TESTO_BOTTONE' => 'Scopri il Caso'
             ]);
         }
@@ -82,7 +82,7 @@ if ($resultInchieste && mysqli_num_rows($resultInchieste) > 0) {
             'TITOLO' => $titolo,
             'DATA' => formatData($caso['Data'] ?? null),
             'SINOSSI' => $sinossi,
-            'LINK' => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso)),
+            'LINK' => getPrefix() . '/esplora/' . urlencode(getSlugFromCaso($caso)),
             'TESTO_BOTTONE' => "Leggi l'Inchiesta"
         ]);
     }

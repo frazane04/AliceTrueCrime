@@ -153,7 +153,7 @@ function generaHtmlCards($listaCasi)
             'DESCRIZIONE' => $descrizione,
             'TIPOLOGIA' => htmlspecialchars($caso['Tipologia'] ?? ''),
             'CARD_META' => $cardMeta,
-            'LINK' => getPrefix() . '/caso/' . urlencode(getSlugFromCaso($caso))
+            'LINK' => getPrefix() . '/esplora/' . urlencode(getSlugFromCaso($caso))
         ]);
     }
     return $html;

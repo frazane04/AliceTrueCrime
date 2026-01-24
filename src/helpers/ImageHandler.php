@@ -19,7 +19,7 @@ class ImageHandler {
     ];
     
     // Configurazione upload
-    private const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    private const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
     private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
     
@@ -80,7 +80,7 @@ class ImageHandler {
         
         // Validazione dimensione file
         if ($file['size'] > self::MAX_FILE_SIZE) {
-            return ['success' => false, 'path' => null, 'message' => 'File troppo grande. Massimo 5MB consentiti'];
+            return ['success' => false, 'path' => null, 'message' => 'File troppo grande. Massimo 1MB consentito'];
         }
         
         // Validazione tipo MIME
