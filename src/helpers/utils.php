@@ -381,7 +381,7 @@ function getHeaderButtons(): string
         $email = htmlspecialchars($_SESSION['user_email'] ?? '');
 
         // Immagine profilo basata sullo username
-        $imgProfile = "https://ui-avatars.com/api/?name=" . urlencode($username) . "&background=0D8ABC&color=fff";
+        $imgProfile = "https://ui-avatars.com/api/?name=" . urlencode($username) . "&background=7A3E26&color=fff";
 
         return <<<HTML
             <div class="user-menu">
