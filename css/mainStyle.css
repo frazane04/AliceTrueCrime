@@ -283,6 +283,14 @@ textarea:focus-visible,
     flex-wrap: wrap;
     gap: 1em;
     padding-right: 1em;
+    position: relative;
+    /* Contesto per posizionamento assoluto desktop */
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        position: relative;
+    }
 }
 
 .logo-area {
@@ -293,6 +301,8 @@ textarea:focus-visible,
     display: flex;
     cursor: default;
     align-items: center;
+    z-index: 1002;
+    /* Sopra il menu mobile */
 }
 
 .logo-area img {
@@ -302,18 +312,52 @@ textarea:focus-visible,
     padding: 0.8em;
 }
 
+.main-nav {
+    /* DESKTOP: Posizionamento assoluto per centratura perfetta */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    z-index: 1001;
+    /* Sopra hero eventuale */
+}
+
 .main-nav ul {
     display: flex;
     list-style: none;
     gap: clamp(1rem, 3vw, 2.5rem);
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    /* Evita wrap indesiderato */
     justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
 }
 
 .main-nav a {
     color: var(--text-dark);
     font-weight: 520;
     font-size: 1em;
+    white-space: nowrap;
+    /* Evita a capo */
+}
+
+.mobile-actions {
+    /* DESKTOP: Posizionamento assoluto a destra */
+    position: absolute;
+    right: 1em;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    z-index: 1002;
+}
+
+.mobile-actions .user-menu {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
 }
 
 .main-nav a:hover,
@@ -328,22 +372,20 @@ textarea:focus-visible,
 }
 
 .header-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: flex-start;
+    display: none;
+    /* Rimosso in favore di mobile-actions unificato */
 }
 
-/* Menu hamburger */
 
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    z-index: 1001;
-    position: relative;
+
+.mobile-actions .btn,
+.mobile-actions .button-layout {
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+}
 }
 
 .menu-toggle:focus-visible {

@@ -407,8 +407,7 @@ function getFooterNavigaLi($currentPath): string
     $links = [
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
-        $prefix . '/chi-siamo' => 'Chi Siamo',
-        $prefix . '/privacy' => 'Privacy Policy'
+        $prefix . '/chi-siamo' => 'Chi Siamo'
     ];
     return generateLiList($links, $currentPath);
 }

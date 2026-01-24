@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     // --- LOGICA PER IL CAMBIO TEMA ---
     const themeSwitcher = document.querySelector(".theme-switcher");
     const themeIconLunaContainer = document.getElementById("theme-icon-luna-container");
@@ -24,11 +24,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyTheme();
 
+    // --- LOGICA MENU HAMBURGER MOBILE ---
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mainNav = document.querySelector('.main-nav');
+    // const body = document.body; // RIMOSSO: Già dichiarato all'inizio della funzione
+
+    if (menuToggle && mainNav) {
+        // REMOVED DEBUG ALERT
+        console.log("Menu toggle found, attaching listener");
+
+        menuToggle.addEventListener('click', (e) => {
+            e.preventDefault(); // Evita submit form se presente o scroll strani
+            e.stopPropagation();
+
+            console.log("CLICK! Toggling menu...");
+
+            mainNav.classList.toggle('is-visible');
+
+            const isExpanded = mainNav.classList.contains('is-visible');
+            menuToggle.setAttribute('aria-expanded', isExpanded);
+
+            // Toggle Scroll Lock
+            if (isExpanded) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Chiudi menu quando si clicca un link
+        mainNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.setAttribute('aria-expanded', 'false');
+                mainNav.classList.remove('is-visible');
+                body.style.overflow = '';
+            });
+        });
+    }
+
     // Gestione click tema (solo se gli elementi esistono nella pagina)
     if (themeSwitcher && magnifyingGlass) {
         themeSwitcher.addEventListener("click", () => {
             if (magnifyingGlass.classList.contains("animate-sweep")) {
-                return; 
+                return;
             }
 
             magnifyingGlass.classList.add("animate-sweep");
@@ -37,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isDarkTheme = !isDarkTheme;
                 localStorage.setItem("isDarkTheme", isDarkTheme);
                 applyTheme();
-            }, 500); 
+            }, 500);
         });
 
         magnifyingGlass.addEventListener('animationend', () => {
