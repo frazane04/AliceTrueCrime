@@ -21,13 +21,13 @@
     --primary-dark: #4A2618;
     --accent-blue: #630D16;
     --accent-text: #4A2618;
-    
+
     /* Sfondi e Bordi */
     --white: #FFFFFF;
     --white-alpha: #ffffffcc;
     --bg-lightest: #EFE6D9;
     --border-light: #D1C0AD;
-    
+
     /* Font sizes responsive */
     --font-sm: 0.8rem;
     --font-base: 1rem;
@@ -66,16 +66,30 @@ body {
     line-height: 1.6;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     color: var(--text-dark);
     line-height: 1.5;
     text-wrap: balance;
 }
 
-h1 { font-size: var(--font-xxl); }
-h2 { font-size: var(--font-lg); }
-h3 { font-size: var(--font-md); }
-h4 { font-size: var(--font-base); }
+h1 {
+    font-size: var(--font-xxl);
+}
+
+h2 {
+    font-size: var(--font-lg);
+}
+
+h3 {
+    font-size: var(--font-md);
+}
+
+h4 {
+    font-size: var(--font-base);
+}
 
 img {
     max-width: 100%;
@@ -252,11 +266,25 @@ textarea:focus-visible,
    UTILITY CLASSES
    ============================================ */
 
-.text-center { text-align: center; }
-.hidden { display: none !important; }
-.mt-1 { margin-top: 1rem; }
-.mt-2 { margin-top: 3rem; }
-.inline-block { display: inline-block; }
+.text-center {
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+.mt-2 {
+    margin-top: 3rem;
+}
+
+.inline-block {
+    display: inline-block;
+}
 
 /* ============================================
    HEADER E NAVIGAZIONE
@@ -377,6 +405,7 @@ textarea:focus-visible,
     gap: 1rem;
     align-items: center;
 }
+
 /* Rimosso in favore di mobile-actions unificato */
 
 .mobile-actions .btn,
@@ -510,7 +539,11 @@ textarea:focus-visible,
     min-height: 80vh;
     margin: 0 1em;
     border-radius: 1.2em;
-    background-image: url('../assets/img/hero-bg.svg');
+    /* FIX CONTRASTO: Sfondo scuro di base + Gradiente scuro sopra l'immagine */
+    background-color: #251101;
+    background-image:
+        linear-gradient(to bottom, rgba(37, 17, 1, 0.75), rgba(37, 17, 1, 0.95)),
+        url('../assets/img/hero-bg.svg');
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
@@ -521,15 +554,7 @@ textarea:focus-visible,
     overflow: hidden;
 }
 
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(37, 17, 1, 0.4), rgba(37, 17, 1, 0.8));
-    z-index: 1;
-}
+/* .hero-overlay rimosso: il gradiente è ora nel background di .hero-section */
 
 .hero-content {
     position: relative;
@@ -543,15 +568,25 @@ textarea:focus-visible,
     font-size: clamp(2.5rem, 5vw, 4.5rem);
     margin-bottom: 0.5em;
     color: var(--white);
-    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    /* Robusto text-shadow per contrasto senza box */
+    text-shadow:
+        2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
+        /* Outline */
+        0 0 20px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8);
+    /* Glow scuro */
     line-height: 1.1;
+    font-weight: 800;
 }
 
 .hero-section p {
     font-size: clamp(1.1rem, 2vw, 1.5rem);
-    margin: 0 auto 2em;
-    color: #e0e0e0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
+    color: var(--white);
+    font-weight: 600;
+    /* Outline + Glow */
+    text-shadow:
+        1px 1px 0 #000, -1px -1px 0 #000,
+        0 0 10px rgba(0, 0, 0, 0.9);
     max-width: 600px;
 }
 
@@ -560,6 +595,7 @@ textarea:focus-visible,
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -702,85 +738,87 @@ textarea:focus-visible,
 }
 
 /* ============================================
-   ARTICOLI POPOLARI
+   SIDEBAR DETECTIVE
    ============================================ */
 
-.articoli-popolari {
+.detective-sidebar {
     background-color: var(--white);
-    padding: 1.2em;
-    border-radius: 1em;
-    border: 1px solid var(--border-light);
-    color: var(--text-dark);
+    padding: 1.5em;
+    border-radius: 0.8em;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     height: fit-content;
+    border: 1px solid var(--border-light);
 }
 
-.articoli-popolari h3 {
-    font-size: var(--font-base);
-    margin-bottom: 1.3em;
-}
-
-#articoli-popolari-container p {
+.detective-sidebar h3 {
+    font-size: var(--font-md);
+    margin-bottom: 1.2em;
+    padding-bottom: 0.5em;
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
     text-align: center;
-    padding: 1em 0;
-    margin-bottom: 1.3em;
-    color: var(--text-dark);
 }
 
-.articoli-popolari ul {
-    list-style: none;
-    font-size: var(--font-sm);
-    padding: 0;
-    margin-bottom: 1em;
+.detective-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 2 colonne */
+    gap: 1em;
 }
 
-.articoli-popolari li {
-    padding: 0.8em 0;
-    border-bottom: 1px solid var(--border-light);
-}
-
-/* ============================================
-   SEZIONE DETECTIVE
-   ============================================ */
-
-#i-detective {
-    padding: 2em 0 6em;
-    background-color: var(--bg-lightest);
-    color: var(--text-dark);
-}
-
-#i-detective h2 {
-    font-size: var(--font-lg);
-    margin-bottom: 1em;
-}
-
-.detective-container {
-    display: flex;
-    justify-content: center;
-    gap: 4em;
-    flex-wrap: wrap;
-}
-
-.detective-card {
-    max-width: 120px;
+.detective-card-mini {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    padding: 3em 1em;
+    /* Padding molto aumentato per altezza */
+    background-color: var(--bg-lightest);
+    border-radius: 1em;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    /* Occupa altezza griglia */
+    justify-content: center;
+    gap: 1em;
+    /* Spazio extra tra elementi interni */
 }
 
-.detective-photo {
-    width: 100%;
-    max-width: 120px;
-    aspect-ratio: 1/1;
+.detective-card-mini:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-color: var(--white);
+}
+
+.detective-avatar {
+    width: 90px;
+    /* Avatar più grande */
+    height: 90px;
     border-radius: 50%;
     object-fit: cover;
     border: 4px solid var(--primary);
+    /* Bordo più evidente */
+    margin-bottom: 0.8em;
+    background: var(--white);
 }
 
-.detective-card p {
-    margin-top: 1.5em;
-    padding-top: 1em;
-    font-weight: 550;
+.detective-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+
+.detective-name {
+    font-weight: 700;
+    font-size: 1.05em;
+    /* Nome più grande */
     color: var(--text-dark);
+    line-height: 1.2;
+}
+
+.detective-role {
+    font-size: 0.85em;
+    /* Ruolo più leggibile */
+    color: var(--text-muted);
 }
 
 /* ============================================
@@ -854,12 +892,12 @@ textarea:focus-visible,
     margin-bottom: 3em;
 }
 
-.newsletter-header .status-badge{
+.newsletter-header .status-badge {
     font-size: var(--font-md);
     color: var(--accent-blue);
 }
 
-.newsletter-header h1{
+.newsletter-header h1 {
     font-size: var(--font-xl);
     color: var(--primary-dark);
     padding-bottom: 1em;
@@ -1339,7 +1377,7 @@ textarea:focus-visible,
     position: relative;
 }
 
-.case-card .card-image img{
+.case-card .card-image img {
     width: 100%;
     height: auto;
     aspect-ratio: 1;
@@ -1620,7 +1658,7 @@ textarea:focus-visible,
     padding: 0 1em;
 }
 
-.auth-alternative p{
+.auth-alternative p {
     text-align: center;
     margin-bottom: 1em;
 }
@@ -2803,6 +2841,7 @@ textarea:focus-visible,
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

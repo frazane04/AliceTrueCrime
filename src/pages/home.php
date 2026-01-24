@@ -90,33 +90,7 @@ if ($resultInchieste && mysqli_num_rows($resultInchieste) > 0) {
     $htmlUltimeInchieste = "<p>Nessun caso disponibile al momento.</p>";
 }
 
-// ========================================
-// 5. ARTICOLI PIÙ LETTI (top 3 per visualizzazioni)
-// ========================================
-$htmlArticoliPopolari = '';
 
-$queryArticoliPopolari = "
-    SELECT N_Caso, Titolo, Slug, Visualizzazioni 
-    FROM Caso 
-    WHERE Approvato = 1 
-    AND Visualizzazioni > 0
-    ORDER BY Visualizzazioni DESC 
-    LIMIT 3
-";
-
-$resultPopolari = $db->query($queryArticoliPopolari);
-
-if ($resultPopolari && mysqli_num_rows($resultPopolari) > 0) {
-    $htmlArticoliPopolari .= "<ul>";
-    while ($articolo = mysqli_fetch_assoc($resultPopolari)) {
-        $titolo = htmlspecialchars($articolo['Titolo']);
-        $linkArticolo = getPrefix() . '/caso/' . urlencode(getSlugFromCaso($articolo));
-        $htmlArticoliPopolari .= "<li><a href='{$linkArticolo}' aria-label='Leggi: {$titolo}'>{$titolo}</a></li>";
-    }
-    $htmlArticoliPopolari .= "</ul>";
-} else {
-    $htmlArticoliPopolari = "<p>Nessun articolo popolare disponibile.</p>";
-}
 
 // Chiudo connessione
 $db->chiudiConnessione();
@@ -126,7 +100,7 @@ $db->chiudiConnessione();
 // ========================================
 $contenuto = str_replace('{{CASI_EVIDENZA}}', $htmlCasiEvidenza, $contenuto);
 $contenuto = str_replace('{{ULTIME_INCHIESTE}}', $htmlUltimeInchieste, $contenuto);
-$contenuto = str_replace('{{ARTICOLI_POPOLARI}}', $htmlArticoliPopolari, $contenuto);
+$contenuto = str_replace('{{ULTIME_INCHIESTE}}', $htmlUltimeInchieste, $contenuto);
 
 // Inject Breadcrumbs inside Hero for Home Page
 $contenuto = str_replace('{{BREADCRUMBS_HERO}}', getBreadcrumbs('/'), $contenuto);

@@ -6,7 +6,7 @@
             rigore e rispetto per le fonti.</p>
 
     </div>
-    <div class="hero-overlay"></div>
+
 </section>
 
 <section id="carousel-casi" aria-labelledby="casi-evidenza-title">
@@ -27,46 +27,54 @@
         </div>
     </div>
 
-    <aside class="articoli-popolari" aria-labelledby="articoli-popolari-title">
-        <h3 id="articoli-popolari-title">Articoli più Letti</h3>
+    <aside class="detective-sidebar" aria-labelledby="detective-title">
+        <h3 id="detective-title">I Nostri Detective</h3>
 
-        <div id="articoli-popolari-container">
-            {{ARTICOLI_POPOLARI}}
+        <div class="detective-list" role="list">
+            <div class="detective-card-mini" role="listitem">
+                <img src="{{PATH_PREFIX}}/assets/img/zanella.svg" alt="Foto Detective Francesco Zanella"
+                    class="detective-avatar" />
+                <div class="detective-info">
+                    <span class="detective-name">Francesco Zanella</span>
+                    <span class="detective-role">Investigatore Capo</span>
+                </div>
+            </div>
+
+            <div class="detective-card-mini" role="listitem">
+                <img src="{{PATH_PREFIX}}/assets/img/grolla.svg" alt="Foto Detective Lorenzo Grolla"
+                    class="detective-avatar" />
+                <div class="detective-info">
+                    <span class="detective-name">Lorenzo Grolla</span>
+                    <span class="detective-role">Analista Forense</span>
+                </div>
+            </div>
+
+            <div class="detective-card-mini" role="listitem">
+                <img src="{{PATH_PREFIX}}/assets/img/perozzo.svg" alt="Foto Detective Samuele Perozzo"
+                    class="detective-avatar" />
+                <div class="detective-info">
+                    <span class="detective-name">Samuele Perozzo</span>
+                    <span class="detective-role">Esperto Balistico</span>
+                </div>
+            </div>
+
+            <div class="detective-card-mini" role="listitem">
+                <img src="{{PATH_PREFIX}}/assets/img/zago.svg" alt="Foto Detective Alice Zago"
+                    class="detective-avatar" />
+                <div class="detective-info">
+                    <span class="detective-name">Alice Zago</span>
+                    <span class="detective-role">Psicologa Criminale</span>
+                </div>
+            </div>
         </div>
 
-        <a href="{{PATH_PREFIX}}/esplora" class="btn btn-primary btn-full-width"
-            aria-label="Esplora tutti i casi disponibili">
-            Esplora Tutti i Casi
-        </a>
+        <div class="mt-1 text-center">
+            <a href="{{PATH_PREFIX}}/chi-siamo" class="btn btn-primary btn-small btn-full-width"
+                aria-label="Scopri di più sul team">
+                Conosci il Team
+            </a>
+        </div>
     </aside>
-</section>
-
-<section id="i-detective" class="sezione-stretta text-center" aria-labelledby="detective-title">
-    <h2 id="detective-title">I Detective di AliceTrueCrime</h2>
-    <div class="detective-container" role="list">
-
-        <div class="detective-card" role="listitem">
-            <img src="{{PATH_PREFIX}}/assets/img/zanella.svg" alt="Foto Detective Francesco Zanella"
-                class="detective-photo" />
-        </div>
-        <div class="detective-card" role="listitem">
-            <img src="{{PATH_PREFIX}}/assets/img/grolla.svg" alt="Foto Detective Lorenzo Grolla"
-                class="detective-photo" />
-        </div>
-        <div class="detective-card" role="listitem">
-            <img src="{{PATH_PREFIX}}/assets/img/perozzo.svg" alt="Foto Detective Samuele Perozzo"
-                class="detective-photo" />
-        </div>
-        <div class="detective-card" role="listitem">
-            <img src="{{PATH_PREFIX}}/assets/img/zago.svg" alt="Foto Detective Alice Zago" class="detective-photo" />
-        </div>
-    </div>
-
-    <div class="mt-2">
-        <a href="{{PATH_PREFIX}}/chi-siamo" class="btn btn-primary" aria-label="Scopri chi siamo">
-            Scopri il Team
-        </a>
-    </div>
 </section>
 
 <section id="cta-detective" class="cta-area" aria-labelledby="cta-title">

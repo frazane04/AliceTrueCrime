@@ -396,7 +396,6 @@ function getHeaderButtons(): string
     } else {
         return <<<HTML
             <a href="$prefix/accedi" class="button-layout">Accedi</a>
-            <a href="$prefix/registrati" class="button-layout btn-dark">Registrati</a>
         HTML;
     }
 }
