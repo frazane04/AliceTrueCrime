@@ -21,9 +21,12 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Elimina il cookie "Ricordami" se presente
+// Elimina i cookie "Ricordami" se presenti
 if (isset($_COOKIE['remember_token'])) {
-    setcookie('remember_token', '', time() - 3600, '/');
+    setcookie('remember_token', '', time() - 3600, '/', '', true, true);
+}
+if (isset($_COOKIE['user_email'])) {
+    setcookie('user_email', '', time() - 3600, '/', '', true, true);
 }
 
 // Distruggi la sessione

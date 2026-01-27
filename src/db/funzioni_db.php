@@ -41,7 +41,7 @@ class FunzioniDB
 
             if ($this->verificaEmailEsistente($email)) {
                 $this->db->chiudiConnessione();
-                return ['success' => false, 'message' => 'Email già registrata'];
+                return ['success' => false, 'message' => 'Registrazione non riuscita. Verifica i dati o prova ad accedere se hai già un account.'];
             }
 
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);

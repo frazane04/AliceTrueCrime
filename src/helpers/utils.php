@@ -6,6 +6,25 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Auto-login tramite cookie "Ricordami"
+if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE['user_email'])) {
+    require_once __DIR__ . '/../db/funzioni_db.php';
+    $dbAutoLogin = new FunzioniDB();
+    $utente = $dbAutoLogin->getUtenteByEmail($_COOKIE['user_email']);
+
+    if ($utente) {
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user'] = $utente['Username'];
+        $_SESSION['user_email'] = $utente['Email'];
+        $_SESSION['is_admin'] = (bool)$utente['Is_Admin'];
+
+        // Rinnova i cookie per altri 30 giorni
+        $cookieExpiry = time() + (30 * 24 * 60 * 60);
+        setcookie('remember_token', $_COOKIE['remember_token'], $cookieExpiry, '/', '', true, true);
+        setcookie('user_email', $_COOKIE['user_email'], $cookieExpiry, '/', '', true, true);
+    }
+}
+
 /**
  * Gestisce il prefisso del percorso per installazioni in sottocartelle.
  */

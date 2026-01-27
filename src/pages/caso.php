@@ -117,9 +117,13 @@ $isApprovato = (bool)$caso['Approvato'];
 $autore = htmlspecialchars($caso['Autore'] ?? 'Anonimo');
 $immagine = getImageUrl($caso['Immagine']);
 
-// Badge status
-$statusClass = $isApprovato ? 'status-approved' : 'status-pending';
-$statusText = $isApprovato ? '✓ Caso Verificato' : '⏳ In Revisione';
+// Badge status (visibile solo agli admin)
+$htmlStatusBadge = '';
+if ($isAdmin) {
+    $statusClass = $isApprovato ? 'status-approved' : 'status-pending';
+    $statusText = $isApprovato ? '✓ Caso Verificato' : '⏳ In Revisione';
+    $htmlStatusBadge = '<p class="status-badge ' . $statusClass . '">' . $statusText . '</p>';
+}
 
 // Incrementa il contatore delle visualizzazioni solo per casi approvati
 // Non incrementa in modalità preview admin
@@ -138,8 +142,7 @@ $htmlImmagine = '<img alt="Evidenza principale del caso ' . $titolo . '" src="' 
 $contenuto = strtr($contenuto, [
     '<!-- admin_bar -->'        => $htmlAdminBar,
     '<!-- caso_immagine -->'    => $htmlImmagine,
-    '{{caso_status}}'           => $statusClass,
-    '<!-- caso_status_text -->' => $statusText,
+    '<!-- caso_status_badge -->' => $htmlStatusBadge,
     '<!-- caso_titolo -->'      => $titolo,
     '<!-- caso_tipologia -->'   => $tipologia,
     '<!-- caso_storia -->'      => $storia,
