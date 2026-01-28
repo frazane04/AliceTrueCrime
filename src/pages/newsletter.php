@@ -10,7 +10,7 @@ $utente = $db->getUtenteByEmail($_SESSION['user_email']);
 if (!$utente || !isset($utente['Is_Newsletter']) || $utente['Is_Newsletter'] == 0) {
     $content = "
         <div class='access-denied-container text-center'>
-            <h1>Area Riservata 🔒</h1>
+            <h1>Area Riservata</h1>
             <p>I dettagli di questa sezione sono visibili solo agli iscritti. <br>
             Attiva la newsletter nel tuo <a href='".getPrefix()."/profilo'>profilo</a> per accedere.</p>
         </div>";

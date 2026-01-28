@@ -22,11 +22,11 @@ $is_admin = (bool)($utente['Is_Admin'] ?? false);
 
 // --- SEZIONE NEWSLETTER ---
 if ($is_iscritti === 1) {
-    $titoloSezione = "Sei iscritto alla Newsletter ✅";
+    $titoloSezione = "Sei iscritto alla Newsletter";
     $testoBottone = "Disiscrivimi dalla Newsletter";
     $btnClass = "btn-danger";
 } else {
-    $titoloSezione = "Newsletter Riservata 📩";
+    $titoloSezione = "Newsletter Riservata";
     $testoBottone = "Iscriviti alla Newsletter";
     $btnClass = "btn-secondary";
 }
@@ -60,7 +60,7 @@ if ($is_admin) {
     
     if (empty($casiInAttesa)) {
         $adminHtml .= "
-        <p class='empty-state'>🎉 Nessun caso in attesa di approvazione!</p>";
+        <p class='empty-state'>Nessun caso in attesa di approvazione!</p>";
     } else {
         $adminHtml .= "<ul class='casi-pending-list'>";
         

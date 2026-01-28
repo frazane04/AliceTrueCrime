@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btnRifiutaCaso.addEventListener('click', async function() {
             const confirmed = await showConfirmModal({
                 title: "Rifiuta ed Elimina Caso",
-                message: "⚠️ ATTENZIONE: Questa azione eliminerà definitivamente il caso e tutti i dati associati (vittime, colpevoli, articoli, commenti). L'operazione non può essere annullata.",
+                message: "ATTENZIONE: Questa azione eliminerà definitivamente il caso e tutti i dati associati (vittime, colpevoli, articoli, commenti). L'operazione non può essere annullata.",
                 confirmText: "Elimina Definitivamente",
                 confirmClass: "btn-danger"
             });

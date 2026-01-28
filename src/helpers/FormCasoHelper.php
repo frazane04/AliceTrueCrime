@@ -441,7 +441,7 @@ HTML;
         if (empty($errori)) {
             return '';
         }
-        $html = "<div class='alert alert-error'><strong>⚠️ Errori:</strong><ul>";
+        $html = "<div class='alert alert-error'><strong>Errori:</strong><ul>";
         foreach ($errori as $errore) {
             $html .= "<li>" . htmlspecialchars($errore) . "</li>";
         }
@@ -453,12 +453,12 @@ HTML;
      * Genera HTML per messaggio successo modifica
      */
     public static function generaMessaggioSuccessoModifica(bool $riApprova, string $prefix, string $slug, bool $isAdmin): string {
-        $msgRiApprova = $riApprova ? '<br><strong>⚠️ Il caso è stato rimesso in attesa di approvazione.</strong>' : '';
+        $msgRiApprova = $riApprova ? '<br><strong>Il caso è stato rimesso in attesa di approvazione.</strong>' : '';
         $btnVisualizza = $isAdmin ? "<br><br><a href='$prefix/esplora/$slug' class='btn btn-primary'>Visualizza Caso</a>" : '';
 
         return <<<HTML
         <div class='alert alert-success'>
-            <strong>✅ Caso aggiornato con successo!</strong>
+            <strong>Caso aggiornato con successo!</strong>
             $msgRiApprova
             $btnVisualizza
         </div>
@@ -477,7 +477,7 @@ HTML;
     ): string {
         return <<<HTML
         <div class='alert alert-success'>
-            <strong>✅ Segnalazione inviata con successo!</strong><br>
+            <strong>Segnalazione inviata con successo!</strong><br>
             Il caso è stato inoltrato per la revisione.<br><br>
             <small>
                 <strong>Riepilogo:</strong><br>

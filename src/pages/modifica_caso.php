@@ -36,14 +36,14 @@ if (isset($_GET['slug']) && !empty($_GET['slug'])) {
 
 // Verifica esistenza caso
 if ($casoId <= 0) {
-    renderErrorPageAndExit('⚠️', 'Caso Non Specificato', 'Nessun caso selezionato per la modifica.', 400);
+    renderErrorPageAndExit('Caso Non Specificato', 'Nessun caso selezionato per la modifica.', 400);
 }
 
 // ========================================
 // VERIFICA PERMESSI
 // ========================================
 if (!$dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin)) {
-    renderErrorPageAndExit('🔒', 'Accesso Negato', 'Non hai i permessi per modificare questo caso.', 403);
+    renderErrorPageAndExit('Accesso Negato', 'Non hai i permessi per modificare questo caso.', 403);
 }
 
 // ========================================
@@ -55,7 +55,7 @@ $colpevoliEsistenti = $dbFunctions->getColpevoliByCaso($casoId, false);
 $articoliEsistenti = $dbFunctions->getArticoliByCaso($casoId);
 
 if (!$caso) {
-    renderErrorPageAndExit('🔍', 'Caso Non Trovato', 'Il caso richiesto non esiste.', 404);
+    renderErrorPageAndExit('Caso Non Trovato', 'Il caso richiesto non esiste.', 404);
 }
 
 $autoreOriginale = $dbFunctions->getAutoreCaso($casoId);
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'elimi
         header("Location: $prefix/profilo?msg=caso_eliminato");
         exit;
     } else {
-        $messaggioFeedback = alertHtml('error', '❌ ' . $result['message']);
+        $messaggioFeedback = alertHtml('error', $result['message']);
     }
 }
 
@@ -274,7 +274,7 @@ $immagineCasoData = $formHelper->generaAnteprimaImmagineCaso($caso);
 
 // Avviso ri-approvazione
 $avvisoRiApprovazione = ($isAutore && !$isAdmin)
-    ? alertHtml('warning', '⚠️ Attenzione: Modificando questo caso, verrà rimesso in attesa di approvazione.')
+    ? alertHtml('warning', 'Attenzione: Modificando questo caso, verrà rimesso in attesa di approvazione.')
     : '';
 
 // ========================================

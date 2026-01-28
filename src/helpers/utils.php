@@ -70,18 +70,16 @@ function alertHtml(string $tipo, string $messaggio): string
 /**
  * Mostra una pagina di errore generica e termina l'esecuzione.
  *
- * @param string $icona Emoji/icona da mostrare
  * @param string $titolo Titolo dell'errore
  * @param string $messaggio Messaggio descrittivo
  * @param int $httpCode Codice HTTP (default 404)
  */
-function renderErrorPageAndExit(string $icona, string $titolo, string $messaggio, int $httpCode = 404): void
+function renderErrorPageAndExit(string $titolo, string $messaggio, int $httpCode = 404): void
 {
     $prefix = getPrefix();
     http_response_code($httpCode);
 
     $contenuto = renderComponent('error-page', [
-        'ICONA' => $icona,
         'TITOLO' => htmlspecialchars($titolo),
         'MESSAGGIO' => $messaggio,
         'LINK_HREF' => $prefix . '/esplora',

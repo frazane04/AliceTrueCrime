@@ -21,7 +21,7 @@ if (isset($_GET['slug']) && !empty($_GET['slug'])) {
     $casoId = $dbFunctions->getCasoIdBySlug($slug, $soloApprovati);
     
     if ($casoId === null) {
-        renderErrorPageAndExit('🔍', 'Caso Non Trovato', 'Il caso richiesto (<strong>' . htmlspecialchars($slug) . '</strong>) non esiste.', 404);
+        renderErrorPageAndExit('Caso Non Trovato', 'Il caso richiesto (<strong>' . htmlspecialchars($slug) . '</strong>) non esiste.', 404);
     }
 }
 // Fallback: supporta ancora il vecchio formato ?id=1 per compatibilità
@@ -34,7 +34,7 @@ $prefix = getPrefix();
 
 // Verifico che l'ID sia valido
 if ($casoId <= 0) {
-    renderErrorPageAndExit('⚠️', 'ID Caso Non Valido', 'Il caso richiesto non è stato specificato correttamente.', 400);
+    renderErrorPageAndExit('ID Caso Non Valido', 'Il caso richiesto non è stato specificato correttamente.', 400);
 }
 
 // ========================================
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
             header("Location: $prefix/esplora/" . $slug);
             exit;
         }
-        $messaggioAdmin = alertHtml('error', '❌ ' . $result['message']);
+        $messaggioAdmin = alertHtml('error', $result['message']);
     }
 
     if ($action === 'rifiuta_caso') {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
             header("Location: $prefix/profilo");
             exit;
         }
-        $messaggioAdmin = alertHtml('error', '❌ ' . $result['message']);
+        $messaggioAdmin = alertHtml('error', $result['message']);
     }
 }
 
@@ -74,7 +74,7 @@ $articoli = $dbFunctions->getArticoliByCaso($casoId);
 
 // Verifico se il caso esiste
 if (!$caso) {
-    renderErrorPageAndExit('🔍', 'Caso Non Trovato', 'Il caso richiesto non esiste o non è stato ancora approvato.', 404);
+    renderErrorPageAndExit('Caso Non Trovato', 'Il caso richiesto non esiste o non è stato ancora approvato.', 404);
 }
 
 // Verifica se l'utente può modificare questo caso
@@ -88,7 +88,6 @@ if (isLoggedIn()) {
     if ($puoModificare) {
         $htmlAzioniUtente = renderComponent('btn-azione-caso', [
             'LINK_HREF' => $prefix . '/modifica-caso?id=' . $casoId,
-            'ICONA' => '✏️',
             'TESTO' => 'Modifica Caso'
         ]);
     }
@@ -121,7 +120,7 @@ $immagine = getImageUrl($caso['Immagine']);
 $htmlStatusBadge = '';
 if ($isAdmin) {
     $statusClass = $isApprovato ? 'status-approved' : 'status-pending';
-    $statusText = $isApprovato ? '✓ Caso Verificato' : '⏳ In Revisione';
+    $statusText = $isApprovato ? 'Caso Verificato' : 'In Revisione';
     $htmlStatusBadge = '<p class="status-badge ' . $statusClass . '">' . $statusText . '</p>';
 }
 
