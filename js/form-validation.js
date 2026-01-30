@@ -161,3 +161,34 @@ function focusFirstError(inputs) {
         }
     }
 }
+
+/**
+ * Inizializza i pulsanti toggle per mostrare/nascondere password
+ */
+function initPasswordToggles() {
+    const toggleButtons = document.querySelectorAll('.password-toggle');
+
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const eyeIcon = this.querySelector('.eye-icon');
+            const eyeOffIcon = this.querySelector('.eye-off-icon');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.setAttribute('aria-label', 'Nascondi password');
+                eyeIcon.classList.add('hidden');
+                eyeOffIcon.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                this.setAttribute('aria-label', 'Mostra password');
+                eyeIcon.classList.remove('hidden');
+                eyeOffIcon.classList.add('hidden');
+            }
+        });
+    });
+}
+
+// Inizializza al caricamento della pagina
+document.addEventListener('DOMContentLoaded', initPasswordToggles);

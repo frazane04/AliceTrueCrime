@@ -1595,6 +1595,46 @@ textarea:focus-visible,
     opacity: 0.7;
 }
 
+/* Password toggle */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 3em;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.7em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.password-toggle .hidden {
+    display: none;
+}
+
 .form-hint {
     display: block;
     margin-top: 0.4em;

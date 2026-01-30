@@ -129,7 +129,11 @@
             confirmBtn.className = 'btn ' + (config.confirmClass || 'btn-primary');
 
             // Mostra/nascondi bottone annulla (per modal solo informative)
-            cancelBtn.classList.toggle('hidden', config.hideCancel);
+            if (config.hideCancel) {
+                cancelBtn.classList.add('hidden');
+            } else {
+                cancelBtn.classList.remove('hidden');
+            }
 
             // Focus sul bottone appropriato
             if (config.hideCancel) {
