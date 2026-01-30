@@ -446,7 +446,7 @@ function getHeaderButtons(): string
         return <<<HTML
             <div class="user-menu">
 
-                <a href="$prefix/profilo" class="button-layout profile-btn" aria-label="Il tuo profilo" title="$email">
+                <a href="$prefix/profilo" class="button-layout profile-btn" aria-label="$username - Vai al profilo" title="$email">
                     <img src="$imgProfile" alt="Avatar di $username" width="24" class="avatar-small" />
                     $username
                 </a>
