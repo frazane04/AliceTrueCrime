@@ -147,11 +147,16 @@ function generaHtmlCards($listaCasi)
             $metaParts[] = '<span class="card-meta-item">' . htmlspecialchars($caso['Luogo']) . '</span>';
         $cardMeta = implode('<span class="card-meta-separator"></span>', $metaParts);
 
+        $tipologia = $caso['Tipologia'] ?? '';
+        $tipologieEn = ['Serial killer', 'Cold case', 'Celebrity'];
+        $tipologiaLang = in_array($tipologia, $tipologieEn) ? ' lang="en"' : '';
+
         $html .= renderComponent('card-caso-esplora', [
             'IMMAGINE' => getImageUrl($caso['Immagine'] ?? null),
             'TITOLO' => htmlspecialchars($caso['Titolo']),
             'DESCRIZIONE' => $descrizione,
-            'TIPOLOGIA' => htmlspecialchars($caso['Tipologia'] ?? ''),
+            'TIPOLOGIA' => htmlspecialchars($tipologia),
+            'TIPOLOGIA_LANG' => $tipologiaLang,
             'CARD_META' => $cardMeta,
             'LINK' => getPrefix() . '/esplora/' . urlencode(getSlugFromCaso($caso))
         ]);

@@ -111,7 +111,11 @@ $descrizione = htmlspecialchars($caso['Descrizione']);
 $storia = nl2br(htmlspecialchars($caso['Storia']));
 $data = formatData($caso['Data']);
 $luogo = htmlspecialchars($caso['Luogo']);
-$tipologia = htmlspecialchars($caso['Tipologia'] ?? 'Non specificata');
+$tipologiaRaw = $caso['Tipologia'] ?? 'Non specificata';
+$tipologieEn = ['Serial killer', 'Cold case', 'Celebrity'];
+$tipologia = in_array($tipologiaRaw, $tipologieEn)
+    ? '<span lang="en">' . htmlspecialchars($tipologiaRaw) . '</span>'
+    : htmlspecialchars($tipologiaRaw);
 $isApprovato = (bool)$caso['Approvato'];
 $autore = htmlspecialchars($caso['Autore'] ?? 'Anonimo');
 $immagine = getImageUrl($caso['Immagine']);

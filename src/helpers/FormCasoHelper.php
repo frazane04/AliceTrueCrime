@@ -375,6 +375,9 @@ HTML;
         return ['hidden' => $hiddenInput, 'anteprima' => $anteprima];
     }
 
+    // Tipologie che richiedono lang="en"
+    private const TIPOLOGIE_EN = ['Serial killer', 'Cold case', 'Celebrity'];
+
     /**
      * Genera opzioni select per tipologia caso
      */
@@ -382,7 +385,8 @@ HTML;
         $html = '<option value="">-- Seleziona categoria --</option>';
         foreach (self::TIPOLOGIE as $t) {
             $selected = ($tipologiaSelezionata === $t) ? 'selected' : '';
-            $html .= "<option value=\"$t\" $selected>$t</option>";
+            $langAttr = in_array($t, self::TIPOLOGIE_EN) ? ' lang="en"' : '';
+            $html .= "<option value=\"$t\"$langAttr $selected>$t</option>";
         }
         return $html;
     }
