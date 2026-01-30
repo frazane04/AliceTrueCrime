@@ -159,7 +159,7 @@ function getImageUrl(?string $immagine): string
     if (!empty($immagine)) {
         return $prefix . '/' . htmlspecialchars($immagine);
     }
-    return $prefix . '/assets/img/placeholder.jpeg';
+    return $prefix . '/assets/img/placeholder.webp';
 }
 
 /**
