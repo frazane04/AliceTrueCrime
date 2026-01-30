@@ -303,9 +303,10 @@ class FormCasoHelper {
     /**
      * Genera HTML per entry articolo
      */
-    public function generaHtmlArticolo(?array $dati = null): string {
+    public function generaHtmlArticolo(?array $dati = null, int $index = 0): string {
         return renderComponent('articolo-form-entry', [
             'ID' => $dati['ID_Articolo'] ?? 0,
+            'INDEX' => $index,
             'TITOLO' => htmlspecialchars($dati['Titolo'] ?? ''),
             'DATA' => $dati['Data'] ?? '',
             'LINK' => htmlspecialchars($dati['Link'] ?? '')
@@ -424,8 +425,10 @@ HTML;
      */
     public function generaHtmlListaArticoli(array $articoli): string {
         $html = '';
+        $index = 0;
         foreach ($articoli as $a) {
-            $html .= $this->generaHtmlArticolo($a);
+            $html .= $this->generaHtmlArticolo($a, $index);
+            $index++;
         }
         return $html;
     }

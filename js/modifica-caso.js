@@ -48,15 +48,15 @@ const templates = {
         </div>
     `,
 
-    articolo: () => `
+    articolo: (idx) => `
         <div class="entry-card articolo-entry">
             <button type="button" class="btn-remove btn-remove-entry" aria-label="Rimuovi articolo">×</button>
             <input type="hidden" name="articolo_id[]" value="0">
             <div class="form-row">
-                <div class="form-group"><label>Titolo Fonte</label><input type="text" name="articolo_titolo[]" placeholder="Titolo"></div>
-                <div class="form-group"><label>Data</label><input type="date" name="articolo_data[]"></div>
+                <div class="form-group"><label for="articolo-titolo-${idx}">Titolo Fonte</label><input type="text" id="articolo-titolo-${idx}" name="articolo_titolo[]" placeholder="Titolo"></div>
+                <div class="form-group"><label for="articolo-data-${idx}">Data</label><input type="date" id="articolo-data-${idx}" name="articolo_data[]"></div>
             </div>
-            <div class="form-group"><label>Link</label><input type="url" name="articolo_link[]" placeholder="https://..."></div>
+            <div class="form-group"><label for="articolo-link-${idx}">Link</label><input type="url" id="articolo-link-${idx}" name="articolo_link[]" placeholder="https://..."></div>
         </div>
     `
 };

@@ -16,32 +16,43 @@ $messaggioHTML = '';
 // GESTIONE FORM POST
 // ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $emailOrUsername = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $remember = isset($_POST['remember']);
-
-    if (empty($emailOrUsername) || empty($password)) {
-        $messaggioHTML = alertHtml('error', 'Email e password sono obbligatori.');
+    // Verifica token CSRF
+    if (!verificaCsrfToken()) {
+        $messaggioHTML = alertHtml('error', 'Token di sicurezza non valido. Ricarica la pagina e riprova.');
     } else {
-        $dbFunctions = new FunzioniDB();
-        $result = $dbFunctions->loginUtente($emailOrUsername, $password);
+        $emailOrUsername = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $remember = isset($_POST['remember']);
 
-        if ($result['success']) {
-            $_SESSION['logged_in'] = true;
-            $_SESSION['user'] = $result['user']['username'];
-            $_SESSION['user_email'] = $result['user']['email'];
-            $_SESSION['is_admin'] = $result['user']['is_admin'];
-
-            if ($remember) {
-                $cookieExpiry = time() + (30 * 24 * 60 * 60);
-                $rememberToken = bin2hex(random_bytes(32));
-                setcookie('remember_token', $rememberToken, $cookieExpiry, '/', '', true, true);
-                setcookie('user_email', $result['user']['email'], $cookieExpiry, '/', '', true, true);
-            }
-
-            redirect('/profilo');
+        if (empty($emailOrUsername) || empty($password)) {
+            $messaggioHTML = alertHtml('error', 'Email e password sono obbligatori.');
         } else {
-            $messaggioHTML = alertHtml('error', $result['message']);
+            $dbFunctions = new FunzioniDB();
+            $result = $dbFunctions->loginUtente($emailOrUsername, $password);
+
+            if ($result['success']) {
+                $_SESSION['logged_in'] = true;
+                $_SESSION['user'] = $result['user']['username'];
+                $_SESSION['user_email'] = $result['user']['email'];
+                $_SESSION['is_admin'] = $result['user']['is_admin'];
+
+                if ($remember) {
+                    $cookieExpiry = time() + (30 * 24 * 60 * 60);
+                    $rememberToken = bin2hex(random_bytes(32));
+
+                    // Salva il token hashato nel database
+                    $dbFunctions->salvaRememberToken($result['user']['email'], $rememberToken);
+
+                    setcookie('remember_token', $rememberToken, $cookieExpiry, '/', '', true, true);
+                    setcookie('user_email', $result['user']['email'], $cookieExpiry, '/', '', true, true);
+                }
+
+                // Rigenera token CSRF dopo login riuscito
+                rigeneraCsrfToken();
+                redirect('/profilo');
+            } else {
+                $messaggioHTML = alertHtml('error', $result['message']);
+            }
         }
     }
 }
@@ -52,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $contenuto = loadTemplate('accedi');
 
 $contenuto = str_replace('{{PREFIX}}', getPrefix(), $contenuto);
+$contenuto = str_replace('{{CSRF_TOKEN}}', csrfField(), $contenuto);
 $contenuto = str_replace('{{EMAIL_VALUE}}', htmlspecialchars($email, ENT_QUOTES), $contenuto);
 $contenuto = str_replace('<!-- PLACEHOLDER_MESSAGGI -->', $messaggioHTML, $contenuto);
 

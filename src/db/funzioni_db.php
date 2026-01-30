@@ -184,6 +184,108 @@ class FunzioniDB
     }
 
     /**
+     * Salva il token "Ricordami" hashato per un utente
+     */
+    public function salvaRememberToken($email, $token)
+    {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+
+            $tokenHash = password_hash($token, PASSWORD_DEFAULT);
+            $query = "UPDATE Utente SET Remember_Token = ? WHERE Email = ?";
+            $result = $this->db->query($query, [$tokenHash, $email], "ss");
+
+            $this->db->chiudiConnessione();
+            return (bool) $result;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Verifica il token "Ricordami" per l'auto-login
+     * Restituisce i dati utente se valido, null altrimenti
+     */
+    public function verificaRememberToken($email, $token)
+    {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return null;
+            }
+
+            $query = "SELECT Email, Username, Is_Admin, Is_Newsletter, Remember_Token FROM Utente WHERE Email = ?";
+            $result = $this->db->query($query, [$email], "s");
+
+            if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
+                $user = mysqli_fetch_assoc($result);
+
+                // Verifica che il token corrisponda
+                if (!empty($user['Remember_Token']) && password_verify($token, $user['Remember_Token'])) {
+                    $this->db->chiudiConnessione();
+                    unset($user['Remember_Token']); // Non restituire il token hash
+                    return $user;
+                }
+            }
+
+            $this->db->chiudiConnessione();
+            return null;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return null;
+        }
+    }
+
+    /**
+     * Rimuove il token "Ricordami" (per logout)
+     */
+    public function rimuoviRememberToken($email)
+    {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+
+            $query = "UPDATE Utente SET Remember_Token = NULL WHERE Email = ?";
+            $result = $this->db->query($query, [$email], "s");
+
+            $this->db->chiudiConnessione();
+            return (bool) $result;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
+     * Verifica se uno username esiste già
+     */
+    public function verificaUsernameEsistente($username)
+    {
+        try {
+            if (!$this->db->apriConnessione()) {
+                return false;
+            }
+
+            $query = "SELECT Username FROM Utente WHERE Username = ?";
+            $result = $this->db->query($query, [$username], "s");
+
+            $esiste = ($result && is_object($result) && mysqli_num_rows($result) > 0);
+            $this->db->chiudiConnessione();
+            return $esiste;
+
+        } catch (Exception $e) {
+            $this->db->chiudiConnessione();
+            return false;
+        }
+    }
+
+    /**
      * Ottiene i dati di un utente tramite Username
      */
     public function getUtenteByUsername($username)

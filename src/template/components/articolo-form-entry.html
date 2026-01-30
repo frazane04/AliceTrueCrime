@@ -3,16 +3,16 @@
     <input type="hidden" name="articolo_id[]" value="{{ID}}">
     <div class="form-row">
         <div class="form-group">
-            <label>Titolo Fonte</label>
-            <input type="text" name="articolo_titolo[]" placeholder="Es: Articolo Repubblica" value="{{TITOLO}}">
+            <label for="articolo_titolo_{{INDEX}}">Titolo Fonte</label>
+            <input type="text" id="articolo_titolo_{{INDEX}}" name="articolo_titolo[]" placeholder="Es: Articolo Repubblica" value="{{TITOLO}}">
         </div>
         <div class="form-group">
-            <label>Data Pubblicazione</label>
-            <input type="date" name="articolo_data[]" value="{{DATA}}">
+            <label for="articolo_data_{{INDEX}}">Data Pubblicazione</label>
+            <input type="date" id="articolo_data_{{INDEX}}" name="articolo_data[]" value="{{DATA}}">
         </div>
     </div>
     <div class="form-group">
-        <label>Link</label>
-        <input type="url" name="articolo_link[]" placeholder="https://..." value="{{LINK}}">
+        <label for="articolo_link_{{INDEX}}">Link</label>
+        <input type="url" id="articolo_link_{{INDEX}}" name="articolo_link[]" placeholder="https://..." value="{{LINK}}">
     </div>
 </div>

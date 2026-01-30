@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Creato il: Gen 16, 2026 alle 09:57
+-- Creato il: Gen 30, 2026 alle 16:27
 -- Versione del server: 8.0.44
 -- Versione PHP: 8.3.28
 
@@ -40,29 +40,6 @@ CREATE TABLE `articolo` (
 --
 
 INSERT INTO `articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
-(1, 'Jeffrey Dahmer, storia del serial killer cannibale di Milwaukee', '2022-10-15', 'https://www.ilpost.it/2022/10/15/jeffrey-dahmer-serial-killer/', 1),
-(2, 'Chi era Jeffrey Dahmer, il mostro di Milwaukee', '2022-09-28', 'https://www.corriere.it/esteri/22_settembre_28/chi-era-jeffrey-dahmer-mostro-milwaukee', 1),
-(3, 'John Wayne Gacy, il clown killer che uccise 33 ragazzi', '2021-05-10', 'https://www.fanpage.it/cultura/john-wayne-gacy-il-clown-killer/', 2),
-(4, 'La storia di John Wayne Gacy, il killer clown', '2019-04-05', 'https://www.ilpost.it/2019/04/05/john-wayne-gacy/', 2),
-(5, 'Ted Bundy, il serial killer delle studentesse', '2019-01-26', 'https://www.corriere.it/esteri/19_gennaio_26/ted-bundy-serial-killer-studentesse', 3),
-(6, 'Chi era Ted Bundy, il serial killer carismatico', '2019-05-03', 'https://www.ilpost.it/2019/05/03/ted-bundy/', 3),
-(7, 'Andrej Chikatilo, il macellaio di Rostov', '2020-02-14', 'https://www.fanpage.it/cultura/andrej-chikatilo-macellaio-rostov/', 4),
-(8, 'Richard Ramirez, la storia del Night Stalker', '2021-01-14', 'https://www.ilpost.it/2021/01/14/richard-ramirez-night-stalker/', 5),
-(9, 'Il Mostro di Firenze, un caso ancora irrisolto', '2023-06-15', 'https://www.corriere.it/cronache/mostro-di-firenze/', 6),
-(10, 'Mostro di Firenze: storia, vittime e misteri', '2022-09-08', 'https://www.repubblica.it/cronaca/mostro-firenze/', 6),
-(11, 'Pacciani e i compagni di merende', '2018-02-21', 'https://www.ilpost.it/2018/02/21/mostro-firenze-pacciani/', 6),
-(12, 'Donato Bilancia, il serial killer dei treni', '2020-12-17', 'https://www.repubblica.it/cronaca/donato-bilancia-morto/', 7),
-(13, 'Morto Donato Bilancia, il serial killer più prolifico d\'Italia', '2020-12-17', 'https://www.corriere.it/cronache/bilancia-morto/', 7),
-(14, 'Jack lo Squartatore, il mistero irrisolto di Whitechapel', '2018-11-09', 'https://www.ilpost.it/2018/11/09/jack-lo-squartatore/', 8),
-(15, 'Zodiac Killer, decifrato il codice dopo 51 anni', '2020-12-12', 'https://www.ansa.it/sito/notizie/mondo/2020/12/12/zodiac-killer-decifrato-codice/', 9),
-(16, 'Chi era lo Zodiac Killer', '2021-10-06', 'https://www.ilpost.it/2021/10/06/zodiac-killer/', 9),
-(17, 'Ed Gein, il killer che ispirò Psycho', '2019-08-26', 'https://www.fanpage.it/cultura/ed-gein-killer-psycho/', 10),
-(18, 'Delitto di Cogne, la storia del caso Franzoni', '2018-05-26', 'https://www.corriere.it/cronache/cogne-franzoni/', 11),
-(19, 'Annamaria Franzoni torna libera dopo 16 anni', '2018-03-21', 'https://www.repubblica.it/cronaca/franzoni-libera/', 11),
-(20, 'Delitto di Avetrana, la storia di Sarah Scazzi', '2017-02-21', 'https://www.corriere.it/cronache/avetrana-sarah-scazzi/', 12),
-(21, 'Sabrina e Cosima condannate: ergastolo definitivo', '2017-02-21', 'https://www.repubblica.it/cronaca/avetrana-ergastolo/', 12),
-(22, 'Omicidio Yara, Bossetti condannato all\'ergastolo', '2016-07-01', 'https://www.corriere.it/cronache/yara-bossetti-ergastolo/', 13),
-(23, 'Il DNA di Ignoto 1 e la caccia a Bossetti', '2018-10-12', 'https://www.ilpost.it/2018/10/12/yara-gambirasio-bossetti/', 13),
 (24, 'Omicidio Meredith Kercher, storia del delitto di Perugia', '2015-03-27', 'https://www.corriere.it/cronache/meredith-kercher-perugia/', 14),
 (25, 'Amanda Knox e Raffaele Sollecito assolti in via definitiva', '2015-03-27', 'https://www.repubblica.it/cronaca/amanda-knox-assolta/', 14),
 (26, 'Strage di Erba, Olindo e Rosa condannati all\'ergastolo', '2011-04-26', 'https://www.corriere.it/cronache/erba-ergastolo/', 15),
@@ -79,14 +56,37 @@ INSERT INTO `articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
 (37, 'Il caso Pistorius, dalla gloria olimpica al carcere', '2024-01-05', 'https://www.repubblica.it/esteri/pistorius-storia/', 20),
 (38, 'Omicidio Varani, Manuel Foffo condannato a 30 anni', '2017-07-05', 'https://www.corriere.it/roma/varani-foffo-condanna/', 21),
 (39, 'Marco Prato suicida in carcere', '2017-06-20', 'https://www.repubblica.it/cronaca/prato-suicidio/', 21),
-(40, 'Femminicidio Tramontano, Impagnatiello condannato all\'ergastolo', '2024-11-25', 'https://www.corriere.it/milano/tramontano-ergastolo/', 22),
-(41, 'Alessandro Impagnatiello, la doppia vita del killer', '2023-06-01', 'https://www.repubblica.it/cronaca/impagnatiello-doppia-vita/', 22),
-(42, 'Gabby Petito, ritrovato il corpo della blogger', '2021-09-21', 'https://www.corriere.it/esteri/gabby-petito-corpo/', 23),
-(43, 'Brian Laundrie trovato morto, confessa in un taccuino', '2022-01-21', 'https://www.ilpost.it/2022/01/21/brian-laundrie-confessione/', 23),
-(44, 'Chris Watts, l\'uomo che uccise moglie e figlie per l\'amante', '2020-09-30', 'https://www.fanpage.it/esteri/chris-watts-storia/', 24),
-(45, 'Il caso Watts, documentario Netflix sulla strage familiare', '2020-09-15', 'https://www.ilpost.it/2020/09/15/chris-watts-netflix/', 24),
 (46, 'Jodi Arias, il processo che divise l\'America', '2015-03-05', 'https://www.fanpage.it/esteri/jodi-arias-processo/', 25),
-(47, 'Jodi Arias condannata all\'ergastolo', '2015-04-13', 'https://www.corriere.it/esteri/jodi-arias-ergastolo/', 25);
+(47, 'Jodi Arias condannata all\'ergastolo', '2015-04-13', 'https://www.corriere.it/esteri/jodi-arias-ergastolo/', 25),
+(62, 'Femminicidio Tramontano, Impagnatiello condannato all\'ergastolo', '2024-11-25', 'https://www.corriere.it/milano/tramontano-ergastolo/', 22),
+(63, 'Alessandro Impagnatiello, la doppia vita del killer', '2023-06-01', 'https://www.repubblica.it/cronaca/impagnatiello-doppia-vita/', 22),
+(108, 'Chris Watts, l\'uomo che uccise moglie e figlie per l\'amantee', '2020-09-30', 'https://www.fanpage.it/esteri/chris-watts-storia/', 24),
+(109, 'Il caso Watts, documentario Netflix sulla strage familiare', '2020-09-15', 'https://www.ilpost.it/2020/09/15/chris-watts-netflix/', 24),
+(122, 'Gabby Petito, ritrovato il corpo della blogger', '2021-09-21', 'https://www.corriere.it/esteri/gabby-petito-corpo/', 23),
+(123, 'Brian Laundrie trovato morto, confessa in un taccuino', '2022-01-21', 'https://www.ilpost.it/2022/01/21/brian-laundrie-confessionee/', 23),
+(132, 'Delitto di Avetrana, la storia di Sarah Scazzi', '2017-02-21', 'https://www.corriere.it/cronache/avetrana-sarah-scazzi/', 12),
+(133, 'Sabrina e Cosima condannate: ergastolo definitivo', '2017-02-21', 'https://www.repubblica.it/cronaca/avetrana-ergastolo/', 12),
+(134, 'Jeffrey Dahmer, storia del serial killer cannibale di Milwaukee', '2022-10-15', 'https://www.ilpost.it/2022/10/15/jeffrey-dahmer-serial-killer/', 1),
+(135, 'Chi era Jeffrey Dahmer, il mostro di Milwaukee', '2022-09-28', 'https://www.corriere.it/esteri/22_settembre_28/chi-era-jeffrey-dahmer-mostro-milwaukee', 1),
+(136, 'Delitto di Cogne, la storia del caso Franzoni', '2018-05-26', 'https://www.corriere.it/cronache/cogne-franzoni/', 11),
+(137, 'Annamaria Franzoni torna libera dopo 16 anni', '2018-03-21', 'https://www.repubblica.it/cronaca/franzoni-libera/', 11),
+(138, 'Richard Ramirez, la storia del Night Stalker', '2021-01-14', 'https://www.ilpost.it/2021/01/14/richard-ramirez-night-stalker/', 5),
+(139, 'John Wayne Gacy, il clown killer che uccise 33 ragazzi', '2021-05-10', 'https://www.fanpage.it/cultura/john-wayne-gacy-il-clown-killer/', 2),
+(140, 'La storia di John Wayne Gacy, il killer clown', '2019-04-05', 'https://www.ilpost.it/2019/04/05/john-wayne-gacy/', 2),
+(141, 'Ted Bundy, il serial killer delle studentesse', '2019-01-26', 'https://www.corriere.it/esteri/19_gennaio_26/ted-bundy-serial-killer-studentesse', 3),
+(142, 'Chi era Ted Bundy, il serial killer carismatico', '2019-05-03', 'https://www.ilpost.it/2019/05/03/ted-bundy/', 3),
+(143, 'Andrej Chikatilo, il macellaio di Rostov', '2020-02-14', 'https://www.fanpage.it/cultura/andrej-chikatilo-macellaio-rostov/', 4),
+(144, 'Il Mostro di Firenze, un caso ancora irrisolto', '2023-06-15', 'https://www.corriere.it/cronache/mostro-di-firenze/', 6),
+(145, 'Mostro di Firenze: storia, vittime e misteri', '2022-09-08', 'https://www.repubblica.it/cronaca/mostro-firenze/', 6),
+(146, 'Pacciani e i compagni di merende', '2018-02-21', 'https://www.ilpost.it/2018/02/21/mostro-firenze-pacciani/', 6),
+(147, 'Ed Gein, il killer che ispirò Psycho', '2019-08-26', 'https://www.fanpage.it/cultura/ed-gein-killer-psycho/', 10),
+(148, 'Jack lo Squartatore, il mistero irrisolto di Whitechapel', '2018-11-09', 'https://www.ilpost.it/2018/11/09/jack-lo-squartatore/', 8),
+(149, 'Zodiac Killer, decifrato il codice dopo 51 anni', '2020-12-12', 'https://www.ansa.it/sito/notizie/mondo/2020/12/12/zodiac-killer-decifrato-codice/', 9),
+(150, 'Chi era lo Zodiac Killer', '2021-10-06', 'https://www.ilpost.it/2021/10/06/zodiac-killer/', 9),
+(151, 'Omicidio Yara, Bossetti condannato all\'ergastolo', '2016-07-01', 'https://www.corriere.it/cronache/yara-bossetti-ergastolo/', 13),
+(152, 'Il DNA di Ignoto 1 e la caccia a Bossetti', '2018-10-12', 'https://www.ilpost.it/2018/10/12/yara-gambirasio-bossetti/', 13),
+(153, 'Donato Bilancia, il serial killer dei treni', '2020-12-17', 'https://www.repubblica.it/cronaca/donato-bilancia-morto/', 7),
+(154, 'Morto Donato Bilancia, il serial killer più prolifico d\'Italia', '2020-12-17', 'https://www.corriere.it/cronache/bilancia-morto/', 7);
 
 -- --------------------------------------------------------
 
@@ -115,30 +115,30 @@ CREATE TABLE `caso` (
 --
 
 INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
-(1, 'Il Mostro di Milwaukee', 'il-mostro-di-milwaukee', '1991-07-22', 'Milwaukee, Wisconsin, USA', 'Jeffrey Dahmer, il \"Mostro di Milwaukee\", ha ucciso e smembrato 17 giovani uomini tra il 1978 e il 1991, compiendo atti di cannibalismo e necrofilia.', 'Jeffrey Lionel Dahmer, noto come il \"Mostro di Milwaukee\" o il \"Cannibale di Milwaukee\", rappresenta uno dei casi più disturbanti nella storia della criminologia americana. Nato il 21 maggio 1960 a Milwaukee, Wisconsin, Dahmer crebbe in una famiglia apparentemente normale ma segnata da tensioni tra i genitori e da un crescente isolamento sociale del giovane Jeffrey.\n\nI primi segnali di un disturbo profondo emersero durante l\'adolescenza, quando Dahmer sviluppò una morbosa fascinazione per gli animali morti. Il suo primo omicidio avvenne nel 1978. Dopo la cattura avvenuta il 22 luglio 1991, furono scoperte fotografie polaroid dei corpi smembrati e resti umani nel suo appartamento.', 'Serial killer', '', 1, 2, '2026-01-16 09:03:21', ''),
-(2, 'Il Clown Killer', 'il-clown-killer', '1978-12-11', 'Chicago, Illinois, USA', 'John Wayne Gacy, noto come \"Il Clown Killer\", ha violentato e ucciso almeno 33 adolescenti e giovani uomini, seppellendone la maggior parte sotto la sua casa.', 'John Wayne Gacy Jr., passato alla storia come \"Il Clown Killer\", rappresenta uno dei serial killer più prolifici della storia americana. Dietro la facciata di rispettabilità e il lavoro come clown per feste di bambini, si nascondeva un predatore sessuale. Tra il 1972 e il 1978, Gacy violentò e uccise almeno 33 giovani uomini, seppellendoli nel vespaio sotto la sua abitazione.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(3, 'Ted Bundy - Il Killer delle Studentesse', 'ted-bundy', '1989-01-24', 'Florida, USA', 'Ted Bundy, assassino seriale carismatico e intelligente, ha confessato 30 omicidi di giovani donne in sette stati americani tra il 1974 e il 1978.', 'Theodore Robert Bundy, conosciuto come Ted Bundy, è considerato uno dei serial killer più famosi e studiati. Uomo di bell\'aspetto, intelligente e carismatico, usava il suo fascino per attirare le vittime. La sua scia di morte attraversò almeno sette stati americani. Fu giustiziato sulla sedia elettrica il 24 gennaio 1989.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(4, 'Il Macellaio di Rostov', 'il-macellaio-di-rostov', '1990-11-20', 'Rostov sul Don, Russia', 'Andrej Romanovic Chikatilo, il \"Macellaio di Rostov\", ha ucciso e mutilato almeno 52 donne e bambini nell\'Unione Sovietica tra il 1978 e il 1990.', 'Andrej Romanovic Chikatilo è stato il serial killer più prolifico della storia sovietica. Adescava le sue vittime nelle stazioni ferroviarie e degli autobus. Fu condannato a morte e giustiziato con un colpo di pistola il 14 febbraio 1994.', 'Serial killer', '', 1, 1, '2026-01-16 09:03:21', ''),
-(5, 'Night Stalker - Il Predatore della Notte', 'night-stalker', '1985-08-31', 'Los Angeles, California, USA', 'Richard Ramirez, il \"Night Stalker\", terrorizzò Los Angeles e San Francisco nel 1984-1985 con una serie di omicidi, violenze sessuali e rapine.', 'Richard Ramirez seminò il terrore nell\'area di Los Angeles entrando nelle case di notte attraverso finestre aperte. A differenza di molti serial killer, non aveva un tipo specifico di vittima. Fu catturato il 31 agosto 1985 dopo essere stato riconosciuto dai cittadini.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(6, 'Il Mostro di Firenze', 'il-mostro-di-firenze', '1985-09-08', 'Firenze e provincia, Italia', 'Il Mostro di Firenze è il nome dato all\'autore di una serie di 16 omicidi di coppie appartate avvenuti nelle campagne toscane tra il 1968 e il 1985.', 'Il caso del Mostro di Firenze rappresenta uno dei misteri criminali più inquietanti della storia italiana. Il killer colpiva coppie appartate in auto, uccidendo l\'uomo e mutilando la donna. Nonostante le condanne dei \"Compagni di merende\" (Pacciani, Vanni, Lotti), molti aspetti della vicenda rimangono oscuri.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(7, 'Donato Bilancia - Il Serial Killer dei Treni', 'donato-bilancia', '1998-04-21', 'Liguria, Italia', 'Donato Bilancia uccise 17 persone in Liguria tra il 1997 e il 1998, diventando uno dei serial killer più prolifici della storia italiana.', 'Donato Bilancia è stato responsabile di 17 omicidi in poco più di sei mesi. La fase più terrificante iniziò quando cominciò a uccidere casualmente sui treni in Liguria. Fu condannato a 13 ergastoli e morì in carcere per COVID-19 nel 2020.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(8, 'Jack lo Squartatore', 'jack-lo-squartatore', '1888-11-09', 'Whitechapel, Londra, Regno Unito', 'Jack lo Squartatore è il serial killer mai identificato che uccise almeno cinque prostitute nel quartiere di Whitechapel a Londra nel 1888.', 'Jack lo Squartatore è il serial killer più famoso della storia, mai identificato. Nell\'autunno del 1888 uccise e mutilò brutalmente almeno cinque donne nel quartiere di Whitechapel. Il caso rimane il più grande mistero irrisolto della criminologia.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(9, 'Zodiac Killer', 'zodiac-killer', '1969-10-11', 'California, USA', 'Lo Zodiac Killer è un serial killer mai identificato che uccise almeno 5 persone nella California del Nord tra il 1968 e il 1969.', 'Lo Zodiac Killer operò nella California del Nord inviando lettere criptate ai giornali per sfidare la polizia. Nonostante decenni di indagini e la decifrazione dei suoi codici, la sua identità rimane sconosciuta.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(10, 'Ed Gein - Il Macellaio di Plainfield', 'ed-gein', '1957-11-16', 'Plainfield, Wisconsin, USA', 'Ed Gein uccise due donne e dissotterrò decine di cadaveri per creare macabri oggetti con pelle e ossa umane.', 'Ed Gein è uno dei criminali più disturbanti della storia. Le sue attività di profanazione di tombe e la creazione di oggetti con pelle umana hanno ispirato film come Psycho, Non aprite quella porta e Il silenzio degli innocenti.', 'Serial killer', '', 1, 0, '2026-01-16 09:03:21', ''),
-(11, 'Il Delitto di Cogne', 'delitto-di-cogne', '2002-01-30', 'Cogne, Valle d\'Aosta, Italia', 'Il caso dell\'omicidio del piccolo Samuele Lorenzi, 3 anni, per il quale fu condannata la madre Annamaria Franzoni.', 'Il 30 gennaio 2002, il piccolo Samuele Lorenzi fu trovato morto nel suo letto. Il caso divise l\'opinione pubblica italiana. La madre, Annamaria Franzoni, fu condannata a 16 anni di carcere.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
-(12, 'Il Delitto di Avetrana', 'delitto-di-avetrana', '2010-08-26', 'Avetrana, Puglia, Italia', 'L\'omicidio di Sarah Scazzi, 15 anni, uccisa dalla zia Cosima Serrano e dalla cugina Sabrina Misseri.', 'Sarah Scazzi scomparve il 26 agosto 2010. Il ritrovamento del corpo in un pozzo e la confessione dello zio Michele Misseri in diretta TV sconvolsero l\'Italia. Furono condannate all\'ergastolo la cugina Sabrina e la zia Cosima.', 'Casi mediatici italiani', '', 1, 1, '2026-01-16 09:03:21', ''),
-(13, 'Omicidio di Yara Gambirasio', 'omicidio-yara-gambirasio', '2010-11-26', 'Brembate di Sopra, Bergamo, Italia', 'Il caso di Yara Gambirasio, 13 anni, risolto grazie a un\'innovativa indagine genetica che identificò Massimo Bossetti.', 'La tredicenne Yara scomparve il 26 novembre 2010. Un\'indagine scientifica senza precedenti portò all\'identificazione di \"Ignoto 1\" nel muratore Massimo Bossetti, condannato all\'ergastolo grazie alla prova del DNA.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
+(1, 'Il Mostro di Milwaukee', 'il-mostro-di-milwaukee', '1991-07-22', 'Milwaukee, Wisconsin, USA', 'Jeffrey Dahmer, il \"Mostro di Milwaukee\", ha ucciso e smembrato 17 giovani uomini tra il 1978 e il 1991, compiendo atti di cannibalismo e necrofilia.', 'Jeffrey Lionel Dahmer, noto come il \"Mostro di Milwaukee\" o il \"Cannibale di Milwaukee\", rappresenta uno dei casi più disturbanti nella storia della criminologia americana. Nato il 21 maggio 1960 a Milwaukee, Wisconsin, Dahmer crebbe in una famiglia apparentemente normale ma segnata da tensioni tra i genitori e da un crescente isolamento sociale del giovane Jeffrey.\r\n\r\nI primi segnali di un disturbo profondo emersero durante l\'adolescenza, quando Dahmer sviluppò una morbosa fascinazione per gli animali morti. Il suo primo omicidio avvenne nel 1978. Dopo la cattura avvenuta il 22 luglio 1991, furono scoperte fotografie polaroid dei corpi smembrati e resti umani nel suo appartamento.', 'Serial killer', 'assets/img/casi/caso/il-mostro-di-milwaukee.webp', 1, 15, '2026-01-16 09:03:21', ''),
+(2, 'Il Clown Killer', 'il-clown-killer', '1978-12-11', 'Chicago, Illinois, USA', 'John Wayne Gacy, noto come \"Il Clown Killer\", ha violentato e ucciso almeno 33 adolescenti e giovani uomini, seppellendone la maggior parte sotto la sua casa.', 'John Wayne Gacy Jr., passato alla storia come \"Il Clown Killer\", rappresenta uno dei serial killer più prolifici della storia americana. Dietro la facciata di rispettabilità e il lavoro come clown per feste di bambini, si nascondeva un predatore sessuale. Tra il 1972 e il 1978, Gacy violentò e uccise almeno 33 giovani uomini, seppellendoli nel vespaio sotto la sua abitazione.', 'Serial killer', 'assets/img/casi/caso/il-clown-killer.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(3, 'Ted Bundy - Il Killer delle Studentesse', 'ted-bundy', '1989-01-24', 'Florida, USA', 'Ted Bundy, assassino seriale carismatico e intelligente, ha confessato 30 omicidi di giovani donne in sette stati americani tra il 1974 e il 1978.', 'Theodore Robert Bundy, conosciuto come Ted Bundy, è considerato uno dei serial killer più famosi e studiati. Uomo di bell\'aspetto, intelligente e carismatico, usava il suo fascino per attirare le vittime. La sua scia di morte attraversò almeno sette stati americani. Fu giustiziato sulla sedia elettrica il 24 gennaio 1989.', 'Serial killer', 'assets/img/casi/caso/ted-bundy.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(4, 'Il Macellaio di Rostov', 'il-macellaio-di-rostov', '1990-11-20', 'Rostov sul Don, Russia', 'Andrej Romanovic Chikatilo, il \"Macellaio di Rostov\", ha ucciso e mutilato almeno 52 donne e bambini nell\'Unione Sovietica tra il 1978 e il 1990.', 'Andrej Romanovic Chikatilo è stato il serial killer più prolifico della storia sovietica. Adescava le sue vittime nelle stazioni ferroviarie e degli autobus. Fu condannato a morte e giustiziato con un colpo di pistola il 14 febbraio 1994.', 'Serial killer', 'assets/img/casi/caso/il-macellaio-di-rostov.webp', 1, 2, '2026-01-16 09:03:21', ''),
+(5, 'Night Stalker - Il Predatore della Notte', 'night-stalker', '1985-08-31', 'Los Angeles, California, USA', 'Richard Ramirez, il \"Night Stalker\", terrorizzò Los Angeles e San Francisco nel 1984-1985 con una serie di omicidi, violenze sessuali e rapine.', 'Richard Ramirez seminò il terrore nell\'area di Los Angeles entrando nelle case di notte attraverso finestre aperte. A differenza di molti serial killer, non aveva un tipo specifico di vittima. Fu catturato il 31 agosto 1985 dopo essere stato riconosciuto dai cittadini.', 'Serial killer', 'assets/img/casi/caso/night-stalker.webp', 1, 6, '2026-01-16 09:03:21', ''),
+(6, 'Il Mostro di Firenze', 'il-mostro-di-firenze', '1985-09-08', 'Firenze e provincia, Italia', 'Il Mostro di Firenze è il nome dato all\'autore di una serie di 16 omicidi di coppie appartate avvenuti nelle campagne toscane tra il 1968 e il 1985.', 'Il caso del Mostro di Firenze rappresenta uno dei misteri criminali più inquietanti della storia italiana. Il killer colpiva coppie appartate in auto, uccidendo l\'uomo e mutilando la donna. Nonostante le condanne dei \"Compagni di merende\" (Pacciani, Vanni, Lotti), molti aspetti della vicenda rimangono oscuri.', 'Serial killer', 'assets/img/casi/caso/il-mostro-di-firenze.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(7, 'Donato Bilancia - Il Serial Killer dei Treni', 'donato-bilancia', '1998-04-21', 'Liguria, Italia', 'Donato Bilancia uccise 17 persone in Liguria tra il 1997 e il 1998, diventando uno dei serial killer più prolifici della storia italiana.', 'Donato Bilancia è stato responsabile di 17 omicidi in poco più di sei mesi. La fase più terrificante iniziò quando cominciò a uccidere casualmente sui treni in Liguria. Fu condannato a 13 ergastoli e morì in carcere per COVID-19 nel 2020.', 'Serial killer', 'assets/img/casi/caso/donato-bilancia.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(8, 'Jack lo Squartatore', 'jack-lo-squartatore', '1888-11-09', 'Whitechapel, Londra, Regno Unito', 'Jack lo Squartatore è il serial killer mai identificato che uccise almeno cinque prostitute nel quartiere di Whitechapel a Londra nel 1888.', 'Jack lo Squartatore è il serial killer più famoso della storia, mai identificato. Nell\'autunno del 1888 uccise e mutilò brutalmente almeno cinque donne nel quartiere di Whitechapel. Il caso rimane il più grande mistero irrisolto della criminologia.', 'Serial killer', 'assets/img/casi/caso/jack-lo-squartatore.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(9, 'Zodiac Killer', 'zodiac-killer', '1969-10-11', 'California, USA', 'Lo Zodiac Killer è un serial killer mai identificato che uccise almeno 5 persone nella California del Nord tra il 1968 e il 1969.', 'Lo Zodiac Killer operò nella California del Nord inviando lettere criptate ai giornali per sfidare la polizia. Nonostante decenni di indagini e la decifrazione dei suoi codici, la sua identità rimane sconosciuta.', 'Serial killer', 'assets/img/casi/caso/zodiac-killer.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(10, 'Ed Gein - Il Macellaio di Plainfield', 'ed-gein', '1957-11-16', 'Plainfield, Wisconsin, USA', 'Ed Gein uccise due donne e dissotterrò decine di cadaveri per creare macabri oggetti con pelle e ossa umane.', 'Ed Gein è uno dei criminali più disturbanti della storia. Le sue attività di profanazione di tombe e la creazione di oggetti con pelle umana hanno ispirato film come Psycho, Non aprite quella porta e Il silenzio degli innocenti.', 'Serial killer', 'assets/img/casi/caso/ed-gein.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(11, 'Il Delitto di Cogne', 'delitto-di-cogne', '2002-01-30', 'Cogne, Valle d\'Aosta, Italia', 'Il caso dell\'omicidio del piccolo Samuele Lorenzi, 3 anni, per il quale fu condannata la madre Annamaria Franzoni.', 'Il 30 gennaio 2002, il piccolo Samuele Lorenzi fu trovato morto nel suo letto. Il caso divise l\'opinione pubblica italiana. La madre, Annamaria Franzoni, fu condannata a 16 anni di carcere.', 'Casi mediatici italiani', 'assets/img/casi/caso/delitto-di-cogne.webp', 1, 1, '2026-01-16 09:03:21', ''),
+(12, 'Il Delitto di Avetrana', 'delitto-di-avetrana', '2010-08-26', 'Avetrana, Puglia, Italia', 'L\'omicidio di Sarah Scazzi, 15 anni, uccisa dalla zia Cosima Serrano e dalla cugina Sabrina Misseri.', 'Sarah Scazzi scomparve il 26 agosto 2010. Il ritrovamento del corpo in un pozzo e la confessione dello zio Michele Misseri in diretta TV sconvolsero l\'Italia. Furono condannate all\'ergastolo la cugina Sabrina e la zia Cosima.', 'Casi mediatici italiani', 'assets/img/casi/caso/delitto-di-avetrana.webp', 1, 2, '2026-01-16 09:03:21', ''),
+(13, 'Omicidio di Yara Gambirasio', 'omicidio-yara-gambirasio', '2010-11-26', 'Brembate di Sopra, Bergamo, Italia', 'Il caso di Yara Gambirasio, 13 anni, risolto grazie a un\'innovativa indagine genetica che identificò Massimo Bossetti.', 'La tredicenne Yara scomparve il 26 novembre 2010. Un\'indagine scientifica senza precedenti portò all\'identificazione di \"Ignoto 1\" nel muratore Massimo Bossetti, condannato all\'ergastolo grazie alla prova del DNA.', 'Casi mediatici italiani', 'assets/img/casi/caso/omicidio-yara-gambirasio.webp', 1, 1, '2026-01-16 09:03:21', ''),
 (14, 'Delitto di Perugia - Meredith Kercher', 'delitto-perugia-meredith-kercher', '2007-11-01', 'Perugia, Umbria, Italia', 'L\'omicidio della studentessa britannica Meredith Kercher, con un iter giudiziario che coinvolse Amanda Knox e Raffaele Sollecito.', 'Meredith Kercher fu uccisa a Perugia nel 2007. Il caso divenne mediatico a livello mondiale. L\'unico condannato in via definitiva è Rudy Guede, mentre Amanda Knox e Raffaele Sollecito furono assolti dopo un lungo iter giudiziario.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
-(15, 'La Strage di Erba', 'strage-di-erba', '2006-12-11', 'Erba, Como, Italia', 'La strage in cui Olindo Romano e Rosa Bazzi uccisero quattro persone, caso oggi oggetto di forti discussioni.', 'L\'11 dicembre 2006, Olindo Romano e Rosa Bazzi uccisero quattro vicini di casa, tra cui un bambino di due anni. Condannati all\'ergastolo, continuano a proclamarsi innocenti supportati da nuove teorie difensive.', 'Casi mediatici italiani', '', 1, 0, '2026-01-16 09:03:21', ''),
+(15, 'La Strage di Erba', 'strage-di-erba', '2006-12-11', 'Erba, Como, Italia', 'La strage in cui Olindo Romano e Rosa Bazzi uccisero quattro persone, caso oggi oggetto di forti discussioni.', 'L\'11 dicembre 2006, Olindo Romano e Rosa Bazzi uccisero quattro vicini di casa, tra cui un bambino di due anni. Condannati all\'ergastolo, continuano a proclamarsi innocenti supportati da nuove teorie difensive.', 'Casi mediatici italiani', '', 1, 1, '2026-01-16 09:03:21', ''),
 (16, 'Il Caso O.J. Simpson', 'caso-oj-simpson', '1994-06-12', 'Los Angeles, California, USA', 'Il processo del secolo: l\'ex campione O.J. Simpson accusato dell\'omicidio dell\'ex moglie Nicole Brown e di Ron Goldman.', 'O.J. Simpson fu accusato di aver ucciso l\'ex moglie e un amico nel 1994. Il processo, seguito da milioni di persone, si concluse con un\'assoluzione penale molto controversa, sebbene fu poi ritenuto responsabile in sede civile.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
 (17, 'L\'Omicidio di Gianni Versace', 'omicidio-gianni-versace', '1997-07-15', 'Miami Beach, Florida, USA', 'L\'assassinio dello stilista italiano Gianni Versace, ucciso da Andrew Cunanan sulla scalinata della sua villa.', 'Gianni Versace fu ucciso il 15 luglio 1997 davanti alla sua villa di Miami dal serial killer Andrew Cunanan, che si suicidò pochi giorni dopo. Il movente rimane un mistero.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
 (18, 'L\'Omicidio di John Lennon', 'omicidio-john-lennon', '1980-12-08', 'New York City, USA', 'L\'assassinio dell\'ex Beatle John Lennon, ucciso a colpi di pistola da Mark David Chapman davanti al Dakota Building.', 'L\'8 dicembre 1980, Mark David Chapman sparò a John Lennon, uccidendo un\'icona della musica mondiale. Chapman attese la polizia leggendo \"Il giovane Holden\".', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
 (19, 'Sharon Tate e la Manson Family', 'sharon-tate-manson-family', '1969-08-09', 'Los Angeles, California, USA', 'L\'atroce omicidio dell\'attrice Sharon Tate e di altre quattro persone per mano della setta di Charles Manson.', 'Nell\'agosto 1969, i seguaci di Charles Manson massacrarono l\'attrice Sharon Tate (incinta all\'ottavo mese) e i suoi ospiti nella villa di Cielo Drive, in un tentativo delirante di scatenare una guerra razziale.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', ''),
 (20, 'Il Caso Oscar Pistorius', 'caso-oscar-pistorius', '2013-02-14', 'Pretoria, Sudafrica', 'L\'atleta paralimpico Oscar Pistorius condannato per l\'omicidio della fidanzata Reeva Steenkamp.', 'La notte di San Valentino 2013, Pistorius sparò alla fidanzata Reeva attraverso la porta del bagno, sostenendo di averla scambiata per un intruso. È stato condannato per omicidio.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
-(21, 'L\'Omicidio di Luca Varani', 'omicidio-luca-varani', '2016-03-05', 'Roma, Italia', 'L\'omicidio del giovane Luca Varani, torturato e ucciso da Marco Prato e Manuel Foffo durante un festino a base di droga.', 'Un crimine senza movente apparente se non la crudeltà. Varani fu attirato in una trappola e torturato per ore da Foffo e Prato al termine di un festino di più giorni.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
-(22, 'Il Femminicidio di Giulia Tramontano', 'femminicidio-giulia-tramontano', '2023-05-27', 'Senago, Milano, Italia', 'L\'omicidio di Giulia Tramontano, incinta al settimo mese, uccisa dal compagno Alessandro Impagnatiello.', 'Giulia Tramontano fu uccisa con 37 coltellate dal compagno che conduceva una doppia vita. Impagnatiello tentò poi di bruciare il corpo. È stato condannato all\'ergastolo.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
-(23, 'Il Caso Gabby Petito', 'caso-gabby-petito', '2021-08-27', 'Wyoming, USA', 'L\'omicidio della travel blogger Gabby Petito, strangolata dal fidanzato Brian Laundrie durante un viaggio in van.', 'Il viaggio on the road di due giovani fidanzati si trasformò in tragedia. Il caso esplose sui social media portando al ritrovamento del corpo di Gabby e, successivamente, a quello di Brian, morto suicida.', 'Amore tossico', '', 1, 1, '2026-01-16 09:03:21', ''),
-(24, 'Il Caso Chris Watts', 'caso-chris-watts', '2018-08-13', 'Frederick, Colorado, USA', 'Chris Watts uccise la moglie incinta Shanann e le figlie Bella e Celeste per iniziare una nuova vita con l\'amante.', 'Chris Watts sterminò la sua intera famiglia per stare con l\'amante, fingendo poi preoccupazione in TV per la loro scomparsa. Ha confessato ed è stato condannato all\'ergastolo.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', ''),
+(21, 'L\'Omicidio di Luca Varani', 'omicidio-luca-varani', '2016-03-05', 'Roma, Italia', 'L\'omicidio del giovane Luca Varani, torturato e ucciso da Marco Prato e Manuel Foffo durante un festino a base di droga.', 'Un crimine senza movente apparente se non la crudeltà. Varani fu attirato in una trappola e torturato per ore da Foffo e Prato al termine di un festino di più giorni.', 'Amore tossico', '', 1, 1, '2026-01-16 09:03:21', ''),
+(22, 'Il Femminicidio di Giulia Tramonta', 'femminicidio-giulia-tramontano', '2023-05-27', 'Senago, Milano, Italia', 'L\'omicidio di Giulia Tramontano, incinta al settimo mese, uccisa dal compagno Alessandro Impagnatiello.', 'Giulia Tramontano fu uccisa con 37 coltellate dal compagno che conduceva una doppia vita. Impagnatiello tentò poi di bruciare il corpo. È stato condannato all\'ergastolo.', 'Amore tossico', NULL, 1, 16, '2026-01-16 09:03:21', ''),
+(23, 'Il Caso Gabby Petito', 'caso-gabby-petito', '2021-08-27', 'Wyoming, USA', 'L\'omicidio della travel blogger Gabby Petito, strangolata dal fidanzato Brian Laundrie durante un viaggio in van. si', 'Il viaggio on the road di due giovani fidanzati si trasformò in tragedia. Il caso esplose sui social media portando al ritrovamento del corpo di Gabby e, successivamente, a quello di Brian, morto suicida.', 'Amore tossico', NULL, 1, 75, '2026-01-16 09:03:21', ''),
+(24, 'Il Caso Chris Watts', 'caso-chris-watts', '2018-08-13', 'Frederick, Colorado, USA', 'Chris Watts uccise la moglie incinta Shanann e le figlie Bella e Celeste per iniziare una nuova vita con l\'amante.', 'Chris Watts sterminò la sua intera famiglia per stare con l\'amante, fingendo poi preoccupazione in TV per la loro scomparsa. Ha confessato ed è stato condannato all\'ergastolo.', 'Amore tossico', '', 0, 1, '2026-01-16 09:03:21', ''),
 (25, 'Il Caso Jodi Arias', 'caso-jodi-arias', '2008-06-04', 'Mesa, Arizona, USA', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con brutale ferocia in un caso simbolo dell\'ossessione amorosa.', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con 27 coltellate e un colpo di pistola. Il processo ha rivelato una relazione tossica e ossessiva.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', '');
 
 -- --------------------------------------------------------
@@ -157,24 +157,24 @@ CREATE TABLE `colpa` (
 --
 
 INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 6),
-(33, 6),
-(34, 6),
-(35, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10),
-(11, 11),
-(12, 12),
-(13, 12),
-(14, 12),
-(15, 13),
+(81, 1),
+(84, 2),
+(85, 3),
+(86, 4),
+(83, 5),
+(87, 6),
+(88, 6),
+(89, 6),
+(90, 6),
+(95, 7),
+(92, 8),
+(93, 9),
+(91, 10),
+(82, 11),
+(78, 12),
+(79, 12),
+(80, 12),
+(94, 13),
 (16, 14),
 (17, 15),
 (18, 15),
@@ -188,9 +188,9 @@ INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
 (26, 20),
 (27, 21),
 (28, 21),
-(29, 22),
-(30, 23),
-(31, 24),
+(43, 22),
+(73, 23),
+(66, 24),
 (32, 25);
 
 -- --------------------------------------------------------
@@ -247,7 +247,67 @@ INSERT INTO `colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `Dat
 (32, 'Jodi', 'Arias', 'Salinas, California, USA', '1980-07-09', ''),
 (33, 'Pietro', 'Pacciani', 'Vicchio, Firenze, Italia', '1925-01-07', ''),
 (34, 'Mario', 'Vanni', 'San Casciano, Firenze, Italia', '1927-08-02', ''),
-(35, 'Giancarlo', 'Lotti', 'San Casciano, Firenze, Italia', '1941-03-28', '');
+(35, 'Giancarlo', 'Lotti', 'San Casciano, Firenze, Italia', '1941-03-28', ''),
+(36, 'Alessandro', 'Impagnatiello', 'Milano, Italia', '1991-08-30', 'assets/img/casi/colpevoli/alessandro-impagnatiello.jpeg'),
+(37, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(38, 'Alessandro', 'Impagnatiello', 'Milano, Italia', '1991-08-30', 'assets/img/casi/colpevoli/alessandro-impagnatiello.jpeg'),
+(39, 'Alessandroo', 'Impagnatiello', 'Milano, Italia', '1991-08-30', 'assets/img/casi/colpevoli/alessandro-impagnatiello.jpeg'),
+(40, 'Alessandroo', 'Impagnatiello', 'Milano, Italia', '1991-08-30', 'assets/img/casi/colpevoli/alessandro-impagnatiello.jpeg'),
+(41, 'Alessandroo', 'Impagnatiello', 'Milano, Italia', '1991-08-30', 'assets/img/casi/colpevoli/alessandro-impagnatiello.jpeg'),
+(42, 'Alessandroo', 'Impagnatiello', 'Milano, Italia', '1991-08-30', 'assets/img/casi/colpevoli/alessandro-impagnatiello.jpeg'),
+(43, 'Alessandroo', 'Impagnatiello', 'Milano, Italia', '1991-08-30', ''),
+(44, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(45, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(46, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', 'assets/img/casi/colpevoli/brian-laundrie.jpg'),
+(47, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(48, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(49, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(50, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(51, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(52, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(53, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(54, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(55, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(56, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(57, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', 'assets/img/casi/colpevoli/brian-laundrie.jpg'),
+(58, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(59, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(60, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(61, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(62, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(63, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(64, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(65, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(66, 'Chris', 'Watts', 'Spring Lake, North Carolina, USA', '1985-05-16', ''),
+(67, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(68, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', 'assets/img/casi/colpevoli/brian-laundrie.png'),
+(69, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', 'assets/img/casi/colpevoli/brian-laundrie.png'),
+(70, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', 'assets/img/casi/colpevoli/brian-laundrie.png'),
+(71, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', 'assets/img/casi/colpevoli/brian-laundrie.png'),
+(72, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(73, 'Brian', 'Laundrie', 'New York, USA', '1997-11-21', ''),
+(74, 'Jeffrey', 'Dahmer', 'Milwaukee, Wisconsin, USA', '1960-05-21', ''),
+(75, 'Jeffrey', 'Dahmer', 'Milwaukee, Wisconsin, USA', '1960-05-21', ''),
+(76, 'Jeffrey', 'Dahmer', 'Milwaukee, Wisconsin, USA', '1960-05-21', ''),
+(77, 'Jeffrey', 'Dahmer', 'Milwaukee, Wisconsin, USA', '1960-05-21', ''),
+(78, 'Cosima', 'Serrano', 'Avetrana, Italia', '1960-06-25', ''),
+(79, 'Sabrina', 'Misseri', 'Avetrana, Italia', '1987-07-04', ''),
+(80, 'Michele', 'Misseri', 'Avetrana, Italia', '1953-01-06', ''),
+(81, 'Jeffrey', 'Dahmer', 'Milwaukee, Wisconsin, USA', '1960-05-21', ''),
+(82, 'Annamaria', 'Franzoni', 'Bologna, Italia', '1971-01-04', ''),
+(83, 'Richard', 'Ramirez', 'El Paso, Texas, USA', '1960-02-29', ''),
+(84, 'John Wayne', 'Gacy', 'Chicago, Illinois, USA', '1942-03-17', ''),
+(85, 'Ted', 'Bundy', 'Burlington, Vermont, USA', '1946-11-24', ''),
+(86, 'Andrej', 'Chikatilo', 'Yabluchne, Ucraina', '1936-10-16', ''),
+(87, 'Ignoto', 'Mostro di Firenze', 'Sconosciuto', '1940-01-01', ''),
+(88, 'Pietro', 'Pacciani', 'Vicchio, Firenze, Italia', '1925-01-07', ''),
+(89, 'Mario', 'Vanni', 'San Casciano, Firenze, Italia', '1927-08-02', ''),
+(90, 'Giancarlo', 'Lotti', 'San Casciano, Firenze, Italia', '1941-03-28', ''),
+(91, 'Edward', 'Gein', 'La Crosse, Wisconsin, USA', '1906-08-27', ''),
+(92, 'Ignoto', 'Jack lo Squartatore', 'Sconosciuto', '1850-01-01', ''),
+(93, 'Ignoto', 'Zodiac Killer', 'Sconosciuto', '1940-01-01', ''),
+(94, 'Massimo Giuseppe', 'Bossetti', 'Clusone, Bergamo, Italia', '1970-10-30', ''),
+(95, 'Donato', 'Bilancia', 'Potenza, Italia', '1951-07-10', '');
 
 -- --------------------------------------------------------
 
@@ -263,29 +323,38 @@ CREATE TABLE `commento` (
   `Data` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dump dei dati per la tabella `commento`
+--
+
+INSERT INTO `commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `Data`) VALUES
+(1, 'Bel caso, veramente sempre al top!!', 'admin@test.it', 23, '2026-01-24 15:06:04');
+
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `utente`
+-- Struttura della tabella `Utente`
 --
 
-CREATE TABLE `utente` (
+CREATE TABLE `Utente` (
   `Email` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `Username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `Password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `Is_Admin` tinyint(1) DEFAULT NULL,
-  `Is_Newsletter` tinyint(1) DEFAULT '0'
+  `Is_Newsletter` tinyint(1) DEFAULT '0',
+  `Remember_Token` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `utente`
+-- Dump dei dati per la tabella `Utente`
 --
 
-INSERT INTO `utente` (`Email`, `Username`, `Password`, `Is_Admin`, `Is_Newsletter`) VALUES
-('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1, 1),
-('lore.grolla04@gmail.com', 'Lorenzo', '$2y$10$RPrVyIOXQguBlR6kRDz2h.KqskfkwyFmKGXGwlbxIil3V06DCMSFm', 0, 0),
-('paolo@gmail.com', 'Paolo', '$2y$10$aW49yojpjRL7JsBVv9TlZ.a7119SoKRteJ8XA8.U9rNC/3Xlj8V7i', 0, 0),
-('user@test.it', 'User', '$2y$10$9dk6FVWLhA3i.6JtCcUERuz0cW.v7GI3fyuztVmq/5YfB7G/IkEg2', 0, 0);
+INSERT INTO `Utente` (`Email`, `Username`, `Password`, `Is_Admin`, `Is_Newsletter`, `Remember_Token`) VALUES
+('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1, 1, NULL),
+('cappellariaurora1@gmail.com', 'aurora', '$2y$10$j8a484HH9hdD7Xd7.h1udetgl8PpYxBvfRnHH9DewvmQ6BR/BbzcK', 0, 1, NULL),
+('lore.grolla04@gmail.com', 'Lorenzo', '$2y$10$RPrVyIOXQguBlR6kRDz2h.KqskfkwyFmKGXGwlbxIil3V06DCMSFm', 0, 0, NULL),
+('paolo@gmail.com', 'Paolo', '$2y$10$aW49yojpjRL7JsBVv9TlZ.a7119SoKRteJ8XA8.U9rNC/3Xlj8V7i', 0, 1, NULL),
+('user@test.it', 'User', '$2y$10$9dk6FVWLhA3i.6JtCcUERuz0cW.v7GI3fyuztVmq/5YfB7G/IkEg2', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -309,63 +378,6 @@ CREATE TABLE `vittima` (
 --
 
 INSERT INTO `vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNascita`, `DataDecesso`, `Caso`, `Immagine`) VALUES
-(1, 'Steven', 'Hicks', 'Coventry Township, Ohio, USA', '1959-06-22', '1978-06-18', 1, ''),
-(2, 'Steven', 'Tuomi', 'Ontonagon, Michigan, USA', '1962-01-01', '1987-09-15', 1, ''),
-(3, 'James', 'Doxtator', 'Milwaukee, Wisconsin, USA', '1973-03-01', '1988-01-16', 1, ''),
-(4, 'Richard', 'Guerrero', 'Milwaukee, Wisconsin, USA', '1967-01-01', '1988-03-24', 1, ''),
-(5, 'Konerak', 'Sinthasomphone', 'Laos', '1976-12-02', '1991-05-27', 1, ''),
-(6, 'Tony', 'Hughes', 'Madison, Wisconsin, USA', '1959-08-26', '1991-05-24', 1, ''),
-(7, 'Robert', 'Piest', 'Des Plaines, Illinois, USA', '1963-03-11', '1978-12-11', 2, ''),
-(8, 'John', 'Butkovich', 'Chicago, Illinois, USA', '1955-01-01', '1975-07-31', 2, ''),
-(9, 'Gregory', 'Godzik', 'Chicago, Illinois, USA', '1959-01-01', '1976-12-12', 2, ''),
-(10, 'John', 'Szyc', 'Chicago, Illinois, USA', '1958-01-01', '1977-01-20', 2, ''),
-(11, 'Randall', 'Reffett', 'Chicago, Illinois, USA', '1963-05-16', '1977-05-14', 2, ''),
-(12, 'Michael', 'Bonnin', 'Houston, Texas, USA', '1960-05-03', '1977-06-03', 2, ''),
-(13, 'Lynda Ann', 'Healy', 'Seattle, Washington, USA', '1953-01-31', '1974-01-31', 3, ''),
-(14, 'Donna Gail', 'Manson', 'Seattle, Washington, USA', '1955-07-29', '1974-03-12', 3, ''),
-(15, 'Susan', 'Rancourt', 'LaGrande, Oregon, USA', '1956-01-01', '1974-04-17', 3, ''),
-(16, 'Caryn', 'Campbell', 'Detroit, Michigan, USA', '1951-01-01', '1975-01-12', 3, ''),
-(17, 'Lisa', 'Levy', 'St. Petersburg, Florida, USA', '1958-08-08', '1978-01-15', 3, ''),
-(18, 'Kimberly', 'Leach', 'Lake City, Florida, USA', '1965-10-22', '1978-02-09', 3, ''),
-(19, 'Yelena', 'Zakotnova', 'Rostov, Russia', '1969-01-01', '1978-12-22', 4, ''),
-(20, 'Larisa', 'Tkachenko', 'Rostov, Russia', '1962-01-01', '1981-09-03', 4, ''),
-(21, 'Lyubov', 'Biryuk', 'Rostov, Russia', '1968-01-01', '1982-06-12', 4, ''),
-(22, 'Olga', 'Stalmachenok', 'Rostov, Russia', '1972-01-01', '1982-12-11', 4, ''),
-(23, 'Laura', 'Sarkisyan', 'Rostov, Russia', '1968-01-01', '1983-06-18', 4, ''),
-(24, 'Dmitry', 'Ptashnikov', 'Rostov, Russia', '1973-01-01', '1984-03-27', 4, ''),
-(25, 'Jennie', 'Vincow', 'Los Angeles, California, USA', '1905-01-01', '1984-06-28', 5, ''),
-(26, 'Dayle', 'Okazaki', 'Los Angeles, California, USA', '1951-01-01', '1985-03-17', 5, ''),
-(27, 'Vincent', 'Zazzara', 'Los Angeles, California, USA', '1921-01-01', '1985-03-27', 5, ''),
-(28, 'Maxine', 'Zazzara', 'Los Angeles, California, USA', '1936-01-01', '1985-03-27', 5, ''),
-(29, 'William', 'Doi', 'Los Angeles, California, USA', '1921-01-01', '1985-05-14', 5, ''),
-(30, 'Mabel', 'Bell', 'Los Angeles, California, USA', '1921-01-01', '1985-06-01', 5, ''),
-(31, 'Antonio', 'Lo Bianco', 'Firenze, Italia', '1943-01-01', '1968-08-21', 6, ''),
-(32, 'Barbara', 'Locci', 'Firenze, Italia', '1942-01-01', '1968-08-21', 6, ''),
-(33, 'Stefania', 'Pettini', 'Firenze, Italia', '1956-01-01', '1974-09-14', 6, ''),
-(34, 'Pasquale', 'Gentilcore', 'Firenze, Italia', '1955-01-01', '1974-09-14', 6, ''),
-(35, 'Nadine', 'Mauriot', 'Montbéliard, Francia', '1950-01-01', '1985-09-08', 6, ''),
-(36, 'Jean Michel', 'Kraveichvili', 'Francia', '1960-01-01', '1985-09-08', 6, ''),
-(37, 'Giorgio', 'Centenaro', 'Genova, Italia', '1942-01-01', '1997-10-16', 7, ''),
-(38, 'Maurizia', 'Catena', 'Genova, Italia', '1945-01-01', '1997-10-16', 7, ''),
-(39, 'Bruno', 'Solari', 'Genova, Italia', '1935-01-01', '1997-10-24', 7, ''),
-(40, 'Maria Luigia', 'Pitto', 'Genova, Italia', '1938-01-01', '1997-10-24', 7, ''),
-(41, 'Elisabetta', 'Zoppetti', 'Genova, Italia', '1966-01-01', '1998-03-12', 7, ''),
-(42, 'Maria Angela', 'Rubino', 'Genova, Italia', '1969-01-01', '1998-03-14', 7, ''),
-(43, 'Mary Ann', 'Nichols', 'Londra, Regno Unito', '1845-08-26', '1888-08-31', 8, ''),
-(44, 'Annie', 'Chapman', 'Londra, Regno Unito', '1841-09-01', '1888-09-08', 8, ''),
-(45, 'Elizabeth', 'Stride', 'Svezia', '1843-11-27', '1888-09-30', 8, ''),
-(46, 'Catherine', 'Eddowes', 'Wolverhampton, Regno Unito', '1842-04-14', '1888-09-30', 8, ''),
-(47, 'Mary Jane', 'Kelly', 'Irlanda', '1863-01-01', '1888-11-09', 8, ''),
-(48, 'David', 'Faraday', 'Vallejo, California, USA', '1951-10-21', '1968-12-20', 9, ''),
-(49, 'Betty Lou', 'Jensen', 'Vallejo, California, USA', '1952-02-21', '1968-12-20', 9, ''),
-(50, 'Darlene', 'Ferrin', 'Mill Valley, California, USA', '1947-03-17', '1969-07-04', 9, ''),
-(51, 'Cecelia', 'Shepard', 'Riverside, California, USA', '1947-01-01', '1969-09-29', 9, ''),
-(52, 'Paul', 'Stine', 'Camarillo, California, USA', '1940-12-18', '1969-10-11', 9, ''),
-(53, 'Mary', 'Hogan', 'Plainfield, Wisconsin, USA', '1900-01-01', '1954-12-08', 10, ''),
-(54, 'Bernice', 'Worden', 'Plainfield, Wisconsin, USA', '1899-01-01', '1957-11-16', 10, ''),
-(55, 'Samuele', 'Lorenzi', 'Cogne, Italia', '1999-01-21', '2002-01-30', 11, ''),
-(56, 'Sarah', 'Scazzi', 'Avetrana, Italia', '1995-05-27', '2010-08-26', 12, ''),
-(57, 'Yara', 'Gambirasio', 'Brembate di Sopra, Italia', '1997-07-09', '2010-11-26', 13, ''),
 (58, 'Meredith', 'Kercher', 'Coulsdon, Londra, Regno Unito', '1985-12-28', '2007-11-01', 14, ''),
 (59, 'Raffaella', 'Castagna', 'Erba, Italia', '1976-01-01', '2006-12-11', 15, ''),
 (60, 'Youssef', 'Marzouk', 'Erba, Italia', '2004-01-01', '2006-12-11', 15, ''),
@@ -382,12 +394,69 @@ INSERT INTO `vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNas
 (71, 'Steven', 'Parent', 'Los Angeles, California, USA', '1951-07-26', '1969-08-09', 19, ''),
 (72, 'Reeva', 'Steenkamp', 'Città del Capo, Sudafrica', '1983-08-19', '2013-02-14', 20, ''),
 (73, 'Luca', 'Varani', 'Roma, Italia', '1992-07-19', '2016-03-05', 21, ''),
-(74, 'Giulia', 'Tramontano', 'Sant Antimo, Napoli, Italia', '1994-02-09', '2023-05-27', 22, ''),
-(75, 'Gabby', 'Petito', 'Blue Point, New York, USA', '1999-03-19', '2021-08-27', 23, ''),
-(76, 'Shanann', 'Watts', 'Passaic, New Jersey, USA', '1984-01-10', '2018-08-13', 24, ''),
-(77, 'Bella', 'Watts', 'Frederick, Colorado, USA', '2013-12-17', '2018-08-13', 24, ''),
-(78, 'Celeste', 'Watts', 'Frederick, Colorado, USA', '2015-07-17', '2018-08-13', 24, ''),
-(79, 'Travis', 'Alexander', 'Riverside, California, USA', '1977-07-28', '2008-06-04', 25, '');
+(79, 'Travis', 'Alexander', 'Riverside, California, USA', '1977-07-28', '2008-06-04', 25, ''),
+(87, 'Giulia', 'Tramontano', 'Sant Antimo, Napoli, Italia', '1994-02-09', '2023-05-27', 22, ''),
+(110, 'Shanann', 'Watts', 'Passaic, New Jersey, USA', '1984-01-10', '2018-08-13', 24, ''),
+(111, 'Bella', 'Watts', 'Frederick, Colorado, USA', '2013-12-17', '2018-08-13', 24, ''),
+(112, 'Celeste', 'Watts', 'Frederick, Colorado, USA', '2015-07-17', '2018-08-13', 24, ''),
+(119, 'Gabby', 'Petito', 'Blue Point, New York, USA', '1999-03-19', '2021-08-27', 23, ''),
+(144, 'Sarah', 'Scazzi', 'Avetrana, Italia', '1995-05-27', '2010-08-26', 12, ''),
+(145, 'Steven', 'Hicks', 'Coventry Township, Ohio, USA', '1959-06-22', '1978-06-18', 1, ''),
+(146, 'Steven', 'Tuomi', 'Ontonagon, Michigan, USA', '1962-01-01', '1987-09-15', 1, ''),
+(147, 'James', 'Doxtator', 'Milwaukee, Wisconsin, USA', '1973-03-01', '1988-01-16', 1, ''),
+(148, 'Richard', 'Guerrero', 'Milwaukee, Wisconsin, USA', '1967-01-01', '1988-03-24', 1, ''),
+(149, 'Konerak', 'Sinthasomphone', 'Laos', '1976-12-02', '1991-05-27', 1, ''),
+(150, 'Tony', 'Hughes', 'Madison, Wisconsin, USA', '1959-08-26', '1991-05-24', 1, ''),
+(151, 'Samuele', 'Lorenzi', 'Cogne, Italia', '1999-01-21', '2002-01-30', 11, ''),
+(152, 'Jennie', 'Vincow', 'Los Angeles, California, USA', '1905-01-01', '1984-06-28', 5, ''),
+(153, 'Dayle', 'Okazaki', 'Los Angeles, California, USA', '1951-01-01', '1985-03-17', 5, ''),
+(154, 'Vincent', 'Zazzara', 'Los Angeles, California, USA', '1921-01-01', '1985-03-27', 5, ''),
+(155, 'Maxine', 'Zazzara', 'Los Angeles, California, USA', '1936-01-01', '1985-03-27', 5, ''),
+(156, 'William', 'Doi', 'Los Angeles, California, USA', '1921-01-01', '1985-05-14', 5, ''),
+(157, 'Mabel', 'Bell', 'Los Angeles, California, USA', '1921-01-01', '1985-06-01', 5, ''),
+(158, 'Robert', 'Piest', 'Des Plaines, Illinois, USA', '1963-03-11', '1978-12-11', 2, ''),
+(159, 'John', 'Butkovich', 'Chicago, Illinois, USA', '1955-01-01', '1975-07-31', 2, ''),
+(160, 'Gregory', 'Godzik', 'Chicago, Illinois, USA', '1959-01-01', '1976-12-12', 2, ''),
+(161, 'John', 'Szyc', 'Chicago, Illinois, USA', '1958-01-01', '1977-01-20', 2, ''),
+(162, 'Randall', 'Reffett', 'Chicago, Illinois, USA', '1963-05-16', '1977-05-14', 2, ''),
+(163, 'Michael', 'Bonnin', 'Houston, Texas, USA', '1960-05-03', '1977-06-03', 2, ''),
+(164, 'Lynda Ann', 'Healy', 'Seattle, Washington, USA', '1953-01-31', '1974-01-31', 3, ''),
+(165, 'Donna Gail', 'Manson', 'Seattle, Washington, USA', '1955-07-29', '1974-03-12', 3, ''),
+(166, 'Susan', 'Rancourt', 'LaGrande, Oregon, USA', '1956-01-01', '1974-04-17', 3, ''),
+(167, 'Caryn', 'Campbell', 'Detroit, Michigan, USA', '1951-01-01', '1975-01-12', 3, ''),
+(168, 'Lisa', 'Levy', 'St. Petersburg, Florida, USA', '1958-08-08', '1978-01-15', 3, ''),
+(169, 'Kimberly', 'Leach', 'Lake City, Florida, USA', '1965-10-22', '1978-02-09', 3, ''),
+(170, 'Yelena', 'Zakotnova', 'Rostov, Russia', '1969-01-01', '1978-12-22', 4, ''),
+(171, 'Larisa', 'Tkachenko', 'Rostov, Russia', '1962-01-01', '1981-09-03', 4, ''),
+(172, 'Lyubov', 'Biryuk', 'Rostov, Russia', '1968-01-01', '1982-06-12', 4, ''),
+(173, 'Olga', 'Stalmachenok', 'Rostov, Russia', '1972-01-01', '1982-12-11', 4, ''),
+(174, 'Laura', 'Sarkisyan', 'Rostov, Russia', '1968-01-01', '1983-06-18', 4, ''),
+(175, 'Dmitry', 'Ptashnikov', 'Rostov, Russia', '1973-01-01', '1984-03-27', 4, ''),
+(176, 'Antonio', 'Lo Bianco', 'Firenze, Italia', '1943-01-01', '1968-08-21', 6, ''),
+(177, 'Barbara', 'Locci', 'Firenze, Italia', '1942-01-01', '1968-08-21', 6, ''),
+(178, 'Stefania', 'Pettini', 'Firenze, Italia', '1956-01-01', '1974-09-14', 6, ''),
+(179, 'Pasquale', 'Gentilcore', 'Firenze, Italia', '1955-01-01', '1974-09-14', 6, ''),
+(180, 'Nadine', 'Mauriot', 'Montbéliard, Francia', '1950-01-01', '1985-09-08', 6, ''),
+(181, 'Jean Michel', 'Kraveichvili', 'Francia', '1960-01-01', '1985-09-08', 6, ''),
+(182, 'Mary', 'Hogan', 'Plainfield, Wisconsin, USA', '1900-01-01', '1954-12-08', 10, ''),
+(183, 'Bernice', 'Worden', 'Plainfield, Wisconsin, USA', '1899-01-01', '1957-11-16', 10, ''),
+(184, 'Mary Ann', 'Nichols', 'Londra, Regno Unito', '1845-08-26', '1888-08-31', 8, ''),
+(185, 'Annie', 'Chapman', 'Londra, Regno Unito', '1841-09-01', '1888-09-08', 8, ''),
+(186, 'Elizabeth', 'Stride', 'Svezia', '1843-11-27', '1888-09-30', 8, ''),
+(187, 'Catherine', 'Eddowes', 'Wolverhampton, Regno Unito', '1842-04-14', '1888-09-30', 8, ''),
+(188, 'Mary Jane', 'Kelly', 'Irlanda', '1863-01-01', '1888-11-09', 8, ''),
+(189, 'David', 'Faraday', 'Vallejo, California, USA', '1951-10-21', '1968-12-20', 9, ''),
+(190, 'Betty Lou', 'Jensen', 'Vallejo, California, USA', '1952-02-21', '1968-12-20', 9, ''),
+(191, 'Darlene', 'Ferrin', 'Mill Valley, California, USA', '1947-03-17', '1969-07-04', 9, ''),
+(192, 'Cecelia', 'Shepard', 'Riverside, California, USA', '1947-01-01', '1969-09-29', 9, ''),
+(193, 'Paul', 'Stine', 'Camarillo, California, USA', '1940-12-18', '1969-10-11', 9, ''),
+(194, 'Yara', 'Gambirasio', 'Brembate di Sopra, Italia', '1997-07-09', '2010-11-26', 13, ''),
+(195, 'Giorgio', 'Centenaro', 'Genova, Italia', '1942-01-01', '1997-10-16', 7, ''),
+(196, 'Maurizia', 'Catena', 'Genova, Italia', '1945-01-01', '1997-10-16', 7, ''),
+(197, 'Bruno', 'Solari', 'Genova, Italia', '1935-01-01', '1997-10-24', 7, ''),
+(198, 'Maria Luigia', 'Pitto', 'Genova, Italia', '1938-01-01', '1997-10-24', 7, ''),
+(199, 'Elisabetta', 'Zoppetti', 'Genova, Italia', '1966-01-01', '1998-03-12', 7, ''),
+(200, 'Maria Angela', 'Rubino', 'Genova, Italia', '1969-01-01', '1998-03-14', 7, '');
 
 --
 -- Indici per le tabelle scaricate
@@ -432,9 +501,9 @@ ALTER TABLE `commento`
   ADD KEY `ID_Caso` (`ID_Caso`);
 
 --
--- Indici per le tabelle `utente`
+-- Indici per le tabelle `Utente`
 --
-ALTER TABLE `utente`
+ALTER TABLE `Utente`
   ADD PRIMARY KEY (`Email`),
   ADD UNIQUE KEY `Username` (`Username`);
 
@@ -453,7 +522,7 @@ ALTER TABLE `vittima`
 -- AUTO_INCREMENT per la tabella `articolo`
 --
 ALTER TABLE `articolo`
-  MODIFY `ID_Articolo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `ID_Articolo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 
 --
 -- AUTO_INCREMENT per la tabella `caso`
@@ -465,19 +534,19 @@ ALTER TABLE `caso`
 -- AUTO_INCREMENT per la tabella `colpevole`
 --
 ALTER TABLE `colpevole`
-  MODIFY `ID_Colpevole` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `ID_Colpevole` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT per la tabella `commento`
 --
 ALTER TABLE `commento`
-  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `vittima`
 --
 ALTER TABLE `vittima`
-  MODIFY `ID_Vittima` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `ID_Vittima` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=201;
 
 --
 -- Limiti per le tabelle scaricate

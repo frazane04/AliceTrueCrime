@@ -7,10 +7,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Auto-login tramite cookie "Ricordami"
+// SICUREZZA: Verifica che il token nel cookie corrisponda al token hashato nel database
 if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE['user_email'])) {
     require_once __DIR__ . '/../db/funzioni_db.php';
     $dbAutoLogin = new FunzioniDB();
-    $utente = $dbAutoLogin->getUtenteByEmail($_COOKIE['user_email']);
+
+    // Verifica il token contro il database (non solo l'email!)
+    $utente = $dbAutoLogin->verificaRememberToken($_COOKIE['user_email'], $_COOKIE['remember_token']);
 
     if ($utente) {
         $_SESSION['logged_in'] = true;
@@ -18,10 +21,18 @@ if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE
         $_SESSION['user_email'] = $utente['Email'];
         $_SESSION['is_admin'] = (bool)$utente['Is_Admin'];
 
-        // Rinnova i cookie per altri 30 giorni
+        // Genera un nuovo token e aggiorna (rotation per sicurezza)
+        $nuovoToken = bin2hex(random_bytes(32));
+        $dbAutoLogin->salvaRememberToken($utente['Email'], $nuovoToken);
+
+        // Rinnova i cookie per altri 30 giorni con il nuovo token
         $cookieExpiry = time() + (30 * 24 * 60 * 60);
-        setcookie('remember_token', $_COOKIE['remember_token'], $cookieExpiry, '/', '', true, true);
+        setcookie('remember_token', $nuovoToken, $cookieExpiry, '/', '', true, true);
         setcookie('user_email', $_COOKIE['user_email'], $cookieExpiry, '/', '', true, true);
+    } else {
+        // Token non valido, rimuovi i cookie
+        setcookie('remember_token', '', time() - 3600, '/', '', true, true);
+        setcookie('user_email', '', time() - 3600, '/', '', true, true);
     }
 }
 
@@ -31,6 +42,49 @@ if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE
 function getPrefix(): string
 {
     return '';
+}
+
+// ========================================
+// PROTEZIONE CSRF
+// ========================================
+
+/**
+ * Genera un token CSRF e lo salva in sessione
+ */
+function generaCsrfToken(): string
+{
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+/**
+ * Restituisce l'input HTML hidden per il token CSRF
+ */
+function csrfField(): string
+{
+    $token = generaCsrfToken();
+    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
+}
+
+/**
+ * Verifica che il token CSRF sia valido
+ */
+function verificaCsrfToken(): bool
+{
+    if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token'])) {
+        return false;
+    }
+    return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+}
+
+/**
+ * Rigenera il token CSRF (da usare dopo un'azione riuscita)
+ */
+function rigeneraCsrfToken(): void
+{
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 /**
