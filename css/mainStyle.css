@@ -3420,7 +3420,9 @@ textarea:focus-visible,
 
 .is-loading {
     opacity: 0.5;
-}/* ============================================
+}
+
+/* ============================================
    CHI SIAMO - TEAM GRID
    ============================================ */
 
@@ -3483,7 +3485,9 @@ textarea:focus-visible,
 .how-it-works-card p {
     font-size: var(--font-sm);
     color: var(--text-dark);
-}/* ============================================
+}
+
+/* ============================================
    CHI SIAMO - REFINED STYLES
    ============================================ */
 
@@ -3542,7 +3546,9 @@ textarea:focus-visible,
     padding-left: 5%;
     padding-right: 5%;
     margin: 0 auto;
-}/* ============================================
+}
+
+/* ============================================
    CHI SIAMO - FINAL REFINED STYLES
    ============================================ */
 
@@ -3565,7 +3571,8 @@ textarea:focus-visible,
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    /* Corrects alignment */
     background-color: #EFE6D9;
     /* BEIGE/MARRONCINO - as requested */
     color: var(--text-dark);
