@@ -45,11 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             menuToggle.setAttribute('aria-expanded', isExpanded);
 
             // Toggle Scroll Lock
-            if (isExpanded) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
+            document.body.classList.toggle('is-menu-open', isExpanded);
         });
 
         // Chiudi menu quando si clicca un link
@@ -57,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
             link.addEventListener('click', () => {
                 menuToggle.setAttribute('aria-expanded', 'false');
                 mainNav.classList.remove('is-visible');
-                body.style.overflow = '';
+                body.classList.remove('is-menu-open');
             });
         });
     }

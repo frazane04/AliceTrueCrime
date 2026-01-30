@@ -3409,3 +3409,15 @@ textarea:focus-visible,
         padding: 0.5em 1em;
     }
 }
+
+/* ============================================
+   UTILITY CLASSES - STATO
+   ============================================ */
+
+.is-menu-open {
+    overflow: hidden;
+}
+
+.is-loading {
+    opacity: 0.5;
+}

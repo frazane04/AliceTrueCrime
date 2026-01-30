@@ -71,7 +71,7 @@
         if (e.key !== 'Tab') return;
 
         const focusableElements = modal.querySelectorAll(
-            'button:not([style*="display: none"]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            'button:not(.hidden), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
         const firstFocusable = focusableElements[0];
         const lastFocusable = focusableElements[focusableElements.length - 1];
@@ -129,11 +129,7 @@
             confirmBtn.className = 'btn ' + (config.confirmClass || 'btn-primary');
 
             // Mostra/nascondi bottone annulla (per modal solo informative)
-            if (config.hideCancel) {
-                cancelBtn.style.display = 'none';
-            } else {
-                cancelBtn.style.display = '';
-            }
+            cancelBtn.classList.toggle('hidden', config.hideCancel);
 
             // Focus sul bottone appropriato
             if (config.hideCancel) {

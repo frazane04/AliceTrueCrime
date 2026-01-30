@@ -100,12 +100,12 @@
                 <div class="form-group">
                     <label for="immagine_caso">Immagine del Caso (opzionale)</label>
                     <div class="file-upload-wrapper">
-                        <input type="file" 
-                            id="immagine_caso" 
-                            name="immagine_caso" 
+                        <input type="file"
+                            id="immagine_caso"
+                            name="immagine_caso"
                             accept="image/jpeg,image/png,image/webp"
                             aria-describedby="immagine-caso-hint"
-                            onchange="mostraAnteprimaImmagine(this, 'preview-caso')"
+                            data-preview-target="preview-caso"
                         />
                         <small id="immagine-caso-hint" class="form-hint">Formati accettati: JPG, PNG, WebP. Max 5MB</small>
                     </div>
@@ -181,11 +181,11 @@
 
                             <div class="form-group half">
                                 <label for="vittima_immagine_0">Foto (opzionale)</label>
-                                <input type="file" 
-                                    id="vittima_immagine_0" 
-                                    name="vittima_immagine[]" 
+                                <input type="file"
+                                    id="vittima_immagine_0"
+                                    name="vittima_immagine[]"
                                     accept="image/jpeg,image/png,image/webp"
-                                    onchange="mostraAnteprimaImmagine(this, 'preview-vittima-0')"
+                                    data-preview-target="preview-vittima-0"
                                 />
                             </div>
                         </div>
@@ -257,11 +257,11 @@
 
                         <div class="form-group">
                             <label for="colpevole_immagine_0">Foto (opzionale)</label>
-                            <input type="file" 
-                                id="colpevole_immagine_0" 
-                                name="colpevole_immagine[]" 
+                            <input type="file"
+                                id="colpevole_immagine_0"
+                                name="colpevole_immagine[]"
                                 accept="image/jpeg,image/png,image/webp"
-                                onchange="mostraAnteprimaImmagine(this, 'preview-colpevole-0')"
+                                data-preview-target="preview-colpevole-0"
                             />
                         </div>
                         <div id="preview-colpevole-0" class="image-preview image-preview-small" aria-live="polite"></div>

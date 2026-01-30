@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function fetchResults(pushState = true) {
         // Show loading
         loadingIndicator.classList.remove('hidden');
-        resultsContainer.style.opacity = '0.5';
+        resultsContainer.classList.add('is-loading');
 
         const formData = new FormData(searchForm);
         const params = new URLSearchParams(formData);
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .finally(() => {
                 loadingIndicator.classList.add('hidden');
-                resultsContainer.style.opacity = '1';
+                resultsContainer.classList.remove('is-loading');
             });
     }
 
