@@ -1057,7 +1057,7 @@ textarea:focus-visible,
     align-items: center;
 }
 
-.footer-column h3 {
+.footer-column h2 {
     color: var(--text-light);
     font-size: var(--font-sm);
     text-transform: uppercase;
@@ -2492,7 +2492,7 @@ textarea:focus-visible,
     border-bottom: 2px solid var(--border-light);
 }
 
-.entry-header h4 {
+.entry-header .entry-title {
     font-size: 1.1em;
     color: var(--primary);
     margin: 0;
