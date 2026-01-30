@@ -3420,4 +3420,205 @@ textarea:focus-visible,
 
 .is-loading {
     opacity: 0.5;
+}/* ============================================
+   CHI SIAMO - TEAM GRID
+   ============================================ */
+
+.team-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2em;
+    margin-top: 2em;
+    margin-bottom: 3em;
+}
+
+@media (min-width: 600px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .team-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ============================================
+   COME FUNZIONA - SECTION
+   ============================================ */
+
+.how-it-works-section {
+    margin-top: 4em;
+    padding-top: 2em;
+    border-top: 1px solid var(--border-light);
+}
+
+.how-it-works-grid {
+    display: grid;
+    gap: 2em;
+    margin-top: 2em;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .how-it-works-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.how-it-works-card {
+    background-color: var(--white);
+    padding: 1.5em;
+    border-radius: 0.8em;
+    border: 1px solid var(--border-light);
+    text-align: center;
+}
+
+.how-it-works-card h3 {
+    margin-bottom: 0.8em;
+    color: var(--primary);
+}
+
+.how-it-works-card p {
+    font-size: var(--font-sm);
+    color: var(--text-dark);
+}/* ============================================
+   CHI SIAMO - REFINED STYLES
+   ============================================ */
+
+.team-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-lightest);
+    /* Persistent brown background */
+    color: var(--text-dark);
+    border-radius: 1em;
+    padding: 2em;
+    text-align: center;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-light);
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    /* No background change on hover */
+}
+
+.team-card img {
+    width: 150px;
+    /* Larger avatar */
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    /* Circle avatar as per request/home style */
+    border: 5px solid var(--primary);
+    margin: 0 auto 1.5em;
+    /* Center image */
+}
+
+.team-card h3 {
+    font-size: var(--font-md);
+    margin-bottom: 0.5em;
+    color: var(--primary);
+}
+
+.team-card p {
+    font-size: var(--font-base);
+    color: var(--accent-text);
+    font-weight: 600;
+}
+
+/* Section Spacing & Layout */
+.section-spacing {
+    margin-top: 5em;
+    margin-bottom: 5em;
+}
+
+.full-width-container {
+    width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin: 0 auto;
+}/* ============================================
+   CHI SIAMO - FINAL REFINED STYLES
+   ============================================ */
+
+/* Section Specifics */
+.team-section {
+    background-color: var(--white);
+    /* Ensure white background for the section */
+    padding-top: 4em;
+    padding-bottom: 4em;
+    border-radius: 1em;
+    /* Optional: Rounded corners for the container */
+    margin-top: 2em;
+    margin-bottom: 2em;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow like sidebar */
+}
+
+/* Card Styling */
+.team-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #EFE6D9;
+    /* BEIGE/MARRONCINO - as requested */
+    color: var(--text-dark);
+    border-radius: 1.5em;
+    /* More rounded corners like image */
+    padding: 3em 1.5em;
+    /* More vertical padding */
+    text-align: center;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    /* Removed border to match cleaner look */
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    /* Background stays Beige */
+}
+
+.team-card .card-foto {
+    margin-bottom: 1.5em;
+    position: relative;
+}
+
+.team-card img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #7A3E26;
+    /* Darker border matching image style */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-card h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    /* Bolder */
+    margin-bottom: 0.3em;
+    color: #2A1A12;
+    /* Dark Brown */
+}
+
+.team-card p {
+    font-size: 1rem;
+    color: #5D4337;
+    /* Muted brown */
+    font-weight: 500;
+}
+
+/* Grid Override specifically for this section if needed */
+.team-grid {
+    gap: 2.5em;
+    /* More gap */
 }
