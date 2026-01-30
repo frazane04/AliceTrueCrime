@@ -1074,9 +1074,12 @@ textarea:focus-visible,
 }
 
 .footer-logo-area img {
-    max-width: 100px;
-    height: auto;
+    max-width: 200px;
+    height: 170px;
+    width: auto;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    position: relative;
+    z-index: 10;
 }
 
 .footer-bottom {
