@@ -19,7 +19,7 @@ if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE
         $_SESSION['logged_in'] = true;
         $_SESSION['user'] = $utente['Username'];
         $_SESSION['user_email'] = $utente['Email'];
-        $_SESSION['is_admin'] = (bool)$utente['Is_Admin'];
+        $_SESSION['is_admin'] = (bool) $utente['Is_Admin'];
 
         // Genera un nuovo token e aggiorna (rotation per sicurezza)
         $nuovoToken = bin2hex(random_bytes(32));
@@ -422,7 +422,7 @@ function getNavBarLi($currentPath): string
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
         $prefix . '/segnala-caso' => 'Segnala Caso',
-        $prefix . '/chi-siamo' => 'Chi Siamo',
+        $prefix . '/chi-siamo' => 'Informazioni Aggiuntive',
     ];
 
     return generateLiList($links, $currentPath);
@@ -466,7 +466,7 @@ function getFooterNavigaLi($currentPath): string
     $links = [
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
-        $prefix . '/chi-siamo' => 'Chi Siamo'
+        $prefix . '/chi-siamo' => 'Informazioni Aggiuntive',
     ];
     return generateLiList($links, $currentPath);
 }
