@@ -511,7 +511,11 @@ function getBreadcrumbs($currentPath): string
 
         $accumulatedPath .= '/' . $part;
         // Trasformiamo lo slug (es. segnala-caso) in testo leggibile (es. Segnala Caso)
-        $name = ucwords(str_replace(['-', '_'], ' ', $part));
+        if ($part === 'chi-siamo') {
+            $name = 'Informazioni Aggiuntive';
+        } else {
+            $name = ucwords(str_replace(['-', '_'], ' ', $part));
+        }
 
         // Se è l'ultimo elemento dell'array, è la pagina corrente
         if ($index === $totalParts - 1) {
