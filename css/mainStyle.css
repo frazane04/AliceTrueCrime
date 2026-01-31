@@ -159,6 +159,17 @@ textarea:focus-visible,
     border: 0;
 }
 
+/* Link esterni */
+.external-icon {
+    font-size: 0.8em;
+    margin-left: 0.25em;
+    opacity: 0.7;
+}
+
+.external-link:hover .external-icon {
+    opacity: 1;
+}
+
 /* ============================================
    SISTEMA BOTTONI
    ============================================ */
