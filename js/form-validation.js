@@ -169,6 +169,9 @@ function initPasswordToggles() {
     const toggleButtons = document.querySelectorAll('.password-toggle');
 
     toggleButtons.forEach(button => {
+        // Imposta aria-pressed iniziale
+        button.setAttribute('aria-pressed', 'false');
+
         button.addEventListener('click', function() {
             const targetId = this.getAttribute('data-target');
             const input = document.getElementById(targetId);
@@ -178,11 +181,13 @@ function initPasswordToggles() {
             if (input.type === 'password') {
                 input.type = 'text';
                 this.setAttribute('aria-label', 'Nascondi password');
+                this.setAttribute('aria-pressed', 'true');
                 eyeIcon.classList.add('hidden');
                 eyeOffIcon.classList.remove('hidden');
             } else {
                 input.type = 'password';
                 this.setAttribute('aria-label', 'Mostra password');
+                this.setAttribute('aria-pressed', 'false');
                 eyeIcon.classList.remove('hidden');
                 eyeOffIcon.classList.add('hidden');
             }

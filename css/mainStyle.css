@@ -896,13 +896,13 @@ textarea:focus-visible,
     border-radius: 8px;
     width: 100%;
     max-width: 350px;
-    outline: none;
     transition: border-color 0.3s;
 }
 
 .newsletter-form input:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.2);
+    outline: 2px solid transparent;
 }
 
 /* Newsletter Grid (Pagina Newsletter) */
@@ -1182,7 +1182,7 @@ textarea:focus-visible,
 
 .search-box input[type="search"]:focus {
     border-color: var(--primary);
-    outline: none;
+    outline: 2px solid transparent;
     box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.15);
     background-color: var(--white);
 }
@@ -1251,7 +1251,7 @@ textarea:focus-visible,
 
 .filter-group select:focus {
     border-color: var(--primary);
-    outline: none;
+    outline: 2px solid transparent;
     box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.15);
 }
 
@@ -1617,7 +1617,7 @@ textarea:focus-visible,
 .form-group textarea:focus {
     border-color: var(--primary);
     background-color: var(--white);
-    outline: none;
+    outline: 2px solid transparent;
     box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.15);
 }
 
@@ -2321,7 +2321,7 @@ textarea:focus-visible,
 
 .form-commento textarea:focus {
     border-color: var(--primary);
-    outline: none;
+    outline: 2px solid transparent;
     box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.15);
 }
 
@@ -2729,7 +2729,8 @@ textarea:focus-visible,
 .file-upload-wrapper input[type="file"]:hover,
 .file-upload-wrapper input[type="file"]:focus {
     border-color: var(--primary);
-    outline: none;
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.15);
 }
 
 .image-preview {
