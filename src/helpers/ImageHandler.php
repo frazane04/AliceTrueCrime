@@ -1,45 +1,34 @@
 <?php
-/**
- * ImageHandler - Gestione upload e ridimensionamento immagini
- * 
- * Gestisce:
- * - Upload sicuro di immagini (jpg, png, webp)
- * - Ridimensionamento mantenendo aspect ratio
- * - Organizzazione in sottocartelle (caso, vittime, colpevoli)
- * - Generazione nomi file basati su slug
- */
+// ImageHandler - Gestione upload e ridimensionamento immagini
 
 class ImageHandler
 {
-
-    // Configurazione
     private const DIMENSIONI = [
         'caso' => ['width' => 1200, 'height' => 800],      // Banner/header del caso
         'vittime' => ['width' => 400, 'height' => 500],    // Ritratto verticale
         'colpevoli' => ['width' => 400, 'height' => 500]   // Ritratto verticale
     ];
 
-    // Configurazione upload
-    private const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+    private const MAX_FILE_SIZE = 2 * 1024 * 1024;
     private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
 
     private $basePath;
 
+    // Inizializza path base e crea cartelle
     public function __construct()
     {
         $this->basePath = $this->getProjectRoot() . '/assets/img/casi';
         $this->assicuraCartelle();
     }
 
+    // Restituisce il path root del progetto
     private function getProjectRoot()
     {
         return dirname(dirname(__DIR__));
     }
 
-    /**
-     * Crea le cartelle necessarie se non esistono
-     */
+    // Crea le cartelle necessarie se non esistono
     private function assicuraCartelle()
     {
         $cartelle = ['caso', 'vittime', 'colpevoli'];
@@ -52,14 +41,7 @@ class ImageHandler
         }
     }
 
-    /**
-     * Carica e processa un'immagine
-     * 
-     * @param array $file - $_FILES['campo']
-     * @param string $tipo - 'caso', 'vittime', 'colpevoli'
-     * @param string $slug - Slug per il nome file
-     * @return array - ['success' => bool, 'path' => string|null, 'message' => string]
-     */
+    // Carica e processa un'immagine
     public function caricaImmagine($file, $tipo, $slug)
     {
         // Verifica che il file sia stato caricato
@@ -114,9 +96,7 @@ class ImageHandler
         }
     }
 
-    /**
-     * Processa e ridimensiona l'immagine mantenendo l'aspect ratio
-     */
+    // Ridimensiona l'immagine mantenendo l'aspect ratio
     private function processaImmagine($tmpPath, $destPath, $tipo, $mimeType)
     {
         // Carica immagine sorgente
@@ -193,12 +173,7 @@ class ImageHandler
         return $success;
     }
 
-    /**
-     * Elimina un'immagine dal filesystem
-     * 
-     * @param string $pathRelativo - Percorso relativo salvato nel DB
-     * @return bool
-     */
+    // Elimina un'immagine dal filesystem
     public function eliminaImmagine($pathRelativo)
     {
         if (empty($pathRelativo)) {
@@ -214,9 +189,7 @@ class ImageHandler
         return true;
     }
 
-    /**
-     * Sanitizza lo slug per uso come nome file
-     */
+    // Sanitizza lo slug per uso come nome file
     private function sanitizzaSlug($slug)
     {
         // Rimuovi caratteri non sicuri
@@ -230,9 +203,7 @@ class ImageHandler
         return $slug;
     }
 
-    /**
-     * Genera slug da nome e cognome (per vittime/colpevoli)
-     */
+    // Genera slug da nome e cognome
     public function generaSlugPersona($nome, $cognome, $id = null)
     {
         $slug = strtolower($nome . '-' . $cognome);
@@ -247,9 +218,7 @@ class ImageHandler
         return $slug;
     }
 
-    /**
-     * Messaggi errore upload
-     */
+    // Restituisce il messaggio di errore upload
     private function getUploadErrorMessage($errorCode)
     {
         switch ($errorCode) {
@@ -266,9 +235,7 @@ class ImageHandler
         }
     }
 
-    /**
-     * Verifica se un percorso immagine è valido e il file esiste
-     */
+    // Verifica se un'immagine esiste
     public function immagineEsiste($pathRelativo)
     {
         if (empty($pathRelativo)) {
@@ -279,9 +246,7 @@ class ImageHandler
         return file_exists($pathCompleto);
     }
 
-    /**
-     * Ottieni URL pubblico dell'immagine (con prefix)
-     */
+    // Restituisce l'URL pubblico dell'immagine
     public function getUrlImmagine($pathRelativo, $prefix = '')
     {
         if (empty($pathRelativo)) {
@@ -291,9 +256,7 @@ class ImageHandler
         return $prefix . '/' . $pathRelativo;
     }
 
-    /**
-     * Genera attributo alt accessibile
-     */
+    // Genera attributo alt accessibile
     public static function generaAlt($tipo, $dati)
     {
         switch ($tipo) {

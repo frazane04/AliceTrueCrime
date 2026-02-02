@@ -1,12 +1,11 @@
 <?php
-// Utils.php - Gestione logica e templating
-// Supporto per email come chiave primaria
+// Utils - Gestione logica e templating
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Auto-login tramite cookie ricordami
+// Auto-login tramite cookie "ricordami"
 if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE['user_email'])) {
     require_once __DIR__ . '/../db/funzioni_db.php';
     $dbAutoLogin = new FunzioniDB();
@@ -31,17 +30,13 @@ if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE
     }
 }
 
-/**
- * Gestisce il prefisso del percorso per installazioni in sottocartelle.
- */
+// Restituisce il prefisso URL per sottocartelle
 function getPrefix(): string
 {
     return '';
 }
 
-// Protezione csrf
-
-
+// Genera o restituisce il token CSRF
 function generaCsrfToken(): string
 {
     if (empty($_SESSION['csrf_token'])) {
@@ -50,14 +45,14 @@ function generaCsrfToken(): string
     return $_SESSION['csrf_token'];
 }
 
-
+// Genera campo hidden con token CSRF
 function csrfField(): string
 {
     $token = generaCsrfToken();
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
 }
 
-
+// Verifica validità del token CSRF
 function verificaCsrfToken(): bool
 {
     if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token'])) {
@@ -66,13 +61,13 @@ function verificaCsrfToken(): bool
     return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
 }
 
-
+// Rigenera un nuovo token CSRF
 function rigeneraCsrfToken(): void
 {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-
+// Reindirizza a un percorso
 function redirect(string $path): void
 {
     $prefix = getPrefix();
@@ -80,7 +75,7 @@ function redirect(string $path): void
     exit;
 }
 
-
+// Genera HTML per un messaggio alert
 function alertHtml(string $tipo, string $messaggio): string
 {
     $classi = [
@@ -96,7 +91,7 @@ function alertHtml(string $tipo, string $messaggio): string
     return "<div class=\"alert {$classe}\" role=\"alert\">{$messaggioSafe}</div>";
 }
 
-
+// Mostra pagina errore e termina esecuzione
 function renderErrorPageAndExit(string $titolo, string $messaggio, int $httpCode = 404): void
 {
     $prefix = getPrefix();
@@ -113,7 +108,7 @@ function renderErrorPageAndExit(string $titolo, string $messaggio, int $httpCode
     exit;
 }
 
-
+// Carica un template dalla cartella pages
 function loadTemplate(string $nome): string
 {
     $templatePath = __DIR__ . '/../template/pages/' . $nome . '.html';
@@ -125,7 +120,7 @@ function loadTemplate(string $nome): string
     return file_get_contents($templatePath);
 }
 
-
+// Renderizza un componente con dati
 function renderComponent(string $nome, array $dati): string
 {
     $templatePath = __DIR__ . '/../template/components/' . $nome . '.html';
@@ -143,13 +138,13 @@ function renderComponent(string $nome, array $dati): string
     return $html;
 }
 
-
+// Estrae lo slug da un caso
 function getSlugFromCaso(array $caso): string
 {
     return $caso['Slug'] ?? strtolower(str_replace(' ', '-', $caso['Titolo']));
 }
 
-
+// Formatta una data nel formato specificato
 function formatData(?string $data, string $formato = 'd/m/Y'): string
 {
     if (empty($data)) {
@@ -158,7 +153,7 @@ function formatData(?string $data, string $formato = 'd/m/Y'): string
     return date($formato, strtotime($data));
 }
 
-
+// Restituisce URL immagine con fallback placeholder
 function getImageUrl(?string $immagine): string
 {
     $prefix = getPrefix();
@@ -168,6 +163,7 @@ function getImageUrl(?string $immagine): string
     return $prefix . '/assets/img/placeholder.webp';
 }
 
+// Genera HTML per lista persone (vittime/colpevoli)
 function generaHtmlPersone(array $persone, string $tipo): string
 {
     if (empty($persone)) {
@@ -193,10 +189,7 @@ function generaHtmlPersone(array $persone, string $tipo): string
     return $html;
 }
 
-/**
- * Genera l'HTML delle card per i casi.
- * Ottimizzato per Ranking (SEO) e Accessibilità (WCAG 2.0 AA).
- */
+// Genera HTML delle card per i casi
 function generaHtmlCards(array $listaCasi): string
 {
     if (empty($listaCasi)) {
@@ -239,6 +232,7 @@ function generaHtmlCards(array $listaCasi): string
     return $html;
 }
 
+// Genera HTML per lista articoli
 function generaHtmlArticoli(array $articoli): string
 {
     if (empty($articoli)) {
@@ -256,19 +250,19 @@ function generaHtmlArticoli(array $articoli): string
     return $html;
 }
 
-
+// Genera URL avatar UI Avatars
 function getAvatarUrl(string $nome, int $size = 24): string
 {
     return "https://ui-avatars.com/api/?name=" . urlencode($nome) . "&background=630D16&color=fff&size=" . $size;
 }
 
-
+// Verifica se l'utente è autenticato
 function isLoggedIn(): bool
 {
     return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 }
 
-
+// Richiede autenticazione o mostra messaggio
 function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void
 {
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
@@ -296,7 +290,7 @@ function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void
     exit;
 }
 
-
+// Mostra pagina errore HTTP
 function renderErrorPage(int $codice): void
 {
     $errori = [
@@ -321,11 +315,7 @@ function renderErrorPage(int $codice): void
     exit;
 }
 
-
-/**
- * Genera la pagina completa inserendo i contenuti nel template base.
- * Aggiunti parametri per migliorare il ranking (SEO) e l'accessibilità.
- */
+// Genera la pagina completa con template
 function getTemplatePage(string $title, string $content, string $description = "", ?string $ogImage = ""): string
 {
     $templatePath = __DIR__ . '/../template/layouts/pagestructure.html';
@@ -381,7 +371,7 @@ function getTemplatePage(string $title, string $content, string $description = "
     return $page;
 }
 
-
+// Genera la sezione header
 function getHeaderSection($currentPath): string
 {
     $headerPath = __DIR__ . '/../template/layouts/header.html';
@@ -400,6 +390,7 @@ function getHeaderSection($currentPath): string
     return $headerHtml;
 }
 
+// Genera la sezione footer
 function getFooterSection($currentPath): string
 {
     $footerPath = __DIR__ . '/../template/layouts/footer.html';
@@ -415,7 +406,7 @@ function getFooterSection($currentPath): string
     return $footerHtml;
 }
 
-
+// Genera i link della navbar
 function getNavBarLi($currentPath): string
 {
     $prefix = getPrefix();
@@ -429,6 +420,7 @@ function getNavBarLi($currentPath): string
     return generateLiList($links, $currentPath);
 }
 
+// Genera i bottoni header (login/profilo)
 function getHeaderButtons(): string
 {
     $prefix = getPrefix();
@@ -456,6 +448,7 @@ function getHeaderButtons(): string
     }
 }
 
+// Genera i link di navigazione footer
 function getFooterNavigaLi($currentPath): string
 {
     $prefix = getPrefix();
@@ -468,6 +461,7 @@ function getFooterNavigaLi($currentPath): string
     return generateLiList($links, $currentPath);
 }
 
+// Genera lista di link <li>
 function generateLiList($links, $currentPath): string
 {
     $html = '';
@@ -478,7 +472,7 @@ function generateLiList($links, $currentPath): string
     return $html;
 }
 
-
+// Genera i breadcrumbs della pagina
 function getBreadcrumbs($currentPath): string
 {
     $scriptDir = dirname($_SERVER['SCRIPT_NAME']);

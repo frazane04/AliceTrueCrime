@@ -7,9 +7,9 @@ class ConnessioneDB
     private $nome_db;
     private $connessione;
 
+    // Carica le credenziali dal file .env
     public function __construct()
     {
-        // Carica le variabili dal file .env
         $envPath = __DIR__ . '/../../.env';
 
         if (file_exists($envPath)) {
@@ -24,10 +24,7 @@ class ConnessioneDB
         }
     }
 
-    /**
-     * Apre la connessione al database
-     * @return bool True se la connessione ha successo, False altrimenti
-     */
+    // Apre la connessione al database
     public function apriConnessione()
     {
         try {
@@ -42,9 +39,7 @@ class ConnessioneDB
                 throw new mysqli_sql_exception("Connessione a MySQL fallita: " . mysqli_connect_error());
             }
 
-            // Imposta charset UTF-8 per gestire correttamente i caratteri accentati
             mysqli_set_charset($this->connessione, "utf8mb4");
-
             return true;
         } catch (mysqli_sql_exception $e) {
             error_log("Errore connessione DB: " . $e->getMessage());
@@ -52,6 +47,7 @@ class ConnessioneDB
         }
     }
 
+    // Chiude la connessione al database
     public function chiudiConnessione()
     {
         try {
@@ -68,15 +64,13 @@ class ConnessioneDB
         }
     }
 
+    // Restituisce l'oggetto connessione
     public function getConnessione()
     {
         return $this->connessione;
     }
 
-    /**
-     * Restituisce l'ID dell'ultimo record inserito
-     * @return int|null
-     */
+    // Restituisce l'ID dell'ultimo record inserito
     public function getLastInsertId()
     {
         if ($this->connessione) {
@@ -85,13 +79,7 @@ class ConnessioneDB
         return null;
     }
 
-    /**
-     * Esegue una query preparata
-     * @param string $query Query SQL con placeholder (?)
-     * @param array $params Array di parametri
-     * @param string $types Stringa dei tipi (es. "ssi" per string, string, int)
-     * @return mysqli_result|bool Result set per SELECT, true per INSERT/UPDATE/DELETE, false per errori
-     */
+    // Esegue una query preparata con parametri
     public function query($query, $params = [], $types = "")
     {
         try {
@@ -105,7 +93,6 @@ class ConnessioneDB
                 throw new Exception("Errore preparazione query: " . mysqli_error($this->connessione));
             }
 
-            // Bind dei parametri se presenti
             if (!empty($params) && !empty($types)) {
                 mysqli_stmt_bind_param($stmt, $types, ...$params);
             }

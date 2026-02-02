@@ -1,8 +1,4 @@
 <?php
-/**
- * Funzioni per interagire con il database
- */
-
 require_once __DIR__ . '/connessione.php';
 
 class FunzioniDB
@@ -14,9 +10,7 @@ class FunzioniDB
         $this->db = new ConnessioneDB();
     }
 
-
-
-
+    // Registra un nuovo utente nel database
     public function registraUtente($email, $username, $password, $isAdmin = false, $newsletter = false)
     {
         try {
@@ -50,7 +44,7 @@ class FunzioniDB
         }
     }
 
-
+    // Aggiorna lo stato di iscrizione alla newsletter
     public function updateNewsletter($email, $stato)
     {
         try {
@@ -65,7 +59,7 @@ class FunzioniDB
         }
     }
 
-
+    // Verifica se un'email è già registrata
     private function verificaEmailEsistente($email)
     {
         $query = "SELECT Email FROM Utente WHERE Email = ?";
@@ -74,7 +68,7 @@ class FunzioniDB
         return ($result && is_object($result) && mysqli_num_rows($result) > 0);
     }
 
-
+    // Effettua il login tramite email o username
     public function loginUtente($identificativo, $password)
     {
         try {
@@ -118,19 +112,19 @@ class FunzioniDB
         }
     }
 
-
+    // Login tramite email
     public function loginUtenteEmail($email, $password)
     {
         return $this->loginUtente($email, $password);
     }
 
-
+    // Login tramite username 
     public function loginUtenteUsername($username, $password)
     {
         return $this->loginUtente($username, $password);
     }
 
-
+    // Recupera i dati di un utente tramite email
     public function getUtenteByEmail($email)
     {
         try {
@@ -156,7 +150,7 @@ class FunzioniDB
         }
     }
 
-
+    // Salva il token "ricordami" per il login persistente
     public function salvaRememberToken($email, $token)
     {
         try {
@@ -177,6 +171,7 @@ class FunzioniDB
         }
     }
 
+    // Verifica il token "ricordami" e restituisce l'utente
     function verificaRememberToken($email, $token)
     {
         try {
@@ -206,7 +201,7 @@ class FunzioniDB
         }
     }
 
-
+    // Rimuove il token "ricordami"
     public function rimuoviRememberToken($email)
     {
         try {
@@ -226,7 +221,7 @@ class FunzioniDB
         }
     }
 
-
+    // Verifica se un username è già in uso
     public function verificaUsernameEsistente($username)
     {
         try {
@@ -247,7 +242,7 @@ class FunzioniDB
         }
     }
 
-
+    // Recupera i dati di un utente tramite username
     public function getUtenteByUsername($username)
     {
         try {
@@ -273,7 +268,7 @@ class FunzioniDB
         }
     }
 
-
+    // Restituisce l'ID di un caso dato lo slug
     public function getCasoIdBySlug($slug, $soloApprovati = true)
     {
         try {
@@ -304,6 +299,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce i casi di una specifica categoria
     public function getCasiPerCategoria($tipologia, $limite = 10, $soloApprovati = true)
     {
         try {
@@ -311,8 +307,8 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
-            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
-                      FROM Caso 
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo
+                      FROM Caso
                       WHERE Tipologia = ?";
 
             if ($soloApprovati) {
@@ -339,6 +335,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce i casi più visualizzati
     public function getCasiPiuLetti($limite = 5, $soloApprovati = true)
     {
         try {
@@ -346,7 +343,7 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
-            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo
                       FROM Caso";
 
             if ($soloApprovati) {
@@ -373,6 +370,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce casi casuali
     public function getCasiCasuali($limite = 4, $soloApprovati = true)
     {
         try {
@@ -380,7 +378,7 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
-            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo
                       FROM Caso";
 
             if ($soloApprovati) {
@@ -407,6 +405,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce i casi più recenti
     public function getCasiRecenti($limite = 5, $soloApprovati = true)
     {
         try {
@@ -414,7 +413,7 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
-            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo 
+            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo
                       FROM Caso";
 
             if ($soloApprovati) {
@@ -441,6 +440,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce un caso dato il suo ID
     public function getCasoById($nCaso, $soloApprovati = true)
     {
         try {
@@ -471,6 +471,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce le vittime di un caso
     public function getVittimeByCaso($id, $soloApprovati = true)
     {
         try {
@@ -479,8 +480,8 @@ class FunzioniDB
             }
 
             if ($soloApprovati) {
-                $query = "SELECT v.* FROM Vittima v 
-                          JOIN Caso c ON v.Caso = c.N_Caso 
+                $query = "SELECT v.* FROM Vittima v
+                          JOIN Caso c ON v.Caso = c.N_Caso
                           WHERE c.N_Caso = ? AND c.Approvato = 1";
             } else {
                 $query = "SELECT * FROM Vittima WHERE Caso = ?";
@@ -504,6 +505,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce i colpevoli di un caso
     public function getColpevoliByCaso($id, $soloApprovati = true)
     {
         try {
@@ -512,13 +514,13 @@ class FunzioniDB
             }
 
             if ($soloApprovati) {
-                $query = "SELECT col.* FROM Colpevole col 
-                          JOIN Colpa cp ON col.ID_Colpevole = cp.Colpevole 
-                          JOIN Caso c ON cp.Caso = c.N_Caso 
+                $query = "SELECT col.* FROM Colpevole col
+                          JOIN Colpa cp ON col.ID_Colpevole = cp.Colpevole
+                          JOIN Caso c ON cp.Caso = c.N_Caso
                           WHERE c.N_Caso = ? AND c.Approvato = 1";
             } else {
-                $query = "SELECT c.* FROM Colpevole c 
-                          JOIN Colpa cp ON c.ID_Colpevole = cp.Colpevole 
+                $query = "SELECT c.* FROM Colpevole c
+                          JOIN Colpa cp ON c.ID_Colpevole = cp.Colpevole
                           WHERE cp.Caso = ?";
             }
 
@@ -540,6 +542,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce gli articoli collegati a un caso
     public function getArticoliByCaso($id)
     {
         try {
@@ -566,6 +569,7 @@ class FunzioniDB
         }
     }
 
+    // Cerca casi per parola chiave
     public function cercaCasi($query, $limite = 20, $soloApprovati = true)
     {
         try {
@@ -602,6 +606,7 @@ class FunzioniDB
         }
     }
 
+    // Cerca casi con filtri avanzati (testo, categoria, anno)
     public function cercaCasiConFiltri($filtri = [], $limite = 50, $soloApprovati = true)
     {
         try {
@@ -616,12 +621,10 @@ class FunzioniDB
             $params = [];
             $types = "";
 
-            // Filtro approvazione
             if ($soloApprovati) {
                 $sql .= " AND Approvato = 1";
             }
 
-            // Filtro ricerca testuale
             if (!empty($filtri['q'])) {
                 $searchTerm = "%" . $filtri['q'] . "%";
                 $sql .= " AND (Titolo LIKE ? OR Descrizione LIKE ? OR Luogo LIKE ?)";
@@ -631,14 +634,12 @@ class FunzioniDB
                 $types .= "sss";
             }
 
-            // Filtro categoria
             if (!empty($filtri['categoria'])) {
                 $sql .= " AND Tipologia = ?";
                 $params[] = $filtri['categoria'];
                 $types .= "s";
             }
 
-            // Filtro anno
             if (!empty($filtri['anno'])) {
                 $sql .= " AND YEAR(Data) = ?";
                 $params[] = (int) $filtri['anno'];
@@ -667,6 +668,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce tutte le categorie con il conteggio dei casi
     public function getCategorie($soloApprovati = true)
     {
         try {
@@ -702,8 +704,7 @@ class FunzioniDB
         }
     }
 
-
-
+    // Conta i casi di una specifica categoria
     public function contaCasiPerCategoria($tipologia, $soloApprovati = true)
     {
         try {
@@ -734,6 +735,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce i casi in attesa di approvazione
     public function getCasiNonApprovati($limite = 50)
     {
         try {
@@ -743,8 +745,8 @@ class FunzioniDB
 
             $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Data, Luogo, Tipologia, Data_Inserimento, Autore
                       FROM Caso
-                      WHERE Approvato = 0 
-                      ORDER BY Data_Inserimento DESC 
+                      WHERE Approvato = 0
+                      ORDER BY Data_Inserimento DESC
                       LIMIT ?";
 
             $result = $this->db->query($query, [$limite], "i");
@@ -765,6 +767,7 @@ class FunzioniDB
         }
     }
 
+    // Approva un caso rendendolo visibile pubblicamente
     public function approvaCaso($nCaso)
     {
         try {
@@ -788,6 +791,7 @@ class FunzioniDB
         }
     }
 
+    // Rifiuta ed elimina un caso e tutti i dati collegati
     public function rifiutaCaso($nCaso)
     {
         try {
@@ -816,6 +820,7 @@ class FunzioniDB
         }
     }
 
+    // Inserisce un nuovo commento su un caso
     public function inserisciCommento($emailUtente, $idCaso, $commento)
     {
         try {
@@ -850,6 +855,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce i commenti di un caso
     public function getCommentiCaso($idCaso, $limite = 50)
     {
         try {
@@ -882,6 +888,7 @@ class FunzioniDB
         }
     }
 
+    // Conta il numero di commenti di un caso
     public function contaCommentiCaso($idCaso)
     {
         try {
@@ -907,6 +914,7 @@ class FunzioniDB
         }
     }
 
+    // Elimina un commento (solo proprietario o admin)
     public function eliminaCommento($idCommento, $emailUtente, $isAdmin = false)
     {
         try {
@@ -948,7 +956,8 @@ class FunzioniDB
         }
     }
 
-    public function inserisciCaso($titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $immagine = null, $autoreEmail = '')
+    // Inserisce un nuovo caso nel database
+    public function inserisciCaso($titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $immagine = null, $autoreEmail = null)
     {
         try {
             if (!$this->db->apriConnessione()) {
@@ -962,7 +971,7 @@ class FunzioniDB
 
             $slug = $this->generaSlugUnico($titolo);
 
-            $query = "INSERT INTO Caso (Titolo, Slug, Data, Luogo, Descrizione, Storia, Tipologia, Immagine, Approvato, Autore) 
+            $query = "INSERT INTO Caso (Titolo, Slug, Data, Luogo, Descrizione, Storia, Tipologia, Immagine, Approvato, Autore)
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
 
             $params = [$titolo, $slug, $data, $luogo, $descrizione, $storia, $tipologia, $immagine, $autoreEmail];
@@ -983,6 +992,7 @@ class FunzioniDB
         }
     }
 
+    // Genera uno slug URL-friendly unico dal titolo
     public function generaSlugUnico($titolo)
     {
         $slug = strtolower($titolo);
@@ -1003,6 +1013,7 @@ class FunzioniDB
         return $slug;
     }
 
+    // Verifica se uno slug esiste già
     private function slugEsiste($slug)
     {
         $query = "SELECT N_Caso FROM Caso WHERE Slug = ?";
@@ -1011,6 +1022,7 @@ class FunzioniDB
         return ($result && is_object($result) && mysqli_num_rows($result) > 0);
     }
 
+    // Restituisce lo slug di un caso dato l'ID
     public function getSlugById($casoId)
     {
         try {
@@ -1036,6 +1048,7 @@ class FunzioniDB
         }
     }
 
+    // Inserisce una nuova vittima collegata a un caso
     public function inserisciVittima($casoId, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null, $immagine = null)
     {
         try {
@@ -1052,7 +1065,7 @@ class FunzioniDB
             $dataDecessoFinal = !empty($dataDecesso) ? $dataDecesso : null;
             $immagineFinal = !empty($immagine) ? $immagine : '';
 
-            $query = "INSERT INTO Vittima (Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso, Immagine) 
+            $query = "INSERT INTO Vittima (Nome, Cognome, LuogoNascita, DataNascita, DataDecesso, Caso, Immagine)
                       VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $dataDecessoFinal, $casoId, $immagineFinal];
@@ -1074,6 +1087,7 @@ class FunzioniDB
         }
     }
 
+    // Inserisce un nuovo colpevole
     public function inserisciColpevole($nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $immagine = null)
     {
         try {
@@ -1089,7 +1103,7 @@ class FunzioniDB
             $dataNascitaFinal = !empty($dataNascita) ? $dataNascita : '1990-01-01';
             $immagineFinal = !empty($immagine) ? $immagine : '';
 
-            $query = "INSERT INTO Colpevole (Nome, Cognome, LuogoNascita, DataNascita, Immagine) 
+            $query = "INSERT INTO Colpevole (Nome, Cognome, LuogoNascita, DataNascita, Immagine)
                       VALUES (?, ?, ?, ?, ?)";
 
             $params = [$nome, $cognome, $luogoNascita, $dataNascitaFinal, $immagineFinal];
@@ -1111,6 +1125,7 @@ class FunzioniDB
         }
     }
 
+    // Collega un colpevole a un caso tramite la tabella Colpa
     public function collegaColpevoleACaso($colpevoleId, $casoId)
     {
         try {
@@ -1130,6 +1145,7 @@ class FunzioniDB
         }
     }
 
+    // Inserisce un nuovo articolo/fonte collegato a un caso
     public function inserisciArticolo($casoId, $titolo, $data = null, $link = '')
     {
         try {
@@ -1166,6 +1182,7 @@ class FunzioniDB
         }
     }
 
+    // Incrementa il contatore visualizzazioni di un caso
     public function incrementaVisualizzazioni($casoId)
     {
         try {
@@ -1185,6 +1202,7 @@ class FunzioniDB
         }
     }
 
+    // Aggiorna i dati di un caso esistente
     public function aggiornaCaso($nCaso, $titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $riApprova = false, $immagine = null)
     {
         try {
@@ -1197,9 +1215,7 @@ class FunzioniDB
                 return ['success' => false, 'message' => 'Tutti i campi obbligatori devono essere compilati'];
             }
 
-            // Costruisci la query in base ai parametri
             if ($immagine !== null) {
-                // Aggiorna anche l'immagine (può essere '' per rimuovere o un path per aggiornare)
                 $immagineValue = ($immagine === '') ? null : $immagine;
 
                 if ($riApprova) {
@@ -1210,7 +1226,6 @@ class FunzioniDB
                 $params = [$titolo, $data, $luogo, $descrizione, $storia, $tipologia, $immagineValue, $nCaso];
                 $types = "sssssssi";
             } else {
-                // Non aggiornare l'immagine
                 if ($riApprova) {
                     $query = "UPDATE Caso SET Titolo = ?, Data = ?, Luogo = ?, Descrizione = ?, Storia = ?, Tipologia = ?, Approvato = 0 WHERE N_Caso = ?";
                 } else {
@@ -1234,6 +1249,7 @@ class FunzioniDB
         }
     }
 
+    // Aggiorna solo l'immagine di un caso
     public function aggiornaImmagineCaso($nCaso, $immagine)
     {
         try {
@@ -1253,9 +1269,9 @@ class FunzioniDB
         }
     }
 
+    // Verifica se un utente può modificare un caso
     public function puoModificareCaso($nCaso, $emailUtente, $isAdmin = false)
     {
-        // Admin può sempre modificare
         if ($isAdmin) {
             return true;
         }
@@ -1265,7 +1281,6 @@ class FunzioniDB
                 return false;
             }
 
-            // Verifica se l'utente è l'autore
             $query = "SELECT Autore FROM Caso WHERE N_Caso = ?";
             $result = $this->db->query($query, [$nCaso], "i");
 
@@ -1284,10 +1299,10 @@ class FunzioniDB
         }
     }
 
+    // Elimina un caso e tutti i dati collegati
     public function eliminaCaso($nCaso, $emailUtente, $isAdmin = false)
     {
         try {
-            // Verifica permessi
             if (!$this->puoModificareCaso($nCaso, $emailUtente, $isAdmin)) {
                 return ['success' => false, 'message' => 'Non hai i permessi per eliminare questo caso'];
             }
@@ -1299,10 +1314,8 @@ class FunzioniDB
             $this->db->query("DELETE FROM Commento WHERE ID_Caso = ?", [$nCaso], "i");
             $this->db->query("DELETE FROM Articolo WHERE Caso = ?", [$nCaso], "i");
             $this->db->query("DELETE FROM Vittima WHERE Caso = ?", [$nCaso], "i");
-
             $this->db->query("DELETE FROM Colpa WHERE Caso = ?", [$nCaso], "i");
 
-            // Elimina il caso
             $query = "DELETE FROM Caso WHERE N_Caso = ?";
             $result = $this->db->query($query, [$nCaso], "i");
 
@@ -1319,6 +1332,7 @@ class FunzioniDB
         }
     }
 
+    // Aggiorna i dati di una vittima
     public function aggiornaVittima($idVittima, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null, $immagine = null)
     {
         try {
@@ -1349,6 +1363,7 @@ class FunzioniDB
         }
     }
 
+    // Aggiorna solo l'immagine di una vittima
     public function aggiornaImmagineVittima($idVittima, $immagine)
     {
         try {
@@ -1368,6 +1383,7 @@ class FunzioniDB
         }
     }
 
+    // Elimina una vittima
     public function eliminaVittima($idVittima)
     {
         try {
@@ -1387,6 +1403,7 @@ class FunzioniDB
         }
     }
 
+    // Elimina tutte le vittime di un caso
     public function eliminaVittimeByCaso($casoId)
     {
         try {
@@ -1406,6 +1423,7 @@ class FunzioniDB
         }
     }
 
+    // Aggiorna i dati di un colpevole
     public function aggiornaColpevole($idColpevole, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $immagine = null)
     {
         try {
@@ -1436,6 +1454,7 @@ class FunzioniDB
         }
     }
 
+    // Aggiorna solo l'immagine di un colpevole
     public function aggiornaImmagineColpevole($idColpevole, $immagine)
     {
         try {
@@ -1455,6 +1474,7 @@ class FunzioniDB
         }
     }
 
+    // Rimuove il collegamento tra un colpevole e un caso
     public function rimuoviColpevoleDaCaso($idColpevole, $casoId)
     {
         try {
@@ -1474,6 +1494,7 @@ class FunzioniDB
         }
     }
 
+    // Rimuove tutti i colpevoli da un caso ed elimina quelli orfani
     public function rimuoviColpevoliByCaso($casoId)
     {
         try {
@@ -1513,6 +1534,7 @@ class FunzioniDB
         }
     }
 
+    // Aggiorna i dati di un articolo/fonte
     public function aggiornaArticolo($idArticolo, $titolo, $data = null, $link = '')
     {
         try {
@@ -1537,6 +1559,7 @@ class FunzioniDB
         }
     }
 
+    // Elimina un articolo/fonte
     public function eliminaArticolo($idArticolo)
     {
         try {
@@ -1556,6 +1579,7 @@ class FunzioniDB
         }
     }
 
+    // Elimina tutti gli articoli/fonti di un caso
     public function eliminaArticoliByCaso($casoId)
     {
         try {
@@ -1575,6 +1599,7 @@ class FunzioniDB
         }
     }
 
+    // Restituisce l'email dell'autore di un caso
     public function getAutoreCaso($nCaso)
     {
         try {

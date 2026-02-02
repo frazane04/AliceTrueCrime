@@ -1,17 +1,13 @@
 <?php
-/**
- * FormCasoHelper.php - Utility per form segnala e modifica caso
- */
+// FormCasoHelper - Utility per form segnala e modifica caso
 
 require_once __DIR__ . '/ImageHandler.php';
 
 class FormCasoHelper
 {
-
     private ImageHandler $imageHandler;
     private string $prefix;
 
-    // Configurazione tipologie caso
     public const TIPOLOGIE = [
         'Serial killer',
         'Casi mediatici italiani',
@@ -21,15 +17,14 @@ class FormCasoHelper
         'Altro'
     ];
 
+    // Inizializza l'handler immagini e il prefix URL
     public function __construct(?ImageHandler $imageHandler = null)
     {
         $this->imageHandler = $imageHandler ?? new ImageHandler();
         $this->prefix = function_exists('getPrefix') ? getPrefix() : '';
     }
 
-
-
-
+    // Estrae i dati delle vittime dal form POST
     public function parseVittimeFromPost(array $post): array
     {
         $nomi = $post['vittima_nome'] ?? [];
@@ -58,7 +53,7 @@ class FormCasoHelper
         return $vittime;
     }
 
-
+    // Estrae i dati dei colpevoli dal form POST
     public function parseColpevoliFromPost(array $post): array
     {
         $nomi = $post['colpevole_nome'] ?? [];
@@ -85,7 +80,7 @@ class FormCasoHelper
         return $colpevoli;
     }
 
-
+    // Estrae i dati degli articoli dal form POST
     public function parseArticoliFromPost(array $post): array
     {
         $titoli = $post['articolo_titolo'] ?? [];
@@ -107,16 +102,7 @@ class FormCasoHelper
         return $articoli;
     }
 
-
-
-    /**
-     * Gestisce upload immagine caso (nuovo o sostituzione)
-     *
-     * @param array $files $_FILES array
-     * @param string $slug Slug del caso
-     * @param string|null $immagineEsistente Path immagine attuale (per modifica)
-     * @return array ['path' => string|null, 'error' => string|null, 'aggiorna' => bool]
-     */
+    // Gestisce upload immagine caso (nuovo o sostituzione)
     public function gestisciImmagineCaso(array $files, string $slug, ?string $immagineEsistente = null): array
     {
         $result = ['path' => null, 'error' => null, 'aggiorna' => false];
@@ -145,17 +131,7 @@ class FormCasoHelper
         return $result;
     }
 
-    /**
-     * Gestisce upload immagine per una persona (vittima o colpevole)
-     *
-     * @param array $files $_FILES array
-     * @param string $tipo 'vittima' o 'colpevole'
-     * @param int $index Indice nell'array
-     * @param string $nome Nome persona
-     * @param string $cognome Cognome persona
-     * @param string|null $immagineEsistente Path immagine attuale
-     * @return string|null Path nuova immagine o immagine esistente
-     */
+    // Gestisce upload immagine per una persona (vittima o colpevole)
     public function gestisciImmaginePersona(
         array $files,
         string $tipo,
@@ -201,9 +177,7 @@ class FormCasoHelper
         return !empty($immagineEsistente) ? $immagineEsistente : null;
     }
 
-    /**
-     * Elimina tutte le immagini associate a un caso (caso + vittime + colpevoli)
-     */
+    // Elimina tutte le immagini associate a un caso
     public function eliminaTutteImmaginiCaso(array $caso, array $vittime, array $colpevoli): void
     {
         if (!empty($caso['Immagine'])) {
@@ -221,12 +195,7 @@ class FormCasoHelper
         }
     }
 
-    /**
-     * Pulisce immagini orfane (non più associate) per modifica caso
-     *
-     * @param array $personeNuove Array persone dal form (con 'immagine_esistente')
-     * @param array $personeVecchie Array persone dal DB (con 'Immagine')
-     */
+    // Pulisce immagini orfane non più associate
     public function pulisciImmaginiOrfane(array $personeNuove, array $personeVecchie): void
     {
         $immaginiDaPreservare = [];
@@ -243,8 +212,7 @@ class FormCasoHelper
         }
     }
 
-
-
+    // Genera HTML per entry form vittima
     public function generaHtmlVittima(?array $dati = null, int $index = 0): string
     {
         $id = $dati['ID_Vittima'] ?? 0;
@@ -271,7 +239,7 @@ class FormCasoHelper
         ]);
     }
 
-
+    // Genera HTML per entry form colpevole
     public function generaHtmlColpevole(?array $dati = null, int $index = 0): string
     {
         $id = $dati['ID_Colpevole'] ?? 0;
@@ -296,7 +264,7 @@ class FormCasoHelper
         ]);
     }
 
-
+    // Genera HTML per entry form articolo
     public function generaHtmlArticolo(?array $dati = null, int $index = 0): string
     {
         return renderComponent('articolo-form-entry', [
@@ -308,9 +276,7 @@ class FormCasoHelper
         ]);
     }
 
-    /**
-     * Genera HTML anteprima immagine esistente con bottoni rimuovi/annulla
-     */
+    // Genera HTML anteprima immagine esistente
     private function generaAnteprimaImmagine(
         string $tipo,
         int $index,
@@ -339,9 +305,7 @@ class FormCasoHelper
 HTML;
     }
 
-    /**
-     * Genera HTML per anteprima immagine caso
-     */
+    // Genera HTML per anteprima immagine caso
     public function generaAnteprimaImmagineCaso(array $caso): array
     {
         $immagine = $caso['Immagine'] ?? '';
@@ -371,12 +335,9 @@ HTML;
         return ['hidden' => $hiddenInput, 'anteprima' => $anteprima];
     }
 
-    // Tipologie che richiedono lang="en"
     private const TIPOLOGIE_EN = ['Serial killer', 'Cold case', 'Celebrity'];
 
-    /**
-     * Genera opzioni select per tipologia caso
-     */
+    // Genera opzioni select per tipologia caso
     public function generaOpzioniTipologia(?string $tipologiaSelezionata = null): string
     {
         $html = '<option value="">-- Seleziona categoria --</option>';
@@ -388,6 +349,7 @@ HTML;
         return $html;
     }
 
+    // Genera HTML lista vittime da array DB
     public function generaHtmlListaVittime(array $vittime): string
     {
         $html = '';
@@ -403,6 +365,7 @@ HTML;
         return $html;
     }
 
+    // Genera HTML lista colpevoli da array DB
     public function generaHtmlListaColpevoli(array $colpevoli): string
     {
         $html = '';
@@ -417,9 +380,7 @@ HTML;
         return $html;
     }
 
-    /**
-     * Genera HTML lista articoli da array DB
-     */
+    // Genera HTML lista articoli da array DB
     public function generaHtmlListaArticoli(array $articoli): string
     {
         $html = '';
@@ -431,13 +392,7 @@ HTML;
         return $html;
     }
 
-    // ========================================
-    // MESSAGGI FEEDBACK
-    // ========================================
-
-    /**
-     * Genera HTML per messaggio errori
-     */
+    // Genera HTML per messaggio errori
     public static function generaMessaggioErrori(array $errori): string
     {
         if (empty($errori)) {
@@ -451,9 +406,7 @@ HTML;
         return $html;
     }
 
-    /**
-     * Genera HTML per messaggio successo modifica
-     */
+    // Genera HTML per messaggio successo modifica
     public static function generaMessaggioSuccessoModifica(bool $riApprova, string $prefix, string $slug, bool $isAdmin): string
     {
         $msgRiApprova = $riApprova ? '<br><strong>Il caso è stato rimesso in attesa di approvazione.</strong>' : '';
@@ -468,9 +421,7 @@ HTML;
 HTML;
     }
 
-    /**
-     * Genera HTML per messaggio successo segnalazione
-     */
+    // Genera HTML per messaggio successo segnalazione
     public static function generaMessaggioSuccessoSegnalazione(
         int $casoId,
         int $numVittime,
