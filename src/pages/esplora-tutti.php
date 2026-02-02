@@ -74,7 +74,7 @@ $htmlPagina = '
         ' . $searchBarHtml . '
 
         <div id="esplora-content">
-            <div class="explore-grid">
+            <div id="results-grid" class="explore-grid">
                 ' . $htmlRisultati . '
             </div>
         </div>

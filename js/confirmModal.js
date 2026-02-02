@@ -35,6 +35,7 @@
 
         // Riferimenti agli elementi
 
+        modalTitle = modal.querySelector('#modal-title');
         modalDescription = modal.querySelector('#modal-description');
         confirmBtn = modal.querySelector('#modal-confirm');
         cancelBtn = modal.querySelector('#modal-cancel');
