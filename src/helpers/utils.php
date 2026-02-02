@@ -193,6 +193,52 @@ function generaHtmlPersone(array $persone, string $tipo): string
     return $html;
 }
 
+/**
+ * Genera l'HTML delle card per i casi.
+ * Ottimizzato per Ranking (SEO) e Accessibilità (WCAG 2.0 AA).
+ */
+function generaHtmlCards(array $listaCasi): string
+{
+    if (empty($listaCasi)) {
+        return '<p class="no-results">Nessun caso trovato.</p>';
+    }
+
+    $html = '';
+    $prefix = getPrefix();
+
+    foreach ($listaCasi as $caso) {
+        // Creazione sinossi per la card
+        $descrizione = htmlspecialchars(substr($caso['Descrizione'] ?? '', 0, 100)) . '...';
+
+        // Meta informazioni (Data e Luogo) per SEO locale
+        $metaParts = [];
+        if (!empty($caso['Data'])) {
+            $metaParts[] = '<span class="card-meta-item">' . date('Y', strtotime($caso['Data'])) . '</span>';
+        }
+        if (!empty($caso['Luogo'])) {
+            $metaParts[] = '<span class="card-meta-item">' . htmlspecialchars($caso['Luogo']) . '</span>';
+        }
+        $cardMeta = implode('<span class="card-meta-separator"></span>', $metaParts);
+
+        // Accessibilità: gestione termini stranieri (WCAG AA)
+        $tipologia = $caso['Tipologia'] ?? '';
+        $tipologieEn = ['Serial killer', 'Cold case', 'Celebrity'];
+        $tipologiaLang = in_array($tipologia, $tipologieEn) ? ' lang="en"' : '';
+
+        // Rendering del componente card
+        $html .= renderComponent('card-caso-esplora', [
+            'IMMAGINE' => getImageUrl($caso['Immagine'] ?? null),
+            'TITOLO' => htmlspecialchars($caso['Titolo']),
+            'DESCRIZIONE' => $descrizione,
+            'TIPOLOGIA' => htmlspecialchars($tipologia),
+            'TIPOLOGIA_LANG' => $tipologiaLang,
+            'CARD_META' => $cardMeta,
+            'LINK' => $prefix . '/esplora/' . urlencode(getSlugFromCaso($caso))
+        ]);
+    }
+    return $html;
+}
+
 function generaHtmlArticoli(array $articoli): string
 {
     if (empty($articoli)) {
@@ -435,58 +481,39 @@ function generateLiList($links, $currentPath): string
 
 function getBreadcrumbs($currentPath): string
 {
-
     $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
     $basePath = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
 
-
-    if ($basePath !== '' && strpos($currentPath, $basePath) === 0) {
-        $relativePath = substr($currentPath, strlen($basePath));
-    } else {
-        $relativePath = $currentPath;
-    }
-
+    $relativePath = (strpos($currentPath, $basePath) === 0) ? substr($currentPath, strlen($basePath)) : $currentPath;
     $path = trim(parse_url($relativePath, PHP_URL_PATH), '/');
 
-
-    if (empty($path) || $path === 'home.php') {
+    if (empty($path) || $path === 'home.php' || $path === 'index.php') {
         return '<nav aria-label="Breadcrumb" class="breadcrumbs"><span aria-current="page">Home</span></nav>';
     }
 
-    // Iniziamo con Home
     $breadcrumbs = ['<a href="' . ($basePath ?: '/') . '">Home</a>'];
 
-    $parts = explode('/', $path);
-    $accumulatedPath = $basePath; // Iniziamo l'accumulo dal base path reale
-    $totalParts = count($parts);
-
-    // Gestione speciale per /esplora/slug/modifica: Home → Esplora → [Nome Caso] → Modifica
-    if ($totalParts === 3 && $parts[0] === 'esplora' && $parts[2] === 'modifica') {
-        $slug = $parts[1];
-        $breadcrumbs[] = '<a href="' . $basePath . '/esplora">Esplora</a>';
-        $breadcrumbs[] = '<a href="' . $basePath . '/esplora/' . $slug . '">' . ucwords(str_replace('-', ' ', $slug)) . '</a>';
-        $breadcrumbs[] = '<span aria-current="page">Modifica</span>';
-
+    // LOGICA SPECIALE: Esplora Tutti deve avere come genitore Esplora
+    if ($path === 'esplora-tutti') {
+        $breadcrumbs[] = '<a href="' . getPrefix() . '/esplora">Esplora</a>';
+        $breadcrumbs[] = '<span aria-current="page">Esplora Tutti</span>';
+        
         return '<nav aria-label="Breadcrumb" class="breadcrumbs">' .
             implode(' <span class="separator">/</span> ', $breadcrumbs) .
             '</nav>';
     }
 
+    $parts = explode('/', $path);
+    $accumulatedPath = $basePath;
+
     foreach ($parts as $index => $part) {
-        if ($part === '')
-            continue;
-
+        // FILTRO: Salta le cartelle fisiche del server per evitare il 404
+        if ($part === '' || $part === 'src' || $part === 'pages') continue;
+        
         $accumulatedPath .= '/' . $part;
+        $name = ($part === 'about') ? '<span lang="en">About</span>' : ucwords(str_replace(['-', '_'], ' ', $part));
 
-
-        if ($part === 'about') {
-            $name = '<span lang="en">About</span>';
-        } else {
-            $name = ucwords(str_replace(['-', '_'], ' ', $part));
-        }
-
-
-        if ($index === $totalParts - 1) {
+        if ($index === count($parts) - 1) {
             $breadcrumbs[] = '<span aria-current="page">' . $name . '</span>';
         } else {
             $breadcrumbs[] = '<a href="' . $accumulatedPath . '">' . $name . '</a>';

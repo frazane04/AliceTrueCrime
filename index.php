@@ -53,6 +53,7 @@ $routes = [
     '/home' => 'home.php',
 
     '/esplora' => 'esplora.php',
+    '/esplora-tutti' => 'esplora-tutti.php',
     '/segnala-caso' => 'segnala.php',
     '/about' => 'about.php',
     '/privacy' => 'privacy.php',

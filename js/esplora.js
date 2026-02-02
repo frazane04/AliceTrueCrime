@@ -1,20 +1,24 @@
 document.addEventListener('DOMContentLoaded', function () {
     const searchForm = document.getElementById('search-form');
+    
+    // Se il form non esiste (es. nella Dashboard), esci silenziosamente senza errori
+    if (!searchForm) {
+        return; 
+    }
+
     const searchInput = document.getElementById('search-input');
     const filterCategoria = document.getElementById('filter-categoria');
-
     const btnReset = document.getElementById('btn-reset');
-
-    const resultsContainer = document.getElementById('esplora-content');
-    const activeFiltersContainer = document.getElementById('active-filters-container');
+    
+    // Assicurati che il contenitore dei risultati corrisponda al nuovo template
+    const resultsContainer = document.getElementById('results-grid') || document.getElementById('esplora-content');
+    
     const loadingIndicator = document.getElementById('search-loading');
-
-
 
     let debounceTimer;
     const DEBOUNCE_DELAY = 400;
 
-
+    // Ora getAttribute non darà più errore perché searchForm è validato
     const baseUrl = searchForm.getAttribute('data-url');
 
     function fetchResults(pushState = true) {

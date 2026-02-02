@@ -1,11 +1,18 @@
 Options +FollowSymLinks
 RewriteEngine On
 
-# Se il file o la cartella esistono, non fare nulla
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
+# 1. ECCEZIONE PER FILE FISICI (CSS, JS, IMMAGINI)
+# Se il file o la cartella richiesti esistono davvero sul server, fermati qui e caricali.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Altrimenti reindirizza tutto a index.php
+# 2. REGOLA SPECIFICA PER ESPLORA TUTTI
+# Questa deve stare SOPRA la regola generica dell'index.php
+RewriteRule ^esplora-tutti$ src/pages/esplora-tutti.php [L,QSA]
+
+# 3. FALLBACK GENERALE A INDEX.PHP
+# Solo se la richiesta non è un file reale e non è "esplora-tutti", vai a index.php
 RewriteRule ^ index.php [L]
 
 # ============================================

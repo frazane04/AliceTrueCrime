@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../helpers/utils.php'; 
 require_once __DIR__ . '/../db/connessione.php';
 
 $contenuto = loadTemplate('index');
