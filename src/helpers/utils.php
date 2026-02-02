@@ -349,7 +349,7 @@ function getNavBarLi($currentPath): string
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
         $prefix . '/segnala-caso' => 'Segnala Caso',
-        $prefix . '/chi-siamo' => 'Informazioni Aggiuntive',
+        $prefix . '/about' => '<span lang="en">About</span>',
     ];
 
     return generateLiList($links, $currentPath);
@@ -389,7 +389,7 @@ function getFooterNavigaLi($currentPath): string
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
         $prefix . '/segnala-caso' => 'Segnala Caso',
-        $prefix . '/chi-siamo' => 'Informazioni Aggiuntive',
+        $prefix . '/about' => '<span lang="en">About</span>',
     ];
     return generateLiList($links, $currentPath);
 }
@@ -451,8 +451,8 @@ function getBreadcrumbs($currentPath): string
         $accumulatedPath .= '/' . $part;
 
 
-        if ($part === 'chi-siamo') {
-            $name = 'Informazioni Aggiuntive';
+        if ($part === 'about') {
+            $name = '<span lang="en">About</span>';
         } else {
             $name = ucwords(str_replace(['-', '_'], ' ', $part));
         }
