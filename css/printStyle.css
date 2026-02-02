@@ -1,0 +1,332 @@
+@media print {
+
+    :root {
+        --text-dark: #2A1A12;
+        --text-muted: #5D4337;
+        --primary: #7A3E26;
+        --primary-dark: #4A2618;
+        --bg-bordeaux: #630D16;
+        --white: #FFFFFF;
+        --bg-lightest: #EFE6D9;
+        --border-light: #D1C0AD;
+    }
+
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+
+    html {
+        font-size: 12pt;
+    }
+
+    body {
+        font-family: "Times New Roman", Times, serif;
+        background-color: var(--white) !important;
+        color: var(--text-dark) !important;
+        line-height: 1.6;
+        min-height: auto;
+    }
+
+    @page {
+        margin: 1.5cm;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+        color: var(--text-dark) !important;
+    }
+
+    h1 {
+        font-size: 20pt;
+        border-bottom: 2pt solid var(--primary);
+        padding-bottom: 0.2em;
+        margin: 0.3em 0;
+    }
+
+    h2 {
+        font-size: 16pt;
+        margin: 0.3em 0;
+    }
+
+    h3 {
+        font-size: 14pt;
+        margin: 0.2em 0;
+    }
+
+    p {
+        orphans: 3;
+        widows: 3;
+        margin: 0.3em 0;
+        color: var(--text-dark) !important;
+    }
+
+    a {
+        color: var(--primary) !important;
+        text-decoration: underline;
+    }
+
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 9pt;
+        font-style: italic;
+    }
+
+    a[href^="#"]:after,
+    a[href^="/"]:after {
+        content: "";
+    }
+
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        page-break-inside: avoid;
+    }
+
+    th,
+    td {
+        border: 1pt solid var(--border-light);
+        padding: 0.5em;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    .main-header,
+    .header-container {
+        background-color: var(--white) !important;
+        position: static;
+        page-break-after: avoid;
+        box-shadow: none;
+    }
+
+    .main-header {
+        padding: 0.5em;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .header-container {
+        padding: 0.3em 0.5em;
+        border-bottom: 2pt solid var(--primary);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo-area {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo-area img {
+        height: 95px !important;
+        width: auto !important;
+        object-fit: contain;
+        padding: 0.3em;
+    }
+
+    .main-nav {
+        display: block !important;
+        position: static !important;
+        transform: none !important;
+    }
+
+    .main-nav ul {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-nav li {
+        display: inline-block;
+    }
+
+    .main-nav a {
+        color: var(--text-dark) !important;
+        text-decoration: none;
+        font-size: 10pt;
+    }
+
+    .activePage a {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+    .header-actions {
+        display: flex !important;
+        gap: 0.3em;
+    }
+
+    footer {
+        background-color: var(--white) !important;
+        padding: 0.5em 1em;
+        border-top: 2pt solid var(--primary);
+        page-break-before: avoid;
+    }
+
+    footer img,
+    .footer-logo-area img {
+        height: 80px !important;
+        width: auto !important;
+    }
+
+    #back-to-top,
+    .back-to-top,
+    .scroll-to-top,
+    footer .scroll-to-top,
+    footer #back-to-top {
+        display: none !important;
+    }
+
+    #breadcrumb {
+        background-color: var(--bg-lightest) !important;
+        padding: 0.3em 0.5em;
+        margin-bottom: 0.5em;
+        border-left: 3pt solid var(--primary);
+    }
+
+    .hero-section {
+        position: relative;
+        min-height: 30vh;
+        margin: 0.5em 0;
+        padding: 1.5em 1em;
+        border-radius: 0.5em;
+        background-color: #251101 !important;
+        background-image: linear-gradient(to bottom,
+                rgba(37, 17, 1, 0.75),
+                rgba(37, 17, 1, 0.95)),
+            url("../assets/img/hero-bg.svg") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .hero-content {
+        text-align: center;
+    }
+
+    .hero-section h1 {
+        color: var(--white) !important;
+        font-size: 2.5em;
+        margin-bottom: 0.3em;
+    }
+
+    .hero-section p {
+        color: var(--white) !important;
+        font-size: 1.2em;
+    }
+
+    section {
+        margin: 0.5em 0;
+    }
+
+    .sezione-stretta {
+        padding: 0.3em 1em;
+        max-width: 100%;
+    }
+
+    blockquote {
+        margin: 0.5em 0;
+        padding-left: 1em;
+        border-left: 3pt solid var(--primary);
+        font-style: italic;
+        page-break-inside: avoid;
+    }
+
+    #carousel-casi,
+    .cta-area {
+        padding: 1em;
+        margin: 0.5em 0;
+    }
+
+    .popular-container {
+        gap: 1em;
+    }
+
+    input,
+    select,
+    textarea {
+        border: 1pt solid var(--border-light) !important;
+        background-color: var(--white) !important;
+    }
+
+    .auth-container,
+    .auth-card,
+    .auth-form,
+    .form-group,
+    .auth-alternative,
+    .content-grid,
+    .case-card,
+    .carousel-card,
+    .card-commento,
+    .detective-sidebar,
+    .detective-card-mini,
+    .team-card,
+    .team-section,
+    .how-it-works-card,
+    .how-it-works-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .team-card .card-info,
+    .team-card .card-foto,
+    .how-it-works-card h3,
+    .how-it-works-card p {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .menu-toggle,
+    .hamburger-icon,
+    .mobile-actions,
+    .menu-close,
+    video,
+    audio,
+    iframe,
+    .no-print,
+    .social-share,
+    .share-buttons,
+    .password-toggle {
+        display: none !important;
+    }
+
+    .auth-form button[type="submit"],
+    .auth-alternative .btn,
+    .btn-primary,
+    .btn-outline {
+        display: inline-block !important;
+    }
+
+    .sr-only,
+    .visually-hidden {
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        clip: auto !important;
+        font-size: 9pt;
+        font-style: italic;
+    }
+
+}
