@@ -87,7 +87,7 @@ if (isLoggedIn()) {
     
     if ($puoModificare) {
         $htmlAzioniUtente = renderComponent('btn-azione-caso', [
-            'LINK_HREF' => $prefix . '/modifica-caso?id=' . $casoId,
+            'LINK_HREF' => $prefix . '/esplora/' . $caso['Slug'] . '/modifica',
             'TESTO' => 'Modifica Caso'
         ]);
     }

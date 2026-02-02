@@ -516,6 +516,18 @@ function getBreadcrumbs($currentPath): string
     $accumulatedPath = $basePath; // Iniziamo l'accumulo dal base path reale
     $totalParts = count($parts);
 
+    // Gestione speciale per /esplora/slug/modifica: Home → Esplora → [Nome Caso] → Modifica
+    if ($totalParts === 3 && $parts[0] === 'esplora' && $parts[2] === 'modifica') {
+        $slug = $parts[1];
+        $breadcrumbs[] = '<a href="' . $basePath . '/esplora">Esplora</a>';
+        $breadcrumbs[] = '<a href="' . $basePath . '/esplora/' . $slug . '">' . ucwords(str_replace('-', ' ', $slug)) . '</a>';
+        $breadcrumbs[] = '<span aria-current="page">Modifica</span>';
+
+        return '<nav aria-label="Breadcrumb" class="breadcrumbs">' .
+            implode(' <span class="separator">/</span> ', $breadcrumbs) .
+            '</nav>';
+    }
+
     foreach ($parts as $index => $part) {
         if ($part === '')
             continue;

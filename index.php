@@ -36,6 +36,20 @@ if (preg_match('#^/esplora/([a-z0-9\-]+)$#i', $path, $matches)) {
     }
 }
 
+if (preg_match('#^/esplora/([a-z0-9\-]+)/modifica$#i', $path, $matches)) {
+    $_GET['slug'] = $matches[1];
+
+    $fileToLoad = __DIR__ . '/src/pages/modifica_caso.php';
+
+    if (file_exists($fileToLoad)) {
+        require $fileToLoad;
+        exit;
+    } else {
+        http_response_code(500);
+        die("Errore: modifica_caso.php non trovato");
+    }
+}
+
 // ROTTE STATICHE
 $routes = [
     '/' => 'home.php',
@@ -44,7 +58,6 @@ $routes = [
 
     '/esplora' => 'esplora.php',
     '/segnala-caso' => 'segnala.php',
-    '/modifica-caso' => 'modifica_caso.php',
     '/chi-siamo' => 'chi_siamo.php',
     '/privacy' => 'privacy.php',
 
