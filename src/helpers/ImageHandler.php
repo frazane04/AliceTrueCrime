@@ -20,7 +20,7 @@ class ImageHandler
     ];
 
     // Configurazione upload
-    private const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+    private const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
     private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
 
@@ -78,7 +78,7 @@ class ImageHandler
         }
 
         if ($file['size'] > self::MAX_FILE_SIZE) {
-            return ['success' => false, 'path' => null, 'message' => 'File troppo grande. Massimo 1MB consentito'];
+            return ['success' => false, 'path' => null, 'message' => 'File troppo grande. Massimo 2MB consentito'];
         }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -95,11 +95,12 @@ class ImageHandler
         }
 
         $slugSanitized = $this->sanitizzaSlug($slug);
-        $nomeFile = $slugSanitized . '.' . $extension;
+        // Sempre WebP per ottimizzazione
+        $nomeFile = $slugSanitized . '.webp';
         $pathCompleto = $this->basePath . '/' . $tipo . '/' . $nomeFile;
 
         if (file_exists($pathCompleto)) {
-            $nomeFile = $slugSanitized . '-' . time() . '.' . $extension;
+            $nomeFile = $slugSanitized . '-' . time() . '.webp';
             $pathCompleto = $this->basePath . '/' . $tipo . '/' . $nomeFile;
         }
 
@@ -182,22 +183,8 @@ class ImageHandler
             $srcHeight
         );
 
-        // Salva immagine
-        $extension = strtolower(pathinfo($destPath, PATHINFO_EXTENSION));
-        $success = false;
-
-        switch ($extension) {
-            case 'jpg':
-            case 'jpeg':
-                $success = imagejpeg($imgDst, $destPath, 85); // Qualità 85%
-                break;
-            case 'png':
-                $success = imagepng($imgDst, $destPath, 8); // Compressione 8
-                break;
-            case 'webp':
-                $success = imagewebp($imgDst, $destPath, 85); // Qualità 85%
-                break;
-        }
+        // Salva sempre in WebP compresso (qualità 80%)
+        $success = imagewebp($imgDst, $destPath, 80);
 
         // Libera memoria
         imagedestroy($imgSrc);
