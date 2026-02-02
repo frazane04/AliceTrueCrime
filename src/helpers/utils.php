@@ -269,7 +269,7 @@ function generaHtmlArticoli(array $articoli): string
  */
 function getAvatarUrl(string $nome, int $size = 24): string
 {
-    return "https://ui-avatars.com/api/?name=" . urlencode($nome) . "&background=0D8ABC&color=fff&size=" . $size;
+    return "https://ui-avatars.com/api/?name=" . urlencode($nome) . "&background=630D16&color=fff&size=" . $size;
 }
 
 /**
@@ -441,11 +441,10 @@ function getHeaderButtons(): string
         $email = htmlspecialchars($_SESSION['user_email'] ?? '');
 
         // Immagine profilo basata sullo username
-        $imgProfile = "https://ui-avatars.com/api/?name=" . urlencode($username) . "&background=7A3E26&color=fff";
+        $imgProfile = "https://ui-avatars.com/api/?name=" . urlencode($username) . "&background=630D16&color=fff";
 
         return <<<HTML
             <div class="user-menu">
-
                 <a href="$prefix/profilo" class="button-layout profile-btn" aria-label="$username - Vai al profilo" title="$email">
                     <img src="$imgProfile" alt="Avatar di $username" width="24" class="avatar-small" />
                     $username
@@ -466,6 +465,7 @@ function getFooterNavigaLi($currentPath): string
     $links = [
         $prefix . '/' => 'Home',
         $prefix . '/esplora' => 'Esplora Casi',
+        $prefix . '/segnala-caso' => 'Segnala Caso',
         $prefix . '/chi-siamo' => 'Informazioni Aggiuntive',
     ];
     return generateLiList($links, $currentPath);

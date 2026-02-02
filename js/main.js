@@ -25,57 +25,52 @@ document.addEventListener("DOMContentLoaded", () => {
     applyTheme();
 
     // --- LOGICA MENU HAMBURGER MOBILE ---
-    const menuToggle = document.querySelector('.menu-toggle');
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuClose = document.getElementById('menu-close');
     const mainNav = document.querySelector('.main-nav');
-    // const body = document.body; // RIMOSSO: Già dichiarato all'inizio della funzione
 
     if (menuToggle && mainNav) {
-        // REMOVED DEBUG ALERT
-        console.log("Menu toggle found, attaching listener");
-
+        // Toggle menu (apri/chiudi)
         menuToggle.addEventListener('click', (e) => {
-            e.preventDefault(); // Evita submit form se presente o scroll strani
-            e.stopPropagation();
+            e.preventDefault();
+            const isOpen = mainNav.classList.contains('is-visible');
 
-            console.log("CLICK! Toggling menu...");
-
-            mainNav.classList.toggle('is-visible');
-
-            const isExpanded = mainNav.classList.contains('is-visible');
-            menuToggle.setAttribute('aria-expanded', isExpanded);
-
-            // Toggle Scroll Lock
-            document.body.classList.toggle('is-menu-open', isExpanded);
+            if (isOpen) {
+                // Chiudi menu
+                mainNav.classList.remove('is-visible');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            } else {
+                // Apri menu
+                mainNav.classList.add('is-visible');
+                menuToggle.setAttribute('aria-expanded', 'true');
+            }
         });
+
+        // Chiudi menu con la croce
+        if (menuClose) {
+            menuClose.addEventListener('click', () => {
+                mainNav.classList.remove('is-visible');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            });
+        }
 
         // Chiudi menu quando si clicca un link
         mainNav.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                menuToggle.setAttribute('aria-expanded', 'false');
                 mainNav.classList.remove('is-visible');
-                body.classList.remove('is-menu-open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('is-menu-open');
             });
         });
-    }
 
-    // Gestione click tema (solo se gli elementi esistono nella pagina)
-    if (themeSwitcher && magnifyingGlass) {
-        themeSwitcher.addEventListener("click", () => {
-            if (magnifyingGlass.classList.contains("animate-sweep")) {
-                return;
+        // Chiudi menu con tasto Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mainNav.classList.contains('is-visible')) {
+                mainNav.classList.remove('is-visible');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('is-menu-open');
+                menuToggle.focus();
             }
-
-            magnifyingGlass.classList.add("animate-sweep");
-
-            setTimeout(() => {
-                isDarkTheme = !isDarkTheme;
-                localStorage.setItem("isDarkTheme", isDarkTheme);
-                applyTheme();
-            }, 500);
-        });
-
-        magnifyingGlass.addEventListener('animationend', () => {
-            magnifyingGlass.classList.remove("animate-sweep");
         });
     }
 

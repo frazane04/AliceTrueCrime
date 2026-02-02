@@ -2,10 +2,26 @@
     <div class="header-container">
         <div class="logo-area">
             <img src="{{PATH_PREFIX}}/assets/img/LogoVettorialeNoBordi.svg?v=2" alt="Logo AliceTrueCrime" height="80" />
-            <span>Alice <span lang="en">TrueCrime</span></span>
+            <span>Alice<span lang="en">TrueCrime</span></span>
         </div>
 
-        <nav class="main-nav" aria-label="Menu principale">
+        <!-- Hamburger: visibile solo su mobile -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Apri menu" aria-expanded="false" aria-controls="menu">
+            <span class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </button>
+
+        <nav class="main-nav" id="menu" aria-label="Menu principale">
+            <!-- Croce di chiusura: visibile solo sul menu mobile aperto -->
+            <button class="menu-close" id="menu-close" aria-label="Chiudi menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
             <ul>
                 {{NAVBAR}}
             </ul>

@@ -10,15 +10,15 @@ $prefix = getPrefix();
 
 // --- GESTIONE LOGICA BOTTONE NEWSLETTER ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle_newsletter') {
-    $statoAttuale = (int)$_POST['current_status'];
+    $statoAttuale = (int) $_POST['current_status'];
     $nuovoStato = ($statoAttuale === 1) ? 0 : 1;
     $db->updateNewsletter($email, $nuovoStato);
 }
 
 // Recupero dati aggiornati
 $utente = $db->getUtenteByEmail($email);
-$is_iscritti = (int)($utente['Is_Newsletter'] ?? 0);
-$is_admin = (bool)($utente['Is_Admin'] ?? false);
+$is_iscritti = (int) ($utente['Is_Newsletter'] ?? 0);
+$is_admin = (bool) ($utente['Is_Admin'] ?? false);
 
 // --- SEZIONE NEWSLETTER ---
 if ($is_iscritti === 1) {
@@ -50,26 +50,26 @@ $adminHtml = '';
 if ($is_admin) {
     $casiInAttesa = $db->getCasiNonApprovati(50);
     $numeroCasiAttesa = count($casiInAttesa);
-    
+
     $adminHtml = "
     <section class='content-block admin-section'>
         <div class='block-header'>
             <h2>Casi da Approvare</h2>
             <span class='badge-admin'>$numeroCasiAttesa in attesa</span>
         </div>";
-    
+
     if (empty($casiInAttesa)) {
         $adminHtml .= "
         <p class='empty-state'>Nessun caso in attesa di approvazione!</p>";
     } else {
         $adminHtml .= "<ul class='casi-pending-list'>";
-        
+
         foreach ($casiInAttesa as $caso) {
             $titolo = htmlspecialchars($caso['Titolo']);
             $slug = htmlspecialchars($caso['Slug']);
             $dataInserimento = date('d/m/Y', strtotime($caso['Data_Inserimento']));
             $tipologia = htmlspecialchars($caso['Tipologia'] ?? 'Non specificata');
-            
+
             $adminHtml .= "
             <li class='caso-pending-item'>
                 <a href='$prefix/esplora/$slug?preview=admin'>
@@ -78,10 +78,10 @@ if ($is_admin) {
                 </a>
             </li>";
         }
-        
+
         $adminHtml .= "</ul>";
     }
-    
+
     $adminHtml .= "</section>";
 }
 
