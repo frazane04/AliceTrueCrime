@@ -45,19 +45,19 @@ foreach ($categorie as $cat) {
 
 // Configurazione della barra per funzionare su questa pagina
 $searchBarHtml = str_replace([
-    '{{SEARCH_VALUE}}', 
-    '{{OPTIONS_CATEGORIE}}', 
+    '{{SEARCH_VALUE}}',
+    '{{OPTIONS_CATEGORIE}}',
     '{{PREFIX}}',
     'action="' . getPrefix() . '/esplora"', // Cambia destinazione form
     'data-url="' . getPrefix() . '/esplora"', // Cambia URL per AJAX
     '{{FILTRI_ATTIVI}}'
 ], [
-    htmlspecialchars($searchQuery), 
-    $optionsCategorie, 
+    htmlspecialchars($searchQuery),
+    $optionsCategorie,
     getPrefix(),
     'action="' . getPrefix() . '/esplora-tutti"',
     'data-url="' . getPrefix() . '/esplora-tutti"',
-    '' 
+    ''
 ], $searchBarHtml);
 
 // 6. Struttura della Pagina (Usa il design che mi hai passato)

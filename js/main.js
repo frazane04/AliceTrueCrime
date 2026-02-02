@@ -7,19 +7,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const magnifyingGlass = document.querySelector(".magnifying-glass");
     const body = document.body;
 
-    let isDarkTheme = localStorage.getItem("isDarkTheme") === "true";
+    const isSystemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let isDarkTheme = localStorage.getItem("isDarkTheme");
+
+    // Se non c'è preferenza salvata, usa quella di sistema
+    if (isDarkTheme === null) {
+        isDarkTheme = isSystemDark;
+    } else {
+        isDarkTheme = isDarkTheme === "true";
+    }
 
     function applyTheme() {
         if (isDarkTheme) {
             body.classList.add("dark-theme");
-
-            if (themeIconLunaContainer) themeIconLunaContainer.classList.remove("hidden");
-            if (themeIconSoleContainer) themeIconSoleContainer.classList.add("hidden");
+            // In dark mode, show SUN (to switch to light)
+            if (themeIconSoleContainer) themeIconSoleContainer.classList.remove("hidden");
+            if (themeIconLunaContainer) themeIconLunaContainer.classList.add("hidden");
         } else {
             body.classList.remove("dark-theme");
-            if (themeIconLunaContainer) themeIconLunaContainer.classList.add("hidden");
-            if (themeIconSoleContainer) themeIconSoleContainer.classList.remove("hidden");
+            // In light mode, show MOON (to switch to dark)
+            if (themeIconSoleContainer) themeIconSoleContainer.classList.add("hidden");
+            if (themeIconLunaContainer) themeIconLunaContainer.classList.remove("hidden");
         }
+        localStorage.setItem("isDarkTheme", isDarkTheme);
+    }
+
+    if (themeSwitcher) {
+        themeSwitcher.addEventListener("click", () => {
+            isDarkTheme = !isDarkTheme;
+            applyTheme();
+        });
     }
 
     applyTheme();
