@@ -113,9 +113,7 @@ const templates = {
     `
 };
 
-// ========================================
-// MANAGER ENTRY DINAMICHE
-// ========================================
+// Gestione Entry Dinamiche
 const vittimeManager = createEntryManager({
     containerId: 'vittime-container',
     entrySelector: '.vittima-entry',
@@ -140,34 +138,30 @@ const articoliManager = createEntryManager({
     confirmRemove: true
 });
 
-// ========================================
 // EVENT LISTENERS
-// ========================================
 document.getElementById('btn-add-vittima').addEventListener('click', () => vittimeManager.add());
 document.getElementById('btn-add-colpevole').addEventListener('click', () => colpevoliManager.add());
 document.getElementById('btn-add-articolo').addEventListener('click', () => articoliManager.add());
 
-// Event listener per il bottone reset form
+// Pulsante Reset
 const btnResetForm = document.getElementById('btn-reset-form');
 if (btnResetForm) {
     btnResetForm.addEventListener('click', confermaResetForm);
 }
 
-// ========================================
-// VALIDAZIONE FORM (sincronizzata con server PHP)
-// ========================================
-(function() {
+// Validazione Lato Client
+(function () {
     const form = document.getElementById('form-segnalazione');
     if (!form) return;
 
-    // Campi principali
+
     const titoloInput = document.getElementById('titolo');
     const dataCrimineInput = document.getElementById('data_crimine');
     const luogoInput = document.getElementById('luogo');
     const descrizioneBreveInput = document.getElementById('descrizione_breve');
     const storiaInput = document.getElementById('storia');
 
-    // Regole di validazione (come server PHP)
+
     const titoloRules = [
         ValidationRules.required('Il titolo è obbligatorio'),
         ValidationRules.minLength(5, 'Il titolo deve avere almeno 5 caratteri'),
@@ -195,15 +189,15 @@ if (btnResetForm) {
         ValidationRules.maxLength(10000, 'La storia non può superare 10.000 caratteri')
     ];
 
-    // Validazione real-time su blur
+    // Validazione Blur
     attachValidation(titoloInput, titoloRules);
     attachValidation(dataCrimineInput, dataRules);
     attachValidation(luogoInput, luogoRules);
     attachValidation(descrizioneBreveInput, descrizioneBreveRules);
     attachValidation(storiaInput, storiaRules);
 
-    // Validazione submit
-    form.addEventListener('submit', function(e) {
+    // Validazione Submit
+    form.addEventListener('submit', function (e) {
         const errors = [];
 
         if (validateField(titoloInput, titoloRules)) errors.push('Titolo');
@@ -275,14 +269,12 @@ if (btnResetForm) {
     });
 })();
 
-// ========================================
-// CONFERMA RESET FORM (accessibile)
-// ========================================
+// Conferma Reset Form
 function confermaResetForm() {
     openConfirmModal(
         'Conferma cancellazione',
         'Sei sicuro di voler cancellare tutti i dati inseriti?',
-        function() {
+        function () {
             const form = document.getElementById('form-segnalazione');
             if (form) {
                 form.reset();

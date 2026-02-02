@@ -1,12 +1,6 @@
 <?php
 /**
  * Funzioni per interagire con il database
- * Utilizzano prepared statements per prevenire SQL Injection
- * 
- * REFACTORED: Rimossa duplicazione metodi admin/utente
- * Ora si usa un parametro $soloApprovati per controllare il filtro
- * 
- * AGGIORNATO: Aggiunto supporto per upload immagini
  */
 
 require_once __DIR__ . '/connessione.php';
@@ -20,13 +14,9 @@ class FunzioniDB
         $this->db = new ConnessioneDB();
     }
 
-    // ========================================
-    // GESTIONE UTENTI
-    // ========================================
 
-    /**
-     * Registra un nuovo utente
-     */
+
+
     public function registraUtente($email, $username, $password, $isAdmin = false, $newsletter = false)
     {
         try {
@@ -60,9 +50,7 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Aggiorna lo stato newsletter dell'utente
-     */
+
     public function updateNewsletter($email, $stato)
     {
         try {
@@ -77,9 +65,7 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Verifica se un'email esiste già
-     */
+
     private function verificaEmailEsistente($email)
     {
         $query = "SELECT Email FROM Utente WHERE Email = ?";
@@ -88,14 +74,7 @@ class FunzioniDB
         return ($result && is_object($result) && mysqli_num_rows($result) > 0);
     }
 
-    /**
-     * Effettua il login verificando email/username e password.
-     * Rileva automaticamente se l'input è un'email o uno username.
-     *
-     * @param string $identificativo Email o username
-     * @param string $password Password
-     * @return array Risultato con success, message e user
-     */
+
     public function loginUtente($identificativo, $password)
     {
         try {
@@ -103,7 +82,6 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
-            // Determina se è email o username
             $isEmail = filter_var($identificativo, FILTER_VALIDATE_EMAIL);
             $campo = $isEmail ? 'Email' : 'Username';
             $erroreNonTrovato = $isEmail ? 'Email non trovata' : 'Username non trovato';
@@ -140,25 +118,19 @@ class FunzioniDB
         }
     }
 
-    /**
-     * @deprecated Usa loginUtente() invece
-     */
+
     public function loginUtenteEmail($email, $password)
     {
         return $this->loginUtente($email, $password);
     }
 
-    /**
-     * @deprecated Usa loginUtente() invece
-     */
+
     public function loginUtenteUsername($username, $password)
     {
         return $this->loginUtente($username, $password);
     }
 
-    /**
-     * Ottiene i dati di un utente tramite Email
-     */
+
     public function getUtenteByEmail($email)
     {
         try {
@@ -184,9 +156,7 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Salva il token "Ricordami" hashato per un utente
-     */
+
     public function salvaRememberToken($email, $token)
     {
         try {
@@ -207,11 +177,7 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Verifica il token "Ricordami" per l'auto-login
-     * Restituisce i dati utente se valido, null altrimenti
-     */
-    public function verificaRememberToken($email, $token)
+    function verificaRememberToken($email, $token)
     {
         try {
             if (!$this->db->apriConnessione()) {
@@ -224,10 +190,9 @@ class FunzioniDB
             if ($result && is_object($result) && mysqli_num_rows($result) > 0) {
                 $user = mysqli_fetch_assoc($result);
 
-                // Verifica che il token corrisponda
                 if (!empty($user['Remember_Token']) && password_verify($token, $user['Remember_Token'])) {
                     $this->db->chiudiConnessione();
-                    unset($user['Remember_Token']); // Non restituire il token hash
+                    unset($user['Remember_Token']);
                     return $user;
                 }
             }
@@ -241,9 +206,7 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Rimuove il token "Ricordami" (per logout)
-     */
+
     public function rimuoviRememberToken($email)
     {
         try {
@@ -263,9 +226,7 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Verifica se uno username esiste già
-     */
+
     public function verificaUsernameEsistente($username)
     {
         try {
@@ -286,9 +247,7 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Ottiene i dati di un utente tramite Username
-     */
+
     public function getUtenteByUsername($username)
     {
         try {
@@ -314,19 +273,7 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE CASI - METODI REFACTORIZZATI
-    // ========================================
 
-
-
-    /**
-     * Recupera l'ID di un caso dal suo slug
-     * 
-     * @param string $slug Lo slug del caso
-     * @param bool $soloApprovati Se true (default), cerca solo tra i casi approvati
-     * @return int|null L'ID del caso o null se non trovato
-     */
     public function getCasoIdBySlug($slug, $soloApprovati = true)
     {
         try {
@@ -357,13 +304,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera casi per categoria
-     * 
-     * @param string $tipologia La categoria del caso
-     * @param int $limite Numero massimo di risultati
-     * @param bool $soloApprovati Se true (default), filtra solo approvati
-     */
     public function getCasiPerCategoria($tipologia, $limite = 10, $soloApprovati = true)
     {
         try {
@@ -399,12 +339,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera i casi più recenti/letti
-     * 
-     * @param int $limite Numero massimo di risultati
-     * @param bool $soloApprovati Se true (default), filtra solo approvati
-     */
     public function getCasiPiuLetti($limite = 5, $soloApprovati = true)
     {
         try {
@@ -439,12 +373,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera casi casuali per la dashboard
-     * 
-     * @param int $limite Numero massimo di risultati
-     * @param bool $soloApprovati Se true (default), filtra solo approvati
-     */
     public function getCasiCasuali($limite = 4, $soloApprovati = true)
     {
         try {
@@ -479,12 +407,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera i casi aggiunti più di recente (per ID decrescente)
-     * 
-     * @param int $limite Numero massimo di risultati
-     * @param bool $soloApprovati Se true (default), filtra solo approvati
-     */
     public function getCasiRecenti($limite = 5, $soloApprovati = true)
     {
         try {
@@ -499,7 +421,6 @@ class FunzioniDB
                 $query .= " WHERE Approvato = 1";
             }
 
-            // Ordina per N_Caso (che è autoincrement) decrescente per avere gli ultimi inseriti
             $query .= " ORDER BY N_Caso DESC LIMIT ?";
 
             $result = $this->db->query($query, [$limite], "i");
@@ -520,13 +441,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera un singolo caso tramite ID
-     * 
-     * @param int $nCaso ID del caso
-     * @param bool $soloApprovati Se true (default), cerca solo tra i casi approvati
-     * @return array|null Dati del caso o null se non trovato
-     */
     public function getCasoById($nCaso, $soloApprovati = true)
     {
         try {
@@ -557,12 +471,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera le vittime di un caso
-     * 
-     * @param int $id ID del caso
-     * @param bool $soloApprovati Se true (default), filtra per casi approvati
-     */
     public function getVittimeByCaso($id, $soloApprovati = true)
     {
         try {
@@ -596,12 +504,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera i colpevoli di un caso
-     * 
-     * @param int $id ID del caso
-     * @param bool $soloApprovati Se true (default), filtra per casi approvati
-     */
     public function getColpevoliByCaso($id, $soloApprovati = true)
     {
         try {
@@ -638,10 +540,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera gli articoli di un caso
-     * Nota: Gli articoli non hanno filtro approvazione perché sono legati al caso
-     */
     public function getArticoliByCaso($id)
     {
         try {
@@ -668,13 +566,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Cerca casi per titolo o descrizione
-     *
-     * @param string $query Termine di ricerca
-     * @param int $limite Numero massimo risultati
-     * @param bool $soloApprovati Se true (default), filtra solo approvati
-     */
     public function cercaCasi($query, $limite = 20, $soloApprovati = true)
     {
         try {
@@ -711,17 +602,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Cerca casi con filtri avanzati
-     *
-     * @param array $filtri Array associativo con i filtri:
-     *   - 'q' => termine di ricerca (titolo/descrizione)
-     *   - 'categoria' => tipologia del caso
-     *   - 'anno' => anno del caso
-     * @param int $limite Numero massimo risultati
-     * @param bool $soloApprovati Se true (default), filtra solo approvati
-     * @return array Lista dei casi trovati
-     */
     public function cercaCasiConFiltri($filtri = [], $limite = 50, $soloApprovati = true)
     {
         try {
@@ -787,12 +667,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera tutte le categorie (tipologie) disponibili
-     *
-     * @param bool $soloApprovati Se true (default), conta solo casi approvati
-     * @return array Lista delle categorie con conteggio
-     */
     public function getCategorie($soloApprovati = true)
     {
         try {
@@ -828,56 +702,8 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera tutti gli anni disponibili nei casi
-     *
-     * @param bool $soloApprovati Se true (default), conta solo casi approvati
-     * @return array Lista degli anni disponibili
-     */
-    public function getAnniDisponibili($soloApprovati = true)
-    {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
 
-            $sql = "SELECT DISTINCT YEAR(Data) as anno
-                    FROM Caso
-                    WHERE Data IS NOT NULL";
 
-            if ($soloApprovati) {
-                $sql .= " AND Approvato = 1";
-            }
-
-            $sql .= " ORDER BY anno DESC";
-
-            $result = $this->db->query($sql, [], "");
-
-            $anni = [];
-            if ($result && is_object($result)) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    if ($row['anno']) {
-                        $anni[] = $row['anno'];
-                    }
-                }
-            }
-
-            $this->db->chiudiConnessione();
-            return $anni;
-
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            return [];
-        }
-    }
-
-    /**
-     * Conta i casi per una specifica categoria
-     *
-     * @param string $tipologia La categoria da contare
-     * @param bool $soloApprovati Se true (default), conta solo casi approvati
-     * @return int Numero di casi nella categoria
-     */
     public function contaCasiPerCategoria($tipologia, $soloApprovati = true)
     {
         try {
@@ -908,10 +734,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera casi in attesa di approvazione (solo admin)
-     * Questo metodo resta separato perché ha una logica specifica
-     */
     public function getCasiNonApprovati($limite = 50)
     {
         try {
@@ -943,9 +765,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Approva un caso (solo admin)
-     */
     public function approvaCaso($nCaso)
     {
         try {
@@ -969,9 +788,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Rifiuta/Elimina un caso (solo admin)
-     */
     public function rifiutaCaso($nCaso)
     {
         try {
@@ -979,13 +795,11 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
-            // Prima elimina le relazioni collegate
             $this->db->query("DELETE FROM Commento WHERE ID_Caso = ?", [$nCaso], "i");
             $this->db->query("DELETE FROM Articolo WHERE Caso = ?", [$nCaso], "i");
             $this->db->query("DELETE FROM Vittima WHERE Caso = ?", [$nCaso], "i");
             $this->db->query("DELETE FROM Colpa WHERE Caso = ?", [$nCaso], "i");
 
-            // Poi elimina il caso
             $query = "DELETE FROM Caso WHERE N_Caso = ?";
             $result = $this->db->query($query, [$nCaso], "i");
 
@@ -1002,13 +816,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE COMMENTI
-    // ========================================
-
-    /**
-     * Inserisce un nuovo commento
-     */
     public function inserisciCommento($emailUtente, $idCaso, $commento)
     {
         try {
@@ -1043,9 +850,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Recupera i commenti di un caso
-     */
     public function getCommentiCaso($idCaso, $limite = 50)
     {
         try {
@@ -1078,9 +882,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Conta i commenti di un caso
-     */
     public function contaCommentiCaso($idCaso)
     {
         try {
@@ -1106,9 +907,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Elimina un commento
-     */
     public function eliminaCommento($idCommento, $emailUtente, $isAdmin = false)
     {
         try {
@@ -1150,14 +948,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE CASO COMPLETO
-    // ========================================
-
-    /**
-     * Inserisce un caso completo con generazione automatica dello slug
-     * AGGIORNATO: Supporto immagine
-     */
     public function inserisciCaso($titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $immagine = null, $autoreEmail = '')
     {
         try {
@@ -1193,9 +983,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Genera uno slug unico dal titolo
-     */
     public function generaSlugUnico($titolo)
     {
         $slug = strtolower($titolo);
@@ -1216,9 +1003,6 @@ class FunzioniDB
         return $slug;
     }
 
-    /**
-     * Verifica se uno slug esiste già
-     */
     private function slugEsiste($slug)
     {
         $query = "SELECT N_Caso FROM Caso WHERE Slug = ?";
@@ -1227,9 +1011,6 @@ class FunzioniDB
         return ($result && is_object($result) && mysqli_num_rows($result) > 0);
     }
 
-    /**
-     * Recupera lo slug di un caso dall'ID
-     */
     public function getSlugById($casoId)
     {
         try {
@@ -1255,14 +1036,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE VITTIME
-    // ========================================
-
-    /**
-     * Inserisce una vittima
-     * AGGIORNATO: Supporto immagine
-     */
     public function inserisciVittima($casoId, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null, $immagine = null)
     {
         try {
@@ -1301,14 +1074,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE COLPEVOLI
-    // ========================================
-
-    /**
-     * Inserisce un colpevole
-     * AGGIORNATO: Supporto immagine
-     */
     public function inserisciColpevole($nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $immagine = null)
     {
         try {
@@ -1346,9 +1111,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Collega un colpevole a un caso
-     */
     public function collegaColpevoleACaso($colpevoleId, $casoId)
     {
         try {
@@ -1368,13 +1130,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE ARTICOLI/FONTI
-    // ========================================
-
-    /**
-     * Inserisce un articolo/fonte
-     */
     public function inserisciArticolo($casoId, $titolo, $data = null, $link = '')
     {
         try {
@@ -1411,13 +1166,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Incrementa il contatore delle visualizzazioni di un caso
-     * Viene chiamato quando un utente visualizza un caso approvato
-     * 
-     * @param int $casoId - ID del caso
-     * @return bool - true se l'incremento è avvenuto con successo
-     */
     public function incrementaVisualizzazioni($casoId)
     {
         try {
@@ -1437,25 +1185,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE MODIFICA CASO
-    // ========================================
-
-    /**
-     * Aggiorna i dati principali di un caso
-     * AGGIORNATO: Supporto immagine opzionale
-     * 
-     * @param int $nCaso ID del caso
-     * @param string $titolo Nuovo titolo
-     * @param string $data Nuova data
-     * @param string $luogo Nuovo luogo
-     * @param string $descrizione Nuova descrizione
-     * @param string $storia Nuova storia
-     * @param string|null $tipologia Nuova tipologia
-     * @param bool $riApprova Se true, imposta Approvato = 0
-     * @param string|null $immagine Nuovo percorso immagine (null = non modificare)
-     * @return array Risultato operazione
-     */
     public function aggiornaCaso($nCaso, $titolo, $data, $luogo, $descrizione, $storia, $tipologia = null, $riApprova = false, $immagine = null)
     {
         try {
@@ -1469,10 +1198,8 @@ class FunzioniDB
             }
 
             // Costruisci la query in base ai parametri
-            // Nota: $immagine può essere null (non aggiornare), stringa vuota '' (rimuovi), o path (aggiorna)
             if ($immagine !== null) {
                 // Aggiorna anche l'immagine (può essere '' per rimuovere o un path per aggiornare)
-                // Se è stringa vuota, impostiamo NULL nel database
                 $immagineValue = ($immagine === '') ? null : $immagine;
 
                 if ($riApprova) {
@@ -1507,9 +1234,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Aggiorna solo l'immagine di un caso
-     */
     public function aggiornaImmagineCaso($nCaso, $immagine)
     {
         try {
@@ -1529,14 +1253,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Verifica se un utente può modificare un caso
-     * 
-     * @param int $nCaso ID del caso
-     * @param string $emailUtente Email dell'utente
-     * @param bool $isAdmin Se l'utente è admin
-     * @return bool True se può modificare
-     */
     public function puoModificareCaso($nCaso, $emailUtente, $isAdmin = false)
     {
         // Admin può sempre modificare
@@ -1568,15 +1284,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Elimina un caso completo (con tutte le relazioni)
-     * Può essere usato da admin o autore
-     * 
-     * @param int $nCaso ID del caso
-     * @param string $emailUtente Email dell'utente che richiede l'eliminazione
-     * @param bool $isAdmin Se l'utente è admin
-     * @return array Risultato operazione
-     */
     public function eliminaCaso($nCaso, $emailUtente, $isAdmin = false)
     {
         try {
@@ -1589,13 +1296,10 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
-            // Elimina tutte le relazioni collegate (stesso codice di rifiutaCaso)
             $this->db->query("DELETE FROM Commento WHERE ID_Caso = ?", [$nCaso], "i");
             $this->db->query("DELETE FROM Articolo WHERE Caso = ?", [$nCaso], "i");
             $this->db->query("DELETE FROM Vittima WHERE Caso = ?", [$nCaso], "i");
 
-            // Per i colpevoli: elimina solo la relazione, non il colpevole stesso
-            // (potrebbe essere collegato ad altri casi)
             $this->db->query("DELETE FROM Colpa WHERE Caso = ?", [$nCaso], "i");
 
             // Elimina il caso
@@ -1615,14 +1319,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE VITTIME - MODIFICA/ELIMINAZIONE
-    // ========================================
-
-    /**
-     * Aggiorna una vittima esistente
-     * AGGIORNATO: Supporto immagine
-     */
     public function aggiornaVittima($idVittima, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $dataDecesso = null, $immagine = null)
     {
         try {
@@ -1653,9 +1349,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Aggiorna solo l'immagine di una vittima
-     */
     public function aggiornaImmagineVittima($idVittima, $immagine)
     {
         try {
@@ -1675,9 +1368,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Elimina una vittima
-     */
     public function eliminaVittima($idVittima)
     {
         try {
@@ -1697,9 +1387,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Elimina tutte le vittime di un caso
-     */
     public function eliminaVittimeByCaso($casoId)
     {
         try {
@@ -1719,14 +1406,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE COLPEVOLI - MODIFICA/ELIMINAZIONE
-    // ========================================
-
-    /**
-     * Aggiorna un colpevole esistente
-     * AGGIORNATO: Supporto immagine
-     */
     public function aggiornaColpevole($idColpevole, $nome, $cognome, $luogoNascita = 'N/A', $dataNascita = null, $immagine = null)
     {
         try {
@@ -1757,9 +1436,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Aggiorna solo l'immagine di un colpevole
-     */
     public function aggiornaImmagineColpevole($idColpevole, $immagine)
     {
         try {
@@ -1779,9 +1455,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Rimuove un colpevole da un caso (elimina solo la relazione in Colpa)
-     */
     public function rimuoviColpevoleDaCaso($idColpevole, $casoId)
     {
         try {
@@ -1801,9 +1474,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Rimuove tutti i colpevoli da un caso (collegamenti e record orfani)
-     */
     public function rimuoviColpevoliByCaso($casoId)
     {
         try {
@@ -1811,7 +1481,6 @@ class FunzioniDB
                 return false;
             }
 
-            // 1. Recupera gli ID dei colpevoli collegati a questo caso
             $querySelect = "SELECT Colpevole FROM Colpa WHERE Caso = ?";
             $colpevoliIds = $this->db->query($querySelect, [$casoId], "i");
 
@@ -1822,11 +1491,9 @@ class FunzioniDB
                 }
             }
 
-            // 2. Elimina i collegamenti dalla tabella Colpa
             $queryDelete = "DELETE FROM Colpa WHERE Caso = ?";
             $result = $this->db->query($queryDelete, [$casoId], "i");
 
-            // 3. Elimina i colpevoli che non sono più collegati a nessun caso
             foreach ($idsToCheck as $colpevoleId) {
                 $queryCheck = "SELECT COUNT(*) as cnt FROM Colpa WHERE Colpevole = ?";
                 $checkResult = $this->db->query($queryCheck, [$colpevoleId], "i");
@@ -1846,13 +1513,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // GESTIONE ARTICOLI - MODIFICA/ELIMINAZIONE
-    // ========================================
-
-    /**
-     * Aggiorna un articolo esistente
-     */
     public function aggiornaArticolo($idArticolo, $titolo, $data = null, $link = '')
     {
         try {
@@ -1877,9 +1537,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Elimina un articolo
-     */
     public function eliminaArticolo($idArticolo)
     {
         try {
@@ -1899,9 +1556,6 @@ class FunzioniDB
         }
     }
 
-    /**
-     * Elimina tutti gli articoli di un caso
-     */
     public function eliminaArticoliByCaso($casoId)
     {
         try {
@@ -1921,13 +1575,6 @@ class FunzioniDB
         }
     }
 
-    // ========================================
-    // UTILITY: Recupera autore caso
-    // ========================================
-
-    /**
-     * Recupera l'email dell'autore di un caso
-     */
     public function getAutoreCaso($nCaso)
     {
         try {

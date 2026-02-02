@@ -4,7 +4,6 @@
 
 require_once __DIR__ . '/../db/funzioni_db.php';
 
-// Se l'utente è già loggato, redirect al profilo
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     redirect('/profilo');
 }
@@ -16,7 +15,6 @@ $messaggioHTML = '';
 // GESTIONE FORM POST
 // ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verifica token CSRF
     if (!verificaCsrfToken()) {
         $messaggioHTML = alertHtml('error', 'Token di sicurezza non valido. Ricarica la pagina e riprova.');
     } else {
@@ -40,14 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $cookieExpiry = time() + (30 * 24 * 60 * 60);
                     $rememberToken = bin2hex(random_bytes(32));
 
-                    // Salva il token hashato nel database
                     $dbFunctions->salvaRememberToken($result['user']['email'], $rememberToken);
 
                     setcookie('remember_token', $rememberToken, $cookieExpiry, '/', '', true, true);
                     setcookie('user_email', $result['user']['email'], $cookieExpiry, '/', '', true, true);
                 }
 
-                // Rigenera token CSRF dopo login riuscito
                 rigeneraCsrfToken();
                 redirect('/profilo');
             } else {
@@ -57,9 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ========================================
-// CARICAMENTO E SOSTITUZIONE TEMPLATE
-// ========================================
+
 $contenuto = loadTemplate('accedi');
 
 $contenuto = str_replace('{{PREFIX}}', getPrefix(), $contenuto);

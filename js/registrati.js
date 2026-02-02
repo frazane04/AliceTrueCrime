@@ -2,14 +2,14 @@
  * Validazione form registrazione
  * Richiede: form-validation.js
  */
-(function() {
+(function () {
     const form = document.querySelector('.auth-form');
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const passwordConfirmInput = document.getElementById('password_confirm');
 
-    // Regole di validazione (sincronizzate con server PHP)
+
     const usernameRules = [
         ValidationRules.required('Username richiesto'),
         ValidationRules.minLength(3, 'Username troppo corto (minimo 3 caratteri)'),
@@ -33,14 +33,14 @@
         ValidationRules.matches(() => passwordInput.value, 'Le password non corrispondono')
     ];
 
-    // Validazione real-time su blur
+
     attachValidation(usernameInput, usernameRules);
     attachValidation(emailInput, emailRules);
     attachValidation(passwordInput, passwordRules);
     attachValidation(passwordConfirmInput, passwordConfirmRules);
 
-    // Validazione submit
-    form.addEventListener('submit', function(e) {
+
+    form.addEventListener('submit', function (e) {
         clearFormErrors();
         const errors = [];
 

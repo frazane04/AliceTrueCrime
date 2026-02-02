@@ -91,22 +91,22 @@ const ValidationRules = {
         validate: (v) => v === getOtherValue(),
         message: msg || 'I valori non corrispondono'
     }),
-    // Username: solo lettere, numeri e underscore (come server)
+
     alphanumericUnderscore: (msg) => ({
         validate: (v) => /^[a-zA-Z0-9_]+$/.test(v),
         message: msg || 'Solo lettere, numeri e underscore ammessi'
     }),
-    // Password: deve contenere maiuscola, minuscola e numero (come server)
+
     passwordStrength: (msg) => ({
         validate: (v) => /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])/.test(v),
         message: msg || 'Deve contenere almeno una maiuscola, una minuscola e un numero'
     }),
-    // Data non nel futuro
+
     notFutureDate: (msg) => ({
         validate: (v) => !v || new Date(v) <= new Date(),
         message: msg || 'La data non può essere nel futuro'
     }),
-    // URL valido (opzionale - valida solo se compilato)
+
     url: (msg) => ({
         validate: (v) => !v || /^https?:\/\/.+/.test(v),
         message: msg || 'URL non valido (deve iniziare con http:// o https://)'
@@ -119,7 +119,7 @@ const ValidationRules = {
  * @param {Array} rules - Array di regole [{validate: fn, message: string}]
  */
 function attachValidation(input, rules) {
-    input.addEventListener('blur', function() {
+    input.addEventListener('blur', function () {
         const value = this.value.trim();
         for (const rule of rules) {
             if (!rule.validate(value)) {
@@ -172,7 +172,7 @@ function initPasswordToggles() {
         // Imposta aria-pressed iniziale
         button.setAttribute('aria-pressed', 'false');
 
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const targetId = this.getAttribute('data-target');
             const input = document.getElementById(targetId);
             const eyeIcon = this.querySelector('.eye-icon');
@@ -195,5 +195,5 @@ function initPasswordToggles() {
     });
 }
 
-// Inizializza al caricamento della pagina
+
 document.addEventListener('DOMContentLoaded', initPasswordToggles);

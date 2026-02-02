@@ -6,9 +6,6 @@ require_once __DIR__ . '/../db/funzioni_db.php';
 require_once __DIR__ . '/../helpers/ImageHandler.php';
 require_once __DIR__ . '/../helpers/FormCasoHelper.php';
 
-// ========================================
-// CONTROLLO SESSIONE
-// ========================================
 $prefix = getPrefix();
 requireAuth(false, "
     <div class='access-denied-container text-center'>
@@ -20,25 +17,18 @@ requireAuth(false, "
     </div>
 ");
 
-// ========================================
-// INIZIALIZZAZIONE VARIABILI
-// ========================================
 $messaggioFeedback = "";
 $titolo = $data = $luogo = $descrizione_breve = $storia = $tipologia = '';
 $vittime = [];
 $colpevoli = [];
 $articoli = [];
 
-// ========================================
-// GESTIONE FORM POST
-// ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $dbFunctions = new FunzioniDB();
     $imageHandler = new ImageHandler();
     $formHelper = new FormCasoHelper($imageHandler);
 
-    // Recupero dati generali caso
     $titolo = trim($_POST['titolo'] ?? '');
     $data = $_POST['data_crimine'] ?? '';
     $luogo = trim($_POST['luogo'] ?? '');
@@ -47,14 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipologia = trim($_POST['tipologia'] ?? '');
     $autoreEmail = $_SESSION['user_email'];
 
-    // Parsing dati con helper
     $vittime = $formHelper->parseVittimeFromPost($_POST);
     $colpevoli = $formHelper->parseColpevoliFromPost($_POST);
     $articoli = $formHelper->parseArticoliFromPost($_POST);
 
-    // ========================================
-    // VALIDAZIONE
-    // ========================================
+    // Validazione
     $errori = [];
 
     if (empty($titolo) || strlen($titolo) < 5 || strlen($titolo) > 200) {
@@ -91,15 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ========================================
-    // INSERIMENTO NEL DATABASE
-    // ========================================
+    // Inserimento
     if (empty($errori)) {
         try {
             $tipologiaFinal = !empty($tipologia) ? $tipologia : null;
             $slugCaso = $dbFunctions->generaSlugUnico($titolo);
 
-            // Gestione immagine caso
             $immagineCaso = null;
             if (isset($_FILES['immagine_caso']) && $_FILES['immagine_caso']['error'] !== UPLOAD_ERR_NO_FILE) {
                 $resultImg = $imageHandler->caricaImmagine($_FILES['immagine_caso'], 'caso', $slugCaso);
@@ -111,39 +95,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (empty($errori)) {
-                // 1. Inserimento caso
                 $resultCaso = $dbFunctions->inserisciCaso(
-                    $titolo, $data, $luogo, $descrizione_breve, $storia,
-                    $tipologiaFinal, $immagineCaso, $autoreEmail
+                    $titolo,
+                    $data,
+                    $luogo,
+                    $descrizione_breve,
+                    $storia,
+                    $tipologiaFinal,
+                    $immagineCaso,
+                    $autoreEmail
                 );
 
                 if ($resultCaso['success']) {
                     $casoId = $resultCaso['caso_id'];
 
-                    // 2. Inserimento vittime con immagini
                     foreach ($vittime as $vittima) {
                         $immagineVittima = $formHelper->gestisciImmaginePersona(
-                            $_FILES, 'vittima', $vittima['file_index'],
-                            $vittima['nome'], $vittima['cognome']
+                            $_FILES,
+                            'vittima',
+                            $vittima['file_index'],
+                            $vittima['nome'],
+                            $vittima['cognome']
                         );
 
                         $dbFunctions->inserisciVittima(
-                            $casoId, $vittima['nome'], $vittima['cognome'],
-                            $vittima['luogo_nascita'], $vittima['data_nascita'],
-                            $vittima['data_decesso'], $immagineVittima
+                            $casoId,
+                            $vittima['nome'],
+                            $vittima['cognome'],
+                            $vittima['luogo_nascita'],
+                            $vittima['data_nascita'],
+                            $vittima['data_decesso'],
+                            $immagineVittima
                         );
                     }
 
-                    // 3. Inserimento colpevoli con immagini
                     foreach ($colpevoli as $colpevole) {
                         $immagineColpevole = $formHelper->gestisciImmaginePersona(
-                            $_FILES, 'colpevole', $colpevole['file_index'],
-                            $colpevole['nome'], $colpevole['cognome']
+                            $_FILES,
+                            'colpevole',
+                            $colpevole['file_index'],
+                            $colpevole['nome'],
+                            $colpevole['cognome']
                         );
 
                         $colpevoleId = $dbFunctions->inserisciColpevole(
-                            $colpevole['nome'], $colpevole['cognome'],
-                            $colpevole['luogo_nascita'], $colpevole['data_nascita'],
+                            $colpevole['nome'],
+                            $colpevole['cognome'],
+                            $colpevole['luogo_nascita'],
+                            $colpevole['data_nascita'],
                             $immagineColpevole
                         );
 
@@ -152,15 +151,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    // 4. Inserimento articoli
                     foreach ($articoli as $articolo) {
                         $dbFunctions->inserisciArticolo(
-                            $casoId, $articolo['titolo'],
-                            $articolo['data'], $articolo['link']
+                            $casoId,
+                            $articolo['titolo'],
+                            $articolo['data'],
+                            $articolo['link']
                         );
                     }
 
-                    // Success
                     $messaggioFeedback = FormCasoHelper::generaMessaggioSuccessoSegnalazione(
                         $casoId,
                         count($vittime),
@@ -169,7 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_SESSION['user']
                     );
 
-                    // Reset campi
                     $titolo = $data = $luogo = $descrizione_breve = $storia = $tipologia = '';
                     $vittime = [];
                     $colpevoli = [];
@@ -186,27 +184,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Messaggio errori
     if (!empty($errori)) {
         $messaggioFeedback = FormCasoHelper::generaMessaggioErrori($errori);
     }
 }
 
-// ========================================
-// CARICAMENTO TEMPLATE
-// ========================================
 $contenuto = loadTemplate('segnala_caso');
 
-// Iniezione feedback
 $contenuto = str_replace(
     '<div id="feedback-area">',
     '<div id="feedback-area">' . $messaggioFeedback,
     $contenuto
 );
 
-// ========================================
-// OUTPUT
-// ========================================
 $titoloPagina = "Apri Fascicolo - AliceTrueCrime";
 echo getTemplatePage($titoloPagina, $contenuto);
 ?>

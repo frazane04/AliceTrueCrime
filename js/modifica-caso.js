@@ -61,9 +61,7 @@ const templates = {
     `
 };
 
-// ========================================
-// MANAGER ENTRY DINAMICHE
-// ========================================
+// Gestione Entry Dinamiche
 const vittimeManager = createEntryManager({
     containerId: 'vittime-container',
     entrySelector: '.vittima-entry',
@@ -89,9 +87,7 @@ const articoliManager = createEntryManager({
     initialCount: document.querySelectorAll('.articolo-entry').length
 });
 
-// ========================================
 // EVENT LISTENERS
-// ========================================
 const btnAddVittima = document.getElementById('btn-add-vittima');
 if (btnAddVittima) {
     btnAddVittima.addEventListener('click', () => vittimeManager.add());
@@ -109,7 +105,7 @@ if (btnAddArticolo) {
 
 const btnEliminaCaso = document.getElementById('btn-elimina-caso');
 if (btnEliminaCaso) {
-    btnEliminaCaso.addEventListener('click', async function() {
+    btnEliminaCaso.addEventListener('click', async function () {
         const confirmed = await showConfirmModal({
             title: "Elimina Caso",
             message: "ATTENZIONE: Stai per eliminare definitivamente questo caso e tutte le immagini associate. L'operazione non può essere annullata.",
@@ -123,14 +119,12 @@ if (btnEliminaCaso) {
     });
 }
 
-// ========================================
-// VALIDAZIONE FORM (sincronizzata con server PHP)
-// ========================================
-(function() {
+// Validazione Lato Client
+(function () {
     const form = document.getElementById('form-modifica-caso');
     if (!form) return;
 
-    // Campi principali
+
     const titoloInput = document.getElementById('titolo');
     const dataCrimineInput = document.getElementById('data_crimine');
     const luogoInput = document.getElementById('luogo');
@@ -140,7 +134,7 @@ if (btnEliminaCaso) {
     // Verifica che gli elementi esistano
     if (!titoloInput || !dataCrimineInput || !luogoInput || !descrizioneBreveInput || !storiaInput) return;
 
-    // Regole di validazione (come server PHP)
+
     const titoloRules = [
         ValidationRules.required('Il titolo è obbligatorio'),
         ValidationRules.minLength(5, 'Il titolo deve avere almeno 5 caratteri'),
@@ -168,15 +162,15 @@ if (btnEliminaCaso) {
         ValidationRules.maxLength(10000, 'La storia non può superare 10.000 caratteri')
     ];
 
-    // Validazione real-time su blur
+    // Validazione Blur
     attachValidation(titoloInput, titoloRules);
     attachValidation(dataCrimineInput, dataRules);
     attachValidation(luogoInput, luogoRules);
     attachValidation(descrizioneBreveInput, descrizioneBreveRules);
     attachValidation(storiaInput, storiaRules);
 
-    // Validazione submit
-    form.addEventListener('submit', function(e) {
+    // Validazione Submit
+    form.addEventListener('submit', function (e) {
         const errors = [];
 
         if (validateField(titoloInput, titoloRules)) errors.push('Titolo');

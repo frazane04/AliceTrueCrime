@@ -3476,3 +3476,33 @@ textarea:focus-visible,
         font-size: 1.2em;
     }
 }
+
+.lead-constrained {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.team-section {
+    background-color: var(--white);
+    padding: 3em 2em;
+    border-radius: 1em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.team-title {
+    font-size: 2rem;
+    color: var(--primary);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.section-divider {
+    width: 80%;
+    border: 0;
+    border-top: 2px solid var(--primary);
+    margin: 0 auto 3em auto;
+}
+
+.team-grid-padding {
+    padding: 0 2em;
+}
