@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $passwordConfirm = $_POST['password_confirm'] ?? '';
-        $termsAccepted = isset($_POST['terms']);
         $newsletterOptIn = isset($_POST['newsletter']);
 
         // Validazione
@@ -32,8 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errorMessage = 'La password deve contenere almeno 8 caratteri.';
         } elseif ($password !== $passwordConfirm) {
             $errorMessage = 'Le password non coincidono.';
-        } elseif (!$termsAccepted) {
-            $errorMessage = 'Devi accettare i Termini di Servizio per registrarti.';
         } else {
             // Verifica robustezza password
             $hasUpperCase = preg_match('/[A-Z]/', $password);
@@ -50,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($dbFunctions->verificaUsernameEsistente($username)) {
                     $errorMessage = 'Questo username è già in uso. Scegline un altro.';
                 } else {
-                    $registrationResult = $dbFunctions->registraUtente($email, $username, $password, false);
+                    $registrationResult = $dbFunctions->registraUtente($email, $username, $password, false, $newsletterOptIn);
 
                     if ($registrationResult['success']) {
                         // Registrazione completata - rigenera CSRF token

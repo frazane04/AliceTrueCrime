@@ -27,7 +27,7 @@ class FunzioniDB
     /**
      * Registra un nuovo utente
      */
-    public function registraUtente($email, $username, $password, $isAdmin = false)
+    public function registraUtente($email, $username, $password, $isAdmin = false, $newsletter = false)
     {
         try {
             if (!$this->db->apriConnessione()) {
@@ -46,9 +46,10 @@ class FunzioniDB
 
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
             $isAdminInt = $isAdmin ? 1 : 0;
+            $newsletterInt = $newsletter ? 1 : 0;
 
-            $query = "INSERT INTO Utente (Email, Username, Password, Is_Admin, Is_Newsletter) VALUES (?, ?, ?, ?, 0)";
-            $result = $this->db->query($query, [$email, $username, $passwordHash, $isAdminInt], "sssi");
+            $query = "INSERT INTO Utente (Email, Username, Password, Is_Admin, Is_Newsletter) VALUES (?, ?, ?, ?, ?)";
+            $result = $this->db->query($query, [$email, $username, $passwordHash, $isAdminInt, $newsletterInt], "sssii");
 
             $this->db->chiudiConnessione();
             return ['success' => true, 'email' => $email];

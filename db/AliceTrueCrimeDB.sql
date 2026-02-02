@@ -523,7 +523,8 @@ ALTER TABLE `caso`
   ADD UNIQUE KEY `Slug` (`Slug`),
   ADD KEY `idx_visualizzazioni` (`Visualizzazioni`),
   ADD KEY `idx_approvato` (`Approvato`),
-  ADD KEY `idx_n_caso_desc` (`N_Caso`);
+  ADD KEY `idx_n_caso_desc` (`N_Caso`),
+  ADD KEY `Autore` (`Autore`);
 
 --
 -- Indici per le tabelle `colpa`
@@ -603,6 +604,12 @@ ALTER TABLE `vittima`
 --
 ALTER TABLE `articolo`
   ADD CONSTRAINT `Articolo_ibfk_1` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Limiti per la tabella `caso`
+--
+ALTER TABLE `caso`
+  ADD CONSTRAINT `Caso_ibfk_1` FOREIGN KEY (`Autore`) REFERENCES `utente` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `colpa`

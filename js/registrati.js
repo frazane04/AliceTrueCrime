@@ -8,7 +8,6 @@
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const passwordConfirmInput = document.getElementById('password_confirm');
-    const termsInput = document.getElementById('terms');
 
     // Regole di validazione (sincronizzate con server PHP)
     const usernameRules = [
@@ -49,13 +48,6 @@
         if (validateField(emailInput, emailRules)) errors.push('Email');
         if (validateField(passwordInput, passwordRules)) errors.push('Password');
         if (validateField(passwordConfirmInput, passwordConfirmRules)) errors.push('Conferma password');
-
-        // Valida termini
-        if (!termsInput.checked) {
-            showFormErrors('Devi accettare i Termini di Servizio e la Privacy Policy');
-            e.preventDefault();
-            return;
-        }
 
         if (errors.length > 0) {
             e.preventDefault();
