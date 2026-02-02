@@ -3,14 +3,12 @@
  * Gestisce le conferme admin e utente tramite modal accessibile
  */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
-    // ========================================
-    // EVENT LISTENER: Approva Caso (Admin)
-    // ========================================
+    // Approva Caso
     const btnApprovaCaso = document.getElementById('btn-approva-caso');
     if (btnApprovaCaso) {
-        btnApprovaCaso.addEventListener('click', async function() {
+        btnApprovaCaso.addEventListener('click', async function () {
             const confirmed = await showConfirmModal({
                 title: "Approva Caso",
                 message: "Confermi l'approvazione di questo caso? Sarà visibile pubblicamente a tutti gli utenti.",
@@ -24,12 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========================================
-    // EVENT LISTENER: Rifiuta Caso (Admin)
-    // ========================================
+    // Rifiuta Caso
     const btnRifiutaCaso = document.getElementById('btn-rifiuta-caso');
     if (btnRifiutaCaso) {
-        btnRifiutaCaso.addEventListener('click', async function() {
+        btnRifiutaCaso.addEventListener('click', async function () {
             const confirmed = await showConfirmModal({
                 title: "Rifiuta ed Elimina Caso",
                 message: "ATTENZIONE: Questa azione eliminerà definitivamente il caso e tutti i dati associati (vittime, colpevoli, articoli, commenti). L'operazione non può essere annullata.",
@@ -43,10 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========================================
-    // EVENT DELEGATION: Elimina Commento
-    // ========================================
-    document.addEventListener('click', async function(e) {
+    // Elimina Commento
+    document.addEventListener('click', async function (e) {
         const btn = e.target.closest('.btn-elimina-commento');
         if (!btn) return;
 

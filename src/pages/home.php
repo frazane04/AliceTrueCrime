@@ -1,27 +1,19 @@
 <?php
-// src/struct/home.php
-// Gestione della Home Page con dati dinamici
-
 require_once __DIR__ . '/../db/connessione.php';
 
-// 1. Carica il template HTML
 $contenuto = loadTemplate('index');
 
-// 2. Connessione Database
 $db = new ConnessioneDB();
 if (!$db->apriConnessione()) {
     error_log("Errore connessione database nella home");
 }
 
-// ========================================
-// 3. CASI IN EVIDENZA (scelti manualmente)
-// ========================================
+
 $casiInEvidenzaIDs = [1, 5, 12, 8];
 
 $htmlCasiEvidenza = '';
 
 if (!empty($casiInEvidenzaIDs)) {
-    // Crea la stringa per IN clause (es: "1,5,12,8")
     $idsString = implode(',', array_map('intval', $casiInEvidenzaIDs));
 
     $queryCasiEvidenza = "
@@ -56,9 +48,7 @@ if (!empty($casiInEvidenzaIDs)) {
     $htmlCasiEvidenza = "<p>Configura i casi in evidenza modificando gli ID in home.php</p>";
 }
 
-// ========================================
-// 4. ULTIME INCHIESTE (ultimi 3 per ID)
-// ========================================
+
 $htmlUltimeInchieste = '';
 
 $queryUltimeInchieste = "
@@ -91,26 +81,16 @@ if ($resultInchieste && mysqli_num_rows($resultInchieste) > 0) {
 }
 
 
-
-// Chiudo connessione
 $db->chiudiConnessione();
 
-// ========================================
-// 6. SOSTITUISCO I PLACEHOLDER
-// ========================================
 $contenuto = str_replace('{{CASI_EVIDENZA}}', $htmlCasiEvidenza, $contenuto);
 $contenuto = str_replace('{{ULTIME_INCHIESTE}}', $htmlUltimeInchieste, $contenuto);
 
-// Logic for Newsletter Link
 $linkNewsletter = isLoggedIn() ? getPrefix() . '/profilo#newsletter' : getPrefix() . '/accedi';
 $contenuto = str_replace('{{LINK_NEWSLETTER}}', $linkNewsletter, $contenuto);
 
-// Inject Breadcrumbs inside Hero for Home Page
 $contenuto = str_replace('{{BREADCRUMBS_HERO}}', getBreadcrumbs('/'), $contenuto);
 
-// ========================================
-// 7. OUTPUT FINALE
-// ========================================
 $titoloPagina = "Home - AliceTrueCrime | Cronaca Nera e True Crime";
 echo getTemplatePage($titoloPagina, $contenuto);
 ?>

@@ -5,11 +5,9 @@ error_reporting(E_ALL);
 
 require_once 'src/helpers/utils.php';
 
-//Analisi URL
 $request = $_SERVER['REQUEST_URI'];
 $path = parse_url($request, PHP_URL_PATH);
 
-//Gestione Prefisso
 $prefix = getPrefix();
 if ($prefix && strpos($path, $prefix) === 0) {
     $path = substr($path, strlen($prefix));
@@ -20,9 +18,7 @@ if (empty($path)) {
     $path = '/';
 }
 
-//ROTTE DINAMICHE
 if (preg_match('#^/esplora/([a-z0-9\-]+)$#i', $path, $matches)) {
-    // Cattura lo slug dall'URL
     $_GET['slug'] = $matches[1];
 
     $fileToLoad = __DIR__ . '/src/pages/caso.php';
@@ -67,7 +63,6 @@ $routes = [
     '/logout' => 'logout.php',
 ];
 
-//CONTROLLO E REINDIRIZZAMENTO
 if (array_key_exists($path, $routes)) {
     $fileToLoad = __DIR__ . '/src/pages/' . $routes[$path];
 

@@ -1,18 +1,16 @@
 <?php
-// utils.php - Gestione logica e templating
-// AGGIORNATO: Supporto per email come chiave primaria
+// Utils.php - Gestione logica e templating
+// Supporto per email come chiave primaria
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Auto-login tramite cookie "Ricordami"
-// SICUREZZA: Verifica che il token nel cookie corrisponda al token hashato nel database
+// Auto-login tramite cookie ricordami
 if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE['user_email'])) {
     require_once __DIR__ . '/../db/funzioni_db.php';
     $dbAutoLogin = new FunzioniDB();
 
-    // Verifica il token contro il database (non solo l'email!)
     $utente = $dbAutoLogin->verificaRememberToken($_COOKIE['user_email'], $_COOKIE['remember_token']);
 
     if ($utente) {
@@ -21,16 +19,13 @@ if (!isset($_SESSION['logged_in']) && isset($_COOKIE['remember_token'], $_COOKIE
         $_SESSION['user_email'] = $utente['Email'];
         $_SESSION['is_admin'] = (bool) $utente['Is_Admin'];
 
-        // Genera un nuovo token e aggiorna (rotation per sicurezza)
         $nuovoToken = bin2hex(random_bytes(32));
         $dbAutoLogin->salvaRememberToken($utente['Email'], $nuovoToken);
 
-        // Rinnova i cookie per altri 30 giorni con il nuovo token
         $cookieExpiry = time() + (30 * 24 * 60 * 60);
         setcookie('remember_token', $nuovoToken, $cookieExpiry, '/', '', true, true);
         setcookie('user_email', $_COOKIE['user_email'], $cookieExpiry, '/', '', true, true);
     } else {
-        // Token non valido, rimuovi i cookie
         setcookie('remember_token', '', time() - 3600, '/', '', true, true);
         setcookie('user_email', '', time() - 3600, '/', '', true, true);
     }
@@ -44,13 +39,9 @@ function getPrefix(): string
     return '';
 }
 
-// ========================================
-// PROTEZIONE CSRF
-// ========================================
+// Protezione csrf
 
-/**
- * Genera un token CSRF e lo salva in sessione
- */
+
 function generaCsrfToken(): string
 {
     if (empty($_SESSION['csrf_token'])) {
@@ -59,18 +50,14 @@ function generaCsrfToken(): string
     return $_SESSION['csrf_token'];
 }
 
-/**
- * Restituisce l'input HTML hidden per il token CSRF
- */
+
 function csrfField(): string
 {
     $token = generaCsrfToken();
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
 }
 
-/**
- * Verifica che il token CSRF sia valido
- */
+
 function verificaCsrfToken(): bool
 {
     if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token'])) {
@@ -79,19 +66,13 @@ function verificaCsrfToken(): bool
     return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
 }
 
-/**
- * Rigenera il token CSRF (da usare dopo un'azione riuscita)
- */
+
 function rigeneraCsrfToken(): void
 {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-/**
- * Esegue un redirect con il prefix automatico.
- *
- * @param string $path Percorso relativo (es. '/profilo', '/accedi')
- */
+
 function redirect(string $path): void
 {
     $prefix = getPrefix();
@@ -99,13 +80,7 @@ function redirect(string $path): void
     exit;
 }
 
-/**
- * Genera l'HTML per un messaggio di alert.
- *
- * @param string $tipo Tipo di alert ('error', 'success', 'warning', 'info')
- * @param string $messaggio Messaggio da mostrare
- * @return string HTML dell'alert
- */
+
 function alertHtml(string $tipo, string $messaggio): string
 {
     $classi = [
@@ -121,13 +96,7 @@ function alertHtml(string $tipo, string $messaggio): string
     return "<div class=\"alert {$classe}\" role=\"alert\">{$messaggioSafe}</div>";
 }
 
-/**
- * Mostra una pagina di errore generica e termina l'esecuzione.
- *
- * @param string $titolo Titolo dell'errore
- * @param string $messaggio Messaggio descrittivo
- * @param int $httpCode Codice HTTP (default 404)
- */
+
 function renderErrorPageAndExit(string $titolo, string $messaggio, int $httpCode = 404): void
 {
     $prefix = getPrefix();
@@ -144,12 +113,7 @@ function renderErrorPageAndExit(string $titolo, string $messaggio, int $httpCode
     exit;
 }
 
-/**
- * Carica un template HTML dalla cartella template.
- *
- * @param string $nome Nome del template (senza .html)
- * @return string Contenuto del template
- */
+
 function loadTemplate(string $nome): string
 {
     $templatePath = __DIR__ . '/../template/pages/' . $nome . '.html';
@@ -161,13 +125,7 @@ function loadTemplate(string $nome): string
     return file_get_contents($templatePath);
 }
 
-/**
- * Carica un template componente e sostituisce i placeholder.
- *
- * @param string $nome Nome del componente (es. 'card-caso')
- * @param array $dati Array associativo chiave => valore per i placeholder
- * @return string HTML con placeholder sostituiti
- */
+
 function renderComponent(string $nome, array $dati): string
 {
     $templatePath = __DIR__ . '/../template/components/' . $nome . '.html';
@@ -185,17 +143,13 @@ function renderComponent(string $nome, array $dati): string
     return $html;
 }
 
-/**
- * Genera lo slug da un caso (fallback se non presente).
- */
+
 function getSlugFromCaso(array $caso): string
 {
     return $caso['Slug'] ?? strtolower(str_replace(' ', '-', $caso['Titolo']));
 }
 
-/**
- * Formatta una data nel formato italiano.
- */
+
 function formatData(?string $data, string $formato = 'd/m/Y'): string
 {
     if (empty($data)) {
@@ -204,9 +158,7 @@ function formatData(?string $data, string $formato = 'd/m/Y'): string
     return date($formato, strtotime($data));
 }
 
-/**
- * Restituisce l'URL dell'immagine o un placeholder.
- */
+
 function getImageUrl(?string $immagine): string
 {
     $prefix = getPrefix();
@@ -216,9 +168,6 @@ function getImageUrl(?string $immagine): string
     return $prefix . '/assets/img/placeholder.webp';
 }
 
-/**
- * Genera HTML per lista persone (vittime o colpevoli) usando card-persona.
- */
 function generaHtmlPersone(array $persone, string $tipo): string
 {
     if (empty($persone)) {
@@ -244,9 +193,6 @@ function generaHtmlPersone(array $persone, string $tipo): string
     return $html;
 }
 
-/**
- * Genera HTML per lista articoli/fonti usando articolo-link.
- */
 function generaHtmlArticoli(array $articoli): string
 {
     if (empty($articoli)) {
@@ -264,30 +210,19 @@ function generaHtmlArticoli(array $articoli): string
     return $html;
 }
 
-/**
- * Genera l'URL dell'avatar UI Avatars.
- */
+
 function getAvatarUrl(string $nome, int $size = 24): string
 {
     return "https://ui-avatars.com/api/?name=" . urlencode($nome) . "&background=630D16&color=fff&size=" . $size;
 }
 
-/**
- * Verifica se l'utente è loggato.
- */
+
 function isLoggedIn(): bool
 {
     return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 }
 
-/**
- * Verifica che l'utente sia autenticato.
- * Se non lo è, reindirizza alla pagina di login o mostra un messaggio.
- *
- * @param bool $redirect Se true reindirizza, se false mostra messaggio e termina
- * @param string|null $messaggio Messaggio personalizzato (solo se $redirect = false)
- * @return void
- */
+
 function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void
 {
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
@@ -315,11 +250,7 @@ function requireAuth(bool $doRedirect = true, ?string $messaggio = null): void
     exit;
 }
 
-/**
- * Mostra una pagina di errore HTTP.
- *
- * @param int $codice Codice HTTP (403, 404, 500, 503)
- */
+
 function renderErrorPage(int $codice): void
 {
     $errori = [
@@ -344,9 +275,7 @@ function renderErrorPage(int $codice): void
     exit;
 }
 
-/**
- * Funzione Core: Assembla i pezzi del template.
- */
+
 function getTemplatePage(string $title, string $content): string
 {
     $templatePath = __DIR__ . '/../template/layouts/pagestructure.html';
@@ -412,9 +341,7 @@ function getFooterSection($currentPath): string
     return $footerHtml;
 }
 
-/**
- * Genera i link della navbar.
- */
+
 function getNavBarLi($currentPath): string
 {
     $prefix = getPrefix();
@@ -428,10 +355,6 @@ function getNavBarLi($currentPath): string
     return generateLiList($links, $currentPath);
 }
 
-/**
- * Gestisce i bottoni di Login/Registrazione o Profilo Utente.
- * AGGIORNATO: Usa email dalla sessione
- */
 function getHeaderButtons(): string
 {
     $prefix = getPrefix();
@@ -471,9 +394,6 @@ function getFooterNavigaLi($currentPath): string
     return generateLiList($links, $currentPath);
 }
 
-/**
- * Helper per generare liste <li> con classe 'activePage'.
- */
 function generateLiList($links, $currentPath): string
 {
     $html = '';
@@ -484,18 +404,14 @@ function generateLiList($links, $currentPath): string
     return $html;
 }
 
-/**
- * Genera le breadcrumbs in base al percorso attuale.
- */
+
 function getBreadcrumbs($currentPath): string
 {
-    // Rileva automaticamente la cartella di base dello script corrente
-    // Esempio: se lo script è in /sperozzo/alicetruecrime/index.php, $basePath sarà /sperozzo/alicetruecrime
+
     $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
     $basePath = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
 
-    // Rimuovi il base path dall'URI corrente per ottenere il percorso relativo puro
-    // Esempio: /sperozzo/alicetruecrime/esplora -> /esplora
+
     if ($basePath !== '' && strpos($currentPath, $basePath) === 0) {
         $relativePath = substr($currentPath, strlen($basePath));
     } else {
@@ -504,12 +420,12 @@ function getBreadcrumbs($currentPath): string
 
     $path = trim(parse_url($relativePath, PHP_URL_PATH), '/');
 
-    // Se siamo nella Home Page (nessun percorso oltre al prefisso)
+
     if (empty($path) || $path === 'home.php') {
         return '<nav aria-label="Breadcrumb" class="breadcrumbs"><span aria-current="page">Home</span></nav>';
     }
 
-    // Iniziamo con Home. Usiamo $basePath come prefisso per i link per garantire che funzionino ovunque
+    // Iniziamo con Home
     $breadcrumbs = ['<a href="' . ($basePath ?: '/') . '">Home</a>'];
 
     $parts = explode('/', $path);
@@ -534,14 +450,14 @@ function getBreadcrumbs($currentPath): string
 
         $accumulatedPath .= '/' . $part;
 
-        // Trasformiamo lo slug (es. segnala-caso) in testo leggibile (es. Segnala Caso)
+
         if ($part === 'chi-siamo') {
             $name = 'Informazioni Aggiuntive';
         } else {
             $name = ucwords(str_replace(['-', '_'], ' ', $part));
         }
 
-        // Se è l'ultimo elemento dell'array, è la pagina corrente
+
         if ($index === $totalParts - 1) {
             $breadcrumbs[] = '<span aria-current="page">' . $name . '</span>';
         } else {

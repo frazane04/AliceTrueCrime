@@ -1,18 +1,20 @@
 <?php
-class ConnessioneDB {
+class ConnessioneDB
+{
     private $host;
     private $username;
     private $password;
     private $nome_db;
     private $connessione;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Carica le variabili dal file .env
         $envPath = __DIR__ . '/../../.env';
 
         if (file_exists($envPath)) {
             $env = parse_ini_file($envPath);
-            
+
             $this->host = $env['DB_HOST'];
             $this->username = $env['DB_USER'];
             $this->password = $env['DB_PASSWORD'];
@@ -26,7 +28,8 @@ class ConnessioneDB {
      * Apre la connessione al database
      * @return bool True se la connessione ha successo, False altrimenti
      */
-    public function apriConnessione() {
+    public function apriConnessione()
+    {
         try {
             $this->connessione = mysqli_connect(
                 $this->host,
@@ -41,7 +44,7 @@ class ConnessioneDB {
 
             // Imposta charset UTF-8 per gestire correttamente i caratteri accentati
             mysqli_set_charset($this->connessione, "utf8mb4");
-            
+
             return true;
         } catch (mysqli_sql_exception $e) {
             error_log("Errore connessione DB: " . $e->getMessage());
@@ -49,7 +52,8 @@ class ConnessioneDB {
         }
     }
 
-    public function chiudiConnessione(){
+    public function chiudiConnessione()
+    {
         try {
             if ($this->connessione) {
                 mysqli_close($this->connessione);
@@ -64,7 +68,8 @@ class ConnessioneDB {
         }
     }
 
-    public function getConnessione() {
+    public function getConnessione()
+    {
         return $this->connessione;
     }
 
@@ -72,7 +77,8 @@ class ConnessioneDB {
      * Restituisce l'ID dell'ultimo record inserito
      * @return int|null
      */
-    public function getLastInsertId() {
+    public function getLastInsertId()
+    {
         if ($this->connessione) {
             return mysqli_insert_id($this->connessione);
         }
@@ -86,14 +92,15 @@ class ConnessioneDB {
      * @param string $types Stringa dei tipi (es. "ssi" per string, string, int)
      * @return mysqli_result|bool Result set per SELECT, true per INSERT/UPDATE/DELETE, false per errori
      */
-    public function query($query, $params = [], $types = "") {
+    public function query($query, $params = [], $types = "")
+    {
         try {
             if (!$this->connessione) {
                 throw new Exception("Connessione non aperta");
             }
 
             $stmt = mysqli_prepare($this->connessione, $query);
-            
+
             if (!$stmt) {
                 throw new Exception("Errore preparazione query: " . mysqli_error($this->connessione));
             }
@@ -104,24 +111,23 @@ class ConnessioneDB {
             }
 
             $executed = mysqli_stmt_execute($stmt);
-            
+
             if (!$executed) {
                 $error = mysqli_stmt_error($stmt);
                 mysqli_stmt_close($stmt);
                 throw new Exception("Errore esecuzione query: " . $error);
             }
-            
+
             $result = mysqli_stmt_get_result($stmt);
-            
-            // Se la query non ritorna risultati (INSERT, UPDATE, DELETE)
+
             if ($result === false) {
                 mysqli_stmt_close($stmt);
-                return true; // Operazione riuscita
+                return true;
             }
 
             mysqli_stmt_close($stmt);
-            return $result; // Restituisce il result set per SELECT
-            
+            return $result;
+
         } catch (Exception $e) {
             error_log("Errore query DB: " . $e->getMessage());
             return false;

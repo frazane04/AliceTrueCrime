@@ -5,15 +5,7 @@
 require_once __DIR__ . '/../db/funzioni_db.php';
 require_once __DIR__ . '/../helpers/ImageHandler.php';
 require_once __DIR__ . '/../helpers/FormCasoHelper.php';
-
-// ========================================
-// CONTROLLO SESSIONE
-// ========================================
 requireAuth();
-
-// ========================================
-// INIZIALIZZAZIONE
-// ========================================
 $prefix = getPrefix();
 $dbFunctions = new FunzioniDB();
 $imageHandler = new ImageHandler();
@@ -22,9 +14,6 @@ $formHelper = new FormCasoHelper($imageHandler);
 $emailUtente = $_SESSION['user_email'];
 $isAdmin = $_SESSION['is_admin'] ?? false;
 
-// ========================================
-// RECUPERO ID CASO
-// ========================================
 $casoId = 0;
 
 if (isset($_GET['slug']) && !empty($_GET['slug'])) {
@@ -39,16 +28,10 @@ if ($casoId <= 0) {
     renderErrorPageAndExit('Caso Non Specificato', 'Nessun caso selezionato per la modifica.', 400);
 }
 
-// ========================================
-// VERIFICA PERMESSI
-// ========================================
 if (!$dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin)) {
     renderErrorPageAndExit('Accesso Negato', 'Non hai i permessi per modificare questo caso.', 403);
 }
 
-// ========================================
-// RECUPERO DATI ESISTENTI
-// ========================================
 $caso = $dbFunctions->getCasoById($casoId, false);
 $vittimeEsistenti = $dbFunctions->getVittimeByCaso($casoId, false);
 $colpevoliEsistenti = $dbFunctions->getColpevoliByCaso($casoId, false);
@@ -61,16 +44,9 @@ if (!$caso) {
 $autoreOriginale = $dbFunctions->getAutoreCaso($casoId);
 $isAutore = ($autoreOriginale === $emailUtente);
 
-// ========================================
-// VARIABILI FORM
-// ========================================
 $messaggioFeedback = "";
 
-// ========================================
-// GESTIONE ELIMINAZIONE CASO
-// ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'elimina_caso') {
-    // Elimina le immagini associate
     $formHelper->eliminaTutteImmaginiCaso($caso, $vittimeEsistenti, $colpevoliEsistenti);
 
     $result = $dbFunctions->eliminaCaso($casoId, $emailUtente, $isAdmin);
@@ -83,12 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'elimi
     }
 }
 
-// ========================================
-// GESTIONE FORM POST - MODIFICA
-// ========================================
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modifica_caso') {
 
-    // Recupero dati dal form
     $titolo = trim($_POST['titolo'] ?? '');
     $data = $_POST['data_crimine'] ?? '';
     $luogo = trim($_POST['luogo'] ?? '');
@@ -97,14 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
     $tipologia = trim($_POST['tipologia'] ?? '');
     $casoImmagineEsistente = $_POST['caso_immagine_esistente'] ?? '';
 
-    // Parsing dati con helper
     $vittime = $formHelper->parseVittimeFromPost($_POST);
     $colpevoli = $formHelper->parseColpevoliFromPost($_POST);
     $articoli = $formHelper->parseArticoliFromPost($_POST);
 
-    // ========================================
-    // VALIDAZIONE
-    // ========================================
+    // Validazione
     $errori = [];
 
     if (empty($titolo) || strlen($titolo) < 5 || strlen($titolo) > 200) {
@@ -141,22 +111,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
         }
     }
 
-    // ========================================
-    // SALVATAGGIO
-    // ========================================
+    // Salvataggio
     if (empty($errori)) {
         try {
             $riApprova = $isAutore && !$isAdmin;
             $tipologiaFinal = !empty($tipologia) ? $tipologia : null;
 
-            // Gestione immagine caso
             $nuovaImmagineCaso = null;
             $aggiornaImmagineCaso = false;
 
-            // Nuova immagine caricata?
-            if (isset($_FILES['immagine_caso']) &&
+            if (
+                isset($_FILES['immagine_caso']) &&
                 isset($_FILES['immagine_caso']['error']) &&
-                $_FILES['immagine_caso']['error'] === UPLOAD_ERR_OK) {
+                $_FILES['immagine_caso']['error'] === UPLOAD_ERR_OK
+            ) {
 
                 if (!empty($caso['Immagine'])) {
                     $imageHandler->eliminaImmagine($caso['Immagine']);
@@ -170,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
                     $errori[] = "Errore immagine caso: " . $resultImg['message'];
                 }
             } else {
-                // Immagine rimossa via JS?
+
                 if (empty($casoImmagineEsistente) && !empty($caso['Immagine'])) {
                     $imageHandler->eliminaImmagine($caso['Immagine']);
                     $nuovaImmagineCaso = '';
@@ -179,43 +147,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
             }
 
             if (empty($errori)) {
-                // 1. Aggiorna caso
                 $resultCaso = $dbFunctions->aggiornaCaso(
-                    $casoId, $titolo, $data, $luogo,
-                    $descrizione_breve, $storia, $tipologiaFinal, $riApprova,
+                    $casoId,
+                    $titolo,
+                    $data,
+                    $luogo,
+                    $descrizione_breve,
+                    $storia,
+                    $tipologiaFinal,
+                    $riApprova,
                     $nuovaImmagineCaso
                 );
 
                 if ($resultCaso['success']) {
-                    // 2. Gestione vittime
                     $formHelper->pulisciImmaginiOrfane($vittime, $vittimeEsistenti);
                     $dbFunctions->eliminaVittimeByCaso($casoId);
 
                     foreach ($vittime as $v) {
                         $immagineVittima = $formHelper->gestisciImmaginePersona(
-                            $_FILES, 'vittima', $v['file_index'],
-                            $v['nome'], $v['cognome'], $v['immagine_esistente']
+                            $_FILES,
+                            'vittima',
+                            $v['file_index'],
+                            $v['nome'],
+                            $v['cognome'],
+                            $v['immagine_esistente']
                         );
 
                         $dbFunctions->inserisciVittima(
-                            $casoId, $v['nome'], $v['cognome'],
-                            $v['luogo_nascita'], $v['data_nascita'], $v['data_decesso'],
+                            $casoId,
+                            $v['nome'],
+                            $v['cognome'],
+                            $v['luogo_nascita'],
+                            $v['data_nascita'],
+                            $v['data_decesso'],
                             $immagineVittima
                         );
                     }
 
-                    // 3. Gestione colpevoli
                     $formHelper->pulisciImmaginiOrfane($colpevoli, $colpevoliEsistenti);
                     $dbFunctions->rimuoviColpevoliByCaso($casoId);
 
                     foreach ($colpevoli as $c) {
                         $immagineColpevole = $formHelper->gestisciImmaginePersona(
-                            $_FILES, 'colpevole', $c['file_index'],
-                            $c['nome'], $c['cognome'], $c['immagine_esistente']
+                            $_FILES,
+                            'colpevole',
+                            $c['file_index'],
+                            $c['nome'],
+                            $c['cognome'],
+                            $c['immagine_esistente']
                         );
 
                         $colpevoleId = $dbFunctions->inserisciColpevole(
-                            $c['nome'], $c['cognome'], $c['luogo_nascita'], $c['data_nascita'],
+                            $c['nome'],
+                            $c['cognome'],
+                            $c['luogo_nascita'],
+                            $c['data_nascita'],
                             $immagineColpevole
                         );
                         if ($colpevoleId) {
@@ -223,18 +209,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
                         }
                     }
 
-                    // 4. Aggiorna articoli
                     $dbFunctions->eliminaArticoliByCaso($casoId);
                     foreach ($articoli as $a) {
                         $dbFunctions->inserisciArticolo($casoId, $a['titolo'], $a['data'], $a['link']);
                     }
 
-                    // Success
                     $messaggioFeedback = FormCasoHelper::generaMessaggioSuccessoModifica(
-                        $riApprova, $prefix, $caso['Slug'], $isAdmin
+                        $riApprova,
+                        $prefix,
+                        $caso['Slug'],
+                        $isAdmin
                     );
 
-                    // Ricarica dati aggiornati
                     $caso = $dbFunctions->getCasoById($casoId, false);
                     $vittimeEsistenti = $dbFunctions->getVittimeByCaso($casoId, false);
                     $colpevoliEsistenti = $dbFunctions->getColpevoliByCaso($casoId, false);
@@ -250,56 +236,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
         }
     }
 
-    // Messaggio errori
     if (!empty($errori)) {
         $messaggioFeedback = FormCasoHelper::generaMessaggioErrori($errori);
     }
 }
 
-// ========================================
-// CARICAMENTO TEMPLATE
-// ========================================
 $contenuto = loadTemplate('modifica_caso');
 
-// ========================================
-// GENERAZIONE HTML DINAMICO
-// ========================================
 $htmlVittime = $formHelper->generaHtmlListaVittime($vittimeEsistenti);
 $htmlColpevoli = $formHelper->generaHtmlListaColpevoli($colpevoliEsistenti);
 $htmlArticoli = $formHelper->generaHtmlListaArticoli($articoliEsistenti);
 $opzioniTipologia = $formHelper->generaOpzioniTipologia($caso['Tipologia']);
 
-// Anteprima immagine caso
 $immagineCasoData = $formHelper->generaAnteprimaImmagineCaso($caso);
 
-// Avviso ri-approvazione
 $avvisoRiApprovazione = ($isAutore && !$isAdmin)
     ? alertHtml('warning', 'Attenzione: Modificando questo caso, verrà rimesso in attesa di approvazione.')
     : '';
 
-// ========================================
-// SOSTITUZIONI TEMPLATE
-// ========================================
 $contenuto = strtr($contenuto, [
-    '<!-- caso_titolo -->'          => htmlspecialchars($caso['Titolo']),
-    '<!-- feedback_message -->'     => $messaggioFeedback,
-    '<!-- avviso_riapprovazione -->'=> $avvisoRiApprovazione,
-    '<!-- value_titolo -->'         => htmlspecialchars($caso['Titolo']),
-    '<!-- value_data -->'           => htmlspecialchars($caso['Data']),
-    '<!-- value_luogo -->'          => htmlspecialchars($caso['Luogo']),
-    '<!-- value_descrizione -->'    => htmlspecialchars($caso['Descrizione']),
-    '<!-- value_storia -->'         => htmlspecialchars($caso['Storia']),
-    '<!-- opzioni_tipologia -->'    => $opzioniTipologia,
+    '<!-- caso_titolo -->' => htmlspecialchars($caso['Titolo']),
+    '<!-- feedback_message -->' => $messaggioFeedback,
+    '<!-- avviso_riapprovazione -->' => $avvisoRiApprovazione,
+    '<!-- value_titolo -->' => htmlspecialchars($caso['Titolo']),
+    '<!-- value_data -->' => htmlspecialchars($caso['Data']),
+    '<!-- value_luogo -->' => htmlspecialchars($caso['Luogo']),
+    '<!-- value_descrizione -->' => htmlspecialchars($caso['Descrizione']),
+    '<!-- value_storia -->' => htmlspecialchars($caso['Storia']),
+    '<!-- opzioni_tipologia -->' => $opzioniTipologia,
     '<!-- hidden_caso_immagine -->' => $immagineCasoData['hidden'],
     '<!-- anteprima_immagine_caso -->' => $immagineCasoData['anteprima'],
-    '<!-- vittime_html -->'         => $htmlVittime,
-    '<!-- colpevoli_html -->'       => $htmlColpevoli,
-    '<!-- articoli_html -->'        => $htmlArticoli,
-    '<!-- link_annulla -->'         => $prefix . '/esplora/' . $caso['Slug'],
+    '<!-- vittime_html -->' => $htmlVittime,
+    '<!-- colpevoli_html -->' => $htmlColpevoli,
+    '<!-- articoli_html -->' => $htmlArticoli,
+    '<!-- link_annulla -->' => $prefix . '/esplora/' . $caso['Slug'],
 ]);
 
-// ========================================
-// OUTPUT
-// ========================================
 echo getTemplatePage("Modifica Caso - AliceTrueCrime", $contenuto);
 ?>

@@ -1,9 +1,5 @@
-/**
- * Sistema Modal Accessibile per conferme
- * Sostituisce window.confirm() con un'interfaccia ARIA compliant
- * La modal viene creata dinamicamente solo quando necessario
- */
-(function() {
+// Sistema Modal
+(function () {
     let modal = null;
     let modalTitle = null;
     let modalDescription = null;
@@ -12,9 +8,7 @@
     let resolveCallback = null;
     let previousFocus = null;
 
-    /**
-     * Crea la struttura HTML della modal dinamicamente
-     */
+    // Struttura HTML
     function createModal() {
         if (modal) return; // Già creata
 
@@ -40,12 +34,12 @@
         document.body.appendChild(modal);
 
         // Riferimenti agli elementi
-        modalTitle = modal.querySelector('#modal-title');
+
         modalDescription = modal.querySelector('#modal-description');
         confirmBtn = modal.querySelector('#modal-confirm');
         cancelBtn = modal.querySelector('#modal-cancel');
 
-        // Event Listeners
+
         confirmBtn.addEventListener('click', () => closeModal(true));
         cancelBtn.addEventListener('click', () => closeModal(false));
 
@@ -64,9 +58,7 @@
         });
     }
 
-    /**
-     * Focus trap - mantiene il focus all'interno del modal
-     */
+    // Gestione Focus
     function handleTabKey(e) {
         if (e.key !== 'Tab') return;
 
@@ -89,9 +81,7 @@
         }
     }
 
-    /**
-     * Chiude il modal e ritorna il focus all'elemento precedente
-     */
+
     function closeModal(result) {
         if (!modal) return;
 
@@ -108,12 +98,8 @@
         }
     }
 
-    /**
-     * Mostra il modal con configurazione personalizzata
-     * @param {Object} config - Configurazione del modal
-     * @returns {Promise<boolean>} - true se confermato, false se annullato
-     */
-    window.showConfirmModal = function(config) {
+    // Mostra Modal
+    window.showConfirmModal = function (config) {
         return new Promise((resolve) => {
             resolveCallback = resolve;
             previousFocus = document.activeElement;
@@ -144,12 +130,8 @@
         });
     };
 
-    /**
-     * Mostra un modal informativo (solo OK, nessun annulla)
-     * @param {Object} config - Configurazione del modal
-     * @returns {Promise<void>}
-     */
-    window.showInfoModal = function(config) {
+    // Mostra Modal Info
+    window.showInfoModal = function (config) {
         return showConfirmModal({
             title: config.title || 'Informazione',
             message: config.message,

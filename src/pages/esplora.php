@@ -3,67 +3,53 @@ require_once __DIR__ . '/../db/funzioni_db.php';
 
 $contenuto = loadTemplate('esplora');
 
-// Recupero dati dal Database
 $dbFunctions = new FunzioniDB();
 
-// Recupero parametri di ricerca/filtro dalla query string
 $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
 $categoriaFiltro = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';
-$annoFiltro = isset($_GET['anno']) ? trim($_GET['anno']) : '';
+
 $view = isset($_GET['view']) ? trim($_GET['view']) : '';
 
-// Verifica se ci sono filtri attivi o se siamo in vista "all"
-$filtriAttivi = !empty($searchQuery) || !empty($categoriaFiltro) || !empty($annoFiltro) || $view === 'all';
+$filtriAttivi = !empty($searchQuery) || !empty($categoriaFiltro) || $view === 'all';
 
-// Componente Barra di Ricerca
-$searchBarHtml = '';
+// Costruzione Search Bar
+$searchBarHtml = loadTemplate('../components/search_bar');
+
+$categorie = $dbFunctions->getCategorie();
+
+
+$optionsCategorie = '';
+foreach ($categorie as $cat) {
+    $selected = ($categoriaFiltro === $cat['Tipologia']) ? 'selected' : '';
+    $optionsCategorie .= '<option value="' . htmlspecialchars($cat['Tipologia']) . '" ' . $selected . '>'
+        . htmlspecialchars($cat['Tipologia']) . ' (' . $cat['conteggio'] . ')</option>';
+}
+
+
+
+$searchBarHtml = str_replace('{{SEARCH_VALUE}}', htmlspecialchars($searchQuery), $searchBarHtml);
+$searchBarHtml = str_replace('{{OPTIONS_CATEGORIE}}', $optionsCategorie, $searchBarHtml);
+
+$searchBarHtml = str_replace('{{PREFIX}}', getPrefix(), $searchBarHtml);
+
+// Filtri Attivi
+$filtriAttiviHtml = '';
+if (!empty($searchQuery) || !empty($categoriaFiltro)) {
+    $filtriAttiviHtml = '<div class="filtri-attivi"><span class="filtri-label">Filtri attivi:</span>';
+    if (!empty($searchQuery))
+        $filtriAttiviHtml .= '<span class="filtro-tag">Ricerca: "' . htmlspecialchars($searchQuery) . '"</span>';
+    if (!empty($categoriaFiltro))
+        $filtriAttiviHtml .= '<span class="filtro-tag">Categoria: ' . htmlspecialchars($categoriaFiltro) . '</span>';
+
+    $filtriAttiviHtml .= '</div>';
+}
+$searchBarHtml = str_replace('{{FILTRI_ATTIVI}}', $filtriAttiviHtml, $searchBarHtml);
 
 if ($filtriAttivi) {
-    // === VISTA RICERCA / TUTTI ===
-
-    // Carica componente search bar
-    $searchBarHtml = loadTemplate('../components/search_bar');
-
-    // Popola placeholder search bar
-    $categorie = $dbFunctions->getCategorie();
-    $anni = $dbFunctions->getAnniDisponibili();
-
-    $optionsCategorie = '';
-    foreach ($categorie as $cat) {
-        $selected = ($categoriaFiltro === $cat['Tipologia']) ? 'selected' : '';
-        $optionsCategorie .= '<option value="' . htmlspecialchars($cat['Tipologia']) . '" ' . $selected . '>'
-            . htmlspecialchars($cat['Tipologia']) . ' (' . $cat['conteggio'] . ')</option>';
-    }
-
-    $optionsAnni = '';
-    foreach ($anni as $anno) {
-        $selected = ($annoFiltro == $anno) ? 'selected' : '';
-        $optionsAnni .= '<option value="' . $anno . '" ' . $selected . '>' . $anno . '</option>';
-    }
-
-    $searchBarHtml = str_replace('{{SEARCH_VALUE}}', htmlspecialchars($searchQuery), $searchBarHtml);
-    $searchBarHtml = str_replace('{{OPTIONS_CATEGORIE}}', $optionsCategorie, $searchBarHtml);
-    $searchBarHtml = str_replace('{{OPTIONS_ANNI}}', $optionsAnni, $searchBarHtml);
-    $searchBarHtml = str_replace('{{PREFIX}}', getPrefix(), $searchBarHtml);
-
-    // Genera filtri attivi HTML
-    $filtriAttiviHtml = '';
-    if (!empty($searchQuery) || !empty($categoriaFiltro) || !empty($annoFiltro)) {
-        $filtriAttiviHtml = '<div class="filtri-attivi"><span class="filtri-label">Filtri attivi:</span>';
-        if (!empty($searchQuery))
-            $filtriAttiviHtml .= '<span class="filtro-tag">Ricerca: "' . htmlspecialchars($searchQuery) . '"</span>';
-        if (!empty($categoriaFiltro))
-            $filtriAttiviHtml .= '<span class="filtro-tag">Categoria: ' . htmlspecialchars($categoriaFiltro) . '</span>';
-        if (!empty($annoFiltro))
-            $filtriAttiviHtml .= '<span class="filtro-tag">Anno: ' . htmlspecialchars($annoFiltro) . '</span>';
-        $filtriAttiviHtml .= '</div>';
-    }
-    $searchBarHtml = str_replace('{{FILTRI_ATTIVI}}', $filtriAttiviHtml, $searchBarHtml);
-    // === VISTA RISULTATI RICERCA ===
+    // Vista Ricerca
     $filtri = [
         'q' => $searchQuery,
-        'categoria' => $categoriaFiltro,
-        'anno' => $annoFiltro
+        'categoria' => $categoriaFiltro
     ];
 
     $risultatiRicerca = $dbFunctions->cercaCasiConFiltri($filtri, 50);
@@ -87,8 +73,8 @@ if ($filtriAttivi) {
     </section>';
 
 } else {
-    // === VISTA DASHBOARD ESTESA ===
-    // Sezione 1: "Esplora tutti i casi" - Mostra gli ultimi 4 inseriti (o ordine per data)
+    // Dashboard
+
     $casiMain = $dbFunctions->getCasiRecenti(4);
 
     $casiPiuLetti = $dbFunctions->getCasiPiuLetti(4);
@@ -131,7 +117,8 @@ if ($filtriAttivi) {
     ';
 }
 
-// Helper Cards
+
+
 function generaHtmlCards($listaCasi)
 {
     if (empty($listaCasi))
@@ -164,16 +151,13 @@ function generaHtmlCards($listaCasi)
     return $html;
 }
 
-// Replace Placeholders
 $contenuto = str_replace('{{SEARCH_BAR}}', $searchBarHtml, $contenuto);
 $contenuto = str_replace('{{CONTENT}}', $mainContentHtml, $contenuto);
 $contenuto = str_replace('{{PREFIX}}', getPrefix(), $contenuto);
 
 
-// Output JSON per AJAX
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     header('Content-Type: application/json');
-    // Se siamo qui è probabile che siamo nella vista ricerca
     echo json_encode([
         'html_risultati' => $htmlRisultati ?? '',
         'num_risultati' => $numRisultati ?? 0,

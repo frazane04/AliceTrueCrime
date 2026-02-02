@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // --- LOGICA PER IL CAMBIO TEMA ---
+    // Cambio Tema
     const themeSwitcher = document.querySelector(".theme-switcher");
     const themeIconLunaContainer = document.getElementById("theme-icon-luna-container");
     const themeIconSoleContainer = document.getElementById("theme-icon-sole-container");
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyTheme() {
         if (isDarkTheme) {
             body.classList.add("dark-theme");
-            // AGGIUNTO CONTROLLO IF: evita l'errore se gli elementi non esistono
+
             if (themeIconLunaContainer) themeIconLunaContainer.classList.remove("hidden");
             if (themeIconSoleContainer) themeIconSoleContainer.classList.add("hidden");
         } else {
@@ -24,29 +24,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyTheme();
 
-    // --- LOGICA MENU HAMBURGER MOBILE ---
+    // Menu Mobile
     const menuToggle = document.getElementById('menu-toggle');
     const menuClose = document.getElementById('menu-close');
     const mainNav = document.querySelector('.main-nav');
 
     if (menuToggle && mainNav) {
-        // Toggle menu (apri/chiudi)
+
         menuToggle.addEventListener('click', (e) => {
             e.preventDefault();
             const isOpen = mainNav.classList.contains('is-visible');
 
             if (isOpen) {
-                // Chiudi menu
                 mainNav.classList.remove('is-visible');
                 menuToggle.setAttribute('aria-expanded', 'false');
             } else {
-                // Apri menu
                 mainNav.classList.add('is-visible');
                 menuToggle.setAttribute('aria-expanded', 'true');
             }
         });
 
-        // Chiudi menu con la croce
+
         if (menuClose) {
             menuClose.addEventListener('click', () => {
                 mainNav.classList.remove('is-visible');
@@ -54,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // Chiudi menu quando si clicca un link
         mainNav.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 mainNav.classList.remove('is-visible');
@@ -63,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Chiudi menu con tasto Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && mainNav.classList.contains('is-visible')) {
                 mainNav.classList.remove('is-visible');
@@ -74,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- LOGICA: PULSANTE TORNA SU (ACCESSIBILE) ---
+    // Torna Su
     const backToTopButton = document.getElementById("back-to-top");
 
     if (backToTopButton) {
@@ -86,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Funzione comune per lo scroll
+
         const scrollToTop = (e) => {
             e.preventDefault();
             window.scrollTo({
@@ -97,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         backToTopButton.addEventListener("click", scrollToTop);
 
-        // Accessibilità: Gestione tasto Invio
+
         backToTopButton.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 scrollToTop(e);

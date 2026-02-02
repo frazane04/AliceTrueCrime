@@ -8,19 +8,17 @@ $db = new FunzioniDB();
 $email = $_SESSION['user_email'];
 $prefix = getPrefix();
 
-// --- GESTIONE LOGICA BOTTONE NEWSLETTER ---
+// Newsletter Toggle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle_newsletter') {
     $statoAttuale = (int) $_POST['current_status'];
     $nuovoStato = ($statoAttuale === 1) ? 0 : 1;
     $db->updateNewsletter($email, $nuovoStato);
 }
 
-// Recupero dati aggiornati
 $utente = $db->getUtenteByEmail($email);
 $is_iscritti = (int) ($utente['Is_Newsletter'] ?? 0);
 $is_admin = (bool) ($utente['Is_Admin'] ?? false);
 
-// --- SEZIONE NEWSLETTER ---
 if ($is_iscritti === 1) {
     $titoloSezione = "Sei iscritto alla Newsletter";
     $testoBottone = "Disiscrivimi dalla Newsletter";
@@ -44,7 +42,7 @@ $newsletterHtml = "
         </form>
     </section>";
 
-// --- SEZIONE ADMIN: LISTA CASI DA APPROVARE ---
+// Sezione Admin
 $adminHtml = '';
 
 if ($is_admin) {
@@ -85,7 +83,6 @@ if ($is_admin) {
     $adminHtml .= "</section>";
 }
 
-// Caricamento Template
 $html = loadTemplate('pagineutente');
 
 $html = str_replace('{{USERNAME}}', htmlspecialchars($utente['Username']), $html);
