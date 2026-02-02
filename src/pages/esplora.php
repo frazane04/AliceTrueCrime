@@ -168,5 +168,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
 
 $contenuto .= '<script src="' . getPrefix() . '/js/esplora.js"></script>';
 
-echo getTemplatePage("Esplora - AliceTrueCrime", $contenuto);
+$descrizioneEsplora = "Archivio completo dei casi di AliceTrueCrime. " . ($categoriaFiltro ? "Esplora la categoria $categoriaFiltro." : "Cerca tra centinaia di fascicoli di cronaca nera.");
+echo getTemplatePage("Esplora - AliceTrueCrime", $contenuto, $descrizioneEsplora);
 ?>

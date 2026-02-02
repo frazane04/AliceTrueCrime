@@ -61,4 +61,4 @@ $contenuto = str_replace('{{CSRF_TOKEN}}', csrfField(), $contenuto);
 $contenuto = str_replace('{{EMAIL_VALUE}}', htmlspecialchars($email, ENT_QUOTES), $contenuto);
 $contenuto = str_replace('<!-- PLACEHOLDER_MESSAGGI -->', $messaggioHTML, $contenuto);
 
-echo getTemplatePage("Accedi - AliceTrueCrime", $contenuto);
+echo getTemplatePage("Accedi - AliceTrueCrime", $contenuto, "Accedi al tuo profilo su AliceTrueCrime per commentare e segnalare nuovi casi.");
