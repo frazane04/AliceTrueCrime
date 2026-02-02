@@ -280,7 +280,7 @@ function renderErrorPage(int $codice): void
  * Genera la pagina completa inserendo i contenuti nel template base.
  * Aggiunti parametri per migliorare il ranking (SEO) e l'accessibilità.
  */
-function getTemplatePage(string $title, string $content, string $description = "", string $ogImage = ""): string
+function getTemplatePage(string $title, string $content, string $description = "", ?string $ogImage = ""): string
 {
     $templatePath = __DIR__ . '/../template/layouts/pagestructure.html';
 

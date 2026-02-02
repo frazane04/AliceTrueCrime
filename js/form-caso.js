@@ -93,13 +93,13 @@ function mostraAnteprimaImmagine(input, previewId) {
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            preview.innerHTML = '<p class="error-text" role="alert">File troppo grande. Max 5MB.</p>';
+            preview.innerHTML = '<p class="error-text" role="alert">File troppo grande. Max 2MB.</p>';
             input.value = '';
             return;
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const img = document.createElement('img');
             img.src = e.target.result;
             img.alt = 'Anteprima immagine caricata';
@@ -110,7 +110,7 @@ function mostraAnteprimaImmagine(input, previewId) {
             removeBtn.className = 'btn-remove-preview';
             removeBtn.textContent = 'Rimuovi';
             removeBtn.setAttribute('aria-label', 'Rimuovi immagine');
-            removeBtn.onclick = function() {
+            removeBtn.onclick = function () {
                 input.value = '';
                 preview.innerHTML = '';
             };
@@ -158,7 +158,7 @@ function annullaRimozioneImmagine(tipo, index, originalPath) {
 // ========================================
 // EVENT DELEGATION: Gestione immagini e entry
 // ========================================
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     // Gestione rimozione immagine
     const btnRemoveImg = e.target.closest('[data-img-action="remove"]');
     if (btnRemoveImg) {
@@ -191,7 +191,7 @@ document.addEventListener('click', function(e) {
 });
 
 // Event delegation per anteprima immagini (onchange)
-document.addEventListener('change', function(e) {
+document.addEventListener('change', function (e) {
     const input = e.target;
     if (input.type === 'file' && input.dataset.previewTarget) {
         mostraAnteprimaImmagine(input, input.dataset.previewTarget);
