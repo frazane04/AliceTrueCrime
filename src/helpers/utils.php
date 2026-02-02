@@ -276,7 +276,11 @@ function renderErrorPage(int $codice): void
 }
 
 
-function getTemplatePage(string $title, string $content): string
+/**
+ * Genera la pagina completa inserendo i contenuti nel template base.
+ * Aggiunti parametri per migliorare il ranking (SEO) e l'accessibilità.
+ */
+function getTemplatePage(string $title, string $content, string $description = "", string $ogImage = ""): string
 {
     $templatePath = __DIR__ . '/../template/layouts/pagestructure.html';
 
@@ -285,14 +289,38 @@ function getTemplatePage(string $title, string $content): string
     }
 
     $page = file_get_contents($templatePath);
+    $prefix = getPrefix();
+
+    // 1. Gestione Meta Description per il ranking
+    // Se non fornita, usa una di default per evitare contenuti vuoti
+    if (empty($description)) {
+        $description = "AliceTrueCrime - Il portale italiano per esplorare e discutere casi di cronaca nera.";
+    }
+
+    // 2. Gestione Immagine Social (Open Graph)
+    // Se non fornita, usa il placeholder predefinito
+    if (empty($ogImage)) {
+        $ogImage = $prefix . '/assets/img/placeholder.webp';
+    } else {
+        $ogImage = $prefix . '/' . $ogImage;
+    }
+
+    // 3. Generazione URL Canonical (SEO)
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+    $fullUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
     $header = getHeaderSection($_SERVER['REQUEST_URI']);
     $footer = getFooterSection($_SERVER['REQUEST_URI']);
 
+    // Sostituzioni nel template
     $page = str_replace('{{TITOLO_PAGINA}}', $title, $page);
+    $page = str_replace('{{META_DESCRIPTION}}', htmlspecialchars($description), $page);
+    $page = str_replace('{{CANONICAL_URL}}', htmlspecialchars($fullUrl), $page);
+    $page = str_replace('{{OG_IMAGE}}', htmlspecialchars($ogImage), $page);
+    
     $page = str_replace('{{HEADER}}', $header, $page);
 
-    // Breadcrumbs Logic: If Home, hide global breadcrumbs (injected manually in Hero)
+    // Breadcrumbs Logic
     $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
     if (empty($path) || $path === 'home.php' || $path === 'home') {
         $page = str_replace('{{BREADCRUMBS}}', '', $page);
@@ -302,7 +330,7 @@ function getTemplatePage(string $title, string $content): string
 
     $page = str_replace('{{CONTENT}}', $content, $page);
     $page = str_replace('{{FOOTER}}', $footer, $page);
-    $page = str_replace('{{PATH_PREFIX}}', getPrefix(), $page);
+    $page = str_replace('{{PATH_PREFIX}}', $prefix, $page);
 
     return $page;
 }

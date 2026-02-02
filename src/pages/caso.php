@@ -268,5 +268,8 @@ $contenuto = strtr($contenuto, [
 
 
 $titoloPagina = $titolo . " - AliceTrueCrime";
-echo getTemplatePage($titoloPagina, $contenuto);
+// Crea una descrizione pulita di circa 150 caratteri per Google
+$descrizioneSEO = mb_substr(strip_tags($caso['Descrizione']), 0, 155) . '...';
+// Passa titolo, contenuto, descrizione e immagine specifica del caso
+echo getTemplatePage($titoloPagina, $contenuto, $descrizioneSEO, $caso['Immagine']);
 ?>

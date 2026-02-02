@@ -73,5 +73,5 @@ if (!empty($successMessage)) {
     $contenuto = str_replace('<form class="auth-form"', alertHtml('success', $successMessage) . '<form class="auth-form"', $contenuto);
 }
 
-echo getTemplatePage("Registrati - AliceTrueCrime", $contenuto);
+echo getTemplatePage("Registrati - AliceTrueCrime", $contenuto, "Unisciti alla community di AliceTrueCrime. Registrati per aprire nuovi fascicoli e partecipare alle discussioni.");
 ?>

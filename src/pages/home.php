@@ -92,5 +92,6 @@ $contenuto = str_replace('{{LINK_NEWSLETTER}}', $linkNewsletter, $contenuto);
 $contenuto = str_replace('{{BREADCRUMBS_HERO}}', getBreadcrumbs('/'), $contenuto);
 
 $titoloPagina = "Home - AliceTrueCrime | Cronaca Nera e True Crime";
-echo getTemplatePage($titoloPagina, $contenuto);
+$descrizioneHome = "Esplora i casi di cronaca nera più famigerati in Italia. Analisi approfondite, inchieste e discussioni sulla scena del crimine e true crime italiano.";
+echo getTemplatePage($titoloPagina, $contenuto, $descrizioneHome);
 ?>
