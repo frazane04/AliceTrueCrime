@@ -185,32 +185,46 @@ if (btnEliminaCaso) {
         if (validateField(descrizioneBreveInput, descrizioneBreveRules)) errors.push('Descrizione breve');
         if (validateField(storiaInput, storiaRules)) errors.push('Storia');
 
-        // Verifica almeno una vittima con nome e cognome
+        // Verifica almeno una vittima con nome, cognome e data nascita
         const vittimeNomi = document.querySelectorAll('input[name="vittima_nome[]"]');
         const vittimeCognomi = document.querySelectorAll('input[name="vittima_cognome[]"]');
+        const vittimeDataNascita = document.querySelectorAll('input[name="vittima_data_nascita[]"]');
         let vittimaValida = false;
+        let vittimaSenzaData = false;
         for (let i = 0; i < vittimeNomi.length; i++) {
             if (vittimeNomi[i].value.trim() && vittimeCognomi[i].value.trim()) {
                 vittimaValida = true;
-                break;
+                if (!vittimeDataNascita[i].value) {
+                    vittimaSenzaData = true;
+                }
             }
         }
         if (!vittimaValida) {
             errors.push('Almeno una vittima con nome e cognome');
         }
+        if (vittimaSenzaData) {
+            errors.push('Data di nascita obbligatoria per tutte le vittime');
+        }
 
-        // Verifica almeno un colpevole con nome e cognome
+        // Verifica almeno un colpevole con nome, cognome e data nascita
         const colpevoliNomi = document.querySelectorAll('input[name="colpevole_nome[]"]');
         const colpevoliCognomi = document.querySelectorAll('input[name="colpevole_cognome[]"]');
+        const colpevoliDataNascita = document.querySelectorAll('input[name="colpevole_data_nascita[]"]');
         let colpevoleValido = false;
+        let colpevoleSenzaData = false;
         for (let i = 0; i < colpevoliNomi.length; i++) {
             if (colpevoliNomi[i].value.trim() && colpevoliCognomi[i].value.trim()) {
                 colpevoleValido = true;
-                break;
+                if (!colpevoliDataNascita[i].value) {
+                    colpevoleSenzaData = true;
+                }
             }
         }
         if (!colpevoleValido) {
             errors.push('Almeno un colpevole con nome e cognome');
+        }
+        if (colpevoleSenzaData) {
+            errors.push('Data di nascita obbligatoria per tutti i colpevoli');
         }
 
         if (errors.length > 0) {

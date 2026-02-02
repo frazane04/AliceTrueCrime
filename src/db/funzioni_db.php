@@ -1802,7 +1802,7 @@ class FunzioniDB
     }
 
     /**
-     * Rimuove tutti i colpevoli da un caso
+     * Rimuove tutti i colpevoli da un caso (collegamenti e record orfani)
      */
     public function rimuoviColpevoliByCaso($casoId)
     {
@@ -1811,8 +1811,31 @@ class FunzioniDB
                 return false;
             }
 
-            $query = "DELETE FROM Colpa WHERE Caso = ?";
-            $result = $this->db->query($query, [$casoId], "i");
+            // 1. Recupera gli ID dei colpevoli collegati a questo caso
+            $querySelect = "SELECT Colpevole FROM Colpa WHERE Caso = ?";
+            $colpevoliIds = $this->db->query($querySelect, [$casoId], "i");
+
+            $idsToCheck = [];
+            if ($colpevoliIds && $colpevoliIds->num_rows > 0) {
+                while ($row = $colpevoliIds->fetch_assoc()) {
+                    $idsToCheck[] = $row['Colpevole'];
+                }
+            }
+
+            // 2. Elimina i collegamenti dalla tabella Colpa
+            $queryDelete = "DELETE FROM Colpa WHERE Caso = ?";
+            $result = $this->db->query($queryDelete, [$casoId], "i");
+
+            // 3. Elimina i colpevoli che non sono più collegati a nessun caso
+            foreach ($idsToCheck as $colpevoleId) {
+                $queryCheck = "SELECT COUNT(*) as cnt FROM Colpa WHERE Colpevole = ?";
+                $checkResult = $this->db->query($queryCheck, [$colpevoleId], "i");
+
+                if ($checkResult && $checkResult->fetch_assoc()['cnt'] == 0) {
+                    $queryDeleteColpevole = "DELETE FROM Colpevole WHERE ID_Colpevole = ?";
+                    $this->db->query($queryDeleteColpevole, [$colpevoleId], "i");
+                }
+            }
 
             $this->db->chiudiConnessione();
             return (bool) $result;

@@ -63,8 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($data) || strtotime($data) > time()) {
         $errori[] = "Data non valida o nel futuro";
     }
-    if (empty($luogo)) {
-        $errori[] = "Il luogo è obbligatorio";
+    if (empty($luogo) || strlen($luogo) > 100) {
+        $errori[] = "Il luogo è obbligatorio (max 100 caratteri)";
     }
     if (empty($descrizione_breve) || strlen($descrizione_breve) > 500) {
         $errori[] = "Descrizione breve obbligatoria (max 500 caratteri)";

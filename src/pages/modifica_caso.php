@@ -113,14 +113,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
     if (empty($data) || strtotime($data) > time()) {
         $errori[] = "Data non valida o nel futuro";
     }
-    if (empty($luogo)) {
-        $errori[] = "Il luogo è obbligatorio";
+    if (empty($luogo) || strlen($luogo) > 100) {
+        $errori[] = "Il luogo è obbligatorio (max 100 caratteri)";
     }
     if (empty($descrizione_breve) || strlen($descrizione_breve) > 500) {
         $errori[] = "Descrizione breve obbligatoria (max 500 caratteri)";
     }
-    if (empty($storia) || strlen($storia) < 50) {
-        $errori[] = "La storia deve contenere almeno 50 caratteri";
+    if (empty($storia) || strlen($storia) < 50 || strlen($storia) > 10000) {
+        $errori[] = "La storia deve essere tra 50 e 10.000 caratteri";
     }
     if (empty($vittime)) {
         $errori[] = "Inserisci almeno una vittima";
