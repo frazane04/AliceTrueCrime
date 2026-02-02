@@ -17,27 +17,23 @@
         <!-- SEZIONE: Informazioni Caso -->
         <fieldset class="form-section">
             <legend>Informazioni Generali</legend>
-            
+
             <div class="form-group">
                 <label for="titolo">Titolo del Caso *</label>
-                <input type="text" id="titolo" name="titolo" required 
-                       minlength="5" maxlength="200"
-                       value="<!-- value_titolo -->"
-                       placeholder="Es: Il caso di Via Poma">
+                <input type="text" id="titolo" name="titolo" required minlength="5" maxlength="200"
+                    value="<!-- value_titolo -->" placeholder="Es: Il caso di Via Poma">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="data_crimine">Data dell'Accaduto *</label>
-                    <input type="date" id="data_crimine" name="data_crimine" required
-                           value="<!-- value_data -->">
+                    <input type="date" id="data_crimine" name="data_crimine" required value="<!-- value_data -->">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="luogo">Luogo *</label>
-                    <input type="text" id="luogo" name="luogo" required
-                           value="<!-- value_luogo -->"
-                           placeholder="Es: Roma, Italia">
+                    <input type="text" id="luogo" name="luogo" required value="<!-- value_luogo -->"
+                        placeholder="Es: Roma, Italia">
                 </div>
             </div>
 
@@ -50,27 +46,21 @@
 
             <div class="form-group">
                 <label for="descrizione_breve">Descrizione Breve * <small>(max 500 caratteri)</small></label>
-                <textarea id="descrizione_breve" name="descrizione_breve" required
-                          maxlength="500" rows="3"
-                          placeholder="Breve sintesi del caso..."><!-- value_descrizione --></textarea>
+                <textarea id="descrizione_breve" name="descrizione_breve" required maxlength="500" rows="3"
+                    class="no-resize" placeholder="Breve sintesi del caso..."><!-- value_descrizione --></textarea>
             </div>
 
             <div class="form-group">
                 <label for="storia">Ricostruzione Completa *</label>
-                <textarea id="storia" name="storia" required
-                          minlength="50" rows="10"
-                          placeholder="Descrivi in dettaglio la storia del caso..."><!-- value_storia --></textarea>
+                <textarea id="storia" name="storia" required minlength="50" rows="10" class="no-resize"
+                    placeholder="Descrivi in dettaglio la storia del caso..."><!-- value_storia --></textarea>
             </div>
 
             <!-- IMMAGINE CASO -->
             <div class="form-group">
                 <label for="immagine_caso">Immagine del Caso (carica per sostituire)</label>
                 <!-- anteprima_immagine_caso -->
-                <input type="file"
-                    id="immagine_caso"
-                    name="immagine_caso"
-                    accept="image/jpeg,image/png,image/webp"
-                />
+                <input type="file" id="immagine_caso" name="immagine_caso" accept="image/jpeg,image/png,image/webp" />
                 <small class="form-hint">Lascia vuoto per mantenere l'immagine attuale</small>
             </div>
         </fieldset>
@@ -79,11 +69,11 @@
         <fieldset class="form-section">
             <legend>Vittime</legend>
             <p class="section-hint">Modifica le vittime esistenti o aggiungine di nuove.</p>
-            
+
             <div id="vittime-container">
                 <!-- vittime_html -->
             </div>
-            
+
             <button type="button" class="btn btn-secondary btn-add" id="btn-add-vittima">
                 + Aggiungi Vittima
             </button>
@@ -93,11 +83,11 @@
         <fieldset class="form-section">
             <legend>Colpevoli / Sospettati</legend>
             <p class="section-hint">Modifica i colpevoli esistenti o aggiungine di nuovi.</p>
-            
+
             <div id="colpevoli-container">
                 <!-- colpevoli_html -->
             </div>
-            
+
             <button type="button" class="btn btn-secondary btn-add" id="btn-add-colpevole">
                 + Aggiungi Colpevole
             </button>
@@ -107,11 +97,11 @@
         <fieldset class="form-section">
             <legend>Fonti e Articoli</legend>
             <p class="section-hint">Aggiungi link a fonti attendibili.</p>
-            
+
             <div id="articoli-container">
                 <!-- articoli_html -->
             </div>
-            
+
             <button type="button" class="btn btn-secondary btn-add" id="btn-add-articolo">
                 + Aggiungi Fonte
             </button>
@@ -128,7 +118,7 @@
     <div class="danger-zone">
         <h2>Elimina Caso</h2>
         <p>L'eliminazione è permanente. Verranno eliminate anche tutte le immagini associate.</p>
-        
+
         <form method="POST" id="form-elimina-caso">
             <input type="hidden" name="action" value="elimina_caso">
             <button type="button" class="btn btn-danger" id="btn-elimina-caso">Elimina Caso Definitivamente</button>

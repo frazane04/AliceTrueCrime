@@ -317,41 +317,7 @@ class FunzioniDB
     // GESTIONE CASI - METODI REFACTORIZZATI
     // ========================================
 
-    /**
-     * Recupera gli ultimi casi per l'area newsletter
-     * 
-     * @param int $limite Numero massimo di casi
-     * @param bool $soloApprovati Se true, filtra solo i casi approvati
-     */
-    public function getContenutiNewsletter($limite = 6, $soloApprovati = true)
-    {
-        try {
-            if (!$this->db->apriConnessione())
-                return [];
 
-            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Data FROM Caso";
-
-            if ($soloApprovati) {
-                $query .= " WHERE Approvato = 1";
-            }
-
-            $query .= " ORDER BY Data DESC LIMIT ?";
-
-            $result = $this->db->query($query, [$limite], "i");
-            $casi = [];
-
-            if ($result && is_object($result)) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $casi[] = $row;
-                }
-            }
-
-            $this->db->chiudiConnessione();
-            return $casi;
-        } catch (Exception $e) {
-            return [];
-        }
-    }
 
     /**
      * Recupera l'ID di un caso dal suo slug

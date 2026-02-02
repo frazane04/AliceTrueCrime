@@ -1,7 +1,8 @@
 <section class="segnalazione-container">
     <header class="page-header">
         <h1>Apri un nuovo fascicolo</h1>
-        <p>Hai informazioni su un caso non ancora trattato? Compila il rapporto preliminare con tutti i dettagli disponibili.</p>
+        <p>Hai informazioni su un caso non ancora trattato? Compila il rapporto preliminare con tutti i dettagli
+            disponibili.</p>
     </header>
 
     <div id="feedback-area">
@@ -9,47 +10,31 @@
     </div>
 
     <div class="form-wrapper">
-        <form action="{{PATH_PREFIX}}/segnala-caso" method="POST" enctype="multipart/form-data" class="form-crimine" id="form-segnalazione">
-            
+        <form action="{{PATH_PREFIX}}/segnala-caso" method="POST" enctype="multipart/form-data" class="form-crimine"
+            id="form-segnalazione">
+
             <!-- ========================================
                  SEZIONE 1: INFORMAZIONI GENERALI DEL CASO
                  ======================================== -->
             <fieldset class="form-section">
                 <legend>Informazioni Generali del Caso</legend>
-                
+
                 <div class="form-group">
                     <label for="titolo">Nome del Caso (Titolo) *</label>
-                    <input type="text" 
-                        id="titolo" 
-                        name="titolo" 
-                        placeholder="Es. Il mistero di..." 
-                        required
-                        minlength="5"
-                        maxlength="200"
-                        aria-describedby="titolo-hint"
-                    />
+                    <input type="text" id="titolo" name="titolo" placeholder="Es. Il mistero di..." required
+                        minlength="5" maxlength="200" aria-describedby="titolo-hint" />
                     <small id="titolo-hint" class="form-hint">Minimo 5 caratteri, massimo 200</small>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group half">
                         <label for="data_crimine">Data Accaduto *</label>
-                        <input type="date" 
-                            id="data_crimine" 
-                            name="data_crimine" 
-                            required
-                        />
+                        <input type="date" id="data_crimine" name="data_crimine" required />
                     </div>
                     <div class="form-group half">
                         <label for="luogo">Luogo *</label>
-                        <input 
-                            type="text" 
-                            id="luogo" 
-                            name="luogo" 
-                            placeholder="Città, Paese" 
-                            required
-                            maxlength="100"
-                        />
+                        <input type="text" id="luogo" name="luogo" placeholder="Città, Paese" required
+                            maxlength="100" />
                     </div>
                 </div>
 
@@ -69,30 +54,17 @@
 
                 <div class="form-group">
                     <label for="descrizione_breve">Descrizione Breve *</label>
-                    <textarea 
-                        id="descrizione_breve" 
-                        name="descrizione_breve" 
-                        rows="3" 
-                        placeholder="Una sintesi del caso in poche righe (apparirà nelle anteprime)"
-                        required
-                        maxlength="500"
-                        aria-describedby="descrizione-breve-hint"
-                    ></textarea>
+                    <textarea id="descrizione_breve" name="descrizione_breve" class="no-resize" rows="3"
+                        placeholder="Una sintesi del caso in poche righe (apparirà nelle anteprime)" required
+                        maxlength="500" aria-describedby="descrizione-breve-hint"></textarea>
                     <small id="descrizione-breve-hint" class="form-hint">Massimo 500 caratteri</small>
                 </div>
 
                 <div class="form-group">
                     <label for="storia">Ricostruzione Completa / Storia del Caso *</label>
-                    <textarea 
-                        id="storia" 
-                        name="storia" 
-                        rows="15" 
+                    <textarea id="storia" name="storia" class="no-resize" rows="15"
                         placeholder="Descrivi in dettaglio la sequenza degli eventi, le circostanze, le indagini, il processo e l'esito finale..."
-                        required
-                        minlength="50"
-                        maxlength="10000"
-                        aria-describedby="storia-hint"
-                    ></textarea>
+                        required minlength="50" maxlength="10000" aria-describedby="storia-hint"></textarea>
                     <small id="storia-hint" class="form-hint">Minimo 50 caratteri, massimo 10.000 caratteri</small>
                 </div>
 
@@ -100,14 +72,11 @@
                 <div class="form-group">
                     <label for="immagine_caso">Immagine del Caso (opzionale)</label>
                     <div class="file-upload-wrapper">
-                        <input type="file"
-                            id="immagine_caso"
-                            name="immagine_caso"
-                            accept="image/jpeg,image/png,image/webp"
-                            aria-describedby="immagine-caso-hint"
-                            data-preview-target="preview-caso"
-                        />
-                        <small id="immagine-caso-hint" class="form-hint">Formati accettati: JPG, PNG, WebP. Max 5MB</small>
+                        <input type="file" id="immagine_caso" name="immagine_caso"
+                            accept="image/jpeg,image/png,image/webp" aria-describedby="immagine-caso-hint"
+                            data-preview-target="preview-caso" />
+                        <small id="immagine-caso-hint" class="form-hint">Formati accettati: JPG, PNG, WebP. Max
+                            5MB</small>
                     </div>
                     <div id="preview-caso" class="image-preview" aria-live="polite"></div>
                 </div>
@@ -119,74 +88,49 @@
             <fieldset class="form-section">
                 <legend>Vittime del Caso</legend>
                 <p class="section-intro">Aggiungi informazioni sulle vittime coinvolte. Puoi aggiungere più vittime.</p>
-                
+
                 <div id="vittime-container">
                     <!-- Prima vittima (obbligatoria) -->
                     <div class="persona-entry vittima-entry" data-index="0">
                         <div class="entry-header">
                             <h2 class="entry-title">Vittima #1</h2>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group half">
                                 <label for="vittima_nome_0">Nome *</label>
-                                <input type="text" 
-                                    id="vittima_nome_0" 
-                                    name="vittima_nome[]" 
-                                    placeholder="Nome" 
-                                    required
-                                    maxlength="50"
-                                />
+                                <input type="text" id="vittima_nome_0" name="vittima_nome[]" placeholder="Nome" required
+                                    maxlength="50" />
                             </div>
                             <div class="form-group half">
                                 <label for="vittima_cognome_0">Cognome *</label>
-                                <input type="text" 
-                                    id="vittima_cognome_0" 
-                                    name="vittima_cognome[]" 
-                                    placeholder="Cognome" 
-                                    required
-                                    maxlength="50"
-                                />
+                                <input type="text" id="vittima_cognome_0" name="vittima_cognome[]" placeholder="Cognome"
+                                    required maxlength="50" />
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group half">
                                 <label for="vittima_luogo_nascita_0">Luogo di Nascita</label>
-                                <input type="text" 
-                                    id="vittima_luogo_nascita_0" 
-                                    name="vittima_luogo_nascita[]" 
-                                    placeholder="Città, Paese" 
-                                    maxlength="100"
-                                />
+                                <input type="text" id="vittima_luogo_nascita_0" name="vittima_luogo_nascita[]"
+                                    placeholder="Città, Paese" maxlength="100" />
                             </div>
                             <div class="form-group half">
                                 <label for="vittima_data_nascita_0">Data di Nascita *</label>
-                                <input type="date" 
-                                    id="vittima_data_nascita_0" 
-                                    name="vittima_data_nascita[]"
-                                    required
-                                />
+                                <input type="date" id="vittima_data_nascita_0" name="vittima_data_nascita[]" required />
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group half">
                                 <label for="vittima_data_decesso_0">Data di Decesso</label>
-                                <input type="date" 
-                                    id="vittima_data_decesso_0" 
-                                    name="vittima_data_decesso[]"
-                                />
+                                <input type="date" id="vittima_data_decesso_0" name="vittima_data_decesso[]" />
                             </div>
 
                             <div class="form-group half">
                                 <label for="vittima_immagine_0">Foto (opzionale)</label>
-                                <input type="file"
-                                    id="vittima_immagine_0"
-                                    name="vittima_immagine[]"
-                                    accept="image/jpeg,image/png,image/webp"
-                                    data-preview-target="preview-vittima-0"
-                                />
+                                <input type="file" id="vittima_immagine_0" name="vittima_immagine[]"
+                                    accept="image/jpeg,image/png,image/webp" data-preview-target="preview-vittima-0" />
                             </div>
                         </div>
                         <div id="preview-vittima-0" class="image-preview image-preview-small" aria-live="polite"></div>
@@ -204,67 +148,47 @@
             <fieldset class="form-section">
                 <legend>Colpevoli del Caso</legend>
                 <p class="section-intro">Aggiungi informazioni sui colpevoli. Se irrisolto, inserisci "Ignoto".</p>
-                
+
                 <div id="colpevoli-container">
                     <!-- Primo colpevole (obbligatorio) -->
                     <div class="persona-entry colpevole-entry" data-index="0">
                         <div class="entry-header">
                             <h2 class="entry-title">Colpevole #1</h2>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group half">
                                 <label for="colpevole_nome_0">Nome *</label>
-                                <input type="text" 
-                                    id="colpevole_nome_0" 
-                                    name="colpevole_nome[]" 
-                                    placeholder="Nome (o 'Ignoto')" 
-                                    required
-                                    maxlength="50"
-                                />
+                                <input type="text" id="colpevole_nome_0" name="colpevole_nome[]"
+                                    placeholder="Nome (o 'Ignoto')" required maxlength="50" />
                             </div>
                             <div class="form-group half">
                                 <label for="colpevole_cognome_0">Cognome *</label>
-                                <input type="text" 
-                                    id="colpevole_cognome_0" 
-                                    name="colpevole_cognome[]" 
-                                    placeholder="Cognome (o 'X')" 
-                                    required
-                                    maxlength="50"
-                                />
+                                <input type="text" id="colpevole_cognome_0" name="colpevole_cognome[]"
+                                    placeholder="Cognome (o 'X')" required maxlength="50" />
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group half">
                                 <label for="colpevole_luogo_nascita_0">Luogo di Nascita</label>
-                                <input type="text" 
-                                    id="colpevole_luogo_nascita_0" 
-                                    name="colpevole_luogo_nascita[]" 
-                                    placeholder="Città, Paese (o 'N/A')" 
-                                    maxlength="100"
-                                />
+                                <input type="text" id="colpevole_luogo_nascita_0" name="colpevole_luogo_nascita[]"
+                                    placeholder="Città, Paese (o 'N/A')" maxlength="100" />
                             </div>
                             <div class="form-group half">
                                 <label for="colpevole_data_nascita_0">Data di Nascita *</label>
-                                <input type="date" 
-                                    id="colpevole_data_nascita_0" 
-                                    name="colpevole_data_nascita[]"
-                                    required
-                                />
+                                <input type="date" id="colpevole_data_nascita_0" name="colpevole_data_nascita[]"
+                                    required />
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="colpevole_immagine_0">Foto (opzionale)</label>
-                            <input type="file"
-                                id="colpevole_immagine_0"
-                                name="colpevole_immagine[]"
-                                accept="image/jpeg,image/png,image/webp"
-                                data-preview-target="preview-colpevole-0"
-                            />
+                            <input type="file" id="colpevole_immagine_0" name="colpevole_immagine[]"
+                                accept="image/jpeg,image/png,image/webp" data-preview-target="preview-colpevole-0" />
                         </div>
-                        <div id="preview-colpevole-0" class="image-preview image-preview-small" aria-live="polite"></div>
+                        <div id="preview-colpevole-0" class="image-preview image-preview-small" aria-live="polite">
+                        </div>
                     </div>
                 </div>
 
@@ -278,46 +202,37 @@
                  ======================================== -->
             <fieldset class="form-section">
                 <legend>Fonti e Articoli di Approfondimento</legend>
-                <p class="section-intro">Aggiungi le fonti giornalistiche o documentali che supportano la ricostruzione.</p>
-                
+                <p class="section-intro">Aggiungi le fonti giornalistiche o documentali che supportano la ricostruzione.
+                </p>
+
                 <div id="articoli-container">
                     <div class="articolo-entry" data-index="0">
                         <div class="entry-header">
                             <h2 class="entry-title">Fonte #1</h2>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="articolo_titolo_0">Titolo Articolo/Fonte</label>
-                            <input type="text" 
-                                id="articolo_titolo_0" 
-                                name="articolo_titolo[]" 
-                                placeholder="Es. 'Approfondimento su...'" 
-                                maxlength="200"
-                            />
+                            <input type="text" id="articolo_titolo_0" name="articolo_titolo[]"
+                                placeholder="Es. 'Approfondimento su...'" maxlength="200" />
                         </div>
 
                         <div class="form-row">
                             <div class="form-group half">
                                 <label for="articolo_data_0">Data Pubblicazione</label>
-                                <input type="date" 
-                                    id="articolo_data_0" 
-                                    name="articolo_data[]"
-                                />
+                                <input type="date" id="articolo_data_0" name="articolo_data[]" />
                             </div>
                             <div class="form-group half">
                                 <label for="articolo_link_0">Link Fonte</label>
-                                <input type="url" 
-                                    id="articolo_link_0" 
-                                    name="articolo_link[]" 
-                                    placeholder="https://esempio.it/articolo"
-                                />
+                                <input type="url" id="articolo_link_0" name="articolo_link[]"
+                                    placeholder="https://esempio.it/articolo" />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <button type="button" class="btn-add-entry" id="btn-add-articolo">
-                  Aggiungi un'altra fonte
+                    Aggiungi un'altra fonte
                 </button>
             </fieldset>
 

@@ -32,7 +32,7 @@ if ($is_iscritti === 1) {
 }
 
 $newsletterHtml = "
-    <section class='content-block newsletter-section'>
+    <section id='newsletter' class='content-block newsletter-section'>
         <div class='block-header'>
             <h2>$titoloSezione</h2>
         </div>

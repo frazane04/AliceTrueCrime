@@ -100,7 +100,10 @@ $db->chiudiConnessione();
 // ========================================
 $contenuto = str_replace('{{CASI_EVIDENZA}}', $htmlCasiEvidenza, $contenuto);
 $contenuto = str_replace('{{ULTIME_INCHIESTE}}', $htmlUltimeInchieste, $contenuto);
-$contenuto = str_replace('{{ULTIME_INCHIESTE}}', $htmlUltimeInchieste, $contenuto);
+
+// Logic for Newsletter Link
+$linkNewsletter = isLoggedIn() ? getPrefix() . '/profilo#newsletter' : getPrefix() . '/accedi';
+$contenuto = str_replace('{{LINK_NEWSLETTER}}', $linkNewsletter, $contenuto);
 
 // Inject Breadcrumbs inside Hero for Home Page
 $contenuto = str_replace('{{BREADCRUMBS_HERO}}', getBreadcrumbs('/'), $contenuto);

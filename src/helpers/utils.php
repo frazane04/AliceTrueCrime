@@ -489,27 +489,39 @@ function generateLiList($links, $currentPath): string
  */
 function getBreadcrumbs($currentPath): string
 {
-    $prefix = getPrefix();
-    $path = trim(parse_url($currentPath, PHP_URL_PATH), '/');
+    // Rileva automaticamente la cartella di base dello script corrente
+    // Esempio: se lo script è in /sperozzo/alicetruecrime/index.php, $basePath sarà /sperozzo/alicetruecrime
+    $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
+    $basePath = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
+
+    // Rimuovi il base path dall'URI corrente per ottenere il percorso relativo puro
+    // Esempio: /sperozzo/alicetruecrime/esplora -> /esplora
+    if ($basePath !== '' && strpos($currentPath, $basePath) === 0) {
+        $relativePath = substr($currentPath, strlen($basePath));
+    } else {
+        $relativePath = $currentPath;
+    }
+
+    $path = trim(parse_url($relativePath, PHP_URL_PATH), '/');
 
     // Se siamo nella Home Page (nessun percorso oltre al prefisso)
-    if (empty($path)) {
+    if (empty($path) || $path === 'home.php') {
         return '<nav aria-label="Breadcrumb" class="breadcrumbs"><span aria-current="page">Home</span></nav>';
     }
 
-    // Iniziamo con Home come link perché non siamo nella home
-    $breadcrumbs = ['<a href="' . $prefix . '/">Home</a>'];
+    // Iniziamo con Home. Usiamo $basePath come prefisso per i link per garantire che funzionino ovunque
+    $breadcrumbs = ['<a href="' . ($basePath ?: '/') . '">Home</a>'];
 
     $parts = explode('/', $path);
-    $accumulatedPath = $prefix;
+    $accumulatedPath = $basePath; // Iniziamo l'accumulo dal base path reale
     $totalParts = count($parts);
 
-    // Usiamo $index per identificare con certezza l'ultimo elemento
     foreach ($parts as $index => $part) {
         if ($part === '')
             continue;
 
         $accumulatedPath .= '/' . $part;
+
         // Trasformiamo lo slug (es. segnala-caso) in testo leggibile (es. Segnala Caso)
         if ($part === 'chi-siamo') {
             $name = 'Informazioni Aggiuntive';

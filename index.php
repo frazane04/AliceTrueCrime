@@ -45,7 +45,6 @@ $routes = [
     '/esplora' => 'esplora.php',
     '/segnala-caso' => 'segnala.php',
     '/modifica-caso' => 'modifica_caso.php',
-    '/newsletter' => 'newsletter.php',
     '/chi-siamo' => 'chi_siamo.php',
     '/privacy' => 'privacy.php',
 
