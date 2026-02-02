@@ -92,7 +92,7 @@ function mostraAnteprimaImmagine(input, previewId) {
             return;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
+        if (file.size > 2 * 1024 * 1024) {
             preview.innerHTML = '<p class="error-text" role="alert">File troppo grande. Max 2MB.</p>';
             input.value = '';
             return;
