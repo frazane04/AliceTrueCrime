@@ -1294,6 +1294,8 @@ textarea:focus-visible,
 .password-toggle {
     position: absolute;
     right: 0.7em;
+    top: 1.35em;
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
@@ -1429,6 +1431,84 @@ textarea:focus-visible,
     font-size: var(--font-base);
     font-weight: 600;
     margin-bottom: 1em;
+}
+
+.edit-profile-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.edit-profile-form .data-row {
+    margin-bottom: 1.5em;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-profile-form .label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: var(--font-base);
+}
+
+.edit-profile-form .value input {
+    width: 100%;
+    padding: 0.8em 3.5em 0.8em 0.7em;
+    border: 2px solid var(--color-primary);
+    border-radius: 0.5em;
+    background-color: var(--surface-page);
+    color: var(--text-main);
+    transition: all 0.3s ease;
+}
+
+body.dark-theme .edit-profile-form .value input {
+    background-color: var(--surface-overlay);
+    border-color: var(--color-primary);
+}
+
+.edit-profile-form .value input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--base-white);
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.15);
+}
+
+.password-wrapper {
+    flex-wrap: wrap;
+}
+
+.password-wrapper .field-error {
+    width: 100%;
+    margin-top: 0.5em;
+}
+
+.security-confirm {
+    margin-top: 2em;
+    padding-top: 1.5em;
+    border-top: 1px solid var(--border-base);
+}
+
+.alert-error {
+    background-color: var(--status-danger-bg);
+    color: var(--status-danger-text);
+    padding: 1em;
+    border-radius: 0.5em;
+    margin-bottom: 1.5em;
+    border: 1px solid var(--status-danger-border);
+}
+
+body.dark-theme .alert-error {
+    color: #ffdce0;
+    background-color: rgba(168, 32, 57, 0.2);
+    border-color: #a82039;
+}
+
+.field-error {
+    display: block;
+    margin-top: 0.4em;
+    font-size: var(--font-sm);
+    color: var(--status-danger-text);
 }
 
 .profile-actions {
