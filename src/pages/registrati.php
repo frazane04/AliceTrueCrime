@@ -1,5 +1,5 @@
 <?php
-// src/struct/registrati.php
+// Registrazione utente
 
 require_once __DIR__ . '/../db/funzioni_db.php';
 
@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $passwordConfirm = $_POST['password_confirm'] ?? '';
         $newsletterOptIn = isset($_POST['newsletter']);
 
-        // Validazione
         if (empty($email) || empty($username) || empty($password) || empty($passwordConfirm)) {
             $errorMessage = 'Per favore, compila tutti i campi obbligatori.';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -51,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         header('Refresh: 2; url=' . getPrefix() . '/accedi');
                     } else {
-                        // Registrazione fallita
                         $errorMessage = $registrationResult['message'];
                     }
                 }

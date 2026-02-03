@@ -1,15 +1,12 @@
 <?php
+// Dashboard esplora casi
+
 require_once __DIR__ . '/../db/funzioni_db.php';
 require_once __DIR__ . '/../helpers/utils.php';
 
-// Carica il template della dashboard
 $contenuto = loadTemplate('esplora');
 $dbFunctions = new FunzioniDB();
 
-/**
- * Funzione di utilità per generare le card dei casi in questa pagina
- * (Alternativa a quella in utils.php se vuoi personalizzarla)
- */
 function generaHtmlCardsDashboard($listaCasi)
 {
     if (empty($listaCasi))
@@ -43,17 +40,14 @@ function generaHtmlCardsDashboard($listaCasi)
     return $html;
 }
 
-// Recupero dati per le sezioni della Dashboard
 $casiMain = $dbFunctions->getCasiRecenti(4);
 $casiPiuLetti = $dbFunctions->getCasiPiuLetti(4);
 $casiRecenti = $dbFunctions->getCasiRecenti(4);
 
-// Generazione HTML per le griglie
 $htmlMain = generaHtmlCardsDashboard($casiMain);
 $htmlPiuLetti = generaHtmlCardsDashboard($casiPiuLetti);
 $htmlRecenti = generaHtmlCardsDashboard($casiRecenti);
 
-// Costruzione del contenuto della sezione (senza logica di ricerca)
 $mainContentHtml = '
 <section class="explore-section">
     <div class="section-top">
@@ -85,11 +79,9 @@ $mainContentHtml = '
     </div>
 </section>';
 
-// Sostituzioni finali nel template
 $contenuto = str_replace('{{CONTENT}}', $mainContentHtml, $contenuto);
 $contenuto = str_replace('{{PREFIX}}', getPrefix(), $contenuto);
 
-// Titolo e Meta per la SEO
 $descrizioneSEO = "Dashboard di AliceTrueCrime: scopri i casi di cronaca nera più letti, le ultime inchieste e i nuovi arrivi nel nostro archivio.";
 echo getTemplatePage("Esplora - AliceTrueCrime", $contenuto, $descrizioneSEO);
 ?>
