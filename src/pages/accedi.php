@@ -1,6 +1,5 @@
 <?php
-// src/struct/accedi.php
-// Gestione Login
+// Login utente
 
 require_once __DIR__ . '/../db/funzioni_db.php';
 
@@ -11,9 +10,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
 $email = '';
 $messaggioHTML = '';
 
-// ========================================
-// GESTIONE FORM POST
-// ========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verificaCsrfToken()) {
         $messaggioHTML = alertHtml('error', 'Token di sicurezza non valido. Ricarica la pagina e riprova.');

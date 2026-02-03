@@ -1,6 +1,5 @@
 <?php
-// src/struct/segnala.php
-// Gestione segnalazione casi - Versione refactored con FormCasoHelper
+// Segnalazione nuovi casi
 
 require_once __DIR__ . '/../db/funzioni_db.php';
 require_once __DIR__ . '/../helpers/ImageHandler.php';
@@ -41,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $colpevoli = $formHelper->parseColpevoliFromPost($_POST);
     $articoli = $formHelper->parseArticoliFromPost($_POST);
 
-    // Validazione
     $errori = [];
 
     if (empty($titolo) || strlen($titolo) < 5 || strlen($titolo) > 200) {
@@ -78,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Inserimento
     if (empty($errori)) {
         try {
             $tipologiaFinal = !empty($tipologia) ? $tipologia : null;

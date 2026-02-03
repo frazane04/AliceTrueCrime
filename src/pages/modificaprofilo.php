@@ -19,26 +19,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $confermaPass = $_POST['confirm_password'] ?? '';
         $passAttuale = $_POST['current_password'] ?? '';
 
-        // Verifica password attuale
         $loginCheck = $db->loginUtente($emailAttuale, $passAttuale);
 
         if (!$loginCheck['success']) {
             $errorMessage = 'La password attuale non è corretta.';
         }
-        // Validazione Username
         elseif (empty($nuovoUsername) || strlen($nuovoUsername) < 3 || strlen($nuovoUsername) > 30) {
             $errorMessage = 'L\'username deve essere tra 3 e 30 caratteri.';
         }
         elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $nuovoUsername)) {
             $errorMessage = 'L\'username può contenere solo lettere, numeri e underscore.';
         }
-        // Verifica username non già in uso (se diverso dall'attuale)
         elseif ($nuovoUsername !== $usernameAttuale && $db->verificaUsernameEsistente($nuovoUsername)) {
             $errorMessage = 'Questo username è già in uso.';
         }
         else {
             $passValid = true;
-            // Validazione nuova password (se inserita)
             if (!empty($nuovaPass)) {
                 if (strlen($nuovaPass) < 8) {
                     $errorMessage = 'La nuova password deve contenere almeno 8 caratteri.';
@@ -58,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            // Esegui aggiornamento
             if ($passValid) {
                 if ($db->aggiornaProfilo($emailAttuale, $nuovoUsername, $nuovaPass)) {
                     $_SESSION['user'] = $nuovoUsername;

@@ -1,5 +1,5 @@
 <?php
-// src/struct/logout.php
+// Logout utente
 
 require_once __DIR__ . '/../helpers/utils.php';
 require_once __DIR__ . '/../db/funzioni_db.php';

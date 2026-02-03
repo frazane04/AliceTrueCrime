@@ -1,27 +1,24 @@
 <?php
+// Archivio completo casi con ricerca
+
 require_once __DIR__ . '/../db/funzioni_db.php';
 require_once __DIR__ . '/../helpers/utils.php';
 
 $dbFunctions = new FunzioniDB();
 
-// 1. Parametri di Ricerca
 $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
 $categoriaFiltro = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';
 
-// 2. Esecuzione Ricerca
 $filtri = ['q' => $searchQuery, 'categoria' => $categoriaFiltro];
 $risultatiRicerca = $dbFunctions->cercaCasiConFiltri($filtri, 100);
 $numRisultati = count($risultatiRicerca);
 
-// Titoli per la pagina
 $titoloMostrato = $searchQuery ? 'Risultati per: "' . htmlspecialchars($searchQuery) . '"' : 'Archivio Completo dei Casi';
 $sottotitolo = "Sfoglia tutti i fascicoli presenti nel nostro database.";
 
-// 3. Generazione HTML dei risultati (Card)
-// Nota: usa la funzione generaHtmlCards() che è già definita in esplora.php o utils.php
 $htmlRisultati = generaHtmlCards($risultatiRicerca);
 
-// 4. Gestione AJAX per la ricerca istantanea (esplora.js)
+// AJAX
 if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     header('Content-Type: application/json');
     echo json_encode([
@@ -32,7 +29,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
     exit;
 }
 
-// 5. Costruzione Barra di Ricerca
 $searchBarHtml = loadTemplate('../components/search_bar');
 $categorie = $dbFunctions->getCategorie();
 
@@ -43,13 +39,12 @@ foreach ($categorie as $cat) {
         . htmlspecialchars($cat['Tipologia']) . ' (' . $cat['conteggio'] . ')</option>';
 }
 
-// Configurazione della barra per funzionare su questa pagina
 $searchBarHtml = str_replace([
     '{{SEARCH_VALUE}}',
     '{{OPTIONS_CATEGORIE}}',
     '{{PREFIX}}',
-    'action="' . getPrefix() . '/esplora"', // Cambia destinazione form
-    'data-url="' . getPrefix() . '/esplora"', // Cambia URL per AJAX
+    'action="' . getPrefix() . '/esplora"',
+    'data-url="' . getPrefix() . '/esplora"',
     '{{FILTRI_ATTIVI}}'
 ], [
     htmlspecialchars($searchQuery),
@@ -60,8 +55,6 @@ $searchBarHtml = str_replace([
     ''
 ], $searchBarHtml);
 
-// 6. Struttura della Pagina (Usa il design che mi hai passato)
-// L'ID deve essere "esplora-content" per far funzionare il Javascript esistente
 $htmlPagina = '
 <div class="sezione-stretta">
     <section class="explore-section">
@@ -81,7 +74,6 @@ $htmlPagina = '
     </section>
 </div>';
 
-// 7. Rendering finale tramite il layout del sito
 $contenuto = $htmlPagina;
 $contenuto .= '<script src="' . getPrefix() . '/js/esplora.js"></script>';
 
