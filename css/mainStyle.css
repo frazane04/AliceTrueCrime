@@ -46,6 +46,11 @@
     }
 }
 
+body.dark-theme input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
 body.dark-theme,
 html.dark-theme {
     --color-primary: #E08E70;
@@ -2354,8 +2359,9 @@ textarea:focus-visible,
     border-radius: 12px;
 }
 
+.danger-zone h2,
 .danger-zone h3 {
-    color: var(--color-accent);
+    color: #630D16;
     margin-bottom: 0.5rem;
     margin-top: 0;
 }
@@ -2435,8 +2441,8 @@ textarea:focus-visible,
 .btn-remove-img {
     padding: 0.25rem 0.5rem;
     font-size: 0.85rem;
-    background: var(--status-danger-text);
-    color: var(--base-white);
+    background: #8a1a2f;
+    color: #ffffff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -2519,21 +2525,16 @@ textarea:focus-visible,
 }
 
 .page-modifica-caso .btn-danger {
-    background-color: var(--color-accent);
-    color: var(--text-on-dark);
+    background-color: #8a1a2f;
+    color: #ffffff;
+    border: 1px solid #630D16;
 }
 
 .page-modifica-caso .btn-danger:hover {
-    background-color: var(--color-primary);
+    background-color: #630D16;
 }
 
-.page-modifica-caso .btn-remove-img {
-    background-color: var(--color-accent);
-}
 
-.page-modifica-caso .btn-remove-img:hover {
-    background-color: var(--color-primary);
-}
 
 .page-modifica-caso .image-removed-notice {
     margin-bottom: 1em;
@@ -2624,6 +2625,27 @@ textarea:focus-visible,
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+#search-input {
+    width: 100%;
+    padding: 0.8em;
+    border: 2px solid var(--color-primary);
+    border-radius: 0.5em;
+    background-color: var(--surface-page);
+    color: var(--text-main);
+    transition: all 0.3s ease;
+}
+
+#search-input:focus {
+    outline: none;
+    background-color: var(--base-white);
+    box-shadow: 0 0 0 3px rgba(122, 62, 38, 0.15);
+}
+
+body.dark-theme #search-input,
+body.dark-theme #search-input:focus {
+    color: #ffffff;
 }
 
 #search-loading {
