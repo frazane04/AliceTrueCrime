@@ -463,10 +463,13 @@ function getHeaderButtons(): string
  *
  */
 function inviaNewsletterNuovoCaso($titolo, $slug, $descrizione) {
-    $apiKey = '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'; // Inserisci qui la tua chiave API V3
+    // Carica la configurazione
+    $config = require __DIR__ . '/../db/config.php';
+    $apiKey = $config['brevo_api_key']; 
+    
     $url = 'https://api.brevo.com/v3/smtp/email';
 
-   $db = new FunzioniDB();
+    $db = new FunzioniDB();
     $iscritti = $db->getIscrittiNewsletter();
 
     // LOG 1: Verifica se vengono trovati iscritti
