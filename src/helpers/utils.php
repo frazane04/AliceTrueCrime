@@ -1,4 +1,14 @@
 <?php
+
+// Inserisci questo all'inizio di utils.php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Forza il log in un file che puoi vedere tu
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../../debug.log');
+
 // Utils - Gestione logica e templating
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -446,6 +456,93 @@ function getHeaderButtons(): string
             <a href="$prefix/accedi" class="button-layout">Accedi</a>
         HTML;
     }
+}
+
+/**
+ * Invia una newsletter tramite Brevo API senza usare Composer (utilizza cURL)
+ *
+ */
+function inviaNewsletterNuovoCaso($titolo, $slug, $descrizione) {
+    $apiKey = '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'; // Inserisci qui la tua chiave API V3
+    $url = 'https://api.brevo.com/v3/smtp/email';
+
+   $db = new FunzioniDB();
+    $iscritti = $db->getIscrittiNewsletter();
+
+    // LOG 1: Verifica se vengono trovati iscritti
+    error_log("Newsletter Debug: Trovati " . count($iscritti) . " iscritti.");
+
+    if (empty($iscritti)) return;
+
+    $destinatari = [];
+    foreach ($iscritti as $email) {
+        $destinatari[] = ['email' => $email];
+    }
+
+    // Configurazione del contenuto dell'email con design professionale
+    $data = [
+        "sender" => ["name" => "AliceTrueCrime", "email" => "infoalicetruecrime@gmail.com"],
+        "to" => $destinatari,
+        "subject" => "📂 NUOVO FASCICOLO: " . $titolo,
+        "htmlContent" => "
+            <!DOCTYPE html>
+            <html lang='it'>
+            <head>
+                <meta charset='UTF-8'>
+                <style>
+                    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 20px auto; background-color: #262626; border: 1px solid #444; border-radius: 8px; overflow: hidden; }
+                    .header { background-color: #630D16; padding: 30px; text-align: center; }
+                    .header h1 { color: #ffffff; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+                    .content { padding: 30px; line-height: 1.6; }
+                    .case-title { color: #e63946; font-size: 22px; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 10px; }
+                    .description { color: #cccccc; font-size: 16px; margin-bottom: 25px; }
+                    .btn-container { text-align: center; margin: 30px 0; }
+                    .btn { background-color: #e63946; color: #ffffff !important; padding: 15px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; }
+                    .footer { background-color: #111; padding: 20px; text-align: center; font-size: 12px; color: #777; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h1>Alice True Crime</h1>
+                    </div>
+                    <div class='content'>
+                        <p style='color: #888; text-transform: uppercase; font-size: 12px; font-weight: bold;'>Notifica Archivio</p>
+                        <h2 class='case-title'>" . htmlspecialchars($titolo) . "</h2>
+                        <p class='description'>" . htmlspecialchars($descrizione) . "</p>
+                        <div class='btn-container'>
+                            <a href='https://tuosito.it/esplora/" . urlencode($slug) . "' class='btn'>APRI IL FASCICOLO</a>
+                        </div>
+                        <p style='font-size: 14px; color: #888;'>Resta sintonizzato per nuovi aggiornamenti dall'archivio del crimine.</p>
+                    </div>
+                    <div class='footer'>
+                        Ricevi questa email perché sei iscritto alla newsletter di AliceTrueCrime.<br>
+                        &copy; 2026 AliceTrueCrime. Tutti i diritti riservati.
+                    </div>
+                </div>
+            </body>
+            </html>"
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'api-key: ' . $apiKey,
+        'Content-Type: application/json'
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    // LOG 2: Verifica la risposta di Brevo e gli errori di connessione
+    error_log("Newsletter Debug: Codice HTTP Brevo: " . $httpCode);
+    error_log("Newsletter Debug: Risposta Brevo: " . $response);
+    if($curlError) error_log("Newsletter Debug: Errore cURL: " . $curlError);
 }
 
 // Genera i link di navigazione footer

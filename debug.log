@@ -1,0 +1,27 @@
+[03-Feb-2026 08:53:17 Europe/Berlin] Errore query DB: Connessione non aperta
+[03-Feb-2026 08:53:28 Europe/Berlin] DEBUG: Avvio invio newsletter per il caso 34
+[03-Feb-2026 08:53:28 Europe/Berlin] Newsletter Debug: Trovati 4 iscritti.
+[03-Feb-2026 08:53:28 Europe/Berlin] Newsletter Debug: Codice HTTP Brevo: 401
+[03-Feb-2026 08:53:28 Europe/Berlin] Newsletter Debug: Risposta Brevo: {"message":"Key not found","code":"unauthorized"}
+
+[03-Feb-2026 08:56:25 Europe/Berlin] Errore query DB: Connessione non aperta
+[03-Feb-2026 08:56:34 Europe/Berlin] DEBUG: Avvio invio newsletter per il caso 35
+[03-Feb-2026 08:56:34 Europe/Berlin] Newsletter Debug: Trovati 4 iscritti.
+[03-Feb-2026 08:56:34 Europe/Berlin] Newsletter Debug: Codice HTTP Brevo: 201
+[03-Feb-2026 08:56:34 Europe/Berlin] Newsletter Debug: Risposta Brevo: {"messageId":"<202602030856.93696393789@smtp-relay.mailin.fr>"}
+
+[03-Feb-2026 09:03:03 Europe/Berlin] Errore query DB: Connessione non aperta
+[03-Feb-2026 09:03:09 Europe/Berlin] Newsletter Debug: Trovati 4 iscritti.
+[03-Feb-2026 09:03:09 Europe/Berlin] Newsletter Debug: Codice HTTP Brevo: 201
+[03-Feb-2026 09:03:09 Europe/Berlin] Newsletter Debug: Risposta Brevo: {"messageId":"<202602030903.20282864079@smtp-relay.mailin.fr>"}
+
+[03-Feb-2026 09:08:04 Europe/Berlin] Errore query DB: Connessione non aperta
+[03-Feb-2026 09:08:12 Europe/Berlin] Newsletter Debug: Trovati 4 iscritti.
+[03-Feb-2026 09:08:12 Europe/Berlin] Newsletter Debug: Codice HTTP Brevo: 201
+[03-Feb-2026 09:08:12 Europe/Berlin] Newsletter Debug: Risposta Brevo: {"messageId":"<202602030908.88331256116@smtp-relay.mailin.fr>"}
+
+[03-Feb-2026 09:09:53 Europe/Berlin] Errore query DB: Connessione non aperta
+[03-Feb-2026 09:10:03 Europe/Berlin] Newsletter Debug: Trovati 4 iscritti.
+[03-Feb-2026 09:10:03 Europe/Berlin] Newsletter Debug: Codice HTTP Brevo: 201
+[03-Feb-2026 09:10:03 Europe/Berlin] Newsletter Debug: Risposta Brevo: {"messageId":"<202602030910.85754822826@smtp-relay.mailin.fr>"}
+

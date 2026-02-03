@@ -799,21 +799,54 @@ class FunzioniDB
                 throw new Exception("Impossibile connettersi al database");
             }
 
+            // 1. Recupera i dati necessari PRIMA di chiudere tutto
+            $queryDati = "SELECT Titolo, Slug, Descrizione FROM Caso WHERE N_Caso = ?";
+            $resDati = $this->db->query($queryDati, [$nCaso], "i");
+            $datiCaso = mysqli_fetch_assoc($resDati);
+
+            // 2. Esegui l'UPDATE
             $query = "UPDATE Caso SET Approvato = 1 WHERE N_Caso = ?";
             $result = $this->db->query($query, [$nCaso], "i");
 
-            $this->db->chiudiConnessione();
+            // 3. CHIUDI la connessione qui solo se hai finito tutto col DB
+            $this->db->chiudiConnessione(); 
 
-            if ($result) {
-                return ['success' => true, 'message' => 'Caso approvato con successo'];
+            if ($result && $datiCaso) {
+                // 4. Ora chiama la newsletter (che aprirà la sua connessione separata)
+                inviaNewsletterNuovoCaso($datiCaso['Titolo'], $datiCaso['Slug'], $datiCaso['Descrizione']);
+                return ['success' => true, 'message' => 'Caso approvato e mail inviata'];
             }
+            
             return ['success' => false, 'message' => 'Errore durante l\'approvazione'];
 
         } catch (Exception $e) {
+            // Assicurati di chiudere sempre in caso di errore
             $this->db->chiudiConnessione();
             return ['success' => false, 'message' => 'Errore: ' . $e->getMessage()];
         }
     }
+
+    // Aggiungi anche questo metodo per recuperare le email
+    public function getIscrittiNewsletter() {
+    try {
+        if (!$this->db->apriConnessione()) return [];
+        
+        // Verifica sulla colonna Is_Newsletter della tabella Utente
+        $query = "SELECT Email FROM Utente WHERE Is_Newsletter = 1";
+        $result = $this->db->query($query, [], "");
+        
+        $emails = [];
+        if ($result && is_object($result)) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $emails[] = $row['Email'];
+            }
+        }
+        $this->db->chiudiConnessione();
+        return $emails;
+    } catch (Exception $e) {
+        return [];
+    }
+}
 
     // Rifiuta ed elimina un caso e tutti i dati collegati
     public function rifiutaCaso($nCaso)
