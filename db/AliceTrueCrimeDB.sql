@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:8889
--- Creato il: Feb 02, 2026 alle 10:49
--- Versione del server: 8.0.44
--- Versione PHP: 8.3.28
+-- Host: 127.0.0.1
+-- Creato il: Feb 03, 2026 alle 07:55
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `AliceTrueCrimeDB`
+-- Database: `alicetruecrimedb`
 --
 
 -- --------------------------------------------------------
@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `articolo` (
-  `ID_Articolo` int NOT NULL,
-  `Titolo` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ID_Articolo` int(11) NOT NULL,
+  `Titolo` varchar(200) NOT NULL,
   `Data` date NOT NULL,
-  `Link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Caso` int DEFAULT NULL
+  `Link` varchar(255) NOT NULL,
+  `Caso` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -86,7 +86,8 @@ INSERT INTO `articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
 (199, 'Omicidio Yara, Bossetti condannato all\'ergastolo', '2018-10-13', 'https://bergamo.corriere.it/notizie/cronaca/18_ottobre_12/omicidio-yara-bossetti-condanna-definitiva-quel-dna-ha-voce-vittima-376f1dfe-ce52-11e8-b10d-ee18a19b48a0.shtml', 13),
 (200, 'Yara, condanna Bossetti: ecco perché il Dna tiene.', '2017-04-22', 'https://www.marinabaldi.it/notizie/yara-condanna-bossetti-ecco-perche-il-dna-tiene-tutto-quello-che-non-vi-hanno-spiegato-bene', 13),
 (207, 'La Storia del massacro del circeo', '2025-09-16', 'https://www.fondazionecorriere.corriere.it/iniziative/il-corriere-racconta-massacro-del-circeo/', 21),
-(208, 'Strage del Circeo, Gianni Guido resta libero', '2009-09-29', 'https://www.avvenire.it/attualita/strage-del-circeo-gianni-guido-resta-libero_5376', 21);
+(208, 'Strage del Circeo, Gianni Guido resta libero', '2009-09-29', 'https://www.avvenire.it/attualita/strage-del-circeo-gianni-guido-resta-libero_5376', 21),
+(209, 'Wikipedia', '2026-02-03', 'https://it.wikipedia.org/wiki/Delitto_di_via_Carlo_Poma', 28);
 
 -- --------------------------------------------------------
 
@@ -95,19 +96,19 @@ INSERT INTO `articolo` (`ID_Articolo`, `Titolo`, `Data`, `Link`, `Caso`) VALUES
 --
 
 CREATE TABLE `caso` (
-  `N_Caso` int NOT NULL,
-  `Titolo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `N_Caso` int(11) NOT NULL,
+  `Titolo` varchar(100) NOT NULL,
+  `Slug` varchar(255) DEFAULT NULL,
   `Data` date NOT NULL,
-  `Luogo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Descrizione` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Storia` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Tipologia` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `Immagine` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `Approvato` tinyint(1) DEFAULT '0',
-  `Visualizzazioni` int DEFAULT '0',
-  `Data_Inserimento` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `Autore` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
+  `Luogo` varchar(100) NOT NULL,
+  `Descrizione` text NOT NULL,
+  `Storia` text NOT NULL,
+  `Tipologia` varchar(50) DEFAULT NULL,
+  `Immagine` varchar(255) DEFAULT NULL,
+  `Approvato` tinyint(1) DEFAULT 0,
+  `Visualizzazioni` int(11) DEFAULT 0,
+  `Data_Inserimento` timestamp NULL DEFAULT current_timestamp(),
+  `Autore` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -115,31 +116,34 @@ CREATE TABLE `caso` (
 --
 
 INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, `Storia`, `Tipologia`, `Immagine`, `Approvato`, `Visualizzazioni`, `Data_Inserimento`, `Autore`) VALUES
-(1, 'Il Mostro di Milwaukee', 'il-mostro-di-milwaukee', '1991-07-22', 'Milwaukee, Wisconsin, USA', 'Jeffrey Dahmer, il \"Mostro di Milwaukee\", ha ucciso e smembrato 17 giovani uomini tra il 1978 e il 1991, compiendo atti di cannibalismo e necrofilia.', 'Jeffrey Lionel Dahmer, noto come il \"Mostro di Milwaukee\" o il \"Cannibale di Milwaukee\", rappresenta uno dei casi più disturbanti nella storia della criminologia americana. Nato il 21 maggio 1960 a Milwaukee, Wisconsin, Dahmer crebbe in una famiglia apparentemente normale ma segnata da tensioni tra i genitori e da un crescente isolamento sociale del giovane Jeffrey.\r\n\r\nI primi segnali di un disturbo profondo emersero durante l\'adolescenza, quando Dahmer sviluppò una morbosa fascinazione per gli animali morti. Il suo primo omicidio avvenne nel 1978. Dopo la cattura avvenuta il 22 luglio 1991, furono scoperte fotografie polaroid dei corpi smembrati e resti umani nel suo appartamento.', 'Serial killer', 'assets/img/casi/caso/il-mostro-di-milwaukee.webp', 1, 17, '2026-01-16 09:03:21', NULL),
-(2, 'Il Clown Killer', 'il-clown-killer', '1978-12-11', 'Chicago, Illinois, USA', 'John Wayne Gacy, noto come \"Il Clown Killer\", ha violentato e ucciso almeno 33 adolescenti e giovani uomini, seppellendone la maggior parte sotto la sua casa.', 'John Wayne Gacy Jr., passato alla storia come \"Il Clown Killer\", rappresenta uno dei serial killer più prolifici della storia americana. Dietro la facciata di rispettabilità e il lavoro come clown per feste di bambini, si nascondeva un predatore sessuale. Tra il 1972 e il 1978, Gacy violentò e uccise almeno 33 giovani uomini, seppellendoli nel vespaio sotto la sua abitazione.', 'Serial killer', 'assets/img/casi/caso/il-clown-killer.webp', 1, 1, '2026-01-16 09:03:21', NULL),
-(3, 'Ted Bundy - Il Killer delle Studentesse', 'ted-bundy', '1989-01-24', 'Florida, USA', 'Ted Bundy, assassino seriale carismatico e intelligente, ha confessato 30 omicidi di giovani donne in sette stati americani tra il 1974 e il 1978.', 'Theodore Robert Bundy, conosciuto come Ted Bundy, è considerato uno dei serial killer più famosi e studiati. Uomo di bell\'aspetto, intelligente e carismatico, usava il suo fascino per attirare le vittime. La sua scia di morte attraversò almeno sette stati americani. Fu giustiziato sulla sedia elettrica il 24 gennaio 1989.', 'Serial killer', 'assets/img/casi/caso/ted-bundy.webp', 1, 1, '2026-01-16 09:03:21', NULL),
-(4, 'Il Macellaio di Rostov', 'il-macellaio-di-rostov', '1990-11-20', 'Rostov sul Don, Russia', 'Andrej Romanovic Chikatilo, il \"Macellaio di Rostov\", ha ucciso e mutilato almeno 52 donne e bambini nell\'Unione Sovietica tra il 1978 e il 1990.', 'Andrej Romanovic Chikatilo è stato il serial killer più prolifico della storia sovietica. Adescava le sue vittime nelle stazioni ferroviarie e degli autobus. Fu condannato a morte e giustiziato con un colpo di pistola il 14 febbraio 1994.', 'Serial killer', 'assets/img/casi/caso/il-macellaio-di-rostov.webp', 1, 2, '2026-01-16 09:03:21', NULL),
-(5, 'Night Stalker - Il Predatore della Notte', 'night-stalker', '1985-08-31', 'Los Angeles, California, USA', 'Richard Ramirez, il \"Night Stalker\", terrorizzò Los Angeles e San Francisco nel 1984-1985 con una serie di omicidi, violenze sessuali e rapine.', 'Richard Ramirez seminò il terrore nell\'area di Los Angeles entrando nelle case di notte attraverso finestre aperte. A differenza di molti serial killer, non aveva un tipo specifico di vittima. Fu catturato il 31 agosto 1985 dopo essere stato riconosciuto dai cittadini.', 'Serial killer', 'assets/img/casi/caso/night-stalker.webp', 1, 7, '2026-01-16 09:03:21', NULL),
+(1, 'Il Mostro di Milwaukee', 'il-mostro-di-milwaukee', '1991-07-22', 'Milwaukee, Wisconsin, USA', 'Jeffrey Dahmer, il \"Mostro di Milwaukee\", ha ucciso e smembrato 17 giovani uomini tra il 1978 e il 1991, compiendo atti di cannibalismo e necrofilia.', 'Jeffrey Lionel Dahmer, noto come il \"Mostro di Milwaukee\" o il \"Cannibale di Milwaukee\", rappresenta uno dei casi più disturbanti nella storia della criminologia americana. Nato il 21 maggio 1960 a Milwaukee, Wisconsin, Dahmer crebbe in una famiglia apparentemente normale ma segnata da tensioni tra i genitori e da un crescente isolamento sociale del giovane Jeffrey.\r\n\r\nI primi segnali di un disturbo profondo emersero durante l\'adolescenza, quando Dahmer sviluppò una morbosa fascinazione per gli animali morti. Il suo primo omicidio avvenne nel 1978. Dopo la cattura avvenuta il 22 luglio 1991, furono scoperte fotografie polaroid dei corpi smembrati e resti umani nel suo appartamento.', 'Serial killer', 'assets/img/casi/caso/il-mostro-di-milwaukee.webp', 0, 17, '2026-01-16 09:03:21', NULL),
+(2, 'Il Clown Killer', 'il-clown-killer', '1978-12-11', 'Chicago, Illinois, USA', 'John Wayne Gacy, noto come \"Il Clown Killer\", ha violentato e ucciso almeno 33 adolescenti e giovani uomini, seppellendone la maggior parte sotto la sua casa.', 'John Wayne Gacy Jr., passato alla storia come \"Il Clown Killer\", rappresenta uno dei serial killer più prolifici della storia americana. Dietro la facciata di rispettabilità e il lavoro come clown per feste di bambini, si nascondeva un predatore sessuale. Tra il 1972 e il 1978, Gacy violentò e uccise almeno 33 giovani uomini, seppellendoli nel vespaio sotto la sua abitazione.', 'Serial killer', 'assets/img/casi/caso/il-clown-killer.webp', 0, 1, '2026-01-16 09:03:21', NULL),
+(3, 'Ted Bundy - Il Killer delle Studentesse', 'ted-bundy', '1989-01-24', 'Florida, USA', 'Ted Bundy, assassino seriale carismatico e intelligente, ha confessato 30 omicidi di giovani donne in sette stati americani tra il 1974 e il 1978.', 'Theodore Robert Bundy, conosciuto come Ted Bundy, è considerato uno dei serial killer più famosi e studiati. Uomo di bell\'aspetto, intelligente e carismatico, usava il suo fascino per attirare le vittime. La sua scia di morte attraversò almeno sette stati americani. Fu giustiziato sulla sedia elettrica il 24 gennaio 1989.', 'Serial killer', 'assets/img/casi/caso/ted-bundy.webp', 0, 1, '2026-01-16 09:03:21', NULL),
+(4, 'Il Macellaio di Rostov', 'il-macellaio-di-rostov', '1990-11-20', 'Rostov sul Don, Russia', 'Andrej Romanovic Chikatilo, il \"Macellaio di Rostov\", ha ucciso e mutilato almeno 52 donne e bambini nell\'Unione Sovietica tra il 1978 e il 1990.', 'Andrej Romanovic Chikatilo è stato il serial killer più prolifico della storia sovietica. Adescava le sue vittime nelle stazioni ferroviarie e degli autobus. Fu condannato a morte e giustiziato con un colpo di pistola il 14 febbraio 1994.', 'Serial killer', 'assets/img/casi/caso/il-macellaio-di-rostov.webp', 0, 2, '2026-01-16 09:03:21', NULL),
+(5, 'Night Stalker - Il Predatore della Notte', 'night-stalker', '1985-08-31', 'Los Angeles, California, USA', 'Richard Ramirez, il \"Night Stalker\", terrorizzò Los Angeles e San Francisco nel 1984-1985 con una serie di omicidi, violenze sessuali e rapine.', 'Richard Ramirez seminò il terrore nell\'area di Los Angeles entrando nelle case di notte attraverso finestre aperte. A differenza di molti serial killer, non aveva un tipo specifico di vittima. Fu catturato il 31 agosto 1985 dopo essere stato riconosciuto dai cittadini.', 'Serial killer', 'assets/img/casi/caso/night-stalker.webp', 0, 7, '2026-01-16 09:03:21', NULL),
 (6, 'Il Mostro di Firenze', 'il-mostro-di-firenze', '1985-09-08', 'Firenze e provincia, Italia', 'Il Mostro di Firenze è il nome dato all\'autore di una serie di 16 omicidi di coppie appartate avvenuti nelle campagne toscane tra il 1968 e il 1985.', 'Il caso del Mostro di Firenze rappresenta uno dei misteri criminali più inquietanti della storia italiana. Il killer colpiva coppie appartate in auto, uccidendo l\'uomo e mutilando la donna. Nonostante le condanne dei \"Compagni di merende\" (Pacciani, Vanni, Lotti), molti aspetti della vicenda rimangono oscuri.', 'Serial killer', 'assets/img/casi/caso/il-mostro-di-firenze.webp', 1, 2, '2026-01-16 09:03:21', NULL),
-(7, 'Donato Bilancia - Il Serial Killer dei Treni', 'donato-bilancia', '1998-04-21', 'Liguria, Italia', 'Donato Bilancia uccise 17 persone in Liguria tra il 1997 e il 1998, diventando uno dei serial killer più prolifici della storia italiana.', 'Donato Bilancia è stato responsabile di 17 omicidi in poco più di sei mesi. La fase più terrificante iniziò quando cominciò a uccidere casualmente sui treni in Liguria. Fu condannato a 13 ergastoli e morì in carcere per COVID-19 nel 2020.', 'Serial killer', 'assets/img/casi/caso/donato-bilancia.webp', 1, 1, '2026-01-16 09:03:21', NULL),
-(8, 'Jack lo Squartatore', 'jack-lo-squartatore', '1888-11-09', 'Whitechapel, Londra, Regno Unito', 'Jack lo Squartatore è il serial killer mai identificato che uccise almeno cinque prostitute nel quartiere di Whitechapel a Londra nel 1888.', 'Jack lo Squartatore è il serial killer più famoso della storia, mai identificato. Nell\'autunno del 1888 uccise e mutilò brutalmente almeno cinque donne nel quartiere di Whitechapel. Il caso rimane il più grande mistero irrisolto della criminologia.', 'Serial killer', 'assets/img/casi/caso/jack-lo-squartatore.webp', 1, 1, '2026-01-16 09:03:21', NULL),
-(9, 'Zodiac Killer', 'zodiac-killer', '1969-10-11', 'California, USA', 'Lo Zodiac Killer è un serial killer mai identificato che uccise almeno 5 persone nella California del Nord tra il 1968 e il 1969.', 'Lo Zodiac Killer operò nella California del Nord inviando lettere criptate ai giornali per sfidare la polizia. Nonostante decenni di indagini e la decifrazione dei suoi codici, la sua identità rimane sconosciuta.', 'Serial killer', 'assets/img/casi/caso/zodiac-killer.webp', 1, 1, '2026-01-16 09:03:21', NULL),
-(10, 'Ed Gein - Il Macellaio di Plainfield', 'ed-gein', '1957-11-16', 'Plainfield, Wisconsin, USA', 'Ed Gein uccise due donne e dissotterrò decine di cadaveri per creare macabri oggetti con pelle e ossa umane.', 'Ed Gein è uno dei criminali più disturbanti della storia. Le sue attività di profanazione di tombe e la creazione di oggetti con pelle umana hanno ispirato film come Psycho, Non aprite quella porta e Il silenzio degli innocenti.', 'Serial killer', 'assets/img/casi/caso/ed-gein.webp', 1, 1, '2026-01-16 09:03:21', NULL),
+(7, 'Donato Bilancia - Il Serial Killer dei Treni', 'donato-bilancia', '1998-04-21', 'Liguria, Italia', 'Donato Bilancia uccise 17 persone in Liguria tra il 1997 e il 1998, diventando uno dei serial killer più prolifici della storia italiana.', 'Donato Bilancia è stato responsabile di 17 omicidi in poco più di sei mesi. La fase più terrificante iniziò quando cominciò a uccidere casualmente sui treni in Liguria. Fu condannato a 13 ergastoli e morì in carcere per COVID-19 nel 2020.', 'Serial killer', 'assets/img/casi/caso/donato-bilancia.webp', 0, 1, '2026-01-16 09:03:21', NULL),
+(8, 'Jack lo Squartatore', 'jack-lo-squartatore', '1888-11-09', 'Whitechapel, Londra, Regno Unito', 'Jack lo Squartatore è il serial killer mai identificato che uccise almeno cinque prostitute nel quartiere di Whitechapel a Londra nel 1888.', 'Jack lo Squartatore è il serial killer più famoso della storia, mai identificato. Nell\'autunno del 1888 uccise e mutilò brutalmente almeno cinque donne nel quartiere di Whitechapel. Il caso rimane il più grande mistero irrisolto della criminologia.', 'Serial killer', 'assets/img/casi/caso/jack-lo-squartatore.webp', 0, 1, '2026-01-16 09:03:21', NULL),
+(9, 'Zodiac Killer', 'zodiac-killer', '1969-10-11', 'California, USA', 'Lo Zodiac Killer è un serial killer mai identificato che uccise almeno 5 persone nella California del Nord tra il 1968 e il 1969.', 'Lo Zodiac Killer operò nella California del Nord inviando lettere criptate ai giornali per sfidare la polizia. Nonostante decenni di indagini e la decifrazione dei suoi codici, la sua identità rimane sconosciuta.', 'Serial killer', 'assets/img/casi/caso/zodiac-killer.webp', 0, 1, '2026-01-16 09:03:21', NULL),
+(10, 'Ed Gein - Il Macellaio di Plainfield', 'ed-gein', '1957-11-16', 'Plainfield, Wisconsin, USA', 'Ed Gein uccise due donne e dissotterrò decine di cadaveri per creare macabri oggetti con pelle e ossa umane.', 'Ed Gein è uno dei criminali più disturbanti della storia. Le sue attività di profanazione di tombe e la creazione di oggetti con pelle umana hanno ispirato film come Psycho, Non aprite quella porta e Il silenzio degli innocenti.', 'Serial killer', 'assets/img/casi/caso/ed-gein.webp', 0, 1, '2026-01-16 09:03:21', NULL),
 (11, 'Il Delitto di Cogne', 'delitto-di-cogne', '2002-01-30', 'Cogne, Valle d\'Aosta, Italia', 'Il caso dell\'omicidio del piccolo Samuele Lorenzi, 3 anni, per il quale fu condannata la madre Annamaria Franzoni.', 'LA MORTE DI SAMUELE\r\nLa mattina del 30 gennaio 2002, a Cogne, un piccolo comune in Valle d’Aosta, il piccolo Samuele Lorenzi, di 3 anni, viene trovato morto nel suo letto. Il corpo presenta ferite compatibili con un colpo contundente alla testa. La madre, Annamaria Franzoni, sostiene inizialmente di non sapere cosa sia successo, ma le circostanze e alcune incongruenze nei racconti attirano subito l’attenzione degli investigatori.\r\n\r\nLE INDAGINI\r\nLe forze dell’ordine avviano un’indagine approfondita, raccogliendo prove sulla scena del crimine, ascoltando vicini e parenti, e analizzando la dinamica dei fatti. Emergono contraddizioni nel racconto della madre e alcune evidenze che portano a ipotizzare un omicidio commesso da una persona vicina al bambino. L’assenza di segni di effrazione rafforza l’ipotesi che l’autore del delitto conoscesse la famiglia.\r\n\r\nL’ARRESTO E LE ACCUSE\r\nNel marzo 2002 Annamaria Franzoni viene iscritta nel registro degli indagati per l’omicidio del figlio. L’accusa sostiene che la donna abbia colpito Samuele con un oggetto contundente mentre si trovava in casa, e che abbia cercato di depistare le indagini. La difesa contesta questa ricostruzione, sostenendo che si sia trattato di un tragico incidente domestico.\r\n\r\nIL PROCESSO\r\nIl processo è seguito con enorme attenzione mediatica a livello nazionale. L’accusa basa la propria tesi sulle evidenze forensi e sulle incongruenze nei racconti della madre. Nel 2004 Annamaria Franzoni viene condannata a 30 anni di reclusione per omicidio volontario aggravato. La sentenza viene successivamente ridotta a 16 anni di carcere in appello per riconoscimento di attenuanti generiche. La condanna viene confermata dalla Corte di Cassazione nel 2008.\r\n\r\nIL CASO OGGI\r\nIl delitto di Cogne resta uno dei casi più discussi della cronaca italiana per la sua drammaticità e per il dibattito sulle responsabilità familiari e sulla tutela dei minori. La vicenda di Samuele Lorenzi è ricordata come simbolo della fragilità dell’infanzia e della complessità delle indagini in ambito domestico.', 'Casi mediatici italiani', 'assets/img/casi/caso/delitto-di-cogne.webp', 1, 3, '2026-01-16 09:03:21', NULL),
 (12, 'Il Delitto di Avetrana', 'delitto-di-avetrana', '2010-08-26', 'Avetrana, Puglia, Italia', 'L\'omicidio di Sarah Scazzi, 15 anni, uccisa dalla zia Cosima Serrano e dalla cugina Sabrina Misseri.', 'LA SCOMPARSA DI SARAH\r\nIl 26 agosto 2010 Sarah Scazzi, 15 anni, scompare ad Avetrana, un piccolo comune in provincia di Taranto. La ragazza esce di casa nel primo pomeriggio per recarsi al mare con una cugina, ma non arriverà mai all’appuntamento. Quando Sarah non rientra a casa, la famiglia lancia l’allarme. Nei giorni successivi partono le ricerche, mentre l’intera comunità segue con apprensione la vicenda.\r\n\r\nIL RITROVAMENTO DEL CORPO\r\nDopo più di un mese di ricerche, il 6 ottobre 2010, il corpo di Sarah viene ritrovato in un pozzo nelle campagne di Avetrana. Il ritrovamento conferma che la ragazza è stata uccisa poco dopo la scomparsa. L’autopsia stabilisce che la morte è avvenuta per strangolamento. Il caso assume fin da subito una forte risonanza mediatica a livello nazionale.\r\n\r\nLE INDAGINI E I SOSPETTI\r\nLe indagini si concentrano inizialmente sull’ambiente familiare e sulle persone vicine a Sarah. Emergono contraddizioni nei racconti e comportamenti sospetti. In particolare, l’attenzione degli investigatori si concentra su alcuni membri della famiglia Misseri, parenti della ragazza.\r\n\r\nNel corso delle indagini vengono raccolti elementi che portano all’arresto di più persone coinvolte nella vicenda.\r\n\r\nLA CONFESSIONE DI MICHELE MISSERI\r\nMichele Misseri, zio di Sarah, confessa inizialmente l’omicidio della nipote, dichiarando di aver agito da solo. La sua versione dei fatti cambia però più volte nel corso del tempo. In alcune dichiarazioni successive, Misseri coinvolge la moglie Cosima Serrano e la figlia Sabrina Misseri, accusandole di essere responsabili o complici del delitto.\r\n\r\nQueste confessioni contrastanti complicano ulteriormente il quadro investigativo.\r\n\r\nIL PROCESSO\r\nIl processo è uno dei più seguiti della cronaca italiana recente. L’accusa sostiene che Sarah sia stata uccisa in ambito familiare, al termine di una lite, e che il corpo sia stato nascosto per evitare di essere scoperti. Secondo la ricostruzione dell’accusa, le responsabilità principali ricadono su:\r\n	•	Sabrina Misseri\r\n	•	Cosima Serrano\r\n\r\nMichele Misseri viene invece ritenuto colpevole dell’occultamento del cadavere e di altri reati collegati.\r\n\r\nLE CONDANNE\r\nNel 2015 la Corte d’Assise condanna Sabrina Misseri e Cosima Serrano all’ergastolo per l’omicidio di Sarah Scazzi. La condanna viene confermata nei successivi gradi di giudizio e resa definitiva dalla Corte di Cassazione nel 2017. Michele Misseri viene condannato a una pena detentiva per l’occultamento del corpo e per false dichiarazioni.\r\n\r\nIL CASO OGGI\r\nIl delitto di Avetrana resta uno dei casi più discussi e controversi della storia giudiziaria italiana. Le condanne definitive non hanno messo fine al dibattito pubblico, alimentato dalle numerose dichiarazioni contraddittorie e dalla forte esposizione mediatica del caso. La vicenda di Sarah Scazzi continua a essere ricordata come un simbolo delle difficoltà investigative e giudiziarie nei casi di cronaca familiare.', 'Casi mediatici italiani', 'assets/img/casi/caso/delitto-di-avetrana.webp', 1, 8, '2026-01-16 09:03:21', NULL),
 (13, 'Omicidio di Yara Gambirasio', 'omicidio-yara-gambirasio', '2010-11-26', 'Brembate di Sopra, Bergamo, Italia', 'Il caso di Yara Gambirasio, 13 anni, risolto grazie a un\'innovativa indagine genetica che identifico\' Massimo Bossetti.', 'LA SCOMPARSA DI YARA\r\nIl 26 novembre 2010 Yara Gambirasio, 13 anni, esce di casa a Brembate di Sopra, in provincia di Bergamo, per recarsi alla palestra del centro sportivo del paese, dove si allena in ginnastica ritmica. È un’abitudine consolidata, ma quella sera Yara non rientra a casa. I genitori, preoccupati, danno subito l’allarme. Le ricerche partono immediatamente e coinvolgono forze dell’ordine, volontari e numerosi cittadini della zona. Fin dai primi giorni il caso attira una forte attenzione mediatica.\r\n\r\nIL RITROVAMENTO DEL CORPO\r\nDopo circa tre mesi di ricerche, il 26 febbraio 2011, il corpo di Yara viene ritrovato in un campo a Chignolo d’Isola, a diversi chilometri dal luogo della scomparsa. Il corpo è in una zona isolata e parzialmente nascosto dalla vegetazione. L’autopsia stabilisce che la morte è stata causata da ferite multiple e dall’esposizione al freddo. Durante gli esami vengono individuate tracce biologiche maschili sugli indumenti della vittima.\r\n\r\nL’INDAGINE SUL DNA\r\nLe tracce biologiche trovate sugli indumenti di Yara non corrispondono a nessuna persona presente nelle banche dati. Gli investigatori identificano il profilo genetico come appartenente a un soggetto sconosciuto, chiamato “Ignoto 1”. Viene avviata un’indagine su larga scala che prevede il prelievo di campioni di DNA a migliaia di uomini residenti o legati al territorio. Con il tempo emerge che Ignoto 1 è figlio naturale di un uomo deceduto, vissuto nella stessa area.\r\n\r\nL’ARRESTO DI MASSIMO BOSSETTI\r\nLe indagini genealogiche portano a Massimo Bossetti, muratore residente a Mapello. Nel giugno 2014 Bossetti viene arrestato. Secondo gli inquirenti, il suo DNA coincide con quello trovato sugli indumenti di Yara. Bossetti si dichiara innocente fin dal primo interrogatorio e afferma di non aver mai incontrato la ragazza, respingendo ogni accusa.\r\n\r\nIL PROCESSO\r\nIl processo suscita un grande interesse pubblico. L’accusa basa la propria ricostruzione principalmente sulla prova genetica, considerata centrale per l’identificazione dell’imputato. La difesa contesta diversi aspetti dell’indagine, tra cui:\r\n	•	le modalità di raccolta e conservazione dei campioni biologici\r\n	•	la possibilità di contaminazioni\r\n	•	l’assenza di testimoni diretti e di un movente chiaro\r\n\r\nNel 2016 Massimo Bossetti viene condannato all’ergastolo in primo grado. La sentenza viene confermata in appello e successivamente dalla Corte di Cassazione nel 2018, rendendo la condanna definitiva.\r\n\r\nIL DIBATTITO SUL CASO\r\nAncora oggi Massimo Bossetti continua a proclamarsi innocente. Il caso Gambirasio resta uno dei più discussi della cronaca italiana recente. Per molti rappresenta un esempio dell’efficacia delle indagini scientifiche, mentre per altri solleva interrogativi sull’uso delle prove genetiche e sul sistema giudiziario.', 'Casi mediatici italiani', 'assets/img/casi/caso/omicidio-yara-gambirasio.webp', 1, 24, '2026-01-16 09:03:21', NULL),
 (14, 'Delitto di Perugia - Meredith Kercher', 'delitto-perugia-meredith-kercher', '2007-11-01', 'Perugia, Umbria, Italia', 'L\'omicidio della studentessa britannica Meredith Kercher, con un iter giudiziario che coinvolse Amanda Knox e Raffaele Sollecito.', 'LA MORTE DI MEREDITH\r\nLa notte tra il 1° e il 2 novembre 2007 Meredith Kercher, studentessa britannica di 21 anni, viene trovata morta nell’abitazione che condivide con altre studentesse a Perugia. Meredith si trovava in Italia per un periodo di studio. Il suo corpo viene rinvenuto nella sua stanza, con evidenti segni di violenza. Fin da subito appare chiaro che si tratta di un omicidio.\r\n\r\nLA SCOPERTA DEL DELITTO\r\nA dare l’allarme sono Amanda Knox, coinquilina di Meredith, e Raffaele Sollecito, all’epoca fidanzato con Knox. I due riferiscono di aver trovato la porta di casa aperta e alcune anomalie all’interno dell’appartamento. L’arrivo delle forze dell’ordine porta alla scoperta del corpo della ragazza. La notizia si diffonde rapidamente, attirando una forte attenzione mediatica anche a livello internazionale.\r\n\r\nLE PRIME INDAGINI\r\nLe indagini si concentrano inizialmente sull’ambiente vicino alla vittima. Gli investigatori analizzano la scena del crimine, raccolgono testimonianze e sequestrano numerosi elementi. Fin dalle prime fasi emergono incongruenze nei racconti e comportamenti ritenuti sospetti. Questo porta all’iscrizione nel registro degli indagati di Amanda Knox e Raffaele Sollecito.\r\n\r\nNel corso delle indagini viene identificato anche Rudy Guede, un giovane ivoriano già noto alle forze dell’ordine, il cui DNA viene trovato sulla scena del crimine.\r\n\r\nI PROCESSI E LE VERSIONI CONTRASTANTI\r\nRudy Guede viene processato separatamente con rito abbreviato e condannato per l’omicidio di Meredith Kercher. Parallelamente si svolge il processo a carico di Amanda Knox e Raffaele Sollecito. In primo grado, entrambi vengono condannati per concorso in omicidio. Le sentenze, però, vengono ribaltate nei successivi gradi di giudizio, dando origine a un lungo e complesso iter giudiziario.\r\n\r\nLe decisioni contrastanti dei tribunali alimentano un acceso dibattito pubblico, sia in Italia sia all’estero, sulla gestione delle indagini e sulla valutazione delle prove.\r\n\r\nLA SENTENZA DEFINITIVA\r\nNel 2015 la Corte di Cassazione assolve in via definitiva Amanda Knox e Raffaele Sollecito, stabilendo che non vi sono prove sufficienti per dimostrare il loro coinvolgimento nell’omicidio. La sentenza pone fine al procedimento nei loro confronti. Rimane invece definitiva la condanna di Rudy Guede.\r\n\r\nIL CASO OGGI\r\nIl delitto di Perugia è considerato uno dei casi giudiziari più controversi della cronaca italiana recente. Il caso ha sollevato numerose discussioni sul ruolo dei media, sull’affidabilità delle prove scientifiche e sulle differenze tra i sistemi giudiziari. La vicenda di Meredith Kercher continua a essere oggetto di analisi e dibattito.', 'Casi mediatici italiani', 'assets/img/casi/caso/delitto-perugia-meredith-kercher.webp', 1, 5, '2026-01-16 09:03:21', NULL),
 (15, 'La Strage di Erba', 'strage-di-erba', '2006-12-11', 'Erba, Como, Italia', 'La strage in cui Olindo Romano e Rosa Bazzi uccisero quattro persone, caso oggi oggetto di forti discussioni.', 'LA TRAGEDIA\r\nLa notte del 11 dicembre 2006, a Erba, un piccolo comune in provincia di Como, avviene una tragedia che sconvolge l’Italia. Quella sera, in un’abitazione al civico 220 di via Diaz, vengono uccise quattro persone: una coppia di anziani, la loro vicina di casa e il figlio di quest’ultima. Le vittime vengono aggredite in casa mentre dormono, e la scena del crimine è particolarmente violenta. Fin da subito appare chiaro che si tratta di un omicidio di massa.\r\n\r\nLE INDAGINI\r\nLe forze dell’ordine avviano immediatamente le indagini, ascoltando testimoni e raccogliendo prove sulla scena del crimine. Emergono subito alcuni elementi sospetti, ma i primi sospetti cadono su diverse persone della zona. Gli investigatori analizzano segni lasciati dai presunti colpevoli e ascoltano decine di testimonianze di vicini e conoscenti.\r\n\r\nL’ARRESTO DI AURORA E OLIVIERI\r\nDopo alcune settimane, le indagini si concentrano su Olindo Romano e Rosa Bazzi, vicini di casa delle vittime. Gli inquirenti trovano elementi che li collegano alla scena del crimine e procedono con l’arresto. Durante gli interrogatori, entrambi negano inizialmente ogni responsabilità, ma emergono prove circostanziali e testimonianze che rafforzano l’ipotesi della loro colpevolezza.\r\n\r\nIL PROCESSO\r\nIl processo si svolge con grande attenzione mediatica. L’accusa sostiene che Olindo Romano e Rosa Bazzi abbiano pianificato l’aggressione e agito insieme. La difesa contesta alcune prove e cerca di dimostrare che le indagini siano state influenzate dalla pressione mediatica. Nonostante le contestazioni, nel 2008 entrambi vengono condannati all’ergastolo. La condanna viene confermata nei successivi gradi di giudizio e resa definitiva dalla Corte di Cassazione nel 2010.\r\n\r\nIL CASO OGGI\r\nLa Strage di Erba rimane uno dei delitti più noti della cronaca italiana recente per la brutalità del gesto e per la complessità delle indagini. La vicenda ha acceso dibattiti sulla sicurezza nei piccoli centri abitati e sull’influenza dei media nei processi penali.', 'Casi mediatici italiani', 'assets/img/casi/caso/strage-di-erba.webp', 1, 6, '2026-01-16 09:03:21', NULL),
-(16, 'Il Caso O.J. Simpson', 'caso-oj-simpson', '1994-06-12', 'Los Angeles, California, USA', 'Il processo del secolo: l\'ex campione O.J. Simpson accusato dell\'omicidio dell\'ex moglie Nicole Brown e di Ron Goldman.', 'O.J. Simpson fu accusato di aver ucciso l\'ex moglie e un amico nel 1994. Il processo, seguito da milioni di persone, si concluse con un\'assoluzione penale molto controversa, sebbene fu poi ritenuto responsabile in sede civile.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', NULL),
-(17, 'L\'Omicidio di Gianni Versace', 'omicidio-gianni-versace', '1997-07-15', 'Miami Beach, Florida, USA', 'L\'assassinio dello stilista italiano Gianni Versace, ucciso da Andrew Cunanan sulla scalinata della sua villa.', 'Gianni Versace fu ucciso il 15 luglio 1997 davanti alla sua villa di Miami dal serial killer Andrew Cunanan, che si suicidò pochi giorni dopo. Il movente rimane un mistero.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', NULL),
-(18, 'L\'Omicidio di John Lennon', 'omicidio-john-lennon', '1980-12-08', 'New York City, USA', 'L\'assassinio dell\'ex Beatle John Lennon, ucciso a colpi di pistola da Mark David Chapman davanti al Dakota Building.', 'L\'8 dicembre 1980, Mark David Chapman sparò a John Lennon, uccidendo un\'icona della musica mondiale. Chapman attese la polizia leggendo \"Il giovane Holden\".', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', NULL),
-(19, 'Sharon Tate e la Manson Family', 'sharon-tate-manson-family', '1969-08-09', 'Los Angeles, California, USA', 'L\'atroce omicidio dell\'attrice Sharon Tate e di altre quattro persone per mano della setta di Charles Manson.', 'Nell\'agosto 1969, i seguaci di Charles Manson massacrarono l\'attrice Sharon Tate (incinta all\'ottavo mese) e i suoi ospiti nella villa di Cielo Drive, in un tentativo delirante di scatenare una guerra razziale.', 'Celebrity', '', 1, 0, '2026-01-16 09:03:21', NULL),
-(20, 'Il Caso Oscar Pistorius', 'caso-oscar-pistorius', '2013-02-14', 'Pretoria, Sudafrica', 'L\'atleta paralimpico Oscar Pistorius condannato per l\'omicidio della fidanzata Reeva Steenkamp.', 'La notte di San Valentino 2013, Pistorius sparò alla fidanzata Reeva attraverso la porta del bagno, sostenendo di averla scambiata per un intruso. È stato condannato per omicidio.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', NULL),
+(16, 'Il Caso O.J. Simpson', 'caso-oj-simpson', '1994-06-12', 'Los Angeles, California, USA', 'Il processo del secolo: l\'ex campione O.J. Simpson accusato dell\'omicidio dell\'ex moglie Nicole Brown e di Ron Goldman.', 'O.J. Simpson fu accusato di aver ucciso l\'ex moglie e un amico nel 1994. Il processo, seguito da milioni di persone, si concluse con un\'assoluzione penale molto controversa, sebbene fu poi ritenuto responsabile in sede civile.', 'Celebrity', '', 0, 0, '2026-01-16 09:03:21', NULL),
+(17, 'L\'Omicidio di Gianni Versace', 'omicidio-gianni-versace', '1997-07-15', 'Miami Beach, Florida, USA', 'L\'assassinio dello stilista italiano Gianni Versace, ucciso da Andrew Cunanan sulla scalinata della sua villa.', 'Gianni Versace fu ucciso il 15 luglio 1997 davanti alla sua villa di Miami dal serial killer Andrew Cunanan, che si suicidò pochi giorni dopo. Il movente rimane un mistero.', 'Celebrity', '', 0, 0, '2026-01-16 09:03:21', NULL),
+(18, 'L\'Omicidio di John Lennon', 'omicidio-john-lennon', '1980-12-08', 'New York City, USA', 'L\'assassinio dell\'ex Beatle John Lennon, ucciso a colpi di pistola da Mark David Chapman davanti al Dakota Building.', 'L\'8 dicembre 1980, Mark David Chapman sparò a John Lennon, uccidendo un\'icona della musica mondiale. Chapman attese la polizia leggendo \"Il giovane Holden\".', 'Celebrity', '', 0, 0, '2026-01-16 09:03:21', NULL),
+(19, 'Sharon Tate e la Manson Family', 'sharon-tate-manson-family', '1969-08-09', 'Los Angeles, California, USA', 'L\'atroce omicidio dell\'attrice Sharon Tate e di altre quattro persone per mano della setta di Charles Manson.', 'Nell\'agosto 1969, i seguaci di Charles Manson massacrarono l\'attrice Sharon Tate (incinta all\'ottavo mese) e i suoi ospiti nella villa di Cielo Drive, in un tentativo delirante di scatenare una guerra razziale.', 'Celebrity', '', 0, 0, '2026-01-16 09:03:21', NULL),
+(20, 'Il Caso Oscar Pistorius', 'caso-oscar-pistorius', '2013-02-14', 'Pretoria, Sudafrica', 'L\'atleta paralimpico Oscar Pistorius condannato per l\'omicidio della fidanzata Reeva Steenkamp.', 'La notte di San Valentino 2013, Pistorius sparò alla fidanzata Reeva attraverso la porta del bagno, sostenendo di averla scambiata per un intruso. È stato condannato per omicidio.', 'Amore tossico', '', 0, 0, '2026-01-16 09:03:21', NULL),
 (21, 'Il massacro del Circeo', 'omicidio-luca-varani', '1975-09-29', 'Latina, Italia', 'Nel 1975 due giovani ragazze furono sequestrate e violentate, causando la morte di Rosaria Lopez e la sopravvivenza di Donatella Colasanti.', 'IL SEQUESTRO\r\nIl 29 settembre 1975 due ragazze romane, Rosaria Lopez e Donatella Colasanti, vengono avvicinate a Roma da tre giovani appartenenti a famiglie benestanti. Con la scusa di una festa, le ragazze vengono caricate su un’auto e portate in una villa a San Felice Circeo, sul litorale laziale. In realtà, si tratta di un rapimento.\r\n\r\nLE VIOLENZE\r\nNella villa le due ragazze vengono sequestrate e sottoposte per ore a violenze fisiche e sessuali estremamente brutali. Le aggressioni sono ripetute e accompagnate da torture e umiliazioni. Rosaria Lopez muore a causa delle percosse subite. Donatella Colasanti, gravemente ferita, riesce a sopravvivere fingendosi morta.\r\n\r\nIL RITROVAMENTO\r\nDopo le violenze, i responsabili caricano i corpi delle due ragazze nel bagagliaio di un’auto e li abbandonano a Roma. Quando l’auto viene notata da un passante, Donatella Colasanti riesce a chiedere aiuto. Il suo racconto permette di ricostruire l’accaduto e di identificare rapidamente i responsabili.\r\n\r\nLE INDAGINI\r\nLe indagini portano all’arresto di Angelo Izzo, Gianni Guido e Andrea Ghira. Il caso suscita un’enorme indignazione pubblica, non solo per la ferocia del crimine, ma anche per il contesto sociale in cui è maturato. Il massacro del Circeo diventa simbolo della violenza di genere e degli abusi di potere.\r\n\r\nIL PROCESSO\r\nIl processo si svolge in un clima di forte attenzione mediatica. Angelo Izzo e Gianni Guido vengono condannati all’ergastolo. Andrea Ghira riesce a fuggire all’estero prima dell’arresto e resterà latitante per molti anni. La testimonianza di Donatella Colasanti è centrale per l’accertamento delle responsabilità.\r\n\r\nIL CASO OGGI\r\nIl massacro del Circeo è uno dei delitti più simbolici della storia criminale italiana. Ancora oggi è ricordato come un caso che ha segnato profondamente il dibattito pubblico sulla violenza contro le donne, sulla giustizia e sulle disuguaglianze sociali.', 'Casi mediatici italiani', 'assets/img/casi/caso/omicidio-luca-varani.webp', 1, 7, '2026-01-16 09:03:21', NULL),
 (22, 'Il Femminicidio di Giulia Tramontana', 'femminicidio-giulia-tramontano', '2023-05-27', 'Senago, Milano, Italia', 'L\'omicidio di Giulia Tramontano, incinta al settimo mese, uccisa dal compagno Alessandro Impagnatiello.', 'LA SCOMPARSA\r\nIl 27 maggio 2023 Giulia Tramontano, 29 anni, scompare a Senago, in provincia di Milano. Giulia è incinta al settimo mese e convive con il compagno Alessandro Impagnatiello. Nel pomeriggio la donna incontra una collega del compagno, con cui scopre una relazione parallela. Dopo quell’incontro, Giulia rientra a casa e da quel momento si perdono le sue tracce. La famiglia, non riuscendo a contattarla, denuncia la scomparsa.\r\n\r\nLE PRIME INDAGINI\r\nLe indagini si concentrano fin da subito sull’ambiente familiare. Alessandro Impagnatiello partecipa alle ricerche e rilascia dichiarazioni agli inquirenti, ma il suo racconto presenta incongruenze. Gli investigatori analizzano i movimenti del cellulare di Giulia e le immagini delle telecamere di sorveglianza, ricostruendo le ultime ore della donna.\r\n\r\nLA CONFESSIONE\r\nIl 31 maggio 2023 Alessandro Impagnatiello confessa l’omicidio. Ammette di aver ucciso Giulia all’interno dell’abitazione con diverse coltellate e di aver successivamente occultato il corpo. Le indagini rivelano anche che l’uomo avrebbe tentato di avvelenare Giulia nei mesi precedenti, senza riuscirci. Il corpo della donna viene ritrovato in un’area isolata nei pressi di Senago.\r\n\r\nIL QUADRO ACCUSATORIO\r\nSecondo gli inquirenti, il delitto sarebbe stato motivato dalla volontà di Impagnatiello di nascondere la doppia vita che stava conducendo. L’omicidio avviene mentre Giulia era in avanzato stato di gravidanza, un elemento che aggrava ulteriormente la posizione dell’imputato. Il caso colpisce profondamente l’opinione pubblica per la brutalità del gesto e per la giovane età della vittima.\r\n\r\nIL CASO OGGI\r\nIl delitto di Giulia Tramontano è diventato uno dei simboli più drammatici della violenza contro le donne in Italia. La vicenda ha riacceso il dibattito sul femminicidio, sulla tutela delle vittime e sulla prevenzione della violenza domestica, suscitando grande attenzione mediatica e istituzionale.', 'Amore tossico', 'assets/img/casi/caso/femminicidio-giulia-tramontano.webp', 1, 21, '2026-01-16 09:03:21', NULL),
-(23, 'Il Caso Gabby Petito', 'caso-gabby-petito', '2021-08-27', 'Wyoming, USA', 'L\'omicidio della travel blogger Gabby Petito, strangolata dal fidanzato Brian Laundrie durante un viaggio in van. si', 'Il viaggio on the road di due giovani fidanzati si trasformò in tragedia. Il caso esplose sui social media portando al ritrovamento del corpo di Gabby e, successivamente, a quello di Brian, morto suicida.', 'Amore tossico', NULL, 1, 75, '2026-01-16 09:03:21', NULL),
+(23, 'Il Caso Gabby Petito', 'caso-gabby-petito', '2021-08-27', 'Wyoming, USA', 'L\'omicidio della travel blogger Gabby Petito, strangolata dal fidanzato Brian Laundrie durante un viaggio in van. si', 'Il viaggio on the road di due giovani fidanzati si trasformò in tragedia. Il caso esplose sui social media portando al ritrovamento del corpo di Gabby e, successivamente, a quello di Brian, morto suicida.', 'Amore tossico', NULL, 0, 75, '2026-01-16 09:03:21', NULL),
 (24, 'Il Caso Chris Watts', 'caso-chris-watts', '2018-08-13', 'Frederick, Colorado, USA', 'Chris Watts uccise la moglie incinta Shanann e le figlie Bella e Celeste per iniziare una nuova vita con l\'amante.', 'Chris Watts sterminò la sua intera famiglia per stare con l\'amante, fingendo poi preoccupazione in TV per la loro scomparsa. Ha confessato ed è stato condannato all\'ergastolo.', 'Amore tossico', '', 0, 1, '2026-01-16 09:03:21', NULL),
-(25, 'Il Caso Jodi Arias', 'caso-jodi-arias', '2008-06-04', 'Mesa, Arizona, USA', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con brutale ferocia in un caso simbolo dell\'ossessione amorosa.', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con 27 coltellate e un colpo di pistola. Il processo ha rivelato una relazione tossica e ossessiva.', 'Amore tossico', '', 1, 0, '2026-01-16 09:03:21', NULL);
+(25, 'Il Caso Jodi Arias', 'caso-jodi-arias', '2008-06-04', 'Mesa, Arizona, USA', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con brutale ferocia in un caso simbolo dell\'ossessione amorosa.', 'Jodi Arias uccise l\'ex fidanzato Travis Alexander con 27 coltellate e un colpo di pistola. Il processo ha rivelato una relazione tossica e ossessiva.', 'Amore tossico', '', 0, 0, '2026-01-16 09:03:21', NULL),
+(27, 'L’omicidio di Maurizio Gucci', 'omicidio-maurizio-gucci', '1995-03-27', 'Milano, Italia', 'L’assassinio dell’erede della casa di moda Gucci, orchestrato dall’ex moglie Patrizia Reggiani.', 'Il 27 marzo 1995, Maurizio Gucci viene freddato a Milano con quattro colpi di pistola. Le indagini, inizialmente senza sbocchi, svelano un piano orchestrato dall\'ex moglie Patrizia Reggiani, soprannominata la \"Vedova Nera\". Consumata dal risentimento, la donna ha assoldato dei sicari tramite l\'intermediaria Pina Auriemma. Il processo si è concluso con la condanna della Reggiani a 26 anni di carcere e l’ergastolo per il killer Benedetto Ceraulo.', 'Celebrity', 'assets/img/casi/caso/omicidio-maurizio-gucci.webp', 1, 1, '2026-02-03 05:22:07', NULL),
+(28, 'Il Caso di Via Poma', 'il-caso-di-via-poma', '1990-08-07', 'Roma, Italia', 'L’omicidio di Simonetta Cesaroni, uno dei gialli italiani più famosi rimasto senza un colpevole.', 'Il 7 agosto 1990, Simonetta Cesaroni viene uccisa con 29 coltellate negli uffici degli Ostelli della Gioventù a Roma. Nonostante decenni di indagini e sospetti su portieri, datori di lavoro e l\'ex fidanzato Raniero Busco (assolto dopo una condanna in primo grado), il colpevole non è mai stato individuato. Il delitto resta uno dei misteri più enigmatici d\'Italia, segnato da depistaggi, assenza di movente e un\'arma del delitto mai ritrovata.', 'Cold case', 'assets/img/casi/caso/il-caso-di-via-poma.webp', 1, 1, '2026-02-03 05:22:07', NULL),
+(29, 'La Banda della Uno Bianca', 'banda-uno-bianca', '1987-06-19', 'Emilia-Romagna, Italia', 'Le azioni criminali del gruppo guidato dai fratelli Savi che terrorizzò l’Emilia-Romagna per sette anni.', 'Tra il 1987 e il 1994, una banda composta quasi interamente da poliziotti commise 103 azioni delittuose, provocando 24 morti...', 'Altro', 'assets/img/casi/caso/banda-uno-bianca.webp', 1, 4, '2026-02-03 05:22:07', NULL);
 
 -- --------------------------------------------------------
 
@@ -148,8 +152,8 @@ INSERT INTO `caso` (`N_Caso`, `Titolo`, `Slug`, `Data`, `Luogo`, `Descrizione`, 
 --
 
 CREATE TABLE `colpa` (
-  `Colpevole` int NOT NULL,
-  `Caso` int NOT NULL
+  `Colpevole` int(11) NOT NULL,
+  `Caso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -157,27 +161,6 @@ CREATE TABLE `colpa` (
 --
 
 INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
-(81, 1),
-(84, 2),
-(85, 3),
-(86, 4),
-(83, 5),
-(87, 6),
-(88, 6),
-(89, 6),
-(90, 6),
-(95, 7),
-(92, 8),
-(93, 9),
-(91, 10),
-(125, 11),
-(117, 12),
-(118, 12),
-(119, 12),
-(128, 13),
-(120, 14),
-(123, 15),
-(124, 15),
 (19, 16),
 (20, 17),
 (21, 18),
@@ -186,13 +169,37 @@ INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
 (24, 19),
 (25, 19),
 (26, 20),
+(32, 25),
+(66, 24),
+(73, 23),
+(81, 1),
+(83, 5),
+(84, 2),
+(85, 3),
+(86, 4),
+(87, 6),
+(88, 6),
+(89, 6),
+(90, 6),
+(91, 10),
+(92, 8),
+(93, 9),
+(95, 7),
+(117, 12),
+(118, 12),
+(119, 12),
+(120, 14),
+(123, 15),
+(124, 15),
+(125, 11),
+(127, 22),
+(128, 13),
 (137, 21),
 (138, 21),
 (139, 21),
-(127, 22),
-(73, 23),
-(66, 24),
-(32, 25);
+(140, 27),
+(142, 29),
+(143, 28);
 
 -- --------------------------------------------------------
 
@@ -201,12 +208,12 @@ INSERT INTO `colpa` (`Colpevole`, `Caso`) VALUES
 --
 
 CREATE TABLE `colpevole` (
-  `ID_Colpevole` int NOT NULL,
-  `Nome` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Cognome` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `LuogoNascita` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ID_Colpevole` int(11) NOT NULL,
+  `Nome` varchar(50) NOT NULL,
+  `Cognome` varchar(50) NOT NULL,
+  `LuogoNascita` varchar(100) NOT NULL,
   `DataNascita` date NOT NULL,
-  `Immagine` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
+  `Immagine` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -249,7 +256,10 @@ INSERT INTO `colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `Dat
 (128, 'Massimo Giuseppe', 'Bossetti', 'Clusone, Bergamo, Italia', '1970-10-30', 'assets/img/casi/colpevoli/massimo-giuseppe-bossetti.webp'),
 (137, 'Angelo', 'Izzo', 'Roma, Italia', '1955-08-23', 'assets/img/casi/colpevoli/angelo-izzo.webp'),
 (138, 'Giovanni', 'Guido', 'Roma, Italia', '1956-01-10', 'assets/img/casi/colpevoli/giovanni-guido.webp'),
-(139, 'Andrea', 'Ghira', 'Roma, Italia', '1953-09-21', 'assets/img/casi/colpevoli/andrea-ghira.webp');
+(139, 'Andrea', 'Ghira', 'Roma, Italia', '1953-09-21', 'assets/img/casi/colpevoli/andrea-ghira.webp'),
+(140, 'Patrizia', 'Reggiani', 'N/A', '1948-12-02', 'assets/img/casi/colpevoli/patrizia-reggiani.webp'),
+(142, 'Roberto', 'Savi', 'N/A', '0001-01-01', ''),
+(143, 'Raniero', 'Busco', 'N/A', '0001-01-01', 'assets/img/casi/colpevoli/raniero-busco.webp');
 
 -- --------------------------------------------------------
 
@@ -258,11 +268,11 @@ INSERT INTO `colpevole` (`ID_Colpevole`, `Nome`, `Cognome`, `LuogoNascita`, `Dat
 --
 
 CREATE TABLE `commento` (
-  `ID_Commento` int NOT NULL,
-  `Commento` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Email_Utente` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ID_Caso` int NOT NULL,
-  `Data` datetime DEFAULT CURRENT_TIMESTAMP
+  `ID_Commento` int(11) NOT NULL,
+  `Commento` text NOT NULL,
+  `Email_Utente` varchar(50) NOT NULL,
+  `ID_Caso` int(11) NOT NULL,
+  `Data` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -275,23 +285,23 @@ INSERT INTO `commento` (`ID_Commento`, `Commento`, `Email_Utente`, `ID_Caso`, `D
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `Utente`
+-- Struttura della tabella `utente`
 --
 
-CREATE TABLE `Utente` (
-  `Email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+CREATE TABLE `utente` (
+  `Email` varchar(50) NOT NULL,
+  `Username` varchar(50) NOT NULL,
+  `Password` varchar(255) NOT NULL,
   `Is_Admin` tinyint(1) DEFAULT NULL,
-  `Is_Newsletter` tinyint(1) DEFAULT '0',
-  `Remember_Token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
+  `Is_Newsletter` tinyint(1) DEFAULT 0,
+  `Remember_Token` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `Utente`
+-- Dump dei dati per la tabella `utente`
 --
 
-INSERT INTO `Utente` (`Email`, `Username`, `Password`, `Is_Admin`, `Is_Newsletter`, `Remember_Token`) VALUES
+INSERT INTO `utente` (`Email`, `Username`, `Password`, `Is_Admin`, `Is_Newsletter`, `Remember_Token`) VALUES
 ('admin@test.it', 'Admin', '$2y$10$TctKk6xDjIzLPDGo.Cky6.h3yrev5Qh9qY9mY1JXKGI3DFWs.KPVK', 1, 1, '$2y$10$EOsSSldgvm6iGdDq1IPvue7.bkcq4v4x743BYWbuAYWmom3AlzUwi'),
 ('cappellariaurora1@gmail.com', 'aurora', '$2y$10$j8a484HH9hdD7Xd7.h1udetgl8PpYxBvfRnHH9DewvmQ6BR/BbzcK', 0, 1, NULL),
 ('lore.grolla04@gmail.com', 'Lorenzo', '$2y$10$RPrVyIOXQguBlR6kRDz2h.KqskfkwyFmKGXGwlbxIil3V06DCMSFm', 0, 0, NULL),
@@ -305,14 +315,14 @@ INSERT INTO `Utente` (`Email`, `Username`, `Password`, `Is_Admin`, `Is_Newslette
 --
 
 CREATE TABLE `vittima` (
-  `ID_Vittima` int NOT NULL,
-  `Nome` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Cognome` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `LuogoNascita` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ID_Vittima` int(11) NOT NULL,
+  `Nome` varchar(50) NOT NULL,
+  `Cognome` varchar(50) NOT NULL,
+  `LuogoNascita` varchar(100) NOT NULL,
   `DataNascita` date NOT NULL,
   `DataDecesso` date DEFAULT NULL,
-  `Caso` int NOT NULL,
-  `Immagine` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
+  `Caso` int(11) NOT NULL,
+  `Immagine` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -399,7 +409,10 @@ INSERT INTO `vittima` (`ID_Vittima`, `Nome`, `Cognome`, `LuogoNascita`, `DataNas
 (228, 'Giulia', 'Tramontano', 'Sant Antimo, Napoli, Italia', '1994-02-09', '2023-05-27', 22, 'assets/img/casi/vittime/giulia-tramontano.webp'),
 (229, 'Yara', 'Gambirasio', 'Brembate di Sopra, Italia', '1997-07-09', '2010-11-26', 13, 'assets/img/casi/vittime/yara-gambirasio.webp'),
 (235, 'Rosaria', 'Lopez', 'Roma, Italia', '1956-07-19', '1975-09-30', 21, 'assets/img/casi/vittime/rosaria-lopez.webp'),
-(236, 'Donatella', 'Colasanti', 'Roma, Italia', '1958-05-12', '2005-12-30', 21, 'assets/img/casi/vittime/donatella-colasanti.webp');
+(236, 'Donatella', 'Colasanti', 'Roma, Italia', '1958-05-12', '2005-12-30', 21, 'assets/img/casi/vittime/donatella-colasanti.webp'),
+(237, 'Maurizio', 'Gucci', 'N/A', '1948-09-26', '1995-03-27', 27, 'assets/img/casi/vittime/maurizio-gucci.webp'),
+(239, 'Ignoto', 'Ignoto', 'N/A', '0001-01-01', NULL, 29, ''),
+(240, 'Simonetta', 'Cesaroni', 'Roma', '1969-11-05', '1990-08-07', 28, 'assets/img/casi/vittime/simonetta-cesaroni.webp');
 
 --
 -- Indici per le tabelle scaricate
@@ -445,9 +458,9 @@ ALTER TABLE `commento`
   ADD KEY `ID_Caso` (`ID_Caso`);
 
 --
--- Indici per le tabelle `Utente`
+-- Indici per le tabelle `utente`
 --
-ALTER TABLE `Utente`
+ALTER TABLE `utente`
   ADD PRIMARY KEY (`Email`),
   ADD UNIQUE KEY `Username` (`Username`);
 
@@ -466,31 +479,31 @@ ALTER TABLE `vittima`
 -- AUTO_INCREMENT per la tabella `articolo`
 --
 ALTER TABLE `articolo`
-  MODIFY `ID_Articolo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=209;
+  MODIFY `ID_Articolo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=210;
 
 --
 -- AUTO_INCREMENT per la tabella `caso`
 --
 ALTER TABLE `caso`
-  MODIFY `N_Caso` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `N_Caso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT per la tabella `colpevole`
 --
 ALTER TABLE `colpevole`
-  MODIFY `ID_Colpevole` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
+  MODIFY `ID_Colpevole` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 
 --
 -- AUTO_INCREMENT per la tabella `commento`
 --
 ALTER TABLE `commento`
-  MODIFY `ID_Commento` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_Commento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `vittima`
 --
 ALTER TABLE `vittima`
-  MODIFY `ID_Vittima` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
+  MODIFY `ID_Vittima` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=241;
 
 --
 -- Limiti per le tabelle scaricate
@@ -506,20 +519,20 @@ ALTER TABLE `articolo`
 -- Limiti per la tabella `caso`
 --
 ALTER TABLE `caso`
-  ADD CONSTRAINT `Caso_ibfk_1` FOREIGN KEY (`Autore`) REFERENCES `Utente` (`Email`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `Caso_ibfk_1` FOREIGN KEY (`Autore`) REFERENCES `utente` (`Email`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `colpa`
 --
 ALTER TABLE `colpa`
-  ADD CONSTRAINT `colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `colpevole` (`ID_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `Colpa_ibfk_2` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `Colpa_ibfk_2` FOREIGN KEY (`Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `colpa_ibfk_1` FOREIGN KEY (`Colpevole`) REFERENCES `colpevole` (`ID_Colpevole`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Limiti per la tabella `commento`
 --
 ALTER TABLE `commento`
-  ADD CONSTRAINT `Commento_ibfk_1` FOREIGN KEY (`Email_Utente`) REFERENCES `Utente` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Commento_ibfk_1` FOREIGN KEY (`Email_Utente`) REFERENCES `utente` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `Commento_ibfk_2` FOREIGN KEY (`ID_Caso`) REFERENCES `caso` (`N_Caso`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

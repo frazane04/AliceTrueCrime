@@ -1,0 +1,73 @@
+<div class="profile">
+    <section class="profile-hero">
+        <div class="avatar-container">
+            <img src="https://ui-avatars.com/api/?name={{USERNAME}}&background=630D16&color=fff"
+                alt="Foto profilo di {{USERNAME}}" class="profile-avatar" loading="lazy">
+        </div>
+        <h1 class="profile-name">{{USERNAME}}</h1>
+        <p class="profile-role">Investigatore della community</p>
+        <div class="profile-actions">
+            <a href="profilo" class="btn btn-pill btn-secondary">Torna al Profilo</a>
+        </div>
+    </section>
+
+    <section class="content-block data-section">
+        <div class="block-header">
+            <h2>Aggiorna Credenziali</h2>
+        </div>
+        
+        {{MESSAGGIO_PROFILO}}
+
+        <form method="POST" action="" class="data-list edit-profile-form" novalidate>
+            {{CSRF_FIELD}}
+            
+            <div class="data-row">
+                <span class="label">Username:</span>
+                <span class="value">{{USERNAME}} (Sola lettura)</span>
+            </div>
+
+            <div class="data-row">
+                <label for="email" class="label">Email:</label>
+                <div class="value">
+                    <input type="email" id="email" name="email" value="{{EMAIL}}" required autocomplete="email">
+                </div>
+            </div>
+
+            <div class="data-row">
+                <label for="new_password" class="label">Nuova Password:</label>
+                <div class="value password-wrapper">
+                    <input type="password" id="new_password" name="new_password" placeholder="Min. 8 char, A-z, 0-9" autocomplete="new-password">
+                    <button type="button" class="password-toggle" aria-label="Mostra password" data-target="new_password">
+                        <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="data-row">
+                <label for="confirm_password" class="label">Conferma Nuova:</label>
+                <div class="value password-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Ripeti password" autocomplete="new-password">
+                    <button type="button" class="password-toggle" aria-label="Mostra password" data-target="confirm_password">
+                        <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="data-row security-confirm">
+                <label for="current_password" class="label">Psw Attuale:</label>
+                <div class="value password-wrapper">
+                    <input type="password" id="current_password" name="current_password" required placeholder="Inserisci per confermare" autocomplete="current-password">
+                    <button type="button" class="password-toggle" aria-label="Mostra password" data-target="current_password">
+                        <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<script src="{{PATH_PREFIX}}/js/registrati.js"></script>

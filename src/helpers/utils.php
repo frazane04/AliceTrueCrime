@@ -496,6 +496,15 @@ function getBreadcrumbs($currentPath): string
             implode(' <span class="separator">/</span> ', $breadcrumbs) .
             '</nav>';
     }
+    //LOGICA SPECIALE: Modifica Profilo
+    if ($path === 'modifica-profilo' || $path === 'modificaprofilo.php') {
+        $breadcrumbs[] = '<a href="' . getPrefix() . '/profilo">Profilo</a>';
+        $breadcrumbs[] = '<span aria-current="page">Modifica Profilo</span>';
+        
+        return '<nav aria-label="Breadcrumb" class="breadcrumbs">' .
+            implode(' <span class="separator">/</span> ', $breadcrumbs) .
+            '</nav>';
+    }
 
     $parts = explode('/', $path);
     $accumulatedPath = $basePath;

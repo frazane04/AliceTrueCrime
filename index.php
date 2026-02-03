@@ -60,6 +60,7 @@ $routes = [
     '/accedi' => 'accedi.php',
     '/registrati' => 'registrati.php',
     '/profilo' => 'profilo.php',
+    '/modifica-profilo' => 'modificaprofilo.php',
     '/logout' => 'logout.php',
 ];
 

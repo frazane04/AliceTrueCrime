@@ -112,6 +112,30 @@ class FunzioniDB
         }
     }
 
+    public function aggiornaProfilo($vecchiaEmail, $nuovaEmail, $nuovaPassword = null) {
+    try {
+        if (!$this->db->apriConnessione()) return false;
+        
+        // Se la password è fornita, la criptiamo, altrimenti aggiorniamo solo l'email
+        if (!empty($nuovaPassword)) {
+            $passwordHash = password_hash($nuovaPassword, PASSWORD_DEFAULT);
+            $query = "UPDATE Utente SET Email = ?, Password = ? WHERE Email = ?";
+            $params = [$nuovaEmail, $passwordHash, $vecchiaEmail];
+            $types = "sss";
+        } else {
+            $query = "UPDATE Utente SET Email = ? WHERE Email = ?";
+            $params = [$nuovaEmail, $vecchiaEmail];
+            $types = "ss";
+        }
+
+        $result = $this->db->query($query, $params, $types);
+        $this->db->chiudiConnessione();
+        return (bool)$result;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
     // Login tramite email
     public function loginUtenteEmail($email, $password)
     {
