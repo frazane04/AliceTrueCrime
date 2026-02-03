@@ -2,35 +2,43 @@
 require_once __DIR__ . '/../helpers/utils.php';
 require_once __DIR__ . '/../db/funzioni_db.php';
 
-requireAuth(); //
+requireAuth();
 
 $db = new FunzioniDB();
 $emailAttuale = $_SESSION['user_email'];
+$usernameAttuale = $_SESSION['user'];
 $errorMessage = '';
 $successMessage = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!verificaCsrfToken()) { //
+    if (!verificaCsrfToken()) {
         $errorMessage = 'Token di sicurezza non valido.';
     } else {
-        $nuovaEmail = trim($_POST['email'] ?? '');
+        $nuovoUsername = trim($_POST['username'] ?? '');
         $nuovaPass = $_POST['new_password'] ?? '';
         $confermaPass = $_POST['confirm_password'] ?? '';
         $passAttuale = $_POST['current_password'] ?? '';
 
-        // 1. Verifica password attuale per autorizzare la modifica
+        // Verifica password attuale
         $loginCheck = $db->loginUtente($emailAttuale, $passAttuale);
-        
+
         if (!$loginCheck['success']) {
             $errorMessage = 'La password attuale non è corretta.';
-        } 
-        // 2. Validazione Email (stesso vincolo di registrazione)
-        elseif (empty($nuovaEmail) || !filter_var($nuovaEmail, FILTER_VALIDATE_EMAIL)) {
-            $errorMessage = 'Inserisci un\'email valida.';
-        } 
+        }
+        // Validazione Username
+        elseif (empty($nuovoUsername) || strlen($nuovoUsername) < 3 || strlen($nuovoUsername) > 30) {
+            $errorMessage = 'L\'username deve essere tra 3 e 30 caratteri.';
+        }
+        elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $nuovoUsername)) {
+            $errorMessage = 'L\'username può contenere solo lettere, numeri e underscore.';
+        }
+        // Verifica username non già in uso (se diverso dall'attuale)
+        elseif ($nuovoUsername !== $usernameAttuale && $db->verificaUsernameEsistente($nuovoUsername)) {
+            $errorMessage = 'Questo username è già in uso.';
+        }
         else {
             $passValid = true;
-            // 3. Validazione Nuova Password (se inserita, applica vincoli registrazione)
+            // Validazione nuova password (se inserita)
             if (!empty($nuovaPass)) {
                 if (strlen($nuovaPass) < 8) {
                     $errorMessage = 'La nuova password deve contenere almeno 8 caratteri.';
@@ -39,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $errorMessage = 'Le nuove password non coincidono.';
                     $passValid = false;
                 } else {
-                    // Controlli complessità (da registrati.php)
                     $hasUpperCase = preg_match('/[A-Z]/', $nuovaPass);
                     $hasLowerCase = preg_match('/[a-z]/', $nuovaPass);
                     $hasNumber = preg_match('/[0-9]/', $nuovaPass);
@@ -51,15 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            // 4. Esecuzione aggiornamento se tutto è valido
+            // Esegui aggiornamento
             if ($passValid) {
-                if ($db->aggiornaProfilo($emailAttuale, $nuovaEmail, $nuovaPass)) {
-                    $_SESSION['user_email'] = $nuovaEmail; // Aggiorna PK in sessione
-                    $emailAttuale = $nuovaEmail;
+                if ($db->aggiornaProfilo($emailAttuale, $nuovoUsername, $nuovaPass)) {
+                    $_SESSION['user'] = $nuovoUsername;
+                    $usernameAttuale = $nuovoUsername;
                     $successMessage = 'Profilo aggiornato con successo!';
-                    rigeneraCsrfToken(); //
+                    rigeneraCsrfToken();
                 } else {
-                    $errorMessage = 'Impossibile aggiornare: l\'email è già in uso.';
+                    $errorMessage = 'Errore durante l\'aggiornamento del profilo.';
                 }
             }
         }
@@ -69,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $utente = $db->getUtenteByEmail($emailAttuale);
 $html = loadTemplate('modificaprofilo');
 
-// Gestione messaggi nel template
 $alertHtml = '';
 if (!empty($errorMessage)) $alertHtml = alertHtml('error', $errorMessage);
 if (!empty($successMessage)) $alertHtml = alertHtml('success', $successMessage);

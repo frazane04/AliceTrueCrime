@@ -1,11 +1,8 @@
-/**
- * Script per la pagina dettaglio caso
- * Gestisce le conferme admin e utente tramite modal accessibile
- */
+// Script pagina dettaglio caso
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Approva Caso
+    // Approva caso
     const btnApprovaCaso = document.getElementById('btn-approva-caso');
     if (btnApprovaCaso) {
         btnApprovaCaso.addEventListener('click', async function () {
@@ -22,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Rifiuta Caso
+    // Rifiuta caso
     const btnRifiutaCaso = document.getElementById('btn-rifiuta-caso');
     if (btnRifiutaCaso) {
         btnRifiutaCaso.addEventListener('click', async function () {
@@ -39,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Elimina Commento
+    // Elimina commento
     document.addEventListener('click', async function (e) {
         const btn = e.target.closest('.btn-elimina-commento');
         if (!btn) return;

@@ -1,11 +1,5 @@
-/**
- * Script per la pagina segnala caso
- * Richiede: form-caso.js (utility comuni)
- */
+// Script pagina segnala caso
 
-// ========================================
-// TEMPLATE HTML
-// ========================================
 const templates = {
     vittima: (index) => `
     <div class="persona-entry vittima-entry" data-index="${index}">
@@ -113,7 +107,7 @@ const templates = {
     `
 };
 
-// Gestione Entry Dinamiche
+// Manager entry dinamiche
 const vittimeManager = createEntryManager({
     containerId: 'vittime-container',
     entrySelector: '.vittima-entry',
@@ -138,29 +132,26 @@ const articoliManager = createEntryManager({
     confirmRemove: true
 });
 
-// EVENT LISTENERS
+// Event listener pulsanti aggiungi
 document.getElementById('btn-add-vittima').addEventListener('click', () => vittimeManager.add());
 document.getElementById('btn-add-colpevole').addEventListener('click', () => colpevoliManager.add());
 document.getElementById('btn-add-articolo').addEventListener('click', () => articoliManager.add());
 
-// Pulsante Reset
 const btnResetForm = document.getElementById('btn-reset-form');
 if (btnResetForm) {
     btnResetForm.addEventListener('click', confermaResetForm);
 }
 
-// Validazione Lato Client
+// Validazione form
 (function () {
     const form = document.getElementById('form-segnalazione');
     if (!form) return;
-
 
     const titoloInput = document.getElementById('titolo');
     const dataCrimineInput = document.getElementById('data_crimine');
     const luogoInput = document.getElementById('luogo');
     const descrizioneBreveInput = document.getElementById('descrizione_breve');
     const storiaInput = document.getElementById('storia');
-
 
     const titoloRules = [
         ValidationRules.required('Il titolo è obbligatorio'),
@@ -189,14 +180,12 @@ if (btnResetForm) {
         ValidationRules.maxLength(10000, 'La storia non può superare 10.000 caratteri')
     ];
 
-    // Validazione Blur
     attachValidation(titoloInput, titoloRules);
     attachValidation(dataCrimineInput, dataRules);
     attachValidation(luogoInput, luogoRules);
     attachValidation(descrizioneBreveInput, descrizioneBreveRules);
     attachValidation(storiaInput, storiaRules);
 
-    // Validazione Submit
     form.addEventListener('submit', function (e) {
         const errors = [];
 
@@ -206,7 +195,6 @@ if (btnResetForm) {
         if (validateField(descrizioneBreveInput, descrizioneBreveRules)) errors.push('Descrizione breve');
         if (validateField(storiaInput, storiaRules)) errors.push('Storia');
 
-        // Verifica almeno una vittima con nome, cognome e data nascita
         const vittimeNomi = document.querySelectorAll('input[name="vittima_nome[]"]');
         const vittimeCognomi = document.querySelectorAll('input[name="vittima_cognome[]"]');
         const vittimeDataNascita = document.querySelectorAll('input[name="vittima_data_nascita[]"]');
@@ -227,7 +215,6 @@ if (btnResetForm) {
             errors.push('Data di nascita obbligatoria per tutte le vittime');
         }
 
-        // Verifica almeno un colpevole con nome, cognome e data nascita
         const colpevoliNomi = document.querySelectorAll('input[name="colpevole_nome[]"]');
         const colpevoliCognomi = document.querySelectorAll('input[name="colpevole_cognome[]"]');
         const colpevoliDataNascita = document.querySelectorAll('input[name="colpevole_data_nascita[]"]');
@@ -251,7 +238,6 @@ if (btnResetForm) {
         if (errors.length > 0) {
             e.preventDefault();
 
-            // Mostra errori nel feedback area
             const feedbackArea = document.getElementById('feedback-area');
             if (feedbackArea) {
                 feedbackArea.innerHTML = `
@@ -263,13 +249,12 @@ if (btnResetForm) {
                 feedbackArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
 
-            // Focus sul primo campo con errore
             focusFirstError([titoloInput, dataCrimineInput, luogoInput, descrizioneBreveInput, storiaInput]);
         }
     });
 })();
 
-// Conferma Reset Form
+// Conferma reset form
 function confermaResetForm() {
     openConfirmModal(
         'Conferma cancellazione',
@@ -278,11 +263,9 @@ function confermaResetForm() {
             const form = document.getElementById('form-segnalazione');
             if (form) {
                 form.reset();
-                // Rimuovi entry aggiuntive (mantieni solo la prima)
                 document.querySelectorAll('.vittima-entry:not(:first-child)').forEach(el => el.remove());
                 document.querySelectorAll('.colpevole-entry:not(:first-child)').forEach(el => el.remove());
                 document.querySelectorAll('.articolo-entry:not(:first-child)').forEach(el => el.remove());
-                // Rimuovi anteprime immagini
                 document.querySelectorAll('.image-preview').forEach(el => el.innerHTML = '');
             }
         }

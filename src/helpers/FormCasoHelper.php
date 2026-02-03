@@ -407,10 +407,15 @@ HTML;
     }
 
     // Genera HTML per messaggio successo modifica
-    public static function generaMessaggioSuccessoModifica(bool $riApprova, string $prefix, string $slug, bool $isAdmin): string
+    public static function generaMessaggioSuccessoModifica(bool $riApprova, string $prefix, string $slug, bool $isAdmin, bool $isApprovato = true): string
     {
         $msgRiApprova = $riApprova ? '<br><strong>Il caso è stato rimesso in attesa di approvazione.</strong>' : '';
-        $btnVisualizza = $isAdmin ? "<br><br><a href='$prefix/esplora/$slug' class='btn btn-primary'>Visualizza Caso</a>" : '';
+
+        $linkVisualizza = $prefix . '/esplora/' . $slug;
+        if ($isAdmin && !$isApprovato) {
+            $linkVisualizza .= '?preview=admin';
+        }
+        $btnVisualizza = $isAdmin ? "<br><br><a href='$linkVisualizza' class='btn btn-primary'>Visualizza Caso</a>" : '';
 
         return <<<HTML
         <div class='alert alert-success'>

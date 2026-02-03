@@ -1,11 +1,5 @@
-/**
- * Script per la pagina modifica caso
- * Richiede: form-caso.js (utility comuni)
- */
+// Script pagina modifica caso
 
-// ========================================
-// TEMPLATE HTML
-// ========================================
 const templates = {
     vittima: (idx) => `
         <div class="entry-card vittima-entry">
@@ -61,7 +55,7 @@ const templates = {
     `
 };
 
-// Gestione Entry Dinamiche
+// Manager entry dinamiche
 const vittimeManager = createEntryManager({
     containerId: 'vittime-container',
     entrySelector: '.vittima-entry',
@@ -87,7 +81,7 @@ const articoliManager = createEntryManager({
     initialCount: document.querySelectorAll('.articolo-entry').length
 });
 
-// EVENT LISTENERS
+// Event listener pulsanti aggiungi
 const btnAddVittima = document.getElementById('btn-add-vittima');
 if (btnAddVittima) {
     btnAddVittima.addEventListener('click', () => vittimeManager.add());
@@ -119,11 +113,10 @@ if (btnEliminaCaso) {
     });
 }
 
-// Validazione Lato Client
+// Validazione form
 (function () {
     const form = document.getElementById('form-modifica-caso');
     if (!form) return;
-
 
     const titoloInput = document.getElementById('titolo');
     const dataCrimineInput = document.getElementById('data_crimine');
@@ -131,9 +124,7 @@ if (btnEliminaCaso) {
     const descrizioneBreveInput = document.getElementById('descrizione_breve');
     const storiaInput = document.getElementById('storia');
 
-    // Verifica che gli elementi esistano
     if (!titoloInput || !dataCrimineInput || !luogoInput || !descrizioneBreveInput || !storiaInput) return;
-
 
     const titoloRules = [
         ValidationRules.required('Il titolo è obbligatorio'),
@@ -162,14 +153,12 @@ if (btnEliminaCaso) {
         ValidationRules.maxLength(10000, 'La storia non può superare 10.000 caratteri')
     ];
 
-    // Validazione Blur
     attachValidation(titoloInput, titoloRules);
     attachValidation(dataCrimineInput, dataRules);
     attachValidation(luogoInput, luogoRules);
     attachValidation(descrizioneBreveInput, descrizioneBreveRules);
     attachValidation(storiaInput, storiaRules);
 
-    // Validazione Submit
     form.addEventListener('submit', function (e) {
         const errors = [];
 
@@ -179,7 +168,6 @@ if (btnEliminaCaso) {
         if (validateField(descrizioneBreveInput, descrizioneBreveRules)) errors.push('Descrizione breve');
         if (validateField(storiaInput, storiaRules)) errors.push('Storia');
 
-        // Verifica almeno una vittima con nome, cognome e data nascita
         const vittimeNomi = document.querySelectorAll('input[name="vittima_nome[]"]');
         const vittimeCognomi = document.querySelectorAll('input[name="vittima_cognome[]"]');
         const vittimeDataNascita = document.querySelectorAll('input[name="vittima_data_nascita[]"]');
@@ -200,7 +188,6 @@ if (btnEliminaCaso) {
             errors.push('Data di nascita obbligatoria per tutte le vittime');
         }
 
-        // Verifica almeno un colpevole con nome, cognome e data nascita
         const colpevoliNomi = document.querySelectorAll('input[name="colpevole_nome[]"]');
         const colpevoliCognomi = document.querySelectorAll('input[name="colpevole_cognome[]"]');
         const colpevoliDataNascita = document.querySelectorAll('input[name="colpevole_data_nascita[]"]');
@@ -224,7 +211,6 @@ if (btnEliminaCaso) {
         if (errors.length > 0) {
             e.preventDefault();
 
-            // Mostra errori nel feedback area
             const feedbackArea = document.getElementById('feedback-area');
             if (feedbackArea) {
                 feedbackArea.innerHTML = `
@@ -236,7 +222,6 @@ if (btnEliminaCaso) {
                 feedbackArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
 
-            // Focus sul primo campo con errore
             focusFirstError([titoloInput, dataCrimineInput, luogoInput, descrizioneBreveInput, storiaInput]);
         }
     });
