@@ -1,14 +1,17 @@
 @media print {
-
     :root {
-        --text-dark: #2A1A12;
+        --color-primary: #6b341f;
+        --color-primary-dark: #4A2618;
+        --color-accent: #630D16;
+        --base-white: #FFFFFF;
+        --surface-page: #FFFFFF;
+        --surface-overlay: #ffffff;
+        --border-base: #D1C0AD;
+        --text-main: #2A1A12;
         --text-muted: #5D4337;
-        --primary: #7A3E26;
-        --primary-dark: #4A2618;
-        --bg-bordeaux: #630D16;
-        --white: #FFFFFF;
+        --text-contrast: #4A2618;
+        --text-on-dark: #F9F4EE;
         --bg-lightest: #EFE6D9;
-        --border-light: #D1C0AD;
     }
 
     * {
@@ -24,8 +27,8 @@
 
     body {
         font-family: "Times New Roman", Times, serif;
-        background-color: var(--white) !important;
-        color: var(--text-dark) !important;
+        background-color: var(--base-white) !important;
+        color: var(--text-main) !important;
         line-height: 1.6;
         min-height: auto;
     }
@@ -40,12 +43,12 @@
     h4 {
         page-break-after: avoid;
         page-break-inside: avoid;
-        color: var(--text-dark) !important;
+        color: var(--text-main) !important;
     }
 
     h1 {
         font-size: 20pt;
-        border-bottom: 2pt solid var(--primary);
+        border-bottom: 2pt solid var(--color-primary);
         padding-bottom: 0.2em;
         margin: 0.3em 0;
     }
@@ -64,11 +67,11 @@
         orphans: 3;
         widows: 3;
         margin: 0.3em 0;
-        color: var(--text-dark) !important;
+        color: var(--text-main) !important;
     }
 
     a {
-        color: var(--primary) !important;
+        color: var(--color-primary) !important;
         text-decoration: underline;
     }
 
@@ -97,7 +100,7 @@
 
     th,
     td {
-        border: 1pt solid var(--border-light);
+        border: 1pt solid var(--border-base);
         padding: 0.5em;
     }
 
@@ -107,7 +110,7 @@
 
     .main-header,
     .header-container {
-        background-color: var(--white) !important;
+        background-color: var(--base-white) !important;
         position: static;
         page-break-after: avoid;
         box-shadow: none;
@@ -121,7 +124,7 @@
 
     .header-container {
         padding: 0.3em 0.5em;
-        border-bottom: 2pt solid var(--primary);
+        border-bottom: 2pt solid var(--color-primary);
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -160,7 +163,7 @@
     }
 
     .main-nav a {
-        color: var(--text-dark) !important;
+        color: var(--text-main) !important;
         text-decoration: none;
         font-size: 10pt;
     }
@@ -176,9 +179,9 @@
     }
 
     footer {
-        background-color: var(--white) !important;
+        background-color: var(--base-white) !important;
         padding: 0.5em 1em;
-        border-top: 2pt solid var(--primary);
+        border-top: 2pt solid var(--color-primary);
         page-break-before: avoid;
     }
 
@@ -200,7 +203,7 @@
         background-color: var(--bg-lightest) !important;
         padding: 0.3em 0.5em;
         margin-bottom: 0.5em;
-        border-left: 3pt solid var(--primary);
+        border-left: 3pt solid var(--color-primary);
     }
 
     .hero-section {
@@ -227,13 +230,13 @@
     }
 
     .hero-section h1 {
-        color: var(--white) !important;
+        color: var(--base-white) !important;
         font-size: 2.5em;
         margin-bottom: 0.3em;
     }
 
     .hero-section p {
-        color: var(--white) !important;
+        color: var(--base-white) !important;
         font-size: 1.2em;
     }
 
@@ -249,26 +252,21 @@
     blockquote {
         margin: 0.5em 0;
         padding-left: 1em;
-        border-left: 3pt solid var(--primary);
+        border-left: 3pt solid var(--color-primary);
         font-style: italic;
         page-break-inside: avoid;
     }
 
-    #carousel-casi,
+    #carousel-casi {
+        padding: 1em;
+        margin: 0.5em 0;
+        page-break-before: always;
+        /* Force start on new page */
+    }
+
     .cta-area {
         padding: 1em;
         margin: 0.5em 0;
-    }
-
-    .popular-container {
-        gap: 1em;
-    }
-
-    input,
-    select,
-    textarea {
-        border: 1pt solid var(--border-light) !important;
-        background-color: var(--white) !important;
     }
 
     .auth-container,
@@ -296,6 +294,35 @@
     .how-it-works-card p {
         page-break-inside: avoid;
         break-inside: avoid;
+    }
+
+    input,
+    select,
+    textarea {
+        border: 1pt solid var(--border-base) !important;
+        background-color: var(--base-white) !important;
+    }
+
+    .popular-container,
+    .team-grid,
+    .how-it-works-grid,
+    .detective-list,
+    .griglia-dinamica {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1em;
+    }
+
+    .explore-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8em;
+    }
+
+    .caso-panoramica {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 1em;
     }
 
     .menu-toggle,

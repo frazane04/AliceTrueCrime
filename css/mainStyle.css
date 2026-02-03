@@ -386,7 +386,7 @@ textarea:focus-visible,
 }
 
 .logo-area img {
-    height: 95px;
+    height: 6rem;
     width: auto;
     object-fit: contain;
     padding: 0.8em;
@@ -493,7 +493,7 @@ textarea:focus-visible,
 
 .breadcrumbs {
     padding: 0.5rem 1.5rem;
-    font-size: 0.9rem;
+    font-size: var(--font-sm);
     color: var(--text-main);
     margin: 1em auto;
     max-width: 1200px;
@@ -563,7 +563,7 @@ textarea:focus-visible,
 }
 
 .hero-section h1 {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-size: var(--font-xxl);
     margin-bottom: 0.5em;
     color: #FFFFFF;
     text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 20px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8);
@@ -572,7 +572,7 @@ textarea:focus-visible,
 }
 
 .hero-section p {
-    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    font-size: var(--font-md);
     margin: 0 auto;
     color: #FFFFFF;
     font-weight: 600;
@@ -637,8 +637,8 @@ textarea:focus-visible,
     flex-direction: column;
     background-color: var(--base-white);
     color: var(--text-main);
-    border-radius: 0.7em;
-    padding: 1.5em;
+    border-radius: 1em;
+    padding: 1em;
     text-align: center;
     height: 100%;
 }
@@ -937,7 +937,7 @@ textarea:focus-visible,
     padding: 0.6rem 1.2rem;
     border: 2px solid var(--border-base);
     border-radius: 0.5em;
-    font-size: 1rem;
+    font-size: var(--font-sm);
     transition: border-color 0.3s, box-shadow 0.3s;
     background-color: var(--surface-page);
 }
@@ -971,7 +971,7 @@ textarea:focus-visible,
 }
 
 .filter-group label {
-    font-size: 0.9rem;
+    font-size: var(--font-base);
     font-weight: 600;
     color: var(--text-contrast);
 }
@@ -980,7 +980,7 @@ textarea:focus-visible,
     padding: 0.6rem 1rem;
     border: 2px solid var(--border-base);
     border-radius: 0.5em;
-    font-size: 0.95rem;
+    font-size: var(--font-base);
     background-color: var(--base-white);
     color: var(--text-main);
     cursor: pointer;
@@ -1141,7 +1141,7 @@ textarea:focus-visible,
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.75rem;
-    font-size: 0.8rem;
+    font-size: var(--font-sm);
     color: var(--text-contrast);
     min-height: 1.2em;
 }
@@ -1159,7 +1159,7 @@ textarea:focus-visible,
 }
 
 .case-card .card-content h3 {
-    font-size: 1.1rem;
+    font-size: var(--font-base);
     font-weight: 700;
     color: var(--text-main);
     margin-bottom: 0.75rem;
@@ -1168,7 +1168,7 @@ textarea:focus-visible,
 }
 
 .case-card .card-content p {
-    font-size: 0.9rem;
+    font-size: var(--font-sm);
     color: var(--text-muted);
     line-height: 1.5;
     margin-bottom: 1rem;
@@ -1183,7 +1183,7 @@ textarea:focus-visible,
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: var(--font-sm);
     text-align: center;
     transition: background-color 0.3s ease, transform 0.2s ease;
     margin-top: auto;
@@ -1205,7 +1205,7 @@ textarea:focus-visible,
     background-color: var(--color-accent);
     color: var(--text-on-dark);
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: var(--font-sm);
     font-weight: 600;
     letter-spacing: 0.5px;
 }
@@ -1323,7 +1323,7 @@ textarea:focus-visible,
 .form-hint {
     display: block;
     margin-top: 0.4em;
-    font-size: 0.9em;
+    font-size: var(--font-sm);
     color: var(--text-contrast);
 }
 
@@ -1332,7 +1332,7 @@ textarea:focus-visible,
     justify-content: flex-start;
     align-items: center;
     margin-bottom: 2em;
-    font-size: 0.9em;
+    font-size: var(--font-sm);
     flex-wrap: wrap;
     gap: 0.5rem;
 }
@@ -1421,12 +1421,12 @@ textarea:focus-visible,
 }
 
 .profile-name {
-    font-size: 2.2em;
+    font-size: var(--font-xl);
 }
 
 .profile-role {
     color: var(--text-contrast);
-    font-size: 1.2em;
+    font-size: var(--font-base);
     font-weight: 600;
     margin-bottom: 1em;
 }
@@ -1466,7 +1466,7 @@ textarea:focus-visible,
 }
 
 .block-header h2 {
-    font-size: 1.4em;
+    font-size: var(--font-md);
 }
 
 .data-list {
@@ -1521,13 +1521,13 @@ textarea:focus-visible,
 
 .caso-pending-title {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: var(--font-base);
     color: var(--color-primary);
     margin-bottom: 0.25rem;
 }
 
 .caso-pending-info {
-    font-size: 0.9rem;
+    font-size: var(--font-sm);
     color: var(--text-muted);
 }
 
@@ -1536,7 +1536,7 @@ textarea:focus-visible,
     color: var(--text-on-dark);
     padding: 0.25rem 0.6rem;
     border-radius: 1.5em;
-    font-size: 0.8rem;
+    font-size: var(--font-sm);
     margin-left: 1rem;
     vertical-align: middle;
 }
@@ -1576,14 +1576,14 @@ textarea:focus-visible,
 }
 
 .error-label {
-    font-size: 0.9em;
+    font-size: var(--font-sm);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
 .error-title {
-    font-size: 2.5em;
+    font-size: var(--font-xxl);
     color: var(--color-primary);
     margin-bottom: 1em;
     font-weight: 700;
@@ -1595,13 +1595,13 @@ textarea:focus-visible,
 }
 
 .error-description p {
-    font-size: 1.1em;
+    font-size: var(--font-base);
     line-height: 1.6;
     margin-bottom: 1em;
 }
 
 .error-hint {
-    font-size: 1em;
+    font-size: var(--font-base);
     color: var(--text-contrast);
 }
 
@@ -1615,7 +1615,7 @@ textarea:focus-visible,
 }
 
 .evidence-box h2 {
-    font-size: 1.3em;
+    font-size: var(--font-md);
     color: var(--color-primary);
     margin-bottom: 1.2em;
     text-align: center;
@@ -1633,7 +1633,7 @@ textarea:focus-visible,
     gap: 1rem;
     padding: 0.8em 0;
     border-bottom: 1px solid var(--border-base);
-    font-size: 1em;
+    font-size: var(--font-sm);
     color: var(--text-main);
 }
 
@@ -1664,7 +1664,7 @@ textarea:focus-visible,
     color: var(--text-contrast);
     border: 2px solid var(--border-base);
     padding: 1rem 2rem;
-    font-size: 1em;
+    font-size: var(--font-sm);
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -1688,7 +1688,7 @@ textarea:focus-visible,
 }
 
 .caso-header h1 {
-    font-size: 2.5em;
+    font-size: var(--font-xxl);
     color: var(--color-primary-dark);
     margin-bottom: 1em;
 }
@@ -1697,7 +1697,7 @@ textarea:focus-visible,
     display: inline-block;
     padding: 0.5em 1.2em;
     border-radius: 20px;
-    font-size: 0.9em;
+    font-size: var(--font-sm);
     font-weight: 600;
     margin-top: 1rem;
 }
@@ -1742,7 +1742,7 @@ textarea:focus-visible,
 }
 
 .dati-caso h2 {
-    font-size: 1.5em;
+    font-size: var(--font-md);
     color: var(--color-primary);
     margin-bottom: 1.3em;
     padding-bottom: 0.8em;
@@ -1756,7 +1756,7 @@ textarea:focus-visible,
 }
 
 .scheda-tecnica p {
-    font-size: 1em;
+    font-size: var(--font-sm);
     line-height: 1.5;
     color: var(--text-main);
 }
@@ -1775,7 +1775,7 @@ textarea:focus-visible,
 }
 
 .caso-storia h2 {
-    font-size: 1.5em;
+    font-size: var(--font-base);
     color: var(--color-primary);
     margin-bottom: 1.5em;
     padding-bottom: 0.8em;
@@ -1783,7 +1783,7 @@ textarea:focus-visible,
 }
 
 .testo-racconto {
-    font-size: 1em;
+    font-size: var(--font-sm);
     line-height: 1.8;
     color: var(--text-main);
     text-align: left;
@@ -1820,7 +1820,7 @@ textarea:focus-visible,
     color: var(--color-primary);
     font-weight: 600;
     text-decoration: none;
-    font-size: 1.05em;
+    font-size: var(--font-sm);
 }
 
 .approfondimento-fonte a:hover,
@@ -1832,7 +1832,7 @@ textarea:focus-visible,
 .approfondimento-data {
     display: block;
     color: var(--text-contrast);
-    font-size: 0.9em;
+    font-size: var(--font-sm);
     margin-top: 0.3rem;
     font-style: italic;
 }
@@ -1855,7 +1855,7 @@ textarea:focus-visible,
 }
 
 .sezione-dinamica h2 {
-    font-size: 1.5em;
+    font-size: var(--font-sm);
     color: var(--color-primary);
     margin-bottom: 1.5em;
     padding-bottom: 0.8em;
@@ -1895,14 +1895,14 @@ textarea:focus-visible,
 }
 
 .card-info h4 {
-    font-size: 1.1em;
+    font-size: var(--font-sm);
     color: var(--color-primary);
     margin-bottom: 0.8rem;
 }
 
 .card-info p {
     color: var(--text-main);
-    font-size: 1em;
+    font-size: var(--font-sm);
     margin-bottom: 0.5em;
 }
 
@@ -1951,7 +1951,7 @@ textarea:focus-visible,
 }
 
 .commenti-header h2 {
-    font-size: 1.8em;
+    font-size: var(--font-lg);
     color: var(--color-primary);
     margin: 0;
 }
@@ -1961,7 +1961,7 @@ textarea:focus-visible,
     color: var(--text-on-dark);
     padding: 0.4em 0.9em;
     border-radius: 20px;
-    font-size: 0.9em;
+    font-size: var(--font-sm);
     font-weight: 600;
 }
 
@@ -1974,7 +1974,7 @@ textarea:focus-visible,
 }
 
 .form-commento-container h3 {
-    font-size: 1.3em;
+    font-size: var(--font-sm);
     color: var(--color-primary);
     margin-bottom: 1rem;
 }
@@ -1998,7 +1998,7 @@ textarea:focus-visible,
     padding: 1rem;
     border: 2px solid var(--border-base);
     border-radius: 8px;
-    font-size: 1em;
+    font-size: var(--font-sm);
     resize: vertical;
     min-height: 120px;
     transition: border-color 0.3s;
@@ -2043,20 +2043,20 @@ textarea:focus-visible,
 }
 
 .commento-autore {
-    font-size: 1.05em;
+    font-size: var(--font-sm);
     color: var(--color-primary);
     font-weight: 600;
 }
 
 .commento-data {
     display: block;
-    font-size: 0.85em;
+    font-size: var(--font-sm);
     color: var(--text-contrast);
     margin-top: 0.2rem;
 }
 
 .commento-contenuto p {
-    font-size: 1em;
+    font-size: var(--font-sm);
     line-height: 1.6;
     color: var(--text-main);
     margin: 0;
@@ -2075,7 +2075,7 @@ textarea:focus-visible,
     border: 1px solid var(--color-accent);
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
-    font-size: 0.85em;
+    font-size: var(--font-sm);
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -2096,7 +2096,7 @@ textarea:focus-visible,
 
 .login-prompt p {
     color: var(--text-main);
-    font-size: 1.1em;
+    font-size: var(--font-sm);
     margin-bottom: 1rem;
 }
 
@@ -2113,14 +2113,14 @@ textarea:focus-visible,
 }
 
 .page-header h1 {
-    font-size: 2.5em;
+    font-size: var(--font-xxl);
     color: var(--color-primary);
     margin-bottom: 0.5em;
 }
 
 .page-header p,
 .subtitle {
-    font-size: 1.1em;
+    font-size: var(--font-sm);
     color: var(--text-contrast);
 }
 
@@ -2133,7 +2133,7 @@ textarea:focus-visible,
 }
 
 .form-section legend {
-    font-size: 1.4em;
+    font-size: var(--font-base);
     font-weight: 700;
     color: var(--color-primary);
     padding: 0 1rem;
@@ -2142,7 +2142,7 @@ textarea:focus-visible,
 .section-intro,
 .section-hint {
     color: var(--text-contrast);
-    font-size: 0.95em;
+    font-size: var(--font-sm);
     margin-bottom: 1.5rem;
     font-style: italic;
 }
@@ -2185,7 +2185,7 @@ textarea:focus-visible,
 }
 
 .entry-header .entry-title {
-    font-size: 1.1em;
+    font-size: var(--font-base);
     color: var(--color-primary);
     margin: 0;
 }
@@ -2197,7 +2197,7 @@ textarea:focus-visible,
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 8px;
-    font-size: 0.95em;
+    font-size: var(--font-sm);
     cursor: pointer;
     transition: all 0.2s;
     display: inline-flex;
@@ -2218,7 +2218,7 @@ textarea:focus-visible,
     border: 1px solid var(--color-accent);
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
-    font-size: 0.85em;
+    font-size: var(--font-sm);
     cursor: pointer;
     transition: all 0.2s;
     display: inline-flex;
@@ -2239,7 +2239,7 @@ textarea:focus-visible,
     border-radius: 50%;
     width: 28px;
     height: 28px;
-    font-size: 1.2rem;
+    font-size: var(--font-base);
     line-height: 1;
     justify-content: center;
     padding: 0;
@@ -2283,7 +2283,7 @@ textarea:focus-visible,
     border: none;
     padding: 1rem 3rem;
     border-radius: 8px;
-    font-size: 1.1em;
+    font-size: var(--font-base);
     cursor: pointer;
     transition: all 0.2s;
     display: inline-flex;
@@ -2301,7 +2301,7 @@ textarea:focus-visible,
     border: 2px solid var(--border-base);
     padding: 1rem 2rem;
     border-radius: 8px;
-    font-size: 1em;
+    font-size: var(--font-sm);
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -2319,7 +2319,7 @@ textarea:focus-visible,
     padding: 1rem 1.5rem;
     border-radius: 8px;
     margin-bottom: 1rem;
-    font-size: 0.95em;
+    font-size: var(--font-sm);
 }
 
 .alert strong {
@@ -2440,7 +2440,7 @@ textarea:focus-visible,
 .btn-remove-preview,
 .btn-remove-img {
     padding: 0.25rem 0.5rem;
-    font-size: 0.85rem;
+    font-size: var(--font-sm);
     background: #8a1a2f;
     color: #ffffff;
     border: none;
@@ -2459,12 +2459,12 @@ textarea:focus-visible,
 
 .btn-remove-preview.btn-small {
     padding: 0.15rem 0.35rem;
-    font-size: 0.75rem;
+    font-size: var(--font-sm);
 }
 
 .error-text {
     color: var(--status-danger-text);
-    font-size: 0.9rem;
+    font-size: var(--font-base);
     margin: 0;
     padding: 0.5rem;
     background: rgba(168, 32, 57, 0.1);
@@ -2485,7 +2485,7 @@ textarea:focus-visible,
 
 .image-removed-notice span {
     color: var(--status-warning-text);
-    font-size: 0.9rem;
+    font-size: var(--font-base);
 }
 
 .btn-undo-remove {
@@ -2495,7 +2495,7 @@ textarea:focus-visible,
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: var(--font-sm);
 }
 
 .btn-undo-remove:hover,
@@ -2534,8 +2534,6 @@ textarea:focus-visible,
     background-color: #630D16;
 }
 
-
-
 .page-modifica-caso .image-removed-notice {
     margin-bottom: 1em;
 }
@@ -2553,7 +2551,7 @@ textarea:focus-visible,
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: var(--font-md);
     text-decoration: none;
     z-index: 10;
     border: 3px solid var(--base-white);
@@ -2603,7 +2601,7 @@ textarea:focus-visible,
     margin-top: 0;
     margin-bottom: 1rem;
     color: var(--color-primary);
-    font-size: 1.5rem;
+    font-size: var(--font-lg);
 }
 
 .modal-content p {
@@ -2622,7 +2620,7 @@ textarea:focus-visible,
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: var(--font-base);
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -2683,7 +2681,7 @@ body.dark-theme #search-input:focus {
 .admin-bar-label {
     color: var(--text-on-dark);
     font-weight: 600;
-    font-size: 1rem;
+    font-size: var(--font-base);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -2702,14 +2700,13 @@ body.dark-theme #search-input:focus {
 .admin-bar-actions .btn {
     background-color: var(--color-primary);
     padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
+    font-size: var(--font-sm);
     border-radius: 6px;
 }
 
 .admin-bar-actions .btn:hover {
     background-color: var(--color-primary-dark);
 }
-
 
 .team-grid {
     display: grid;
@@ -2768,8 +2765,8 @@ body.dark-theme #search-input:focus {
 }
 
 .team-card img {
-    width: 140px;
-    height: 140px;
+    width: 8.75rem;
+    height: 8.75rem;
     object-fit: cover;
     border-radius: 50%;
     border: 4px solid var(--color-primary);
@@ -2777,20 +2774,20 @@ body.dark-theme #search-input:focus {
 }
 
 .team-card h3 {
-    font-size: 1.4rem;
+    font-size: var(--font-md);
     font-weight: 800;
     margin-bottom: 0.3em;
     color: var(--text-main);
 }
 
 .team-card p {
-    font-size: 1rem;
+    font-size: var(--font-base);
     color: var(--text-muted);
     font-weight: 500;
 }
 
 .lead {
-    font-size: 1.25rem;
+    font-size: var(--font-md);
     font-weight: 300;
     line-height: 1.6;
     color: var(--color-primary-dark);
@@ -2836,7 +2833,7 @@ body.dark-theme #search-input:focus {
 }
 
 .team-title {
-    font-size: 2rem;
+    font-size: var(--font-xl);
     color: var(--color-primary);
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -3166,11 +3163,11 @@ body.dark-theme #search-input:focus {
     }
 
     .case-card .card-image {
-        height: 180px;
+        height: 11.25rem;
     }
 
     .logo-area img {
-        height: 40px;
+        height: 2.5rem;
         padding: 0;
     }
 
