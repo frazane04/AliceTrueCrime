@@ -224,7 +224,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
                         $prefix,
                         $caso['Slug'],
                         $isAdmin,
-                        (bool) $caso['Approvato']
+                        (bool) $caso['Approvato'],
+                        $_GET['from'] ?? ''
                     );
 
                 } else {

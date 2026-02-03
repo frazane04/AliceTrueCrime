@@ -500,7 +500,29 @@ function getBreadcrumbs($currentPath): string
     if ($path === 'modifica-profilo' || $path === 'modificaprofilo.php') {
         $breadcrumbs[] = '<a href="' . getPrefix() . '/profilo">Profilo</a>';
         $breadcrumbs[] = '<span aria-current="page">Modifica Profilo</span>';
-        
+
+        return '<nav aria-label="Breadcrumb" class="breadcrumbs">' .
+            implode(' <span class="separator">/</span> ', $breadcrumbs) .
+            '</nav>';
+    }
+
+    // LOGICA SPECIALE: Caso o Modifica Caso da Profilo (admin)
+    $fromProfilo = ($_GET['from'] ?? '') === 'profilo';
+    if ($fromProfilo && strpos($path, 'esplora/') === 0) {
+        $parts = explode('/', $path);
+        $slug = $parts[1] ?? '';
+        $isModifica = isset($parts[2]) && $parts[2] === 'modifica';
+        $casoName = ucwords(str_replace(['-', '_'], ' ', $slug));
+
+        $breadcrumbs[] = '<a href="' . getPrefix() . '/profilo">Profilo</a>';
+
+        if ($isModifica) {
+            $breadcrumbs[] = '<a href="' . getPrefix() . '/esplora/' . $slug . '?preview=admin&from=profilo">' . $casoName . '</a>';
+            $breadcrumbs[] = '<span aria-current="page">Modifica</span>';
+        } else {
+            $breadcrumbs[] = '<span aria-current="page">' . $casoName . '</span>';
+        }
+
         return '<nav aria-label="Breadcrumb" class="breadcrumbs">' .
             implode(' <span class="separator">/</span> ', $breadcrumbs) .
             '</nav>';
