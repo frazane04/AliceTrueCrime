@@ -2357,6 +2357,12 @@ body.dark-theme .alert-error {
     border-top: 2px solid var(--border-base);
 }
 
+.form-actions-end {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
 .btn-submit {
     background-color: var(--color-primary);
     color: var(--text-on-dark);

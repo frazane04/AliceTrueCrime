@@ -395,41 +395,6 @@ class FunzioniDB
         }
     }
 
-    // Restituisce casi casuali
-    public function getCasiCasuali($limite = 4, $soloApprovati = true)
-    {
-        try {
-            if (!$this->db->apriConnessione()) {
-                throw new Exception("Impossibile connettersi al database");
-            }
-
-            $query = "SELECT N_Caso, Titolo, Slug, Descrizione, Immagine, Tipologia, Data, Luogo
-                      FROM Caso";
-
-            if ($soloApprovati) {
-                $query .= " WHERE Approvato = 1";
-            }
-
-            $query .= " ORDER BY RAND() LIMIT ?";
-
-            $result = $this->db->query($query, [$limite], "i");
-
-            $casi = [];
-            if ($result && is_object($result)) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $casi[] = $row;
-                }
-            }
-
-            $this->db->chiudiConnessione();
-            return $casi;
-
-        } catch (Exception $e) {
-            $this->db->chiudiConnessione();
-            return [];
-        }
-    }
-
     // Restituisce i casi più recenti
     public function getCasiRecenti($limite = 5, $soloApprovati = true)
     {
