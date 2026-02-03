@@ -1,13 +1,6 @@
-/**
- * Utility comuni per la validazione form accessibile
- * Include: showError, clearError per gestione errori ARIA-compliant
- */
+// Utility per validazione form accessibile
 
-/**
- * Mostra un messaggio di errore su un input
- * @param {HTMLElement} input - L'elemento input
- * @param {string} message - Il messaggio di errore
- */
+// Mostra errore su un input
 function showError(input, message) {
     const errorId = input.id + '-error';
     const errorSpan = document.getElementById(errorId);
@@ -19,10 +12,7 @@ function showError(input, message) {
     }
 }
 
-/**
- * Rimuove il messaggio di errore da un input
- * @param {HTMLElement} input - L'elemento input
- */
+// Rimuove errore da un input
 function clearError(input) {
     const errorId = input.id + '-error';
     const errorSpan = document.getElementById(errorId);
@@ -34,20 +24,13 @@ function clearError(input) {
     }
 }
 
-/**
- * Valida un campo email
- * @param {string} email - L'email da validare
- * @returns {boolean} - true se valida
- */
+// Valida formato email
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
-/**
- * Mostra gli errori generali del form
- * @param {string} message - Il messaggio da mostrare
- */
+// Mostra errori generali del form
 function showFormErrors(message) {
     const formErrors = document.getElementById('form-errors');
     if (formErrors) {
@@ -56,9 +39,7 @@ function showFormErrors(message) {
     }
 }
 
-/**
- * Nasconde gli errori generali del form
- */
+// Nasconde errori generali del form
 function clearFormErrors() {
     const formErrors = document.getElementById('form-errors');
     if (formErrors) {
@@ -67,9 +48,7 @@ function clearFormErrors() {
     }
 }
 
-/**
- * Regole di validazione predefinite
- */
+// Regole di validazione predefinite
 const ValidationRules = {
     required: (msg) => ({
         validate: (v) => !!v,
@@ -113,11 +92,7 @@ const ValidationRules = {
     })
 };
 
-/**
- * Applica validazione blur a un campo
- * @param {HTMLElement} input - L'elemento input
- * @param {Array} rules - Array di regole [{validate: fn, message: string}]
- */
+// Applica validazione blur a un campo
 function attachValidation(input, rules) {
     input.addEventListener('blur', function () {
         const value = this.value.trim();
@@ -131,12 +106,7 @@ function attachValidation(input, rules) {
     });
 }
 
-/**
- * Valida un campo e ritorna l'errore (se presente)
- * @param {HTMLElement} input - L'elemento input
- * @param {Array} rules - Array di regole
- * @returns {string|null} - Messaggio di errore o null se valido
- */
+// Valida un campo e ritorna l'errore
 function validateField(input, rules) {
     const value = input.value.trim();
     for (const rule of rules) {
@@ -149,10 +119,7 @@ function validateField(input, rules) {
     return null;
 }
 
-/**
- * Focus sul primo campo con errore
- * @param {Array} inputs - Array di elementi input
- */
+// Focus sul primo campo con errore
 function focusFirstError(inputs) {
     for (const input of inputs) {
         if (input.getAttribute('aria-invalid') === 'true') {
@@ -162,14 +129,11 @@ function focusFirstError(inputs) {
     }
 }
 
-/**
- * Inizializza i pulsanti toggle per mostrare/nascondere password
- */
+// Inizializza toggle mostra/nascondi password
 function initPasswordToggles() {
     const toggleButtons = document.querySelectorAll('.password-toggle');
 
     toggleButtons.forEach(button => {
-        // Imposta aria-pressed iniziale
         button.setAttribute('aria-pressed', 'false');
 
         button.addEventListener('click', function () {

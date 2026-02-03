@@ -1,26 +1,23 @@
+// Script pagina esplora con ricerca AJAX
+
 document.addEventListener('DOMContentLoaded', function () {
     const searchForm = document.getElementById('search-form');
-    
-    // Se il form non esiste (es. nella Dashboard), esci silenziosamente senza errori
+
     if (!searchForm) {
-        return; 
+        return;
     }
 
     const searchInput = document.getElementById('search-input');
     const filterCategoria = document.getElementById('filter-categoria');
     const btnReset = document.getElementById('btn-reset');
-    
-    // Assicurati che il contenitore dei risultati corrisponda al nuovo template
     const resultsContainer = document.getElementById('results-grid') || document.getElementById('esplora-content');
-    
     const loadingIndicator = document.getElementById('search-loading');
 
     let debounceTimer;
     const DEBOUNCE_DELAY = 400;
-
-    // Ora getAttribute non darà più errore perché searchForm è validato
     const baseUrl = searchForm.getAttribute('data-url');
 
+    // Effettua ricerca AJAX
     function fetchResults(pushState = true) {
         loadingIndicator.classList.remove('hidden');
         resultsContainer.classList.add('is-loading');
@@ -42,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const currentSearch = params.get('q');
                 const currentCat = params.get('categoria');
-
 
                 const hasFilters = currentSearch || currentCat;
 
@@ -77,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     filterCategoria.addEventListener('change', () => fetchResults());
-
 
     searchForm.addEventListener('submit', function (e) {
         e.preventDefault();

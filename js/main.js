@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Cambio Tema
+    // Cambio tema
     const themeSwitcher = document.querySelector(".theme-switcher");
     const themeIconLunaContainer = document.getElementById("theme-icon-luna-container");
     const themeIconSoleContainer = document.getElementById("theme-icon-sole-container");
@@ -10,22 +10,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const isSystemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     let isDarkTheme = localStorage.getItem("isDarkTheme");
 
-    // Se non c'è preferenza salvata, usa quella di sistema
     if (isDarkTheme === null) {
         isDarkTheme = isSystemDark;
     } else {
         isDarkTheme = isDarkTheme === "true";
     }
 
+    // Applica tema corrente
     function applyTheme() {
         if (isDarkTheme) {
             body.classList.add("dark-theme");
-            // In dark mode, show SUN (to switch to light)
             if (themeIconSoleContainer) themeIconSoleContainer.classList.remove("hidden");
             if (themeIconLunaContainer) themeIconLunaContainer.classList.add("hidden");
         } else {
             body.classList.remove("dark-theme");
-            // In light mode, show MOON (to switch to dark)
             if (themeIconSoleContainer) themeIconSoleContainer.classList.add("hidden");
             if (themeIconLunaContainer) themeIconLunaContainer.classList.remove("hidden");
         }
@@ -41,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyTheme();
 
-    // Menu Mobile
+    // Menu mobile
     const menuToggle = document.getElementById('menu-toggle');
     const menuClose = document.getElementById('menu-close');
     const mainNav = document.querySelector('.main-nav');
@@ -60,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 menuToggle.setAttribute('aria-expanded', 'true');
             }
         });
-
 
         if (menuClose) {
             menuClose.addEventListener('click', () => {
@@ -87,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Torna Su
+    // Pulsante torna su
     const backToTopButton = document.getElementById("back-to-top");
 
     if (backToTopButton) {
@@ -99,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-
         const scrollToTop = (e) => {
             e.preventDefault();
             window.scrollTo({
@@ -109,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         backToTopButton.addEventListener("click", scrollToTop);
-
 
         backToTopButton.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {

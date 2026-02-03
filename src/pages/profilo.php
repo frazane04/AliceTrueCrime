@@ -70,7 +70,7 @@ if ($is_admin) {
 
             $adminHtml .= "
             <li class='caso-pending-item'>
-                <a href='$prefix/esplora/$slug?preview=admin'>
+                <a href='$prefix/esplora/$slug?preview=admin&from=profilo'>
                     <span class='caso-pending-title'>$titolo</span>
                     <span class='caso-pending-info'>$tipologia • $dataInserimento</span>
                 </a>

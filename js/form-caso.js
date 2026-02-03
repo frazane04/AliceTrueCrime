@@ -1,24 +1,6 @@
-/**
- * Utility comuni per i form di gestione casi (segnala e modifica)
- * Include: anteprima immagini, gestione rimozione immagini, entry dinamiche
- */
+// Utility per form di gestione casi (segnala e modifica)
 
-// ========================================
-// FACTORY PER ENTRY DINAMICHE
-// ========================================
-
-/**
- * Crea un gestore per entry dinamiche (vittime, colpevoli, articoli)
- * @param {Object} config - Configurazione
- * @param {string} config.containerId - ID del container
- * @param {string} config.entrySelector - Selettore CSS per le entry
- * @param {Function} config.templateFn - Funzione che genera l'HTML (riceve index)
- * @param {number} config.initialCount - Conteggio iniziale (default 0)
- * @param {number} config.minEntries - Minimo entry richieste (default 0)
- * @param {string} config.minEntriesMessage - Messaggio se si tenta di scendere sotto il minimo
- * @param {boolean} config.confirmRemove - Se chiedere conferma prima di rimuovere
- * @returns {Object} Manager con metodi add e remove
- */
+// Crea gestore per entry dinamiche (vittime, colpevoli, articoli)
 function createEntryManager(config) {
     let counter = config.initialCount || 0;
     const minEntries = config.minEntries || 0;
@@ -39,7 +21,6 @@ function createEntryManager(config) {
             const container = entry.parentElement;
             const currentCount = container.querySelectorAll(config.entrySelector).length;
 
-            // Verifica minimo
             if (minEntries > 0 && currentCount <= minEntries) {
                 await showInfoModal({
                     title: 'Operazione non consentita',
@@ -48,7 +29,6 @@ function createEntryManager(config) {
                 return;
             }
 
-            // Conferma rimozione se richiesto
             if (config.confirmRemove) {
                 const confirmed = await showConfirmModal({
                     title: 'Rimuovi elemento',
@@ -72,9 +52,7 @@ function createEntryManager(config) {
     };
 }
 
-// ========================================
-// ANTEPRIMA IMMAGINI
-// ========================================
+// Mostra anteprima immagine selezionata
 function mostraAnteprimaImmagine(input, previewId) {
     const preview = document.getElementById(previewId);
     if (!preview) return;
@@ -84,7 +62,6 @@ function mostraAnteprimaImmagine(input, previewId) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
 
-        // Validazione client-side
         const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!validTypes.includes(file.type)) {
             preview.innerHTML = '<p class="error-text" role="alert">Formato non supportato. Usa JPG, PNG o WebP.</p>';
@@ -122,9 +99,7 @@ function mostraAnteprimaImmagine(input, previewId) {
     }
 }
 
-// ========================================
-// GESTIONE RIMOZIONE IMMAGINI (per modifica)
-// ========================================
+// Marca immagine per rimozione
 function marcaRimozioneImmagine(tipo, index, originalPath) {
     const previewId = tipo === 'caso' ? 'caso-img-preview' : tipo + '-img-preview-' + index;
     const noticeId = tipo === 'caso' ? 'caso-img-removed' : tipo + '-img-removed-' + index;
@@ -140,6 +115,7 @@ function marcaRimozioneImmagine(tipo, index, originalPath) {
     if (hidden) hidden.value = '';
 }
 
+// Annulla rimozione immagine
 function annullaRimozioneImmagine(tipo, index, originalPath) {
     const previewId = tipo === 'caso' ? 'caso-img-preview' : tipo + '-img-preview-' + index;
     const noticeId = tipo === 'caso' ? 'caso-img-removed' : tipo + '-img-removed-' + index;
@@ -155,11 +131,8 @@ function annullaRimozioneImmagine(tipo, index, originalPath) {
     if (hidden) hidden.value = originalPath;
 }
 
-// ========================================
-// EVENT DELEGATION: Gestione immagini e entry
-// ========================================
+// Event delegation per click
 document.addEventListener('click', function (e) {
-    // Gestione rimozione immagine
     const btnRemoveImg = e.target.closest('[data-img-action="remove"]');
     if (btnRemoveImg) {
         const tipo = btnRemoveImg.dataset.imgType;
@@ -169,7 +142,6 @@ document.addEventListener('click', function (e) {
         return;
     }
 
-    // Gestione annulla rimozione immagine
     const btnUndoImg = e.target.closest('[data-img-action="undo"]');
     if (btnUndoImg) {
         const tipo = btnUndoImg.dataset.imgType;
@@ -179,7 +151,6 @@ document.addEventListener('click', function (e) {
         return;
     }
 
-    // Gestione rimozione entry (vittime, colpevoli, articoli)
     const btnRemoveEntry = e.target.closest('.btn-remove-entry');
     if (btnRemoveEntry) {
         const entry = btnRemoveEntry.closest('.entry-card, .persona-entry, .articolo-entry');
@@ -190,7 +161,7 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// Event delegation per anteprima immagini (onchange)
+// Event delegation per anteprima immagini
 document.addEventListener('change', function (e) {
     const input = e.target;
     if (input.type === 'file' && input.dataset.previewTarget) {

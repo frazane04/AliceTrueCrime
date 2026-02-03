@@ -1,4 +1,4 @@
-// Sistema Modal
+// Sistema Modal di conferma
 (function () {
     let modal = null;
     let modalTitle = null;
@@ -8,9 +8,9 @@
     let resolveCallback = null;
     let previousFocus = null;
 
-    // Struttura HTML
+    // Crea struttura HTML modal
     function createModal() {
-        if (modal) return; // Già creata
+        if (modal) return;
 
         modal = document.createElement('div');
         modal.id = 'confirm-modal';
@@ -33,13 +33,10 @@
 
         document.body.appendChild(modal);
 
-        // Riferimenti agli elementi
-
         modalTitle = modal.querySelector('#modal-title');
         modalDescription = modal.querySelector('#modal-description');
         confirmBtn = modal.querySelector('#modal-confirm');
         cancelBtn = modal.querySelector('#modal-cancel');
-
 
         confirmBtn.addEventListener('click', () => closeModal(true));
         cancelBtn.addEventListener('click', () => closeModal(false));
@@ -59,7 +56,7 @@
         });
     }
 
-    // Gestione Focus
+    // Gestisce focus trap nel modal
     function handleTabKey(e) {
         if (e.key !== 'Tab') return;
 
@@ -82,7 +79,7 @@
         }
     }
 
-
+    // Chiude modal e risolve promise
     function closeModal(result) {
         if (!modal) return;
 
@@ -99,7 +96,7 @@
         }
     }
 
-    // Mostra Modal
+    // Mostra modal di conferma
     window.showConfirmModal = function (config) {
         return new Promise((resolve) => {
             resolveCallback = resolve;
@@ -107,22 +104,17 @@
 
             createModal();
 
-            // Imposta contenuti
             modalTitle.textContent = config.title || 'Conferma azione';
             modalDescription.textContent = config.message || 'Sei sicuro di voler procedere?';
             confirmBtn.textContent = config.confirmText || 'Conferma';
-
-            // Imposta stile bottone conferma
             confirmBtn.className = 'btn ' + (config.confirmClass || 'btn-primary');
 
-            // Mostra/nascondi bottone annulla (per modal solo informative)
             if (config.hideCancel) {
                 cancelBtn.classList.add('hidden');
             } else {
                 cancelBtn.classList.remove('hidden');
             }
 
-            // Focus sul bottone appropriato
             if (config.hideCancel) {
                 confirmBtn.focus();
             } else {
@@ -131,7 +123,7 @@
         });
     };
 
-    // Mostra Modal Info
+    // Mostra modal informativo
     window.showInfoModal = function (config) {
         return showConfirmModal({
             title: config.title || 'Informazione',

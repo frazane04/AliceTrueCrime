@@ -72,8 +72,13 @@ if (isLoggedIn()) {
     $puoModificare = $dbFunctions->puoModificareCaso($casoId, $emailUtente, $isAdmin);
 
     if ($puoModificare) {
+        $linkModifica = $prefix . '/esplora/' . $caso['Slug'] . '/modifica';
+        $fromParam = $_GET['from'] ?? '';
+        if ($fromParam === 'profilo') {
+            $linkModifica .= '?from=profilo';
+        }
         $htmlAzioniUtente = renderComponent('btn-azione-caso', [
-            'LINK_HREF' => $prefix . '/esplora/' . $caso['Slug'] . '/modifica',
+            'LINK_HREF' => $linkModifica,
             'TESTO' => 'Modifica Caso'
         ]);
     }

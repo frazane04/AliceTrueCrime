@@ -214,17 +214,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'modif
                         $dbFunctions->inserisciArticolo($casoId, $a['titolo'], $a['data'], $a['link']);
                     }
 
-                    $messaggioFeedback = FormCasoHelper::generaMessaggioSuccessoModifica(
-                        $riApprova,
-                        $prefix,
-                        $caso['Slug'],
-                        $isAdmin
-                    );
-
                     $caso = $dbFunctions->getCasoById($casoId, false);
                     $vittimeEsistenti = $dbFunctions->getVittimeByCaso($casoId, false);
                     $colpevoliEsistenti = $dbFunctions->getColpevoliByCaso($casoId, false);
                     $articoliEsistenti = $dbFunctions->getArticoliByCaso($casoId);
+
+                    $messaggioFeedback = FormCasoHelper::generaMessaggioSuccessoModifica(
+                        $riApprova,
+                        $prefix,
+                        $caso['Slug'],
+                        $isAdmin,
+                        (bool) $caso['Approvato'],
+                        $_GET['from'] ?? ''
+                    );
 
                 } else {
                     $errori[] = $resultCaso['message'];
